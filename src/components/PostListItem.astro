@@ -29,12 +29,21 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
    * 제목이 글의 내용을 혼자 전달해야 하는 구조다.
    * description은 목록에서 빠졌을 뿐이고 공유 카드·검색 결과·메타 설명에서 계속 쓰인다.
    */
-  .row { padding: 17px 0; border-bottom: 1px solid var(--border); }
+  .row { padding: 22px 0; border-bottom: 1px solid var(--border); }
 
-  .title { margin: 0 0 6px; font-size: 1.12em; line-height: 1.45; letter-spacing: -.02em; font-weight: 700; }
+  /*
+   * 제목을 크게 두고 메타는 그 아래에 둔다. 이 둘은 묶인 결정이다 —
+   * 제목이 커지면 두 줄로 감기는 일이 잦아지고, 그때 메타를 오른쪽에 두면
+   * 첫 줄 옆에 붙어 아래가 비거나 제목 폭을 깎아야 한다.
+   */
+  .title { margin: 0 0 8px; font-size: 1.5em; line-height: 1.38; letter-spacing: -.03em; font-weight: 700; }
   .title a { color: var(--text); text-decoration: none; }
   .title a:hover { color: var(--accent); }
 
   .meta { margin: 0; display: flex; gap: 10px; font-size: .78em; color: var(--text-dim); }
   .cat { color: var(--accent); font-weight: 800; letter-spacing: .1em; }
+
+  @media (max-width: 640px) {
+    .title { font-size: 1.3em; }
+  }
 </style>
