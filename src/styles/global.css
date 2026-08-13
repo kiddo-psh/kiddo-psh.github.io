@@ -1,0 +1,55 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light dark; }
+:root[data-theme='light'] { color-scheme: light; }
+:root[data-theme='dark'] { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 19px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img { max-width: 100%; height: auto; }
+
+.page { max-width: var(--w-page); margin: 0 auto; padding: 0 20px; }
+
+/* 마크다운 본문 — 크기는 body(19px)를 상속한다 */
+.prose h2 { margin: 2.3em 0 .7em; font-size: 1.45em; letter-spacing: -.02em; scroll-margin-top: 80px; }
+.prose h3 { margin: 1.8em 0 .6em; font-size: 1.18em; scroll-margin-top: 80px; }
+.prose p { margin: 0 0 1.2em; }
+.prose ul, .prose ol { margin: 0 0 1.2em; padding-left: 1.3em; }
+.prose li { margin-bottom: .4em; }
+.prose blockquote {
+  margin: 1.6em 0; padding: .2em 0 .2em 1.1em;
+  border-left: 3px solid var(--accent); color: var(--text-dim);
+}
+.prose :not(pre) > code {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: .1em .35em;
+  font-family: var(--font-mono); font-size: .88em;
+}
+.prose pre {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; overflow-x: auto;
+  font-size: .84em; line-height: 1.7;
+}
+.prose table { width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: .92em; }
+.prose th, .prose td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+.prose th { background: var(--code-bg); }
+
+/* Shiki 라이트/다크 전환 */
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+}

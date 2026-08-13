@@ -1,0 +1,26 @@
+---
+import { SITE } from '../site.config';
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header>
+  <nav class="page">
+    <a class="brand" href="/">{SITE.title}</a>
+    <a href="/posts">글</a>
+    <a href="/projects">프로젝트</a>
+    <a href="/about">소개</a>
+    <div class="right">
+      <a href="/search" aria-label="검색">⌕</a>
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>
+
+<style>
+  header { border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; gap: 16px; height: 54px; font-size: 14px; }
+  .brand { color: var(--text); font-weight: 800; margin-right: 6px; }
+  nav a { color: var(--text-dim); }
+  nav a:hover { color: var(--text); text-decoration: none; }
+  .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+</style>

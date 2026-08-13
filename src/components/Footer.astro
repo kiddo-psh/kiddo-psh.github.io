@@ -1,0 +1,18 @@
+---
+import { SITE } from '../site.config';
+---
+
+<footer>
+  <div class="page">
+    <span>© {SITE.author}</span>
+    <a href={SITE.links.github}>GitHub</a>
+    <a href={`mailto:${SITE.links.email}`}>Email</a>
+    <a href="/rss.xml">RSS</a>
+  </div>
+</footer>
+
+<style>
+  footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 26px 0 50px; }
+  footer div { display: flex; gap: 14px; font-size: 13px; color: var(--text-dim); }
+  footer a { color: var(--text-dim); }
+</style>

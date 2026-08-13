@@ -1,0 +1,21 @@
+<button id="theme-toggle" type="button" aria-label="테마 전환">
+  <span aria-hidden="true">☾</span>
+</button>
+
+<style>
+  button {
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; padding: 3px 8px; font-size: 13px;
+    line-height: 1.4;
+  }
+  button:hover { color: var(--text); }
+</style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+  });
+</script>

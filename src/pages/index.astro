@@ -1,11 +1,12 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../site.config';
 ---
-<html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <title>kiddo-psh</title>
-  </head>
-  <body>
-    <h1>배포 확인</h1>
-  </body>
-</html>
+
+<BaseLayout title={SITE.title}>
+  <div class="page">
+    <h1>레이아웃 확인</h1>
+    <p>본문 색과 배경, 다크모드 토글이 동작하는지 봅니다.</p>
+    <p><a href="/posts">링크 색 확인</a></p>
+  </div>
+</BaseLayout>
