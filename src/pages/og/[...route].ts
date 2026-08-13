@@ -8,8 +8,11 @@
 //   --accent    #1D6B4F -> [29, 107, 79]
 import { getCollection } from 'astro:content';
 import { OGImageRoute } from 'astro-og-canvas';
+import { getVisiblePosts } from '../../lib/posts';
 
-const posts = await getCollection('posts');
+// getVisiblePosts()는 프로덕션 빌드에서 draft: true 글을 제외한다 (dev에서는 포함).
+// cover가 지정된 글은 PostLayout이 생성 이미지 대신 cover를 쓰므로 여기서 제외한다.
+const posts = (await getVisiblePosts()).filter((p) => !p.data.cover);
 const projects = await getCollection('projects');
 
 const pages: Record<string, { title: string; description: string }> = {};
