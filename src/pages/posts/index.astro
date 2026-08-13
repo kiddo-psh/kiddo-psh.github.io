@@ -48,5 +48,5 @@ const posts = await getVisiblePosts();
     });
   }
   applyFilter();
-  window.addEventListener('popstate', applyFilter);
+  window.addEventListener('pageshow', applyFilter);
 </script>

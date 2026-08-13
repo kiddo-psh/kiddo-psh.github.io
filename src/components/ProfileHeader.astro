@@ -8,7 +8,7 @@ const { projectCount } = Astro.props;
 <div class="prof">
   <div class="av" aria-hidden="true"></div>
   <div class="who">
-    <div class="nm">{SITE.author}</div>
+    <h1 class="nm">{SITE.author}</h1>
     <div class="tg">{SITE.tagline}</div>
   </div>
   {projectCount > 0 && (
@@ -22,7 +22,7 @@ const { projectCount } = Astro.props;
     width: 44px; height: 44px; border-radius: 50%; flex: 0 0 auto;
     background: linear-gradient(135deg, var(--accent), var(--border));
   }
-  .nm { font-weight: 800; }
+  .nm { margin: 0; font-size: 1em; font-weight: 800; }
   .tg { font-size: .88em; color: var(--text-dim); margin-top: 2px; }
   .more { margin-left: auto; font-size: .85em; }
 </style>
