@@ -6,7 +6,9 @@
 
 **Architecture:** Astro 콘텐츠 컬렉션이 `src/content/posts`와 `src/content/projects`의 마크다운을 zod 스키마로 검증해 타입 있는 데이터로 만들고, 레이아웃이 `category` 값에 따라 두 형태로 분기해 렌더한다. 색과 문구는 각각 `src/styles/tokens.css`와 `src/site.config.ts` 단일 출처에만 둔다. `git push` 시 GitHub Actions가 빌드하고, 실패하면 배포하지 않는다.
 
-**Tech Stack:** Astro 5, TypeScript, Pagefind(검색), astro-og-canvas(공유 카드), @astrojs/rss, @astrojs/sitemap, giscus(댓글), Pretendard(웹폰트), Node 24
+**Tech Stack:** Astro 7 (설치 확인된 버전 7.2.1), TypeScript, Pagefind(검색), astro-og-canvas(공유 카드), @astrojs/rss, @astrojs/sitemap, giscus(댓글), Pretendard(웹폰트), Node 24
+
+> **버전 참고:** 이 계획서는 Astro 5 문서를 기준으로 작성됐으나 실제 설치본은 7.2.1이다. 콘텐츠 레이어 API(`src/content.config.ts` + `glob()` 로더)는 Task 3에서 정상 동작을 확인했다. Task 8(astro-pagefind)과 Task 9(astro-og-canvas)의 서드파티 통합은 Astro 7 호환을 설치 시점에 확인해야 하며, API가 달라졌으면 해당 패키지의 현재 문서를 따른다.
 
 ## Global Constraints
 
@@ -1140,17 +1142,21 @@ grep -o 'href="/posts/[a-z0-9-]*"' dist/posts/index.html | sort -u
 
 커버가 없는 글은 그라데이션 타일이 렌더되어야 한다 (`<img>`가 아니다).
 
+빌드된 HTML은 한 줄로 압축되므로 **`grep -c`(일치한 줄 수)가 아니라 `grep -o | wc -l`(일치 횟수)로 세야 한다.** `grep -c`는 개수와 무관하게 `1`을 돌려준다.
+
 ```bash
-grep -c 'thumb tile' dist/posts/index.html
+grep -o 'thumb tile' dist/posts/index.html | wc -l
 ```
 
 기대: `3` (샘플 글 3개 모두 `cover`가 없다)
 
 ```bash
-grep -c '<img class="thumb"' dist/posts/index.html
+grep -o '<img class="thumb"' dist/posts/index.html | wc -l
 ```
 
 기대: `0`
+
+(있음/없음만 보는 다른 태스크의 `grep -c` 검사는 압축된 출력에서도 `1`/`0`으로 정상 동작하므로 그대로 둔다.)
 
 - [ ] **Step 7: 개발 서버에서 필터 확인**
 

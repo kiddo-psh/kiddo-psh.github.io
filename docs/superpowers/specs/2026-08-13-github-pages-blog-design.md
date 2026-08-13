@@ -56,7 +56,7 @@ blog/
 │  ├─ content/
 │  │  ├─ posts/           # 블로그 글 (.md)
 │  │  └─ projects/        # 프로젝트 상세 (.md)
-│  ├─ content.config.ts   # 컬렉션 스키마 정의 (Astro 5 규약 경로)
+│  ├─ content.config.ts   # 컬렉션 스키마 정의 (Astro 5+ 규약 경로)
 │  ├─ layouts/
 │  │  ├─ BaseLayout.astro     # head, nav, footer
 │  │  ├─ PostLayout.astro     # 카테고리에 따라 분기
