@@ -38,11 +38,12 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          links.forEach((a) => a.classList.remove('on'));
-          bySlug.get(e.target.id)?.classList.add('on');
-        });
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (!visible.length) return;
+        const top = visible.reduce((a, b) =>
+          a.boundingClientRect.top < b.boundingClientRect.top ? a : b);
+        links.forEach((a) => a.classList.remove('on'));
+        bySlug.get(top.target.id)?.classList.add('on');
       },
       { rootMargin: '-70px 0px -70% 0px' },
     );
