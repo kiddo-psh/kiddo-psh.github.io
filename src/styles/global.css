@@ -36,29 +36,85 @@ img { max-width: 100%; height: auto; }
 }
 .pj-grid.single { grid-template-columns: 1fr; }
 
-/* 마크다운 본문 — 크기는 body(19px)를 상속한다 */
-.prose h2 { margin: 2.3em 0 .7em; font-size: 1.45em; letter-spacing: -.02em; scroll-margin-top: 80px; }
-.prose h3 { margin: 1.8em 0 .6em; font-size: 1.18em; scroll-margin-top: 80px; }
-.prose p { margin: 0 0 1.2em; }
-.prose ul, .prose ol { margin: 0 0 1.2em; padding-left: 1.3em; }
-.prose li { margin-bottom: .4em; }
-.prose blockquote {
-  margin: 1.6em 0; padding: .2em 0 .2em 1.1em;
-  border-left: 3px solid var(--accent); color: var(--text-dim);
+/* ─────────────────────────────────────────────────────────────
+   마크다운 본문. 크기는 body(19px)를 상속한다.
+   대단락(h2) 사이를 넉넉히 벌려 긴 글에서 구조가 먼저 읽히게 하고,
+   인용문은 "인용"이 아니라 강조 박스로 쓴다(작성 관례는 README 참고).
+   ───────────────────────────────────────────────────────────── */
+.prose > :first-child { margin-top: 0; }
+
+.prose h2 {
+  margin: 2.8em 0 .8em; font-size: 1.55em; line-height: 1.35;
+  font-weight: 800; letter-spacing: -.03em; scroll-margin-top: 80px;
 }
+.prose h3 {
+  margin: 2em 0 .6em; font-size: 1.22em; line-height: 1.45;
+  font-weight: 700; letter-spacing: -.02em; scroll-margin-top: 80px;
+}
+/* h2 바로 뒤에 h3가 오면 사이를 좁힌다 */
+.prose h2 + h3 { margin-top: 1.2em; }
+
+.prose p { margin: 0 0 1.3em; }
+.prose strong { font-weight: 700; }
+
+/* 본문 링크는 밑줄을 기본으로 둔다 — 색만으로 구분하지 않는다 */
+.prose a { text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+.prose a:hover { text-decoration-thickness: 2px; }
+
+.prose ul, .prose ol { margin: 0 0 1.3em; padding-left: 1.4em; }
+.prose li { margin-bottom: .5em; }
+.prose li > ul, .prose li > ol { margin: .5em 0 0; }
+.prose ul > li::marker { color: var(--accent); }
+.prose ol > li::marker { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+/* 강조 박스 (마크다운의 > 인용문) */
+.prose blockquote {
+  margin: 1.8em 0; padding: 16px 20px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: .96em;
+}
+.prose blockquote > :first-child { margin-top: 0; }
+.prose blockquote > :last-child { margin-bottom: 0; }
+.prose blockquote strong { color: var(--accent); }
+
 .prose :not(pre) > code {
   background: var(--code-bg); border: 1px solid var(--border);
   border-radius: 4px; padding: .1em .35em;
-  font-family: var(--font-mono); font-size: .88em;
+  font-family: var(--font-mono); font-size: .86em;
+  word-break: break-word;
 }
 .prose pre {
   background: var(--code-bg); border: 1px solid var(--border);
-  border-radius: 8px; padding: 14px 16px; overflow-x: auto;
-  font-size: .84em; line-height: 1.7;
+  border-radius: 10px; padding: 16px 18px; overflow-x: auto;
+  margin: 1.6em 0;
+  font-size: .84em; line-height: 1.75;
 }
-.prose table { width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: .92em; }
-.prose th, .prose td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
-.prose th { background: var(--code-bg); }
+
+/* 표는 칸을 두르지 않고 가로줄만 남긴다 */
+.prose table {
+  width: 100%; border-collapse: collapse; margin: 1.8em 0;
+  font-size: .9em; line-height: 1.6;
+}
+.prose thead th {
+  border-bottom: 2px solid var(--border); padding: 8px 12px 10px; text-align: left;
+  font-size: .88em; font-weight: 800; letter-spacing: .04em; color: var(--text-dim);
+}
+.prose tbody td { border-bottom: 1px solid var(--border); padding: 10px 12px; vertical-align: top; }
+.prose tbody tr:last-child td { border-bottom: 0; }
+
+.prose hr {
+  border: 0; height: 1px; background: var(--border);
+  margin: 3em auto; width: 60%;
+}
+
+.prose img { border: 1px solid var(--border); border-radius: 10px; margin: 1.6em 0; }
+
+/* 표·코드블록이 좁은 화면에서 페이지를 밀지 않게 */
+.prose { overflow-wrap: break-word; }
 
 /* Shiki 라이트/다크 전환 */
 :root[data-theme='dark'] .astro-code,
