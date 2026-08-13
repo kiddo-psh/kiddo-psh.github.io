@@ -1698,17 +1698,21 @@ grep -c "180ms" dist/index.html dist/projects/index.html dist/projects/coupon/in
 
 상세에는 두 지표가 모두, 카드에는 첫 지표만 나온다.
 
-```bash
-grep -c "중복 발급" dist/projects/coupon/index.html
-```
-
-기대: `1` 이상.
+판별자로 두 번째 지표의 `before` 값(`37건`)을 쓴다. 지표 라벨(`중복 발급`)은 프로젝트 `summary` 문장에도 들어 있어서 지표 표의 유무를 가리지 못한다.
 
 ```bash
-grep -c "중복 발급" dist/index.html
+grep -o '37건' dist/projects/coupon/index.html | wc -l
 ```
 
-기대: `0` (카드는 `compact`로 첫 지표만 보여준다)
+기대: `1` 이상 (상세는 전체 지표를 보여준다)
+
+```bash
+grep -o '37건' dist/index.html | wc -l
+```
+
+기대: `0` (홈 카드는 `compact`로 첫 지표만 보여준다)
+
+더 직접적으로는 지표 셀(`class="m"`) 개수를 센다 — 상세 2개, 홈 카드 1개.
 
 - [ ] **Step 8: 개발 서버에서 눈 확인**
 
@@ -1753,7 +1757,7 @@ const stacks = [
 ---
 
 <BaseLayout title="소개" description={SITE.description}>
-  <div class="page narrow">
+  <div class="page w-read">
     <h1>소개</h1>
 
     <div class="prose">
@@ -1786,7 +1790,7 @@ const stacks = [
 </BaseLayout>
 
 <style>
-  .narrow { max-width: var(--w-read); }
+  /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
   h1 { font-size: 1.6em; margin: 40px 0 20px; }
   h2 { font-size: 1.05em; margin: 40px 0 12px; }
   .stack { margin: 0; display: grid; gap: 9px; }

@@ -22,6 +22,8 @@ a:hover { text-decoration: underline; }
 img { max-width: 100%; height: auto; }
 
 .page { max-width: var(--w-page); margin: 0 auto; padding: 0 20px; }
+.w-doc  { max-width: var(--w-doc); }
+.w-read { max-width: var(--w-read); }
 
 /* 마크다운 본문 — 크기는 body(19px)를 상속한다 */
 .prose h2 { margin: 2.3em 0 .7em; font-size: 1.45em; letter-spacing: -.02em; scroll-margin-top: 80px; }

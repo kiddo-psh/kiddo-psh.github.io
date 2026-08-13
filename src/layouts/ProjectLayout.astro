@@ -9,7 +9,7 @@ const d = project.data;
 ---
 
 <BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
-  <div class="page narrow">
+  <div class="page w-doc">
     <article data-pagefind-body>
       <h1>{d.title}</h1>
       <p class="sum">{d.summary}</p>
@@ -38,7 +38,6 @@ const d = project.data;
 </BaseLayout>
 
 <style>
-  .narrow { max-width: var(--w-doc); }
   h1 { margin: 40px 0 10px; font-size: 1.8em; letter-spacing: -.025em; }
   .sum { margin: 0 0 22px; color: var(--text-dim); font-size: 1.02em; }
   .facts { margin: 0 0 4px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; gap: 9px; }
