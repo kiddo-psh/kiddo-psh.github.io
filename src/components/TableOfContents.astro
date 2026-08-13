@@ -36,14 +36,29 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
     const bySlug = new Map<string, HTMLAnchorElement>();
     links.forEach((a) => bySlug.set(decodeURIComponent(a.hash.slice(1)), a));
 
+    const active = new Set<Element>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (!visible.length) return;
-        const top = visible.reduce((a, b) =>
-          a.boundingClientRect.top < b.boundingClientRect.top ? a : b);
-        links.forEach((a) => a.classList.remove('on'));
-        bySlug.get(top.target.id)?.classList.add('on');
+        entries.forEach((e) => (e.isIntersecting ? active.add(e.target) : active.delete(e.target)));
+        let pick: Element | null = null;
+        if (active.size) {
+          pick = [...active].reduce((a, b) =>
+            a.getBoundingClientRect().top < b.getBoundingClientRect().top ? a : b);
+        } else {
+          // nothing in the band: the nearest heading above the reading line
+          document.querySelectorAll('.prose h2, .prose h3').forEach((h) => {
+            if (h.getBoundingClientRect().top < 70) pick = h;
+          });
+        }
+        links.forEach((a) => {
+          a.classList.remove('on');
+          a.removeAttribute('aria-current');
+        });
+        const on = pick ? bySlug.get(pick.id) : undefined;
+        if (on) {
+          on.classList.add('on');
+          on.setAttribute('aria-current', 'true');
+        }
       },
       { rootMargin: '-70px 0px -70% 0px' },
     );

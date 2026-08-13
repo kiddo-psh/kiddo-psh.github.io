@@ -20,13 +20,14 @@ const featured = allProjects
   <div class="page">
     <ProfileHeader projectCount={allProjects.length} />
     <CategoryTabs active="all" />
-    <div class="grid">
+    <h2 class="lbl">최근 글</h2>
+    <div class="card-grid">
       {posts.map((post) => <PostCard post={post} />)}
     </div>
     <p class="all"><a href="/posts">글 전체 보기 →</a></p>
     {featured.length > 0 && (
       <section class="pj">
-        <p class="lbl">프로젝트</p>
+        <h2 class="lbl">프로젝트</h2>
         <div class:list={['pj-grid', { single: featured.length === 1 }]}>
           {featured.map((project) => <ProjectCard project={project} />)}
         </div>
@@ -36,13 +37,8 @@ const featured = allProjects
 </BaseLayout>
 
 <style>
-  .grid {
-    display: grid; gap: 18px; margin-top: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
+  .card-grid { margin-top: 16px; }
   .all { margin-top: 24px; font-size: .88em; }
   .pj { margin-top: 52px; }
   .lbl { margin: 0 0 12px; font-size: .78em; font-weight: 800; letter-spacing: .12em; color: var(--text-dim); }
-  .pj-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-  .pj-grid.single { grid-template-columns: 1fr; }
 </style>

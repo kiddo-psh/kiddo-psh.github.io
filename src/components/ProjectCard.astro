@@ -2,13 +2,14 @@
 import type { CollectionEntry } from 'astro:content';
 import MetricsTable from './MetricsTable.astro';
 
-interface Props { project: CollectionEntry<'projects'> }
-const { project } = Astro.props;
+interface Props { project: CollectionEntry<'projects'>; headingLevel?: 2 | 3 }
+const { project, headingLevel = 3 } = Astro.props;
 const d = project.data;
+const Tag = `h${headingLevel}` as 'h2' | 'h3';
 ---
 
 <a class="card" href={`/projects/${project.id}`}>
-  <h3>{d.title}</h3>
+  <Tag>{d.title}</Tag>
   <p class="sum">{d.summary}</p>
   <MetricsTable metrics={d.metrics} compact />
   <div class="stack">{d.stack.join(' · ')}</div>
@@ -20,7 +21,7 @@ const d = project.data;
     padding: 18px; background: var(--bg-elev); color: var(--text);
   }
   .card:hover { border-color: var(--accent); text-decoration: none; }
-  h3 { margin: 0 0 7px; font-size: 1.02em; }
+  h2, h3 { margin: 0 0 7px; font-size: 1.02em; font-weight: 700; }
   .sum { margin: 0 0 12px; color: var(--text-dim); font-size: .89em; line-height: 1.6; }
   .stack { margin-top: 12px; font-size: .76em; color: var(--text-dim); }
 </style>

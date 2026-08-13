@@ -11,10 +11,10 @@ const posts = await getVisiblePosts();
   <div class="page">
     <h1>글</h1>
     <CategoryTabs active="all" />
-    <div id="list" class="grid">
+    <div id="list" class="card-grid">
       {posts.map((post) => (
         <div class="cell" data-category={post.data.category}>
-          <PostCard post={post} />
+          <PostCard post={post} headingLevel={2} />
         </div>
       ))}
     </div>
@@ -24,10 +24,7 @@ const posts = await getVisiblePosts();
 
 <style>
   h1 { font-size: 1.6em; margin: 34px 0 18px; }
-  .grid {
-    display: grid; gap: 18px; margin-top: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
+  .card-grid { margin-top: 16px; }
 </style>
 
 <script>

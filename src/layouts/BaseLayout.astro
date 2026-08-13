@@ -8,9 +8,15 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  ogType?: string;
 }
 
-const { title, description = SITE.description, ogImage } = Astro.props;
+const {
+  title,
+  description = SITE.description,
+  ogImage = '/og/site.png',
+  ogType = 'website',
+} = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
@@ -25,8 +31,10 @@ const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content="ko_KR" />
     <meta property="og:site_name" content={SITE.title} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />

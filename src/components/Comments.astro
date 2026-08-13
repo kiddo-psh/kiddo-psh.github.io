@@ -8,7 +8,19 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 ---
 
 {enabled && (
-  <section class="comments" data-slug={slug} aria-label="댓글">
+  <section class="comments" aria-label="댓글">
+    <script is:inline>
+      // giscus 로더 스크립트가 실행되기 전에 초기 테마를 정해서,
+      // 다크 모드 독자에게 라이트로 부팅되는 깜빡임을 막는다.
+      // (BaseLayout의 인라인 테마 스크립트와 동일한 우선순위: 저장값 → prefers-color-scheme)
+      (function () {
+        const saved = localStorage.getItem('theme');
+        const dark = saved
+          ? saved === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.currentScript.nextElementSibling.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
     <script
       is:inline
       src="https://giscus.app/client.js"

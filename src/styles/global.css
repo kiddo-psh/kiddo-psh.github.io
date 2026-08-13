@@ -25,6 +25,17 @@ img { max-width: 100%; height: auto; }
 .w-doc  { max-width: var(--w-doc); }
 .w-read { max-width: var(--w-read); }
 
+/* 카드 그리드 — index/posts/projects 세 곳에서 공유 (Task F에서 통합) */
+.card-grid {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.pj-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.pj-grid.single { grid-template-columns: 1fr; }
+
 /* 마크다운 본문 — 크기는 body(19px)를 상속한다 */
 .prose h2 { margin: 2.3em 0 .7em; font-size: 1.45em; letter-spacing: -.02em; scroll-margin-top: 80px; }
 .prose h3 { margin: 1.8em 0 .6em; font-size: 1.18em; scroll-margin-top: 80px; }

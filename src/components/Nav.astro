@@ -18,9 +18,13 @@ import ThemeToggle from './ThemeToggle.astro';
 
 <style>
   header { border-bottom: 1px solid var(--border); }
-  nav { display: flex; align-items: center; gap: 16px; height: 54px; font-size: 14px; }
+  nav { display: flex; align-items: center; gap: 12px; height: 54px; font-size: 14px; }
   .brand { color: var(--text); font-weight: 800; margin-right: 6px; }
   nav a { color: var(--text-dim); }
   nav a:hover { color: var(--text); text-decoration: none; }
   .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  @media (max-width: 360px) {
+    nav { font-size: 12.5px; }
+  }
 </style>

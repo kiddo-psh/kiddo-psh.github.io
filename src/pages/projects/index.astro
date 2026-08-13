@@ -11,14 +11,12 @@ const projects = (await getCollection('projects')).sort(
 <BaseLayout title="프로젝트" description="만든 것들과 그때의 판단">
   <div class="page w-doc">
     <h1>프로젝트</h1>
-    <div class:list={['grid', { single: projects.length === 1 }]}>
-      {projects.map((project) => <ProjectCard project={project} />)}
+    <div class:list={['pj-grid', { single: projects.length === 1 }]}>
+      {projects.map((project) => <ProjectCard project={project} headingLevel={2} />)}
     </div>
   </div>
 </BaseLayout>
 
 <style>
   h1 { font-size: 1.5em; margin: 34px 0 20px; }
-  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-  .grid.single { grid-template-columns: 1fr; }
 </style>

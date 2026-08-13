@@ -11,16 +11,18 @@ interface Props { post: Post; headings: MarkdownHeading[] }
 const { post, headings } = Astro.props;
 
 const cat = getCategory(post.data.category);
-const isDoc = cat.layout === 'doc';
+const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const isDoc = cat.layout === 'doc';           // controls width and lead font
+const showToc = isDoc && tocItems.length > 0; // controls the aside and the grid columns
 const related = await getRelatedPosts(post);
 const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
 const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage}>
+<BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
   <div class="page">
-    <div class:list={['shell', isDoc ? 'doc' : 'read']}>
-      {isDoc && <aside class="side"><TableOfContents headings={headings} /></aside>}
+    <div class:list={['shell', isDoc ? 'doc' : 'read', { toc: showToc }]}>
+      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
 
       <article data-pagefind-body>
         <header>
@@ -41,7 +43,8 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
 <style>
   .shell { display: grid; gap: 40px; margin: 40px 0 0; }
-  .shell.doc { grid-template-columns: 200px minmax(0, var(--w-doc)); }
+  .shell.doc { grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
+  .shell.doc.toc { grid-template-columns: 200px minmax(0, var(--w-doc)); justify-content: initial; }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
 
   header { margin-bottom: 30px; }
@@ -54,7 +57,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
   .shell.read .prose { line-height: 1.95; }
 
   @media (max-width: 900px) {
-    .shell.doc { grid-template-columns: minmax(0, 1fr); }
+    .shell.doc.toc { grid-template-columns: minmax(0, 1fr); }
     .side { display: none; }
   }
 </style>

@@ -1,4 +1,4 @@
-<button id="theme-toggle" type="button" aria-label="테마 전환">
+<button id="theme-toggle" type="button" aria-label="다크 모드로 전환" aria-pressed="false">
   <span aria-hidden="true">☾</span>
 </button>
 
@@ -13,9 +13,23 @@
 
 <script>
   const btn = document.getElementById('theme-toggle');
+  const glyph = btn?.querySelector('span');
+
+  // 버튼의 겉모습(아이콘/레이블/aria-pressed)을 현재 테마 상태에 맞춰 갱신한다.
+  // 아이콘과 문구는 "누르면 일어날 동작"을 일관되게 가리킨다:
+  // 라이트 모드에선 ☾(다크로 전환), 다크 모드에선 ☀(라이트로 전환).
+  function sync() {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    if (glyph) glyph.textContent = dark ? '☀' : '☾';
+    btn?.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+    btn?.setAttribute('aria-pressed', String(dark));
+  }
+
+  sync();
   btn?.addEventListener('click', () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
+    sync();
   });
 </script>

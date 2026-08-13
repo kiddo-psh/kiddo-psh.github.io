@@ -9,6 +9,7 @@
 import { getCollection } from 'astro:content';
 import { OGImageRoute } from 'astro-og-canvas';
 import { getVisiblePosts } from '../../lib/posts';
+import { SITE } from '../../site.config';
 
 // getVisiblePosts()는 프로덕션 빌드에서 draft: true 글을 제외한다 (dev에서는 포함).
 // cover가 지정된 글은 PostLayout이 생성 이미지 대신 cover를 쓰므로 여기서 제외한다.
@@ -23,6 +24,7 @@ for (const p of projects) {
   // `project-` 접두사로 posts와 슬러그가 겹치는 사고를 막는다.
   pages[`project-${p.id}`] = { title: p.data.title, description: p.data.summary };
 }
+pages['site'] = { title: SITE.title, description: SITE.description };
 
 export const { getStaticPaths, GET } = await OGImageRoute({
   pages,

@@ -2,10 +2,11 @@
 import type { Post } from '../lib/posts';
 import { getCategory } from '../site.config';
 
-interface Props { post: Post }
-const { post } = Astro.props;
+interface Props { post: Post; headingLevel?: 2 | 3 }
+const { post, headingLevel = 3 } = Astro.props;
 const cat = getCategory(post.data.category);
 const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
+const Tag = `h${headingLevel}` as 'h2' | 'h3';
 ---
 
 <a class="card" href={`/posts/${post.id}`}>
@@ -20,7 +21,7 @@ const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
       <span class="cat">{cat.label}</span>
       <span>{date}</span>
     </div>
-    <h3>{post.data.title}</h3>
+    <Tag>{post.data.title}</Tag>
     <p>{post.data.description}</p>
   </div>
 </a>
@@ -44,7 +45,7 @@ const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
   .body { padding: 15px 17px 18px; }
   .meta { display: flex; gap: 9px; font-size: .72em; color: var(--text-dim); margin-bottom: 7px; }
   .cat { color: var(--accent); font-weight: 800; letter-spacing: .1em; }
-  h3 { margin: 0 0 7px; font-size: 1.02em; line-height: 1.45; letter-spacing: -.01em; }
-  .card:hover h3 { color: var(--accent); }
+  h2, h3 { margin: 0 0 7px; font-size: 1.02em; line-height: 1.45; letter-spacing: -.01em; font-weight: 700; }
+  .card:hover h2, .card:hover h3 { color: var(--accent); }
   p { margin: 0; color: var(--text-dim); font-size: .84em; line-height: 1.6; }
 </style>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kiddo-psh.github.io/sitemap-index.xml
