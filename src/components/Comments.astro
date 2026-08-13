@@ -8,7 +8,7 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 ---
 
 {enabled && (
-  <section class="comments" data-slug={slug}>
+  <section class="comments" data-slug={slug} aria-label="댓글">
     <script
       is:inline
       src="https://giscus.app/client.js"
