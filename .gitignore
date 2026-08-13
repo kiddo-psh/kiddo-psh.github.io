@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+
+# 브레인스토밍 목업 (로컬 참고용)
+.superpowers/
+
+.DS_Store
+*.log
+.env
+.env.production
