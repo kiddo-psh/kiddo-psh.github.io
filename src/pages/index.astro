@@ -3,12 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProfileHeader from '../components/ProfileHeader.astro';
 import CategoryTabs from '../components/CategoryTabs.astro';
 import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getVisiblePosts } from '../lib/posts';
 import { getCollection } from 'astro:content';
 import { SITE } from '../site.config';
 
 const posts = (await getVisiblePosts()).slice(0, 6);
 const allProjects = await getCollection('projects');
+const featured = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 ---
 
 <BaseLayout title={SITE.title}>
@@ -19,6 +24,14 @@ const allProjects = await getCollection('projects');
       {posts.map((post) => <PostCard post={post} />)}
     </div>
     <p class="all"><a href="/posts">글 전체 보기 →</a></p>
+    {featured.length > 0 && (
+      <section class="pj">
+        <p class="lbl">프로젝트</p>
+        <div class:list={['pj-grid', { single: featured.length === 1 }]}>
+          {featured.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>
 
@@ -28,4 +41,8 @@ const allProjects = await getCollection('projects');
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
   .all { margin-top: 24px; font-size: .88em; }
+  .pj { margin-top: 52px; }
+  .lbl { margin: 0 0 12px; font-size: .78em; font-weight: 800; letter-spacing: .12em; color: var(--text-dim); }
+  .pj-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .pj-grid.single { grid-template-columns: 1fr; }
 </style>

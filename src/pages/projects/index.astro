@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout title="프로젝트" description="만든 것들과 그때의 판단">
+  <div class="page narrow">
+    <h1>프로젝트</h1>
+    <div class:list={['grid', { single: projects.length === 1 }]}>
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .narrow { max-width: var(--w-doc); }
+  h1 { font-size: 1.5em; margin: 34px 0 20px; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .grid.single { grid-template-columns: 1fr; }
+</style>

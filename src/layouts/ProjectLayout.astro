@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import MetricsTable from '../components/MetricsTable.astro';
+
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const d = project.data;
+---
+
+<BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
+  <div class="page narrow">
+    <article data-pagefind-body>
+      <h1>{d.title}</h1>
+      <p class="sum">{d.summary}</p>
+
+      <dl class="facts">
+        <div><dt>기간</dt><dd>{d.period}</dd></div>
+        <div><dt>역할</dt><dd>{d.role}</dd></div>
+        <div><dt>기술</dt><dd>{d.stack.join(', ')}</dd></div>
+        {(d.repo || d.demo) && (
+          <div>
+            <dt>링크</dt>
+            <dd>
+              {d.repo && <a href={d.repo}>GitHub</a>}
+              {d.repo && d.demo && ' · '}
+              {d.demo && <a href={d.demo}>Demo</a>}
+            </dd>
+          </div>
+        )}
+      </dl>
+
+      <MetricsTable metrics={d.metrics} />
+
+      <div class="prose"><slot /></div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .narrow { max-width: var(--w-doc); }
+  h1 { margin: 40px 0 10px; font-size: 1.8em; letter-spacing: -.025em; }
+  .sum { margin: 0 0 22px; color: var(--text-dim); font-size: 1.02em; }
+  .facts { margin: 0 0 4px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; gap: 9px; }
+  .facts div { display: flex; gap: 12px; font-size: .89em; }
+  dt { flex: 0 0 52px; color: var(--text-dim); }
+  dd { margin: 0; }
+</style>

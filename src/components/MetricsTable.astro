@@ -1,0 +1,36 @@
+---
+interface Metric { label: string; before: string; after: string }
+interface Props { metrics: Metric[]; compact?: boolean }
+const { metrics, compact = false } = Astro.props;
+const shown = compact ? metrics.slice(0, 1) : metrics;
+---
+
+{shown.length > 0 && (
+  <div class:list={['metrics', { compact }]}>
+    {shown.map((m) => (
+      <div class="m">
+        <div class="lbl">{m.label}</div>
+        <div class="val">
+          <s>{m.before}</s>
+          <span class="arrow" aria-hidden="true">→</span>
+          <b>{m.after}</b>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+<style>
+  .metrics { display: grid; gap: 12px; }
+  .metrics:not(.compact) {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    margin: 24px 0 30px;
+  }
+  .m { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--bg-elev); }
+  .compact .m { border: 0; padding: 0; background: none; }
+  .lbl { font-size: .76em; color: var(--text-dim); margin-bottom: 5px; }
+  .val { display: flex; align-items: baseline; gap: 7px; }
+  s { color: var(--text-dim); opacity: .7; font-size: .86em; text-decoration: line-through; }
+  .arrow { color: var(--text-dim); font-size: .8em; }
+  b { color: var(--accent); font-size: 1.16em; font-weight: 800; letter-spacing: -.02em; }
+</style>
