@@ -1902,12 +1902,14 @@ import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
 <style>
   .narrow { max-width: var(--w-doc); }
   h1 { font-size: 1.5em; margin: 34px 0 18px; }
+  /* 변수 접두사는 설치된 컴포넌트 UI 기준으로 확인할 것. Pagefind 1.5+ 컴포넌트
+     UI는 `--pf-*`를 쓴다 (구 PagefindUI의 `--pagefind-ui-*`가 아니다). */
   pagefind-searchbox {
-    --pagefind-ui-primary: var(--accent);
-    --pagefind-ui-text: var(--text);
-    --pagefind-ui-background: var(--bg);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-font: var(--font-sans);
+    --pf-color-primary: var(--accent);
+    --pf-color-text: var(--text);
+    --pf-color-background: var(--bg);
+    --pf-color-border: var(--border);
+    --pf-font-family: var(--font-sans);
     display: block;
   }
 </style>
@@ -1926,19 +1928,30 @@ ls dist/pagefind/
 
 색인에 글 본문이 들어갔는지 확인한다.
 
+**조각 파일은 gzip 압축되어 있으므로 그냥 `grep`하면 찾지 못한다.** 압축을 풀어서 검사한다.
+
 ```bash
-grep -rl "fetch join" dist/pagefind/fragment/ | head -1
+for f in dist/pagefind/fragment/*; do gzip -dc "$f" 2>/dev/null; done | grep -c "fetch join"
 ```
 
-기대: 파일 경로 하나가 출력된다 (본문 문구가 색인에 들어갔다는 뜻).
+기대: `1` 이상 (본문 문구가 색인에 들어갔다).
 
 내비게이션 문구가 색인되지 않았는지 확인한다.
 
 ```bash
-grep -rl "테마 전환" dist/pagefind/fragment/ | head -1
+for f in dist/pagefind/fragment/*; do gzip -dc "$f" 2>/dev/null; done | grep -c "테마 전환"
 ```
 
-기대: 아무것도 출력되지 않는다 (`data-pagefind-body`가 범위를 본문으로 제한하고 있다).
+기대: `0` (`data-pagefind-body`가 범위를 본문으로 제한하고 있다).
+
+한국어 인식 여부는 색인 메타데이터로 확인한다.
+
+```bash
+cat dist/pagefind/pagefind-entry.json
+ls dist/pagefind/fragment/ | head -3
+```
+
+기대: 언어가 `ko`로 잡히고 조각 파일명이 `ko_` 로 시작한다.
 
 - [ ] **Step 5: 검색 동작 확인**
 
