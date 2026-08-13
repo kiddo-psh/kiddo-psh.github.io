@@ -7,6 +7,17 @@
   --accent: #1d6b4f;
   --code-bg: #f4f1ea;
 
+  /*
+   * 프로젝트 카드 색. 일러스트를 그리지 않는 대신 색으로 각 프로젝트를 구분한다.
+   * 넷 모두 명도가 낮아 흰 글씨가 얹히고, 액센트(딥그린)와 같은 계열의 채도를
+   * 유지해 종이색 배경과 부딪히지 않는다. 라이트/다크 양쪽에서 그대로 쓴다.
+   */
+  --pj-a: #1d6b4f;
+  --pj-b: #1b4f6b;
+  --pj-c: #8a4b2f;
+  --pj-d: #4a3a63;
+  --pj-on: #ffffff;
+
   --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
   --font-serif: AppleMyungjo, 'Nanum Myeongjo', Batang, 'Iowan Old Style', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;

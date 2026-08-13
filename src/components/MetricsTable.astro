@@ -1,12 +1,16 @@
 ---
+/*
+ * 상세 페이지에서 전체 지표를 보여주는 용도. 카드의 대표 숫자는 ProjectCard가
+ * 색 영역 안에서 직접 그리므로(흰 글씨가 필요해 스타일이 다르다) compact 모드는 없다.
+ */
 interface Metric { label: string; before: string; after: string }
-interface Props { metrics: Metric[]; compact?: boolean }
-const { metrics, compact = false } = Astro.props;
-const shown = compact ? metrics.slice(0, 1) : metrics;
+interface Props { metrics: Metric[] }
+const { metrics } = Astro.props;
+const shown = metrics;
 ---
 
 {shown.length > 0 && (
-  <div class:list={['metrics', { compact }]}>
+  <div class="metrics">
     {shown.map((m) => (
       <div class="m">
         <div class="lbl">{m.label}</div>
@@ -21,18 +25,15 @@ const shown = compact ? metrics.slice(0, 1) : metrics;
 )}
 
 <style>
-  .metrics { display: grid; gap: 12px; }
-  .metrics:not(.compact) {
+  .metrics {
+    display: grid; gap: 12px;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     margin: 24px 0 30px;
   }
   .m { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--bg-elev); }
-  .compact .m { border: 0; padding: 0; background: none; }
   .lbl { font-size: .76em; color: var(--text-dim); margin-bottom: 5px; }
   .val { display: flex; align-items: baseline; gap: 7px; }
   s { color: var(--text-dim); opacity: .7; font-size: .86em; text-decoration: line-through; }
   .arrow { color: var(--text-dim); font-size: .8em; }
   b { color: var(--accent); font-size: 1.16em; font-weight: 800; letter-spacing: -.02em; }
-  /* 카드가 2열로 넓어져 자리가 생겼다 — 카드의 대표 숫자는 헤드라인처럼 크게 */
-  .compact b { font-size: 1.42em; }
 </style>

@@ -1,30 +1,84 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import MetricsTable from './MetricsTable.astro';
 
 interface Props { project: CollectionEntry<'projects'>; headingLevel?: 2 | 3 }
 const { project, headingLevel = 3 } = Astro.props;
 const d = project.data;
 const Tag = `h${headingLevel}` as 'h2' | 'h3';
+
+/*
+ * 색은 order로 정한다 — 렌더 순서가 아니라 작성자가 정한 값이라, 홈과 /projects에서
+ * 같은 프로젝트가 같은 색을 갖는다. 렌더 인덱스로 하면 두 페이지에서 색이 달라진다.
+ */
+const TONES = ['a', 'b', 'c', 'd'] as const;
+const tone = TONES[((d.order - 1) % TONES.length + TONES.length) % TONES.length];
+
+/*
+ * 색 영역에 대표 성과 숫자를 얹는다. 레퍼런스는 이 자리가 일러스트(장식)지만,
+ * 여기서는 카드에서 가장 값어치 있는 내용을 담게 한다.
+ * 지표가 없는 프로젝트는 기간을 대신 넣어 색 영역이 비지 않게 한다.
+ */
+const lead = d.metrics.length > 0 ? d.metrics[0] : null;
 ---
 
-<a class="card" href={`/projects/${project.id}`}>
-  <Tag>{d.title}</Tag>
-  <p class="sum">{d.summary}</p>
-  <MetricsTable metrics={d.metrics} compact />
-  <div class="stack">{d.stack.join(' · ')}</div>
+<a class:list={['card', `t-${tone}`]} href={`/projects/${project.id}`}>
+  <div class="band">
+    {lead ? (
+      <>
+        <div class="lbl">{lead.label}</div>
+        <div class="val">
+          <s>{lead.before}</s>
+          <span class="arrow" aria-hidden="true">→</span>
+          <b>{lead.after}</b>
+        </div>
+      </>
+    ) : (
+      <>
+        <div class="lbl">기간</div>
+        <div class="val"><b class="plain">{d.period}</b></div>
+      </>
+    )}
+  </div>
+
+  <div class="body">
+    <Tag>{d.title}</Tag>
+    <p class="sum">{d.summary}</p>
+    <div class="stack">{d.stack.join(' · ')}</div>
+  </div>
 </a>
 
 <style>
-  /* 카드가 넓어졌으므로 제목과 여백을 그에 맞춰 키운다 */
   .card {
-    display: block; border: 1px solid var(--border); border-radius: 12px;
-    padding: 24px; background: var(--bg-elev); color: var(--text);
-    transition: border-color .15s;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    background: var(--bg-elev); color: var(--text);
+    transition: border-color .15s, transform .15s;
   }
-  .card:hover { border-color: var(--accent); text-decoration: none; }
-  h2, h3 { margin: 0 0 8px; font-size: 1.18em; font-weight: 700; letter-spacing: -.02em; }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+
+  /* 색 영역 */
+  .band { padding: 22px 24px 24px; color: var(--pj-on); }
+  .t-a .band { background: var(--pj-a); }
+  .t-b .band { background: var(--pj-b); }
+  .t-c .band { background: var(--pj-c); }
+  .t-d .band { background: var(--pj-d); }
+
+  /*
+   * 색 위 흰 글씨의 투명도는 대비를 실측해서 정했다. 네 색 중 가장 밝은
+   * --pj-a(#1d6b4f) 기준으로 opacity .6은 3.39:1로 WCAG AA(4.5:1) 미달이고,
+   * .8이면 4.74:1로 통과한다. 취소선 값도 읽어야 하는 내용이므로 기준을 적용한다.
+   */
+  .lbl { font-size: .76em; opacity: .8; margin-bottom: 6px; }
+  .val { display: flex; align-items: baseline; gap: 8px; }
+  s { opacity: .8; font-size: .82em; text-decoration: line-through; }
+  .arrow { opacity: .8; font-size: .8em; }
+  b { font-size: 1.62em; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
+  b.plain { font-size: 1.16em; font-weight: 700; letter-spacing: -.01em; }
+
+  /* 본문 — 제목 크게, 설명 작게 */
+  .body { padding: 20px 24px 24px; }
+  h2, h3 { margin: 0 0 8px; font-size: 1.35em; font-weight: 700; letter-spacing: -.025em; line-height: 1.35; }
   .card:hover h2, .card:hover h3 { color: var(--accent); }
-  .sum { margin: 0 0 16px; color: var(--text-dim); font-size: .92em; line-height: 1.6; }
-  .stack { margin-top: 16px; font-size: .78em; color: var(--text-dim); }
+  .sum { margin: 0; color: var(--text-dim); font-size: .86em; line-height: 1.6; }
+  .stack { margin-top: 14px; font-size: .76em; color: var(--text-dim); }
 </style>
