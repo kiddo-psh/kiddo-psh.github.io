@@ -27,7 +27,7 @@ const featured = allProjects
     {featured.length > 0 && (
       <section class="pj">
         <h2 class="lbl">프로젝트</h2>
-        <div class:list={['pj-grid', { single: featured.length === 1 }]}>
+        <div class="pj-grid">
           {featured.map((project) => <ProjectCard project={project} />)}
         </div>
       </section>

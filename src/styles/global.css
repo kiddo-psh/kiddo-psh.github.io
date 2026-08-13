@@ -36,15 +36,13 @@ img { max-width: 100%; height: auto; }
 .post-list { margin-top: 16px; border-top: 1px solid var(--border); }
 
 /*
- * 프로젝트는 최대 2열. 최소 폭을 크게 잡아 3열로 갈라지지 않게 한다 —
- * 카드가 좁아지면 이 포트폴리오에서 가장 값어치 있는 성과 숫자가 눌린다.
- * 프로젝트는 훑는 대상이 아니라 보는 대상이므로 개수보다 크기를 택한다.
+ * 프로젝트는 최대 2열. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
+ * 카드 내용이 제목과 설명뿐이라 전체 폭으로 늘리면 가로로 긴 띠가 된다.
  */
 .pj-grid {
   display: grid; gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
 }
-.pj-grid.single { grid-template-columns: 1fr; }
 
 /* ─────────────────────────────────────────────────────────────
    마크다운 본문. 크기는 body(19px)를 상속한다.
