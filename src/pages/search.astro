@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
+---
+
+<BaseLayout title="검색" description="사이트 내 글 검색">
+  <div class="page w-doc">
+    <h1>검색</h1>
+    <PagefindConfig />
+    <pagefind-searchbox></pagefind-searchbox>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { font-size: 1.6em; margin: 34px 0 18px; }
+
+  /*
+   * Pagefind 1.5+ 컴포넌트 UI는 --pf-* 커스텀 프로퍼티로 테마를 받는다
+   * (구 Search.astro 번들 UI의 --pagefind-ui-* 와는 이름이 다르다).
+   * 사이트 토큰(tokens.css)의 var(--...)를 그대로 연결해두면,
+   * data-theme 토글에 따라 라이트/다크가 자동으로 따라온다.
+   */
+  pagefind-searchbox {
+    --pf-background: var(--bg);
+    --pf-text: var(--text);
+    --pf-text-secondary: var(--text-dim);
+    --pf-text-muted: var(--text-dim);
+    --pf-border: var(--border);
+    --pf-border-focus: var(--accent);
+    --pf-hover: var(--code-bg);
+    --pf-mark: var(--accent);
+    --pf-outline-focus: var(--accent);
+    --pf-font: var(--font-sans);
+    --pf-searchbox-max-width: 100%;
+    display: block;
+  }
+</style>
