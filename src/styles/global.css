@@ -25,11 +25,15 @@ img { max-width: 100%; height: auto; }
 .w-doc  { max-width: var(--w-doc); }
 .w-read { max-width: var(--w-read); }
 
-/* 카드 그리드 — index/posts/projects 세 곳에서 공유 (Task F에서 통합) */
-.card-grid {
-  display: grid; gap: 18px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
+/*
+ * 글 목록은 리스트, 프로젝트는 카드.
+ *
+ * 글은 계속 늘어나며 훑는 대상이라, 카드의 썸네일 자리가 정보 없는 장식이
+ * 되고 밀도를 깎는다(이미지를 매 글마다 만들지 않기로 했으므로). 프로젝트는
+ * 성과 숫자와 기술 스택처럼 카드가 실제로 담을 것이 있고 개수가 적다.
+ */
+.post-list { margin-top: 16px; border-top: 1px solid var(--border); }
+
 .pj-grid {
   display: grid; gap: 14px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

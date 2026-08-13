@@ -1,0 +1,39 @@
+---
+import type { Post } from '../lib/posts';
+import { readingMinutes } from '../lib/posts';
+import { getCategory } from '../site.config';
+
+interface Props { post: Post; headingLevel?: 2 | 3 }
+const { post, headingLevel = 3 } = Astro.props;
+
+const cat = getCategory(post.data.category);
+const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
+const minutes = readingMinutes(post.body);
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+---
+
+<article class="row">
+  <Heading class="title">
+    <a href={`/posts/${post.id}`}>{post.data.title}</a>
+  </Heading>
+  <p class="desc">{post.data.description}</p>
+  <p class="meta">
+    <span class="cat">{cat.label}</span>
+    <span>{date}</span>
+    <span>{minutes}분</span>
+  </p>
+</article>
+
+<style>
+  /* 이미지 자리를 두지 않는다 — 제목과 요약이 읽을지 말지를 정하는 유일한 근거다 */
+  .row { padding: 22px 0; border-bottom: 1px solid var(--border); }
+
+  .title { margin: 0 0 8px; font-size: 1.12em; line-height: 1.45; letter-spacing: -.02em; font-weight: 700; }
+  .title a { color: var(--text); text-decoration: none; }
+  .title a:hover { color: var(--accent); }
+
+  .desc { margin: 0 0 10px; color: var(--text-dim); font-size: .93em; line-height: 1.65; }
+
+  .meta { margin: 0; display: flex; gap: 10px; font-size: .78em; color: var(--text-dim); }
+  .cat { color: var(--accent); font-weight: 800; letter-spacing: .1em; }
+</style>

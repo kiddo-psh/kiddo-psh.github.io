@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
+import PostListItem from '../../components/PostListItem.astro';
 import CategoryTabs from '../../components/CategoryTabs.astro';
 import { getVisiblePosts } from '../../lib/posts';
 
@@ -11,10 +11,10 @@ const posts = await getVisiblePosts();
   <div class="page">
     <h1>글</h1>
     <CategoryTabs active="all" />
-    <div id="list" class="card-grid">
+    <div id="list" class="post-list">
       {posts.map((post) => (
         <div class="cell" data-category={post.data.category}>
-          <PostCard post={post} headingLevel={2} />
+          <PostListItem post={post} headingLevel={2} />
         </div>
       ))}
     </div>
@@ -24,7 +24,6 @@ const posts = await getVisiblePosts();
 
 <style>
   h1 { font-size: 1.6em; margin: 34px 0 18px; }
-  .card-grid { margin-top: 16px; }
 </style>
 
 <script>
