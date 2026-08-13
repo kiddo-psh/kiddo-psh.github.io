@@ -20,9 +20,8 @@ const featured = allProjects
   <div class="page">
     <ProfileHeader projectCount={allProjects.length} />
     <CategoryTabs active="all" />
-    <h2 class="lbl">최근 글</h2>
     <div class="post-list">
-      {posts.map((post) => <PostListItem post={post} />)}
+      {posts.map((post) => <PostListItem post={post} headingLevel={2} />)}
     </div>
     <p class="all"><a href="/posts">글 전체 보기 →</a></p>
     {featured.length > 0 && (
