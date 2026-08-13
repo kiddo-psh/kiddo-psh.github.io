@@ -3,7 +3,54 @@ import { SITE } from '../site.config';
 
 interface Props { slug: string }
 const { slug } = Astro.props;
-const enabled = SITE.giscus.repo !== '' && SITE.giscus.repoId !== '';
+const g = SITE.giscus;
+const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 ---
 
-{enabled && <div class="comments" data-slug={slug}></div>}
+{enabled && (
+  <section class="comments" data-slug={slug}>
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={g.repo}
+      data-repo-id={g.repoId}
+      data-category={g.category}
+      data-category-id={g.categoryId}
+      data-mapping="pathname"
+      data-strict="1"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-lang="ko"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    ></script>
+  </section>
+)}
+
+<style>
+  .comments { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--border); }
+</style>
+
+<script>
+  // 테마 토글에 맞춰 giscus iframe 테마를 바꾼다.
+  function sendTheme() {
+    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    if (!frame?.contentWindow) return;
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme } } },
+      'https://giscus.app',
+    );
+  }
+
+  new MutationObserver(sendTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+
+  window.addEventListener('message', (e) => {
+    if (e.origin === 'https://giscus.app') sendTheme();
+  });
+</script>

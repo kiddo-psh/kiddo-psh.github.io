@@ -11,10 +11,10 @@ export const SITE = {
   },
   // Task 10에서 giscus 발급 후 채운다. 비어 있으면 댓글이 렌더되지 않는다.
   giscus: {
-    repo: '',
-    repoId: '',
+    repo: 'kiddo-psh/kiddo-psh.github.io',
+    repoId: 'R_kgDOT27PKg',
     category: 'Announcements',
-    categoryId: '',
+    categoryId: 'DIC_kwDOT27PKs4DDRqY',
   },
 } as const;
 
