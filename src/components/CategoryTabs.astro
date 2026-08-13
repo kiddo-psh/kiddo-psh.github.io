@@ -1,0 +1,25 @@
+---
+import { CATEGORIES } from '../site.config';
+
+interface Props { active: string }
+const { active } = Astro.props;
+---
+
+<nav class="tabs">
+  <a href="/posts" class:list={[{ on: active === 'all' }]}>전체</a>
+  {CATEGORIES.map((c) => (
+    <a href={`/posts?category=${c.id}`} class:list={[{ on: active === c.id }]}>
+      {c.name}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+  a {
+    font-size: .82em; padding: 4px 11px; border-radius: 20px;
+    background: var(--code-bg); color: var(--text-dim); border: 1px solid var(--border);
+  }
+  a:hover { color: var(--text); text-decoration: none; }
+  a.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+</style>

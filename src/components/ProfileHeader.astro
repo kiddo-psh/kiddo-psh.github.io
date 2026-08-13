@@ -1,0 +1,28 @@
+---
+import { SITE } from '../site.config';
+
+interface Props { projectCount: number }
+const { projectCount } = Astro.props;
+---
+
+<div class="prof">
+  <div class="av" aria-hidden="true"></div>
+  <div class="who">
+    <div class="nm">{SITE.author}</div>
+    <div class="tg">{SITE.tagline}</div>
+  </div>
+  {projectCount > 0 && (
+    <a class="more" href="/projects">프로젝트 {projectCount}개 →</a>
+  )}
+</div>
+
+<style>
+  .prof { display: flex; align-items: center; gap: 12px; margin: 36px 0 26px; }
+  .av {
+    width: 44px; height: 44px; border-radius: 50%; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--accent), var(--border));
+  }
+  .nm { font-weight: 800; }
+  .tg { font-size: .88em; color: var(--text-dim); margin-top: 2px; }
+  .more { margin-left: auto; font-size: .85em; }
+</style>

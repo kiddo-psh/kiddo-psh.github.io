@@ -1,0 +1,50 @@
+---
+import type { Post } from '../lib/posts';
+import { getCategory } from '../site.config';
+
+interface Props { post: Post }
+const { post } = Astro.props;
+const cat = getCategory(post.data.category);
+const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
+---
+
+<a class="card" href={`/posts/${post.id}`}>
+  {post.data.cover ? (
+    <img class="thumb" src={post.data.cover} alt="" loading="lazy" width="600" height="338" />
+  ) : (
+    <div class="thumb tile" aria-hidden="true"><span>{cat.label}</span></div>
+  )}
+
+  <div class="body">
+    <div class="meta">
+      <span class="cat">{cat.label}</span>
+      <span>{date}</span>
+    </div>
+    <h3>{post.data.title}</h3>
+    <p>{post.data.description}</p>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    background: var(--bg-elev); color: var(--text);
+    transition: border-color .15s, transform .15s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+
+  .thumb { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .tile {
+    display: flex; align-items: flex-end; padding: 14px 16px;
+    background: linear-gradient(135deg, var(--code-bg) 0%, var(--border) 100%);
+  }
+  .tile span { font-size: .72em; font-weight: 800; letter-spacing: .14em; color: var(--accent); }
+
+  .body { padding: 15px 17px 18px; }
+  .meta { display: flex; gap: 9px; font-size: .72em; color: var(--text-dim); margin-bottom: 7px; }
+  .cat { color: var(--accent); font-weight: 800; letter-spacing: .1em; }
+  h3 { margin: 0 0 7px; font-size: 1.02em; line-height: 1.45; letter-spacing: -.01em; }
+  .card:hover h3 { color: var(--accent); }
+  p { margin: 0; color: var(--text-dim); font-size: .84em; line-height: 1.6; }
+</style>

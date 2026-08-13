@@ -1,12 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileHeader from '../components/ProfileHeader.astro';
+import CategoryTabs from '../components/CategoryTabs.astro';
+import PostCard from '../components/PostCard.astro';
+import { getVisiblePosts } from '../lib/posts';
+import { getCollection } from 'astro:content';
 import { SITE } from '../site.config';
+
+const posts = (await getVisiblePosts()).slice(0, 6);
+const allProjects = await getCollection('projects');
 ---
 
 <BaseLayout title={SITE.title}>
   <div class="page">
-    <h1>레이아웃 확인</h1>
-    <p>본문 색과 배경, 다크모드 토글이 동작하는지 봅니다.</p>
-    <p><a href="/posts">링크 색 확인</a></p>
+    <ProfileHeader projectCount={allProjects.length} />
+    <CategoryTabs active="all" />
+    <div class="grid">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+    <p class="all"><a href="/posts">글 전체 보기 →</a></p>
   </div>
 </BaseLayout>
+
+<style>
+  .grid {
+    display: grid; gap: 18px; margin-top: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .all { margin-top: 24px; font-size: .88em; }
+</style>
