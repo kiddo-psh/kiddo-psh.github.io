@@ -16,12 +16,15 @@ const Tag = `h${headingLevel}` as 'h2' | 'h3';
 </a>
 
 <style>
+  /* 카드가 넓어졌으므로 제목과 여백을 그에 맞춰 키운다 */
   .card {
-    display: block; border: 1px solid var(--border); border-radius: 10px;
-    padding: 18px; background: var(--bg-elev); color: var(--text);
+    display: block; border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; background: var(--bg-elev); color: var(--text);
+    transition: border-color .15s;
   }
   .card:hover { border-color: var(--accent); text-decoration: none; }
-  h2, h3 { margin: 0 0 7px; font-size: 1.02em; font-weight: 700; }
-  .sum { margin: 0 0 12px; color: var(--text-dim); font-size: .89em; line-height: 1.6; }
-  .stack { margin-top: 12px; font-size: .76em; color: var(--text-dim); }
+  h2, h3 { margin: 0 0 8px; font-size: 1.18em; font-weight: 700; letter-spacing: -.02em; }
+  .card:hover h2, .card:hover h3 { color: var(--accent); }
+  .sum { margin: 0 0 16px; color: var(--text-dim); font-size: .92em; line-height: 1.6; }
+  .stack { margin-top: 16px; font-size: .78em; color: var(--text-dim); }
 </style>
