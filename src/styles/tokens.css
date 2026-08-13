@@ -14,6 +14,8 @@
   --w-doc: 760px;
   --w-read: 660px;
   --w-page: 1100px;
+  /* 본문 + 넓은 여백 + 목차가 들어가는 글 상세용 폭 */
+  --w-page-wide: 1240px;
 }
 
 :root[data-theme='dark'] {

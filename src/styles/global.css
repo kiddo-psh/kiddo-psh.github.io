@@ -22,6 +22,7 @@ a:hover { text-decoration: underline; }
 img { max-width: 100%; height: auto; }
 
 .page { max-width: var(--w-page); margin: 0 auto; padding: 0 20px; }
+.page-wide { max-width: var(--w-page-wide); margin: 0 auto; padding: 0 20px; }
 .w-doc  { max-width: var(--w-doc); }
 .w-read { max-width: var(--w-read); }
 

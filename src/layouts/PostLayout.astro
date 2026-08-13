@@ -21,7 +21,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
-  <div class="page">
+  <div class="page-wide">
     <div class:list={['shell', isDoc ? 'doc' : 'read', { toc: showToc }]}>
       <article data-pagefind-body>
         <header>
@@ -50,9 +50,14 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
    */
   .shell { display: grid; margin: 40px 0 0; }
   .shell.doc { grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
+  /*
+   * 여백을 clamp로 둔 이유: 고정값으로 넓게 잡으면 1200px 안팎의 창에서
+   * 본문이 먼저 쪼그라든다. 넓은 화면에서는 여백이 벌어지고, 좁아지면
+   * 여백이 먼저 줄고 그 다음 목차가 줄고, 마지막에 목차가 사라진다.
+   */
   .shell.doc.toc {
-    grid-template-columns: minmax(0, var(--w-doc)) 220px;
-    gap: 80px;
+    grid-template-columns: minmax(0, var(--w-doc)) minmax(180px, 240px);
+    column-gap: clamp(56px, 8vw, 130px);
     justify-content: start;
   }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
