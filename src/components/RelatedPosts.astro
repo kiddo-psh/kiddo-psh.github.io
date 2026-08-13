@@ -1,0 +1,26 @@
+---
+import type { Post } from '../lib/posts';
+
+interface Props { posts: Post[] }
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="rel">
+    <p class="ttl">같은 분류의 다른 글</p>
+    <ul>
+      {posts.map((p) => (
+        <li><a href={`/posts/${p.id}`}>{p.data.title}</a></li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .rel { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--border); }
+  .ttl { margin: 0 0 10px; font-size: .8em; font-weight: 800; letter-spacing: .1em; color: var(--text-dim); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { padding: 6px 0; }
+  li a { color: var(--text); font-size: .95em; }
+  li a:hover { color: var(--accent); text-decoration: none; }
+</style>

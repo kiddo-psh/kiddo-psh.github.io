@@ -1,0 +1,60 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import Comments from '../components/Comments.astro';
+import { getCategory } from '../site.config';
+import { getRelatedPosts, type Post } from '../lib/posts';
+
+interface Props { post: Post; headings: MarkdownHeading[] }
+const { post, headings } = Astro.props;
+
+const cat = getCategory(post.data.category);
+const isDoc = cat.layout === 'doc';
+const related = await getRelatedPosts(post);
+const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
+const ogImage = post.data.cover ?? `/og/${post.id}.png`;
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage}>
+  <div class="page">
+    <div class:list={['shell', isDoc ? 'doc' : 'read']}>
+      {isDoc && <aside class="side"><TableOfContents headings={headings} /></aside>}
+
+      <article data-pagefind-body>
+        <header>
+          <p class="cat">{cat.label}</p>
+          <h1>{post.data.title}</h1>
+          <p class:list={['lead', { serif: !isDoc }]}>{post.data.description}</p>
+          <p class="date">{date}</p>
+        </header>
+
+        <div class="prose"><slot /></div>
+
+        <RelatedPosts posts={related} />
+        <Comments slug={post.id} />
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .shell { display: grid; gap: 40px; margin: 40px 0 0; }
+  .shell.doc { grid-template-columns: 200px minmax(0, var(--w-doc)); }
+  .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
+
+  header { margin-bottom: 30px; }
+  .cat { margin: 0 0 10px; font-size: .74em; font-weight: 800; letter-spacing: .12em; color: var(--accent); }
+  h1 { margin: 0 0 14px; font-size: 2.1em; line-height: 1.32; letter-spacing: -.03em; }
+  .lead { margin: 0 0 16px; color: var(--text-dim); font-size: 1.1em; line-height: 1.7; }
+  .lead.serif { font-family: var(--font-serif); font-size: 1.18em; }
+  .date { margin: 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); font-size: .8em; color: var(--text-dim); }
+
+  .shell.read .prose { line-height: 1.95; }
+
+  @media (max-width: 900px) {
+    .shell.doc { grid-template-columns: minmax(0, 1fr); }
+    .side { display: none; }
+  }
+</style>

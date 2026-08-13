@@ -1,0 +1,9 @@
+---
+import { SITE } from '../site.config';
+
+interface Props { slug: string }
+const { slug } = Astro.props;
+const enabled = SITE.giscus.repo !== '' && SITE.giscus.repoId !== '';
+---
+
+{enabled && <div class="comments" data-slug={slug}></div>}

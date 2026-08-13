@@ -1,0 +1,52 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props { headings: MarkdownHeading[] }
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{items.length > 0 && (
+  <nav class="toc" aria-label="목차">
+    <p class="ttl">목차</p>
+    <ul>
+      {items.map((h) => (
+        <li class:list={[{ sub: h.depth === 3 }]}>
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc { position: sticky; top: 78px; font-size: .82em; line-height: 1.6; }
+  .ttl { margin: 0 0 8px; font-weight: 800; font-size: .95em; color: var(--text-dim); }
+  ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+  li { padding: 0; }
+  li a { display: block; padding: 4px 0 4px 12px; color: var(--text-dim); border-left: 2px solid transparent; margin-left: -1px; }
+  li a:hover { color: var(--text); text-decoration: none; }
+  li a.on { color: var(--accent); font-weight: 700; border-left-color: var(--accent); }
+  li.sub a { padding-left: 24px; font-size: .95em; }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
+  if (links.length) {
+    const bySlug = new Map<string, HTMLAnchorElement>();
+    links.forEach((a) => bySlug.set(decodeURIComponent(a.hash.slice(1)), a));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          links.forEach((a) => a.classList.remove('on'));
+          bySlug.get(e.target.id)?.classList.add('on');
+        });
+      },
+      { rootMargin: '-70px 0px -70% 0px' },
+    );
+
+    document.querySelectorAll('.prose h2, .prose h3').forEach((h) => observer.observe(h));
+  }
+</script>
