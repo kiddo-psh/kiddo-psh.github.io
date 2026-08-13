@@ -51,14 +51,17 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
   .shell { display: grid; margin: 40px 0 0; }
   .shell.doc { grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
   /*
-   * 여백을 clamp로 둔 이유: 고정값으로 넓게 잡으면 1200px 안팎의 창에서
-   * 본문이 먼저 쪼그라든다. 넓은 화면에서는 여백이 벌어지고, 좁아지면
-   * 여백이 먼저 줄고 그 다음 목차가 줄고, 마지막에 목차가 사라진다.
+   * 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이 사라지고
+   * 오른쪽만 비어서 레퍼런스와 반대가 된다.
+   *
+   * 사이 여백을 clamp로 둔 이유: 고정값으로 넓게 잡으면 1200px 안팎의 창에서
+   * 본문이 먼저 쪼그라든다. 좁아질 때 여백 → 목차 폭 → 목차 숨김 순으로
+   * 양보하게 만들어 본문 가독성을 마지막까지 지킨다.
    */
   .shell.doc.toc {
-    grid-template-columns: minmax(0, var(--w-doc)) minmax(180px, 240px);
-    column-gap: clamp(56px, 8vw, 130px);
-    justify-content: start;
+    grid-template-columns: minmax(0, var(--w-doc)) minmax(170px, 200px);
+    column-gap: clamp(48px, 7vw, 110px);
+    justify-content: center;
   }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
 
@@ -71,7 +74,8 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
   .shell.read .prose { line-height: 1.95; }
 
-  @media (max-width: 1040px) {
+  /* 1120px 아래에서는 두 칼럼을 유지해도 좌우 여백이 20px대로 눌린다 — 그 전에 접는다 */
+  @media (max-width: 1120px) {
     .shell.doc.toc {
       grid-template-columns: minmax(0, var(--w-doc));
       gap: 0;
