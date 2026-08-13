@@ -49,11 +49,11 @@ img { max-width: 100%; height: auto; }
 
 .prose h2 {
   margin: 2.8em 0 .8em; font-size: 1.55em; line-height: 1.35;
-  font-weight: 800; letter-spacing: -.03em; scroll-margin-top: 80px;
+  font-weight: 800; letter-spacing: -.03em; scroll-margin-top: 32px;
 }
 .prose h3 {
   margin: 2em 0 .6em; font-size: 1.22em; line-height: 1.45;
-  font-weight: 700; letter-spacing: -.02em; scroll-margin-top: 80px;
+  font-weight: 700; letter-spacing: -.02em; scroll-margin-top: 32px;
 }
 /* h2 바로 뒤에 h3가 오면 사이를 좁힌다 */
 .prose h2 + h3 { margin-top: 1.2em; }

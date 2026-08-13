@@ -20,7 +20,8 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 )}
 
 <style>
-  .toc { position: sticky; top: 78px; font-size: .82em; line-height: 1.6; }
+  /* 상단 내비게이션이 고정되어 있지 않으므로 sticky 여백은 작게 둔다 */
+  .toc { position: sticky; top: 32px; font-size: .82em; line-height: 1.6; }
   .ttl { margin: 0 0 8px; font-weight: 800; font-size: .95em; color: var(--text-dim); }
   ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
   li { padding: 0; }

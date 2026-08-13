@@ -23,8 +23,6 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 <BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
   <div class="page">
     <div class:list={['shell', isDoc ? 'doc' : 'read', { toc: showToc }]}>
-      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
-
       <article data-pagefind-body>
         <header>
           <p class="cat">{cat.label}</p>
@@ -38,14 +36,25 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
         <RelatedPosts posts={related} />
         <Comments slug={post.id} />
       </article>
+
+      {/* 목차를 본문 뒤에 둔다 — 키보드·스크린리더 사용자가 목차 링크를 먼저 지나지 않는다 */}
+      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .shell { display: grid; gap: 40px; margin: 40px 0 0; }
+  /*
+   * 목차가 있는 글: 본문을 왼쪽에 두고 목차를 오른쪽에, 사이를 넓게 벌린다.
+   * 목차가 없는 글은 본문을 가운데 정렬한다.
+   */
+  .shell { display: grid; margin: 40px 0 0; }
   .shell.doc { grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
-  .shell.doc.toc { grid-template-columns: 200px minmax(0, var(--w-doc)); justify-content: initial; }
+  .shell.doc.toc {
+    grid-template-columns: minmax(0, var(--w-doc)) 220px;
+    gap: 80px;
+    justify-content: start;
+  }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
 
   header { margin-bottom: 30px; }
@@ -57,8 +66,12 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
   .shell.read .prose { line-height: 1.95; }
 
-  @media (max-width: 900px) {
-    .shell.doc.toc { grid-template-columns: minmax(0, 1fr); }
+  @media (max-width: 1040px) {
+    .shell.doc.toc {
+      grid-template-columns: minmax(0, var(--w-doc));
+      gap: 0;
+      justify-content: center;
+    }
     .side { display: none; }
   }
 </style>
