@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../site.config';
+
+/* TODO(본인): 아래 소개 문단과 기술 스택을 실제 내용으로 교체 */
+const stacks = [
+  { group: '언어', items: ['Java', 'TypeScript', 'SQL'] },
+  { group: '프레임워크', items: ['Spring Boot', 'JPA'] },
+  { group: '인프라', items: ['MySQL', 'Redis', 'Docker', 'GitHub Actions'] },
+];
+---
+
+<BaseLayout title="소개" description={SITE.description}>
+  <div class="page w-read">
+    <h1>소개</h1>
+
+    <div class="prose">
+      <p>
+        {SITE.author}입니다. 서버가 왜 느려졌는지 끝까지 파는 일을 좋아합니다.
+        문제를 재현하고 숫자로 확인한 뒤에 고칩니다.
+      </p>
+      <p>
+        이 블로그에는 기술 학습과 트러블슈팅, AI 도구를 개발에 쓰는 방법,
+        프로젝트 회고, 일하는 방식에 대한 생각을 씁니다.
+      </p>
+    </div>
+
+    <h2>기술 스택</h2>
+    <dl class="stack">
+      {stacks.map((s) => (
+        <div>
+          <dt>{s.group}</dt>
+          <dd>{s.items.join(', ')}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <h2>연락</h2>
+    <ul class="links">
+      <li><a href={SITE.links.github}>GitHub</a></li>
+      <li><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}</a></li>
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
+  h1 { font-size: 1.6em; margin: 40px 0 20px; }
+  h2 { font-size: 1.05em; margin: 40px 0 12px; }
+  .stack { margin: 0; display: grid; gap: 9px; }
+  .stack div { display: flex; gap: 14px; font-size: .93em; }
+  dt { flex: 0 0 72px; color: var(--text-dim); }
+  dd { margin: 0; }
+  .links { list-style: none; margin: 0; padding: 0; font-size: .93em; }
+  .links li { padding: 3px 0; }
+</style>
