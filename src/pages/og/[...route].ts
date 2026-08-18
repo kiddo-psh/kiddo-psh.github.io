@@ -50,6 +50,15 @@ export const { getStaticPaths, GET } = await OGImageRoute({
         families: ['Pretendard'],
       },
     },
-    fonts: ['./fonts/Pretendard-Bold.woff2', './fonts/Pretendard-Regular.woff2'],
+    /*
+     * OG 이미지는 빌드 타임에 satori로 렌더링되므로 웹폰트가 아니라 실제 폰트
+     * 파일이 필요하다. 예전엔 레포 루트 fonts/에 1.5MB를 커밋해뒀는데, 이제
+     * pretendard 패키지가 같은 파일을 주므로(sha256 동일) 거기서 읽는다.
+     * 버전은 package.json 한 곳에서만 관리된다.
+     */
+    fonts: [
+      './node_modules/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2',
+      './node_modules/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2',
+    ],
   }),
 });
