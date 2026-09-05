@@ -1,6 +1,5 @@
 ---
-title: "주차장 카메라 하나로 이중주차를 잡아내기까지 — 주차바로 프로젝트"
-summary: "아파트 주차장의 이중주차와 전용구역 무단 점유를 천장 카메라와 엣지 AI로 감지하고, 개인정보 노출 없이 이동 요청부터 재확인까지 중계하는 서비스"
+title: "주차바로"
 period: "2026.07.06 ~ 2026.08.14 (6주, SSAFY 공통 프로젝트)"
 role: "AI 파트(차량 추적·주차 판정 파이프라인), 스크럼 마스터"
 stack:
@@ -116,5 +115,5 @@ AI 파트에서 실내 카메라 기반 차량 추적과 주차 판정 로직을
 
 ## 관련 회고
 
-- [7명이 모이면 더 좋은 결정을 할 수 있을까](/posts/seven-person-team-retrospective) — 7인 팀의 주제 선정과 의사결정 구조에 대한 회고
-- [같은 Claude Code를 썼는데 왜 코드는 달랐을까](/posts/claude-code-retrospective) — AI 에이전트 활용 방식과 리뷰·재작업 비용에 대한 회고
+- [7명이 모이면 더 좋은 결정을 할 수 있을까](/posts/seven-person-team-retrospective) 
+- [같은 Claude Code를 썼는데 왜 코드는 달랐을까](/posts/claude-code-retrospective)
