@@ -4,6 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
 import Comments from '../components/Comments.astro';
+import ContentActions from '../components/ContentActions.astro';
 import { getCategory } from '../site.config';
 import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
 
@@ -18,6 +19,7 @@ const related = await getRelatedPosts(post);
 const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
 const minutes = readingMinutes(post.body);
 const ogImage = post.data.cover ?? `/og/${post.id}.png`;
+const sourcePath = post.data.sourcePath;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
@@ -29,6 +31,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
           <h1>{post.data.title}</h1>
           <p class:list={['lead', { serif: !isDoc }]}>{post.data.description}</p>
           <p class="date">{date} · {minutes}분 읽기</p>
+          {sourcePath && <ContentActions sourcePath={sourcePath} />}
         </header>
 
         <div class="prose"><slot /></div>
