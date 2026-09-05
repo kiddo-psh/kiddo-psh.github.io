@@ -125,3 +125,5 @@ Claude Code나 Codex는 저장소 안의 규칙 파일(AGENTS.md, CLAUDE.md)을 
 **Planning / Rules / Testing**
 
 을 다음 프로젝트에서는 하나의 **공통 Development Pipeline** 안에 넣어보기로 했다.
+
+이 회고의 배경이 된 시스템과 담당 기능은 [주차바로 프로젝트 소개](/projects/baro)에서 확인할 수 있다. 같은 7인 팀에서 의사결정 구조가 어떻게 작동했는지는 [7명이 모이면 더 좋은 결정을 할 수 있을까](/posts/seven-person-team-retrospective)에 정리했다.
