@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="272" viewBox="0 28 960 272" role="img" aria-labelledby="t4 d4">
+  <title id="t4">팀 공통 개발 파이프라인</title>
+  <desc id="d4">Task, Spec, Plan, Implement, Test, Review, Merge 일곱 단계. Spec과 Plan은 구현 전 기준 합의, Test는 공통 검증 기준, Review는 설계 정합성과 규칙 확인을 담당한다. 저장소 루트의 AGENTS.md가 모든 단계에서 에이전트가 읽는 공통 규칙이 된다.</desc>
+  <style>
+    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
+    .bg { fill: var(--bg); }
+    .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
+    .pill.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .step { font-size: 15px; font-weight: 500; }
+    .step.hi { font-weight: 700; }
+    .flow { fill: none; stroke: var(--ink2); stroke-width: 1.5; }
+    .arrow { fill: var(--ink2); }
+    .brk { fill: none; stroke: var(--blue); stroke-width: 1.5; }
+    .why { font-size: 12px; font-weight: 600; fill: var(--ink); }
+    .why2 { font-size: 12px; fill: var(--ink2); }
+    .band { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .bandh { font-size: 14px; font-weight: 700; fill: var(--blue); }
+    .bandt { font-size: 12px; fill: var(--ink2); }
+    .lg { font-size: 12px; fill: var(--ink2); }
+    .lgbox { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="28" width="960" height="272" rx="12"/>
+
+  <!-- pills: x = 30 + i*132, w=108, y=70, h=48 -->
+  <rect class="pill" x="30" y="70" width="108" height="48" rx="24"/><text class="step" x="84" y="99" text-anchor="middle">Task</text>
+  <path class="flow" d="M138 94 H159" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="162" y="70" width="108" height="48" rx="24"/><text class="step hi" x="216" y="99" text-anchor="middle">Spec</text>
+  <path class="flow" d="M270 94 H291" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="294" y="70" width="108" height="48" rx="24"/><text class="step hi" x="348" y="99" text-anchor="middle">Plan</text>
+  <path class="flow" d="M402 94 H423" marker-end="url(#ar)"/>
+  <rect class="pill" x="426" y="70" width="108" height="48" rx="24"/><text class="step" x="480" y="99" text-anchor="middle">Implement</text>
+  <path class="flow" d="M534 94 H555" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="558" y="70" width="108" height="48" rx="24"/><text class="step hi" x="612" y="99" text-anchor="middle">Test</text>
+  <path class="flow" d="M666 94 H687" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="690" y="70" width="108" height="48" rx="24"/><text class="step hi" x="744" y="99" text-anchor="middle">Review</text>
+  <path class="flow" d="M798 94 H819" marker-end="url(#ar)"/>
+  <rect class="pill" x="822" y="70" width="108" height="48" rx="24"/><text class="step" x="876" y="99" text-anchor="middle">Merge</text>
+
+  <!-- why: Spec + Plan -->
+  <path class="brk" d="M166 126 V132 H398 V126"/>
+  <text class="why" x="282" y="152" text-anchor="middle">구현 전 판정 기준 합의</text>
+  <text class="why2" x="282" y="169" text-anchor="middle">기준이 뒤집히는 재작업 감소</text>
+
+  <!-- why: Test -->
+  <path class="brk" d="M562 126 V132 H662 V126"/>
+  <text class="why" x="612" y="152" text-anchor="middle">공통 검증 기준</text>
+  <text class="why2" x="612" y="169" text-anchor="middle">테스트 누락 방지</text>
+
+  <!-- why: Review -->
+  <path class="brk" d="M694 126 V132 H794 V126"/>
+  <text class="why" x="744" y="152" text-anchor="middle">설계 정합성 · 규칙 확인</text>
+  <text class="why2" x="744" y="169" text-anchor="middle">Merge 전 차단</text>
+
+  <!-- AGENTS.md band -->
+  <rect class="band" x="30" y="196" width="900" height="48" rx="8"/>
+  <text class="bandh" x="52" y="226">AGENTS.md</text>
+  <text class="bandt" x="160" y="226">저장소 루트에 두고 모든 단계에서 에이전트가 읽는 공통 규칙 · 아키텍처 원칙 · 테스트 기준 · 커밋·이슈 규칙</text>
+
+  <!-- legend -->
+  <rect class="lgbox" x="30" y="266" width="14" height="14" rx="4"/>
+  <text class="lg" x="52" y="278">지난 프로젝트에서 사람마다 달랐던 단계 · 팀 공통으로 고정</text>
+</svg>
