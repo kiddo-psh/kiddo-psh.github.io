@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="t2 d2">
+  <title id="t2">팀원별 에이전트 워크플로우</title>
+  <desc id="d2">Developer A는 Task, Code, Test, Merge 순서로, Developer B는 Task, Spec, Plan, Code, Review, Merge 순서로, Developer C는 Task, 도메인 계약, Refactor, Merge 순서로 작업했다. 규칙 파일은 프런트 2곳에만 있었고 테스트 비중은 0에서 65퍼센트까지 벌어졌으며 계획 문서를 쓴 팀원은 1명이었다.</desc>
+  <style>
+    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
+    .bg { fill: var(--bg); }
+    .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
+    .pill.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .step { font-size: 14px; font-weight: 500; }
+    .step.hi { font-weight: 600; }
+    .who { font-size: 15px; font-weight: 600; }
+    .how { font-size: 12px; fill: var(--ink2); }
+    .flow { fill: none; stroke: var(--ink2); stroke-width: 1.5; }
+    .arrow { fill: var(--ink2); }
+    .tile { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
+    .big { font-size: 22px; font-weight: 700; }
+    .lbl { font-size: 12px; fill: var(--ink2); }
+    .lg { font-size: 12px; fill: var(--ink2); }
+    .lgbox { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="420" rx="12"/>
+
+  <!-- Row A -->
+  <text class="who" x="30" y="70">Developer A</text>
+  <text class="how" x="30" y="90">기능을 바로 구현</text>
+  <rect class="pill" x="210" y="50" width="100" height="44" rx="22"/><text class="step" x="260" y="77" text-anchor="middle">Task</text>
+  <path class="flow" d="M310 72 H333" marker-end="url(#ar)"/>
+  <rect class="pill" x="336" y="50" width="100" height="44" rx="22"/><text class="step" x="386" y="77" text-anchor="middle">Code</text>
+  <path class="flow" d="M436 72 H459" marker-end="url(#ar)"/>
+  <rect class="pill" x="462" y="50" width="100" height="44" rx="22"/><text class="step" x="512" y="77" text-anchor="middle">Test</text>
+  <path class="flow" d="M562 72 H585" marker-end="url(#ar)"/>
+  <rect class="pill" x="588" y="50" width="100" height="44" rx="22"/><text class="step" x="638" y="77" text-anchor="middle">Merge</text>
+
+  <!-- Row B -->
+  <text class="who" x="30" y="160">Developer B (나)</text>
+  <text class="how" x="30" y="180">스펙과 계획을 먼저 작성</text>
+  <rect class="pill" x="210" y="140" width="100" height="44" rx="22"/><text class="step" x="260" y="167" text-anchor="middle">Task</text>
+  <path class="flow" d="M310 162 H333" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="336" y="140" width="100" height="44" rx="22"/><text class="step hi" x="386" y="167" text-anchor="middle">Spec</text>
+  <path class="flow" d="M436 162 H459" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="462" y="140" width="100" height="44" rx="22"/><text class="step hi" x="512" y="167" text-anchor="middle">Plan</text>
+  <path class="flow" d="M562 162 H585" marker-end="url(#ar)"/>
+  <rect class="pill" x="588" y="140" width="100" height="44" rx="22"/><text class="step" x="638" y="167" text-anchor="middle">Code</text>
+  <path class="flow" d="M688 162 H711" marker-end="url(#ar)"/>
+  <rect class="pill" x="714" y="140" width="100" height="44" rx="22"/><text class="step" x="764" y="167" text-anchor="middle">Review</text>
+  <path class="flow" d="M814 162 H837" marker-end="url(#ar)"/>
+  <rect class="pill" x="840" y="140" width="100" height="44" rx="22"/><text class="step" x="890" y="167" text-anchor="middle">Merge</text>
+
+  <!-- Row C -->
+  <text class="who" x="30" y="250">Developer C</text>
+  <text class="how" x="30" y="270">도메인 계약 문서를 먼저 정리</text>
+  <rect class="pill" x="210" y="230" width="100" height="44" rx="22"/><text class="step" x="260" y="257" text-anchor="middle">Task</text>
+  <path class="flow" d="M310 252 H333" marker-end="url(#ar)"/>
+  <rect class="pill hi" x="336" y="230" width="126" height="44" rx="22"/><text class="step hi" x="399" y="257" text-anchor="middle">도메인 계약</text>
+  <path class="flow" d="M462 252 H485" marker-end="url(#ar)"/>
+  <rect class="pill" x="488" y="230" width="100" height="44" rx="22"/><text class="step" x="538" y="257" text-anchor="middle">Refactor</text>
+  <path class="flow" d="M588 252 H611" marker-end="url(#ar)"/>
+  <rect class="pill" x="614" y="230" width="100" height="44" rx="22"/><text class="step" x="664" y="257" text-anchor="middle">Merge</text>
+
+  <!-- legend -->
+  <rect class="lgbox" x="210" y="298" width="14" height="14" rx="4"/>
+  <text class="lg" x="232" y="310">구현 전에 판단 기준을 문서로 고정하는 단계</text>
+
+  <!-- stat tiles -->
+  <rect class="tile" x="30" y="335" width="280" height="60" rx="8"/>
+  <text class="big" x="46" y="362">프런트 2곳</text>
+  <text class="lbl" x="46" y="383">AGENTS.md가 있던 디렉터리 · AI·HW·BE에는 없음</text>
+
+  <rect class="tile" x="340" y="335" width="280" height="60" rx="8"/>
+  <text class="big" x="356" y="362">0% ~ 65%</text>
+  <text class="lbl" x="356" y="383">추가 코드 중 테스트 라인 비율 · 사람별</text>
+
+  <rect class="tile" x="650" y="335" width="280" height="60" rx="8"/>
+  <text class="big" x="666" y="362">1명</text>
+  <text class="lbl" x="666" y="383">계획·스펙 문서를 작성한 팀원 · 7명 중</text>
+</svg>

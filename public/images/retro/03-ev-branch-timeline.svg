@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="t3 d3">
+  <title id="t3">7월 30일 EV 충전구역 브랜치 타임라인</title>
+  <desc id="d3">팀원 A가 10시 37분에 235줄 기능을 커밋하고 오후 2시까지 자체 리뷰 반영 3건을 했다. 나는 14시 43분부터 15시 20분까지 37분 동안 내 작업 8커밋을 했고, 16시 6분부터 21시 37분까지 5.5시간 동안 A의 브랜치에서 11커밋, 1400줄을 추가하는 재작업을 했다.</desc>
+  <style>
+    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --grid:#e4e3de; --blue:#2a78d6; --orange:#eb6834; --dot:#7a7975; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --grid:#2e2e2c; --blue:#3987e5; --orange:#d95926; --dot:#a3a29b; }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
+    .bg { fill: var(--bg); }
+    .title { font-size: 16px; font-weight: 700; }
+    .sub { font-size: 12px; fill: var(--ink2); }
+    .lane { font-size: 13px; font-weight: 600; }
+    .lane2 { font-size: 11px; fill: var(--ink2); }
+    .grid { stroke: var(--grid); stroke-width: 1; }
+    .axis { stroke: var(--line); stroke-width: 1.5; }
+    .tick { font-size: 11px; fill: var(--ink2); }
+    .bar-me { fill: var(--blue); }
+    .bar-rw { fill: var(--orange); }
+    .cut { stroke: var(--bg); stroke-width: 2; }
+    .dot { fill: var(--dot); }
+    .dot-feat { fill: var(--dot); stroke: var(--bg); stroke-width: 2; }
+    .ann { font-size: 12px; font-weight: 600; }
+    .ann2 { font-size: 12px; fill: var(--ink2); }
+    .tile { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
+    .big { font-size: 24px; font-weight: 700; }
+    .lbl { font-size: 12px; fill: var(--ink2); }
+    .lg { font-size: 12px; fill: var(--ink2); }
+  </style>
+  <rect class="bg" x="0" y="0" width="960" height="440" rx="12"/>
+
+  <text class="title" x="30" y="36">7월 30일 · EV 충전구역 장기 점유 브랜치</text>
+  <text class="sub" x="30" y="56">커밋 시각 기준. 팀원 A의 기능 커밋 이후 내 하루가 어디에 쓰였는가</text>
+
+  <!-- legend -->
+  <rect class="dot" x="640" y="27" width="10" height="10" rx="5"/><text class="lg" x="656" y="36">A의 커밋</text>
+  <rect class="bar-me" x="722" y="27" width="12" height="10" rx="2"/><text class="lg" x="740" y="36">내 작업</text>
+  <rect class="bar-rw" x="806" y="27" width="12" height="10" rx="2"/><text class="lg" x="824" y="36">A 브랜치 Rework</text>
+
+  <!-- hour grid: x = 110 + (h-10)*66.667 -->
+  <g class="grid">
+    <line x1="110" y1="80" x2="110" y2="310"/><line x1="176.7" y1="80" x2="176.7" y2="310"/><line x1="243.3" y1="80" x2="243.3" y2="310"/>
+    <line x1="310" y1="80" x2="310" y2="310"/><line x1="376.7" y1="80" x2="376.7" y2="310"/><line x1="443.3" y1="80" x2="443.3" y2="310"/>
+    <line x1="510" y1="80" x2="510" y2="310"/><line x1="576.7" y1="80" x2="576.7" y2="310"/><line x1="643.3" y1="80" x2="643.3" y2="310"/>
+    <line x1="710" y1="80" x2="710" y2="310"/><line x1="776.7" y1="80" x2="776.7" y2="310"/><line x1="843.3" y1="80" x2="843.3" y2="310"/>
+    <line x1="910" y1="80" x2="910" y2="310"/>
+  </g>
+
+  <!-- Lane A -->
+  <text class="lane" x="30" y="112">A</text>
+  <text class="lane2" x="30" y="128">기능 브랜치</text>
+  <circle class="dot-feat" cx="151.1" cy="115" r="8"/>
+  <circle class="dot" cx="286.7" cy="115" r="5"/>
+  <circle class="dot" cx="374.4" cy="115" r="5"/>
+  <circle class="dot" cx="382.2" cy="115" r="5"/>
+  <text class="ann" x="166" y="104">10:37 Feature 커밋 · 235 LOC</text>
+  <text class="ann2" x="298" y="141">A의 자체 리뷰 반영 3건</text>
+
+  <!-- Lane Me (own work) -->
+  <text class="lane" x="30" y="192">나</text>
+  <text class="lane2" x="30" y="208">내 브랜치</text>
+  <rect class="bar-me" x="424.4" y="184" width="41.2" height="28" rx="4"/>
+  <rect class="bar-me" x="580.1" y="190" width="3" height="16" rx="1.5"/>
+  <rect class="bar-me" x="594.6" y="190" width="3" height="16" rx="1.5"/>
+  <text class="ann" x="424" y="176">14:43–15:20 · 37분 · 8 commits</text>
+  <text class="ann2" x="606" y="202">리뷰 반영 2건</text>
+
+  <!-- Lane Rework -->
+  <text class="lane" x="30" y="272">나</text>
+  <text class="lane2" x="30" y="288">A의 브랜치</text>
+  <rect class="bar-rw" x="516.7" y="264" width="367.7" height="28" rx="4"/>
+  <g class="cut">
+    <line x1="526.7" y1="264" x2="526.7" y2="292"/><line x1="540" y1="264" x2="540" y2="292"/>
+    <line x1="583.3" y1="264" x2="583.3" y2="292"/><line x1="606.7" y1="264" x2="606.7" y2="292"/>
+    <line x1="627.8" y1="264" x2="627.8" y2="292"/><line x1="805.6" y1="264" x2="805.6" y2="292"/>
+    <line x1="818.9" y1="264" x2="818.9" y2="292"/><line x1="853.3" y1="264" x2="853.3" y2="292"/>
+    <line x1="860" y1="264" x2="860" y2="292"/>
+  </g>
+  <text class="ann" x="517" y="256">16:06–21:37 · Review / Rework 약 5.5시간 · 11 commits</text>
+
+  <!-- axis -->
+  <line class="axis" x1="110" y1="310" x2="910" y2="310"/>
+  <text class="tick" x="110" y="328" text-anchor="middle">10:00</text>
+  <text class="tick" x="176.7" y="328" text-anchor="middle">11:00</text>
+  <text class="tick" x="243.3" y="328" text-anchor="middle">12:00</text>
+  <text class="tick" x="310" y="328" text-anchor="middle">13:00</text>
+  <text class="tick" x="376.7" y="328" text-anchor="middle">14:00</text>
+  <text class="tick" x="443.3" y="328" text-anchor="middle">15:00</text>
+  <text class="tick" x="510" y="328" text-anchor="middle">16:00</text>
+  <text class="tick" x="576.7" y="328" text-anchor="middle">17:00</text>
+  <text class="tick" x="643.3" y="328" text-anchor="middle">18:00</text>
+  <text class="tick" x="710" y="328" text-anchor="middle">19:00</text>
+  <text class="tick" x="776.7" y="328" text-anchor="middle">20:00</text>
+  <text class="tick" x="843.3" y="328" text-anchor="middle">21:00</text>
+  <text class="tick" x="910" y="328" text-anchor="middle">22:00</text>
+
+  <!-- stat tiles -->
+  <rect class="tile" x="110" y="350" width="385" height="66" rx="8"/>
+  <text class="big" x="128" y="380">Feature · 235 LOC</text>
+  <text class="lbl" x="128" y="402">A의 기능 커밋 1개 · 이후 자체 리뷰 반영 3건</text>
+
+  <rect class="tile" x="525" y="350" width="385" height="66" rx="8"/>
+  <text class="big" x="543" y="380">Rework · +1,400 LOC</text>
+  <text class="lbl" x="543" y="402">11 commits · 5.5시간 · 파일 2,668줄 → 4,021줄</text>
+</svg>

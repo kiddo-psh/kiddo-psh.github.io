@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" role="img" aria-labelledby="t1 d1">
+  <title id="t1">시스템 구조</title>
+  <desc id="d1">천장 카메라와 입구 센서가 Jetson과 Raspberry Pi로 들어가고, 두 장치가 Spring Backend로 결과를 보내며, Backend가 Mobile App과 Admin Web에 제공한다.</desc>
+  <style>
+    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
+    .bg { fill: var(--bg); }
+    .box { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
+    .box.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .h { font-size: 15px; font-weight: 600; }
+    .s { font-size: 12px; fill: var(--ink2); }
+    .cap { font-size: 12px; fill: var(--ink2); }
+    .tag { font-size: 12px; font-weight: 600; fill: var(--blue); }
+    .flow { fill: none; stroke: var(--ink2); stroke-width: 1.5; }
+    .arrow { fill: var(--ink2); }
+  </style>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="340" rx="12"/>
+
+  <!-- column 1: sensors -->
+  <rect class="box" x="30" y="60" width="190" height="60" rx="8"/>
+  <text class="h" x="125" y="85" text-anchor="middle">천장 광각 카메라</text>
+  <text class="s" x="125" y="105" text-anchor="middle">주차장 전경 영상</text>
+
+  <rect class="box" x="30" y="200" width="190" height="60" rx="8"/>
+  <text class="h" x="125" y="225" text-anchor="middle">입구 카메라 · ToF</text>
+  <text class="s" x="125" y="245" text-anchor="middle">번호판 · 차량 감지</text>
+
+  <!-- column 2: edge devices -->
+  <text class="tag" x="265" y="50">이 글의 무대</text>
+  <rect class="box hi" x="265" y="60" width="190" height="60" rx="8"/>
+  <text class="h" x="360" y="85" text-anchor="middle">Jetson</text>
+  <text class="s" x="360" y="105" text-anchor="middle">AI 차량 추적 · 구역 판정</text>
+
+  <rect class="box" x="265" y="200" width="190" height="60" rx="8"/>
+  <text class="h" x="360" y="225" text-anchor="middle">Raspberry Pi</text>
+  <text class="s" x="360" y="245" text-anchor="middle">입차 제어 · LED · 스피커</text>
+
+  <!-- column 3: backend -->
+  <rect class="box" x="500" y="130" width="190" height="60" rx="8"/>
+  <text class="h" x="595" y="155" text-anchor="middle">Spring Backend</text>
+  <text class="s" x="595" y="175" text-anchor="middle">사건 · 세션 · 알림</text>
+
+  <!-- column 4: clients -->
+  <rect class="box" x="740" y="60" width="190" height="60" rx="8"/>
+  <text class="h" x="835" y="85" text-anchor="middle">Mobile App</text>
+  <text class="s" x="835" y="105" text-anchor="middle">거주자 · 위반 알림</text>
+
+  <rect class="box" x="740" y="200" width="190" height="60" rx="8"/>
+  <text class="h" x="835" y="225" text-anchor="middle">Admin Web</text>
+  <text class="s" x="835" y="245" text-anchor="middle">관리자 · 사건 처리</text>
+
+  <!-- flows -->
+  <path class="flow" d="M220 90 H262" marker-end="url(#ar)"/>
+  <path class="flow" d="M220 230 H262" marker-end="url(#ar)"/>
+  <path class="flow" d="M455 90 H478 V160 H497" marker-end="url(#ar)"/>
+  <path class="flow" d="M455 230 H478 V160"/>
+  <path class="flow" d="M690 160 H715 V90 H737" marker-end="url(#ar)"/>
+  <path class="flow" d="M690 160 H715 V230 H737" marker-end="url(#ar)"/>
+
+  <text class="cap" x="30" y="312">7명 · 4주 · 팀원 대부분이 Claude Code 또는 Codex를 사용</text>
+</svg>
