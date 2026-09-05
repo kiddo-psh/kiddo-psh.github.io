@@ -29,7 +29,6 @@ const sourcePath = post.data.sourcePath;
         <header>
           <p class="cat">{cat.label}</p>
           <h1>{post.data.title}</h1>
-          <p class:list={['lead', { serif: !isDoc }]}>{post.data.description}</p>
           <p class="date">{date} · {minutes}분 읽기</p>
           {sourcePath && <ContentActions sourcePath={sourcePath} />}
         </header>
@@ -71,8 +70,6 @@ const sourcePath = post.data.sourcePath;
   header { margin-bottom: 30px; }
   .cat { margin: 0 0 10px; font-size: .74em; font-weight: 800; letter-spacing: .12em; color: var(--accent); }
   h1 { margin: 0 0 14px; font-size: 2.1em; line-height: 1.32; letter-spacing: -.03em; }
-  .lead { margin: 0 0 16px; color: var(--text-dim); font-size: 1.1em; line-height: 1.7; }
-  .lead.serif { font-family: var(--font-serif); font-size: 1.18em; }
   .date { margin: 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); font-size: .8em; color: var(--text-dim); }
 
   .shell.read .prose { line-height: 1.95; }
