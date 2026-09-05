@@ -2,19 +2,16 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
-import ContentActions from '../components/ContentActions.astro';
 
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
 const d = project.data;
-const sourcePath = project.data.sourcePath;
 ---
 
 <BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
   <div class="page w-doc">
     <article data-pagefind-body>
       <h1>{d.title}</h1>
-      {sourcePath && <ContentActions sourcePath={sourcePath} />}
 
       <dl class="facts">
         <div><dt>기간</dt><dd>{d.period}</dd></div>

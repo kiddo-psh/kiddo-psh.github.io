@@ -3,7 +3,6 @@ title: "같은 Claude Code를 썼는데 왜 코드는 달랐을까"
 description: "같은 AI 도구를 사용한 팀에서 에이전트 활용 방식의 차이가 리뷰 비용과 재작업 비용으로 이어진 과정을 돌아본다."
 pubDate: 2026-08-14
 category: retro
-sourcePath: "src/content/posts/2026-09-05-claude-code-retrospective.md"
 ---
 
 ## 1. 같은 AI를 쓰면 코드도 비슷해질까?

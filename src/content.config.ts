@@ -20,7 +20,6 @@ const posts = defineCollection({
     draft: z.boolean().default(false),
     // public/ 기준 절대 경로. 예: /images/n1.png
     cover: z.string().startsWith('/').optional(),
-    sourcePath: z.string().optional(),
   }),
 });
 
@@ -39,7 +38,6 @@ const projects = defineCollection({
       .default([]),
     featured: z.boolean().default(false),
     order: z.number().default(99),
-    sourcePath: z.string().optional(),
   }),
 });
 

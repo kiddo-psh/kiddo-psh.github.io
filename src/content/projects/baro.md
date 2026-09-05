@@ -16,7 +16,6 @@ stack:
   - Vue 3
 featured: true
 order: 1
-sourcePath: "src/content/projects/baro.md"
 ---
 
 > **한 줄 요약.** 아파트 주차장의 이중주차·전용구역 무단 점유를 천장 카메라와 엣지 AI로 자동 감지하고, 차주 개인정보를 노출하지 않은 채 이동 요청부터 이동 확인까지 중계하는 서비스.
