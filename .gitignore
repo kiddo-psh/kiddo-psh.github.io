@@ -9,3 +9,6 @@ dist/
 *.log
 .env
 .env.production
+
+# humanize-korean 작업 폴더
+_workspace/
