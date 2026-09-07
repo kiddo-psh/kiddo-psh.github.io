@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="290" viewBox="0 0 960 290" role="img" aria-labelledby="t2 d2">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="610" viewBox="0 0 960 610" role="img" aria-labelledby="t2 d2">
   <title id="t2">같은 규칙, 몇 곳에 있었나</title>
-  <desc id="d2">정리 전에는 시작 전 확인, 완료 보고, 검증 항목의 정의가 AGENTS.md와 ai-collaboration.md 두 곳에, 스토리 포인트 기준이 AGENTS.md와 jira/README.md 두 곳에 있었다. 정리 후에는 각 규칙의 정의가 한 곳에만 있고 다른 문서는 참조만 한다.</desc>
+  <desc id="d2">세 문서를 파일 카드로 그렸다. 정리 전에는 시작 전 확인, 보고 양식, 검증 항목이 ai-collaboration.md와 AGENTS.md 두 카드에 함께 있었고, 스토리 포인트 산정 기준이 AGENTS.md와 jira/README.md 두 카드에 함께 있었다. 정리 후에는 정의가 한 카드에만 남고 다른 카드에는 그 정의를 가리키는 참조 칩만 있다. 각 문서의 고유 내용은 그대로다.</desc>
   <style>
     :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
     @media (prefers-color-scheme: dark) {
@@ -10,63 +10,108 @@
     .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "D2Coding", monospace; }
     .bg { fill: var(--bg); }
     .hd { font-size: 16px; font-weight: 700; }
-    .doc { font-size: 12px; fill: var(--ink2); }
+    .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
+    .sep { stroke: var(--line); stroke-width: 1; }
+    .fn { font-size: 13px; font-weight: 700; }
     .chip { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
-    .chip.ref { fill: var(--bg); stroke: var(--line); stroke-dasharray: 4 3; }
+    .chip.own { fill: var(--bg); stroke: var(--line); }
+    .chip.ref { fill: var(--bg); stroke: var(--blue); stroke-dasharray: 4 3; }
     .ct { font-size: 13px; font-weight: 600; }
-    .ct.ref { font-weight: 500; fill: var(--ink2); }
-    .arrow { fill: var(--ink2); }
+    .ct.own { font-weight: 500; fill: var(--ink2); }
+    .ct.ref { font-weight: 500; fill: var(--blue); }
+    .dup { fill: none; stroke: var(--blue); stroke-width: 2; }
+    .flow { fill: none; stroke: var(--blue); stroke-width: 1.5; }
+    .arrow { fill: var(--blue); }
     .lg { font-size: 12px; fill: var(--ink2); }
   </style>
-  <rect class="bg" x="0" y="0" width="960" height="290" rx="12"/>
+  <defs>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="610" rx="12"/>
 
-  <!-- ===== Before ===== -->
-  <text class="hd" x="45" y="44">Before</text>
-  <g class="mono doc" text-anchor="middle">
-    <text x="105" y="70">AGENTS.md</text>
-    <text x="245" y="70">ai-collaboration.md</text>
-    <text x="385" y="70">jira/README.md</text>
-  </g>
+  <!-- ===================== Before ===================== -->
+  <text class="hd" x="30" y="36">Before</text>
 
-  <!-- row 1: 시작 전 확인 -->
-  <rect class="chip" x="45" y="84" width="120" height="30" rx="15"/><text class="ct" x="105" y="104" text-anchor="middle">시작 전 확인</text>
-  <rect class="chip" x="185" y="84" width="120" height="30" rx="15"/><text class="ct" x="245" y="104" text-anchor="middle">시작 전 확인</text>
-  <!-- row 2: 완료 보고 -->
-  <rect class="chip" x="45" y="124" width="120" height="30" rx="15"/><text class="ct" x="105" y="144" text-anchor="middle">완료 보고</text>
-  <rect class="chip" x="185" y="124" width="120" height="30" rx="15"/><text class="ct" x="245" y="144" text-anchor="middle">완료 보고</text>
-  <!-- row 3: 검증 항목 -->
-  <rect class="chip" x="45" y="164" width="120" height="30" rx="15"/><text class="ct" x="105" y="184" text-anchor="middle">검증 항목</text>
-  <rect class="chip" x="185" y="164" width="120" height="30" rx="15"/><text class="ct" x="245" y="184" text-anchor="middle">검증 항목</text>
-  <!-- row 4: SP 산정 기준 -->
-  <rect class="chip" x="45" y="204" width="120" height="30" rx="15"/><text class="ct" x="105" y="224" text-anchor="middle">SP 산정 기준</text>
-  <rect class="chip" x="325" y="204" width="120" height="30" rx="15"/><text class="ct" x="385" y="224" text-anchor="middle">SP 산정 기준</text>
+  <!-- card: ai-collaboration.md -->
+  <rect class="card" x="30" y="52" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="46" y="75">ai-collaboration.md</text>
+  <line class="sep" x1="30" y1="86" x2="310" y2="86"/>
+  <rect class="chip" x="46" y="94" width="248" height="28" rx="14"/><text class="ct" x="170" y="113" text-anchor="middle">시작 전 확인 (7항목)</text>
+  <rect class="chip" x="46" y="130" width="248" height="28" rx="14"/><text class="ct" x="170" y="149" text-anchor="middle">보고 양식 (7필드 · 6필드)</text>
+  <rect class="chip" x="46" y="166" width="248" height="28" rx="14"/><text class="ct" x="170" y="185" text-anchor="middle">검증 6단계</text>
+  <rect class="chip own" x="46" y="202" width="248" height="28" rx="14"/><text class="ct own" x="170" y="221" text-anchor="middle">worktree · 충돌 위험 분류</text>
+  <rect class="chip own" x="46" y="238" width="248" height="28" rx="14"/><text class="ct own" x="170" y="257" text-anchor="middle">합의가 필요한 변경</text>
 
-  <!-- ===== big arrow ===== -->
-  <path class="arrow" d="M466 152 L486 152 L486 142 L504 159 L486 176 L486 166 L466 166 Z"/>
+  <!-- card: AGENTS.md -->
+  <rect class="card" x="340" y="52" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="356" y="75">AGENTS.md</text>
+  <line class="sep" x1="340" y1="86" x2="620" y2="86"/>
+  <rect class="chip" x="356" y="94" width="248" height="28" rx="14"/><text class="ct" x="480" y="113" text-anchor="middle">시작 전 확인 (11항목)</text>
+  <rect class="chip" x="356" y="130" width="248" height="28" rx="14"/><text class="ct" x="480" y="149" text-anchor="middle">수정 전 알림 · 완료 보고</text>
+  <rect class="chip" x="356" y="166" width="248" height="28" rx="14"/><text class="ct" x="480" y="185" text-anchor="middle">검증 항목</text>
+  <rect class="chip" x="356" y="202" width="248" height="28" rx="14"/><text class="ct" x="480" y="221" text-anchor="middle">스토리 포인트 산정 기준</text>
+  <rect class="chip own" x="356" y="238" width="248" height="28" rx="14"/><text class="ct own" x="480" y="257" text-anchor="middle">작업 절차 · 검증 명령</text>
 
-  <!-- ===== After ===== -->
-  <text class="hd" x="525" y="44">After</text>
-  <g class="mono doc" text-anchor="middle">
-    <text x="585" y="70">AGENTS.md</text>
-    <text x="725" y="70">ai-collaboration.md</text>
-    <text x="865" y="70">jira/README.md</text>
-  </g>
+  <!-- card: jira/README.md -->
+  <rect class="card" x="650" y="52" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="666" y="75">docs/jira/README.md</text>
+  <line class="sep" x1="650" y1="86" x2="930" y2="86"/>
+  <rect class="chip own" x="666" y="94" width="248" height="28" rx="14"/><text class="ct own" x="790" y="113" text-anchor="middle">스크립트 사용법</text>
+  <rect class="chip own" x="666" y="130" width="248" height="28" rx="14"/><text class="ct own" x="790" y="149" text-anchor="middle">계획 YAML 형식</text>
+  <rect class="chip" x="666" y="202" width="248" height="28" rx="14"/><text class="ct" x="790" y="221" text-anchor="middle">스토리 포인트 산정 기준 (표)</text>
 
-  <rect class="chip" x="525" y="84" width="120" height="30" rx="15"/><text class="ct" x="585" y="104" text-anchor="middle">시작 전 확인</text>
-  <rect class="chip ref" x="665" y="84" width="120" height="30" rx="15"/><text class="ct ref" x="725" y="104" text-anchor="middle">→ AGENTS.md</text>
+  <!-- duplicate links -->
+  <path class="dup" d="M296 108 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
+  <path class="dup" d="M296 144 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
+  <path class="dup" d="M296 180 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
+  <path class="dup" d="M606 216 H664" marker-start="url(#ab)" marker-end="url(#ab)"/>
 
-  <rect class="chip" x="525" y="124" width="120" height="30" rx="15"/><text class="ct" x="585" y="144" text-anchor="middle">완료 보고</text>
-  <rect class="chip ref" x="665" y="124" width="120" height="30" rx="15"/><text class="ct ref" x="725" y="144" text-anchor="middle">→ AGENTS.md</text>
+  <!-- ===================== After ===================== -->
+  <text class="hd" x="30" y="334">After</text>
 
-  <rect class="chip" x="525" y="164" width="120" height="30" rx="15"/><text class="ct" x="585" y="184" text-anchor="middle">검증 항목</text>
-  <rect class="chip ref" x="665" y="164" width="120" height="30" rx="15"/><text class="ct ref" x="725" y="184" text-anchor="middle">→ AGENTS.md</text>
+  <!-- card: ai-collaboration.md -->
+  <rect class="card" x="30" y="350" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="46" y="373">ai-collaboration.md</text>
+  <line class="sep" x1="30" y1="384" x2="310" y2="384"/>
+  <rect class="chip ref" x="46" y="392" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="411" text-anchor="middle">→ AGENTS.md를 따른다</text>
+  <rect class="chip ref" x="46" y="428" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="447" text-anchor="middle">→ AGENTS.md를 따른다</text>
+  <rect class="chip ref" x="46" y="464" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="483" text-anchor="middle">→ AGENTS.md를 따른다</text>
+  <rect class="chip own" x="46" y="500" width="248" height="28" rx="14"/><text class="ct own" x="170" y="519" text-anchor="middle">worktree · 충돌 위험 분류</text>
+  <rect class="chip own" x="46" y="536" width="248" height="28" rx="14"/><text class="ct own" x="170" y="555" text-anchor="middle">합의가 필요한 변경</text>
 
-  <rect class="chip ref" x="525" y="204" width="120" height="30" rx="15"/><text class="ct ref" x="585" y="224" text-anchor="middle">→ jira/README</text>
-  <rect class="chip" x="805" y="204" width="120" height="30" rx="15"/><text class="ct" x="865" y="224" text-anchor="middle">SP 산정 기준</text>
+  <!-- card: AGENTS.md -->
+  <rect class="card" x="340" y="350" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="356" y="373">AGENTS.md</text>
+  <line class="sep" x1="340" y1="384" x2="620" y2="384"/>
+  <rect class="chip" x="356" y="392" width="248" height="28" rx="14"/><text class="ct" x="480" y="411" text-anchor="middle">시작 전 확인 (통합)</text>
+  <rect class="chip" x="356" y="428" width="248" height="28" rx="14"/><text class="ct" x="480" y="447" text-anchor="middle">알림 · 완료 보고 (양식 없음)</text>
+  <rect class="chip" x="356" y="464" width="248" height="28" rx="14"/><text class="ct" x="480" y="483" text-anchor="middle">검증 항목</text>
+  <rect class="chip ref" x="356" y="500" width="248" height="28" rx="14"/><text class="ct ref" x="480" y="519" text-anchor="middle">→ jira/README를 본다</text>
+  <rect class="chip own" x="356" y="536" width="248" height="28" rx="14"/><text class="ct own" x="480" y="555" text-anchor="middle">작업 절차 · 검증 명령</text>
+
+  <!-- card: jira/README.md -->
+  <rect class="card" x="650" y="350" width="280" height="224" rx="10"/>
+  <text class="mono fn" x="666" y="373">docs/jira/README.md</text>
+  <line class="sep" x1="650" y1="384" x2="930" y2="384"/>
+  <rect class="chip own" x="666" y="392" width="248" height="28" rx="14"/><text class="ct own" x="790" y="411" text-anchor="middle">스크립트 사용법</text>
+  <rect class="chip own" x="666" y="428" width="248" height="28" rx="14"/><text class="ct own" x="790" y="447" text-anchor="middle">계획 YAML 형식</text>
+  <rect class="chip" x="666" y="500" width="248" height="28" rx="14"/><text class="ct" x="790" y="519" text-anchor="middle">스토리 포인트 산정 기준 (표)</text>
+
+  <!-- reference arrows: ref chip → definition -->
+  <path class="flow" d="M296 406 H352" marker-end="url(#ab)"/>
+  <path class="flow" d="M296 442 H352" marker-end="url(#ab)"/>
+  <path class="flow" d="M296 478 H352" marker-end="url(#ab)"/>
+  <path class="flow" d="M606 514 H662" marker-end="url(#ab)"/>
 
   <!-- legend -->
-  <rect class="chip" x="45" y="258" width="14" height="14" rx="4"/>
-  <text class="lg" x="67" y="270">규칙의 정의</text>
-  <rect class="chip ref" x="160" y="258" width="14" height="14" rx="4"/>
-  <text class="lg" x="182" y="270">참조만 · 정의 없음</text>
+  <rect class="chip" x="30" y="588" width="14" height="14" rx="4"/>
+  <text class="lg" x="52" y="600">규칙의 정의</text>
+  <path class="dup" d="M140 595 H170" marker-start="url(#ab)" marker-end="url(#ab)"/>
+  <text class="lg" x="180" y="600">같은 규칙이 두 문서에</text>
+  <rect class="chip ref" x="320" y="588" width="14" height="14" rx="4"/>
+  <text class="lg" x="342" y="600">정의 없이 참조만</text>
+  <rect class="chip own" x="460" y="588" width="14" height="14" rx="4"/>
+  <text class="lg" x="482" y="600">그 문서만의 내용 · 변경 없음</text>
 </svg>
