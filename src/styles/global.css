@@ -81,18 +81,21 @@ img { max-width: 100%; height: auto; }
 .prose ul > li::marker { color: var(--accent); }
 .prose ol > li::marker { color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-/* 강조 박스 (마크다운의 > 인용문) */
+/*
+ * 강조 블록 (마크다운의 > 인용문).
+ * 박스로 감싸지 않고 액센트 세로선 하나와 들여쓰기만 둔다. 본문 흐름에서 떼어내되
+ * 카드처럼 튀지 않게, 글자는 본문보다 살짝 크고 줄 간격을 넉넉히 준다.
+ */
 .prose blockquote {
-  margin: 1.8em 0; padding: 16px 20px;
-  background: var(--code-bg);
-  border: 1px solid var(--border);
+  margin: 2em 0; padding: 2px 0 2px 22px;
   border-left: 3px solid var(--accent);
-  border-radius: 8px;
   color: var(--text);
-  font-size: .96em;
+  font-size: 1.02em;
+  line-height: 1.85;
 }
 .prose blockquote > :first-child { margin-top: 0; }
 .prose blockquote > :last-child { margin-bottom: 0; }
+.prose blockquote p { margin-bottom: .9em; }
 .prose blockquote strong { color: var(--accent); }
 
 .prose :not(pre) > code {

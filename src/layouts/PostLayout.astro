@@ -93,7 +93,8 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
   /* 1120px 아래에서는 두 칼럼을 유지해도 좌우 여백이 20px대로 눌린다 — 그 전에 접는다 */
   @media (max-width: 1120px) {
-    .shell.doc { --bleed: 0px; }
+    /* .doc.toc가 자기 --bleed(최소 48px)를 갖고 있으므로 둘 다 0으로 눌러야 모바일에서 그림이 넘치지 않는다 */
+    .shell.doc, .shell.doc.toc { --bleed: 0px; }
     .shell.doc.toc {
       grid-template-columns: minmax(0, var(--w-doc));
       gap: 0;
