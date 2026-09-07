@@ -63,24 +63,20 @@
     <text x="920" y="278">22:00</text>
   </g>
   <text class="who" x="40" y="108">팀원 A</text>
-  <text class="how" x="40" y="128">기능 브랜치</text>
   <circle class="dot" cx="218" cy="104" r="9"/>
-  <text class="barlbl" x="234" y="86">10:37 기능 커밋 · 235줄</text>
+  <text class="barlbl" x="234" y="86">기능 커밋 235줄</text>
   <circle class="dot" cx="345" cy="104" r="5"/><circle class="dot" cx="432" cy="104" r="5"/><circle class="dot" cx="442" cy="104" r="5"/>
-  <text class="how" x="345" y="130">자체 리뷰 반영 3건</text>
   <text class="who" x="40" y="208">나</text>
-  <text class="how" x="40" y="228">A의 브랜치에서</text>
   <rect class="mine" x="471" y="184" width="38" height="44" rx="6"/>
   <text class="how" x="471" y="246">내 작업 37분</text>
   <rect class="rework" x="556" y="184" width="341" height="44" rx="6"/>
-  <text class="barlbl" x="556" y="172">A 브랜치 재작업 · 5시간 31분 · 11 commits</text>
+  <text class="barlbl" x="556" y="172">A 브랜치 재작업 5시간 31분</text>
   <line class="div" x1="40" y1="300" x2="920" y2="300"/>
   <text class="who" x="40" y="340">기능 커밋</text>
-  <text class="how" x="40" y="360">A · 1 commit</text>
   <rect class="dot" x="180" y="320" width="107" height="36" rx="6"/>
   <text class="num" x="299" y="346">235줄</text>
   <text class="who" x="40" y="408">재작업</text>
-  <text class="how" x="40" y="428">나 · 11 commits · 약 6배</text>
+  <text class="how" x="40" y="428">약 6배 · 11 commits</text>
   <rect class="rework" x="180" y="388" width="640" height="36" rx="6"/>
   <text class="num" x="832" y="414">1,402줄</text>
 </svg>

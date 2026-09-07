@@ -34,8 +34,7 @@
     </marker>
   </defs>
   <rect class="bg" x="0" y="0" width="960" height="440" rx="12"/>
-  <text class="who" x="40" y="70">Developer A</text>
-  <text class="how" x="40" y="90">기능을 바로 구현</text>
+  <text class="who" x="40" y="74">Developer A</text>
   <rect class="pill" x="220" y="44" width="100" height="48" rx="24"/><text class="step" x="270" y="73" text-anchor="middle">Task</text>
   <path class="flow" d="M320 68 H337" marker-end="url(#ar)"/>
   <rect class="pill" x="340" y="44" width="100" height="48" rx="24"/><text class="step" x="390" y="73" text-anchor="middle">Code</text>
@@ -43,8 +42,7 @@
   <rect class="pill" x="460" y="44" width="100" height="48" rx="24"/><text class="step" x="510" y="73" text-anchor="middle">Test</text>
   <path class="flow" d="M560 68 H577" marker-end="url(#ar)"/>
   <rect class="pill" x="580" y="44" width="100" height="48" rx="24"/><text class="step" x="630" y="73" text-anchor="middle">Merge</text>
-  <text class="who" x="40" y="166">Developer B (나)</text>
-  <text class="how" x="40" y="186">스펙과 계획을 먼저 작성</text>
+  <text class="who" x="40" y="170">Developer B (나)</text>
   <rect class="pill" x="220" y="140" width="100" height="48" rx="24"/><text class="step" x="270" y="169" text-anchor="middle">Task</text>
   <path class="flow" d="M320 164 H337" marker-end="url(#ar)"/>
   <rect class="pill hi" x="340" y="140" width="100" height="48" rx="24"/><text class="step hi" x="390" y="169" text-anchor="middle">Spec</text>
@@ -56,8 +54,7 @@
   <rect class="pill" x="700" y="140" width="100" height="48" rx="24"/><text class="step" x="750" y="169" text-anchor="middle">Review</text>
   <path class="flow" d="M800 164 H817" marker-end="url(#ar)"/>
   <rect class="pill" x="820" y="140" width="100" height="48" rx="24"/><text class="step" x="870" y="169" text-anchor="middle">Merge</text>
-  <text class="who" x="40" y="262">Developer C</text>
-  <text class="how" x="40" y="282">도메인 계약 문서를 먼저 정리</text>
+  <text class="who" x="40" y="266">Developer C</text>
   <rect class="pill" x="220" y="236" width="100" height="48" rx="24"/><text class="step" x="270" y="265" text-anchor="middle">Task</text>
   <path class="flow" d="M320 260 H337" marker-end="url(#ar)"/>
   <rect class="pill hi" x="340" y="236" width="130" height="48" rx="24"/><text class="step hi" x="405" y="265" text-anchor="middle">도메인 계약</text>
@@ -69,10 +66,10 @@
   <text class="lg" x="242" y="318">구현 전에 판단 기준을 문서로 고정하는 단계</text>
   <rect class="tile" x="40" y="346" width="280" height="70" rx="10"/>
   <text class="big" x="58" y="378">프런트 2곳</text>
-  <text class="lbl" x="58" y="401">AGENTS.md가 있던 곳 · AI · HW · BE에는 없음</text>
+  <text class="lbl" x="58" y="401">AGENTS.md가 있던 디렉터리</text>
   <rect class="tile" x="340" y="346" width="280" height="70" rx="10"/>
   <text class="big" x="358" y="378">0% ~ 65%</text>
-  <text class="lbl" x="358" y="401">추가 코드 중 테스트 라인 비율 · 사람별</text>
+  <text class="lbl" x="358" y="401">사람별 테스트 라인 비율</text>
   <rect class="tile" x="640" y="346" width="280" height="70" rx="10"/>
   <text class="big" x="658" y="378">7명 중 1명</text>
   <text class="lbl" x="658" y="401">계획·스펙 문서를 쓴 팀원</text>

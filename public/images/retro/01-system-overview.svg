@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="290" viewBox="0 0 960 290" role="img" aria-labelledby="t d">
   <title id="t">시스템 구조</title>
   <desc id="d">현장의 천장 광각 카메라와 입구 카메라·ToF 센서가 엣지의 Jetson과 Raspberry Pi로, 거기서 서버의 Spring Backend로, 다시 사용자용 Mobile App과 Admin Web으로 흐른다. 이 글의 무대는 Jetson의 AI 차량 추적·구역 판정이다.</desc>
   <style>
@@ -33,7 +33,7 @@
       <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
     </marker>
   </defs>
-  <rect class="bg" x="0" y="0" width="960" height="330" rx="12"/>
+  <rect class="bg" x="0" y="0" width="960" height="290" rx="12"/>
   <text class="col" x="128" y="40" text-anchor="middle">현장</text>
   <text class="col" x="364" y="40" text-anchor="middle">엣지</text>
   <text class="col" x="600" y="40" text-anchor="middle">서버</text>
@@ -73,5 +73,4 @@
   <path class="flow" d="M452 102 H482 V162 H508" marker-end="url(#ar)"/>
   <path class="flow" d="M688 162 H718 V222 H744" marker-end="url(#ar)"/>
   <path class="flow" d="M718 162 V102 H744" marker-end="url(#ar)"/>
-  <text class="lg" x="480" y="300" text-anchor="middle">영상 · 센서  →  판정  →  사건 기록  →  알림</text>
 </svg>

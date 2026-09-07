@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="306" viewBox="0 0 960 306" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="286" viewBox="0 0 960 286" role="img" aria-labelledby="t d">
   <title id="t">팀 공통 개발 파이프라인</title>
   <desc id="d">Task, Spec, Plan, Implement, Test, Review, Merge 일곱 단계. Spec과 Plan은 구현 전 판정 기준 합의, Test는 공통 검증 기준, Review는 설계 정합성과 규칙 확인을 담당한다. 저장소 루트의 AGENTS.md가 모든 단계에서 에이전트가 읽는 공통 규칙이 된다.</desc>
   <style>
@@ -39,7 +39,7 @@
       <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
     </marker>
   </defs>
-  <rect class="bg" x="0" y="0" width="960" height="306" rx="12"/>
+  <rect class="bg" x="0" y="0" width="960" height="286" rx="12"/>
   <rect class="pill" x="30" y="40" width="110" height="52" rx="26"/><text class="step" x="85" y="71" text-anchor="middle">Task</text>
   <path class="flow" d="M140 66 H155" marker-end="url(#ar)"/>
   <rect class="pill hi" x="158" y="40" width="110" height="52" rx="26"/><text class="step hi" x="213" y="71" text-anchor="middle">Spec</text>
@@ -55,16 +55,13 @@
   <rect class="pill" x="798" y="40" width="110" height="52" rx="26"/><text class="step" x="853" y="71" text-anchor="middle">Merge</text>
   <path class="brk" d="M162 102 V110 H392 V102"/>
   <text class="why" x="277" y="132" text-anchor="middle">구현 전 판정 기준 합의</text>
-  <text class="why2" x="277" y="150" text-anchor="middle">기준이 뒤집히는 재작업 감소</text>
   <path class="brk" d="M546 102 V110 H648 V102"/>
   <text class="why" x="597" y="132" text-anchor="middle">공통 검증 기준</text>
-  <text class="why2" x="597" y="150" text-anchor="middle">테스트 누락 방지</text>
   <path class="brk" d="M674 102 V110 H776 V102"/>
   <text class="why" x="725" y="132" text-anchor="middle">설계 정합성 · 규칙 확인</text>
-  <text class="why2" x="725" y="150" text-anchor="middle">Merge 전 차단</text>
-  <rect class="band" x="30" y="184" width="878" height="54" rx="10"/>
-  <text class="bandh" x="52" y="217">AGENTS.md</text>
-  <text class="bandt" x="170" y="217">저장소 루트에 두고 모든 단계에서 에이전트가 읽는 공통 규칙 · 아키텍처 원칙 · 테스트 기준 · 커밋·이슈 규칙</text>
-  <rect class="lgbox" x="30" y="266" width="14" height="14" rx="4"/>
-  <text class="lg" x="52" y="278">지난 프로젝트에서 사람마다 달랐던 단계 · 팀 공통으로 고정</text>
+  <rect class="band" x="30" y="164" width="878" height="54" rx="10"/>
+  <text class="bandh" x="52" y="197">AGENTS.md</text>
+  <text class="bandt" x="170" y="197">모든 단계에서 에이전트가 읽는 공통 규칙</text>
+  <rect class="lgbox" x="30" y="246" width="14" height="14" rx="4"/>
+  <text class="lg" x="52" y="258">팀 공통으로 고정한 단계</text>
 </svg>
