@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="450" viewBox="0 0 960 450" role="img" aria-labelledby="t1 d1">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="456" viewBox="0 0 960 456" role="img" aria-labelledby="t1 d1">
   <title id="t1">규칙 문서의 역할 계층</title>
-  <desc id="d1">세 층으로 나눈 문서 카드. AI 작업 절차 층의 AGENTS.md는 AI가 작업 하나를 수행하는 절차를, ai-collaboration.md는 여러 작업자와 AI가 동시에 일할 때의 조직을 맡고 서로의 역할을 선언한다. AGENTS.md는 규칙 문서(코드 컨벤션, 협업 규칙, 담당 영역)와 설계·계약 문서(API, ERD, ADR)를 따른다. 안내 문서(README, 절차 안내)는 실행 명령만 담고 규칙은 링크만 한다.</desc>
+  <desc id="d1">세 층으로 나눈 문서 카드. AGENTS.md는 AI가 작업 하나를 수행하는 절차를, ai-collaboration.md는 여러 작업자와 AI가 동시에 일할 때의 조직을 맡고 서로의 역할을 선언한다. AGENTS.md는 규칙 문서(코드 컨벤션, 협업 규칙, 담당 영역)와 설계·계약 문서(API, ERD, ADR)를 따른다. 안내 문서(README, 절차 안내)는 실행 명령만 담고 규칙은 링크만 한다.</desc>
   <style>
     :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
     @media (prefers-color-scheme: dark) {
@@ -12,18 +12,18 @@
     .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
     .card.hi { stroke: var(--blue); stroke-width: 2; }
     .sep { stroke: var(--line); stroke-width: 1; }
-    .fn { font-size: 14px; font-weight: 700; }
-    .role { font-size: 13px; fill: var(--ink2); }
+    .fn { font-size: 15px; font-weight: 700; }
+    .role { font-size: 14px; fill: var(--ink2); }
     .chip { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
     .chip.own { fill: var(--bg); stroke: var(--line); }
     .chip.ref { fill: var(--bg); stroke: var(--blue); stroke-dasharray: 4 3; }
-    .ct { font-size: 12.5px; font-weight: 600; }
+    .ct { font-size: 13.5px; font-weight: 600; }
     .ct.own { font-weight: 500; fill: var(--ink2); }
     .ct.ref { font-weight: 500; fill: var(--blue); }
     .flow { fill: none; stroke: var(--ink2); stroke-width: 1.6; }
     .flow.dash { stroke-dasharray: 6 4; }
     .arrow { fill: var(--ink2); }
-    .lbl { font-size: 12px; fill: var(--ink2); }
+    .lbl { font-size: 12.5px; fill: var(--ink2); }
     .lg { font-size: 12px; fill: var(--ink2); }
   </style>
   <defs>
@@ -31,63 +31,58 @@
       <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
     </marker>
   </defs>
-  <rect class="bg" x="0" y="0" width="960" height="450" rx="12"/>
-  <g transform="translate(-50,0)">
+  <rect class="bg" x="0" y="0" width="960" height="456" rx="12"/>
 
-  <!-- ===== row 1: AI 작업 절차 ===== -->
-  <rect class="card hi" x="180" y="40" width="280" height="72" rx="10"/>
-  <text class="mono fn" x="196" y="64">AGENTS.md</text>
-  <line class="sep" x1="180" y1="75" x2="460" y2="75"/>
-  <text class="role" x="196" y="98">AI가 작업 하나를 수행하는 절차</text>
+  <!-- ===== row 1 ===== -->
+  <rect class="card hi" x="40" y="36" width="380" height="78" rx="10"/>
+  <text class="mono fn" x="58" y="61">AGENTS.md</text>
+  <line class="sep" x1="40" y1="73" x2="420" y2="73"/>
+  <text class="role" x="58" y="98">AI가 작업 하나를 수행하는 절차</text>
 
-  <rect class="card" x="580" y="40" width="300" height="72" rx="10"/>
-  <text class="mono fn" x="596" y="64">ai-collaboration.md</text>
-  <line class="sep" x1="580" y1="75" x2="880" y2="75"/>
-  <text class="role" x="596" y="98">여러 작업자와 AI가 동시에 일할 때의 조직</text>
+  <rect class="card" x="540" y="36" width="380" height="78" rx="10"/>
+  <text class="mono fn" x="558" y="61">ai-collaboration.md</text>
+  <line class="sep" x1="540" y1="73" x2="920" y2="73"/>
+  <text class="role" x="558" y="98">여러 작업자와 AI가 동시에 일할 때의 조직</text>
 
-  <path class="flow" d="M464 86 H576" marker-start="url(#ar)" marker-end="url(#ar)"/>
-  <text class="lbl" x="520" y="78" text-anchor="middle">서로의 역할 선언</text>
+  <path class="flow" d="M424 90 H536" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="lbl" x="480" y="82" text-anchor="middle">서로의 역할 선언</text>
 
-  <!-- ===== row 2: 규칙 ===== -->
-  <rect class="card" x="180" y="176" width="280" height="80" rx="10"/>
-  <text class="fn" x="196" y="200">규칙 문서</text>
-  <line class="sep" x1="180" y1="211" x2="460" y2="211"/>
-  <rect class="chip" x="196" y="219" width="80" height="26" rx="13"/><text class="ct" x="236" y="237" text-anchor="middle">코드 컨벤션</text>
-  <rect class="chip" x="284" y="219" width="76" height="26" rx="13"/><text class="ct" x="322" y="237" text-anchor="middle">협업 규칙</text>
-  <rect class="chip" x="368" y="219" width="76" height="26" rx="13"/><text class="ct" x="406" y="237" text-anchor="middle">담당 영역</text>
+  <!-- ===== row 2 ===== -->
+  <rect class="card" x="40" y="176" width="380" height="88" rx="10"/>
+  <text class="fn" x="58" y="201">규칙 문서</text>
+  <line class="sep" x1="40" y1="213" x2="420" y2="213"/>
+  <rect class="chip" x="56" y="224" width="112" height="28" rx="14"/><text class="ct" x="112" y="243" text-anchor="middle">코드 컨벤션</text>
+  <rect class="chip" x="176" y="224" width="108" height="28" rx="14"/><text class="ct" x="230" y="243" text-anchor="middle">협업 규칙</text>
+  <rect class="chip" x="292" y="224" width="108" height="28" rx="14"/><text class="ct" x="346" y="243" text-anchor="middle">담당 영역</text>
 
-  <rect class="card" x="580" y="176" width="300" height="80" rx="10"/>
-  <text class="fn" x="596" y="200">설계 · 계약 문서</text>
-  <line class="sep" x1="580" y1="211" x2="880" y2="211"/>
-  <rect class="chip" x="596" y="219" width="82" height="26" rx="13"/><text class="ct" x="637" y="237" text-anchor="middle">API 계약</text>
-  <rect class="chip" x="686" y="219" width="98" height="26" rx="13"/><text class="ct" x="735" y="237" text-anchor="middle">ERD · 스키마</text>
-  <rect class="chip" x="792" y="219" width="72" height="26" rx="13"/><text class="ct" x="828" y="237" text-anchor="middle">ADR</text>
+  <rect class="card" x="540" y="176" width="380" height="88" rx="10"/>
+  <text class="fn" x="558" y="201">설계 · 계약 문서</text>
+  <line class="sep" x1="540" y1="213" x2="920" y2="213"/>
+  <rect class="chip" x="556" y="224" width="112" height="28" rx="14"/><text class="ct" x="612" y="243" text-anchor="middle">API 계약</text>
+  <rect class="chip" x="676" y="224" width="130" height="28" rx="14"/><text class="ct" x="741" y="243" text-anchor="middle">ERD · 스키마</text>
+  <rect class="chip" x="814" y="224" width="90" height="28" rx="14"/><text class="ct" x="859" y="243" text-anchor="middle">ADR</text>
 
-  <!-- ===== row 3: 안내 ===== -->
-  <rect class="card" x="180" y="320" width="280" height="80" rx="10"/>
-  <text class="fn" x="196" y="344">README · 절차 안내</text>
-  <line class="sep" x1="180" y1="355" x2="460" y2="355"/>
-  <rect class="chip own" x="196" y="363" width="126" height="26" rx="13"/><text class="ct own" x="259" y="381" text-anchor="middle">실행 · 빌드 · Docker</text>
-  <rect class="chip ref" x="330" y="363" width="114" height="26" rx="13"/><text class="ct ref" x="387" y="381" text-anchor="middle">→ 규칙 문서 링크</text>
+  <!-- ===== row 3 ===== -->
+  <rect class="card" x="40" y="326" width="380" height="88" rx="10"/>
+  <text class="fn" x="58" y="351">README · 절차 안내</text>
+  <line class="sep" x1="40" y1="363" x2="420" y2="363"/>
+  <rect class="chip own" x="56" y="374" width="170" height="28" rx="14"/><text class="ct own" x="141" y="393" text-anchor="middle">실행 · 빌드 · Docker</text>
+  <rect class="chip ref" x="234" y="374" width="170" height="28" rx="14"/><text class="ct ref" x="319" y="393" text-anchor="middle">→ 규칙 문서 링크</text>
 
   <!-- ===== arrows ===== -->
-  <!-- AGENTS.md → 규칙 -->
-  <path class="flow" d="M250 112 V173" marker-end="url(#ar)"/>
-  <text class="lbl" x="260" y="148">따른다</text>
-  <!-- AGENTS.md → 설계·계약 -->
-  <path class="flow" d="M400 112 V144 H730 V173" marker-end="url(#ar)"/>
-  <!-- 안내 --> 규칙 (링크만) -->
-  <path class="flow dash" d="M387 320 V259" marker-end="url(#ar)"/>
-  <text class="lbl" x="397" y="294">링크만 한다</text>
+  <path class="flow" d="M120 114 V173" marker-end="url(#ar)"/>
+  <text class="lbl" x="130" y="148">따른다</text>
+  <path class="flow" d="M370 114 V144 H730 V173" marker-end="url(#ar)"/>
+  <path class="flow dash" d="M319 326 V267" marker-end="url(#ar)"/>
+  <text class="lbl" x="329" y="300">링크만 한다</text>
 
   <!-- ===== legend ===== -->
-  <path class="flow" d="M80 428 H112" marker-end="url(#ar)"/>
-  <text class="lg" x="120" y="432">규칙을 따른다</text>
-  <path class="flow dash" d="M230 428 H262" marker-end="url(#ar)"/>
-  <text class="lg" x="270" y="432">링크만 한다 · 규칙을 새로 정의하지 않는다</text>
-  <rect class="chip" x="530" y="421" width="14" height="14" rx="4"/>
-  <text class="lg" x="552" y="432">규칙의 정의</text>
-  <rect class="chip own" x="650" y="421" width="14" height="14" rx="4"/>
-  <text class="lg" x="672" y="432">그 문서만의 내용</text>
-  </g>
+  <path class="flow" d="M40 436 H72" marker-end="url(#ar)"/>
+  <text class="lg" x="80" y="440">규칙을 따른다</text>
+  <path class="flow dash" d="M190 436 H222" marker-end="url(#ar)"/>
+  <text class="lg" x="230" y="440">링크만 한다 · 규칙을 새로 정의하지 않는다</text>
+  <rect class="chip" x="490" y="429" width="14" height="14" rx="4"/>
+  <text class="lg" x="512" y="440">규칙의 정의</text>
+  <rect class="chip own" x="610" y="429" width="14" height="14" rx="4"/>
+  <text class="lg" x="632" y="440">그 문서만의 내용</text>
 </svg>
