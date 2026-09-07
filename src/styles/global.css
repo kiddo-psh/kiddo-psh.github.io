@@ -115,13 +115,68 @@ img { max-width: 100%; height: auto; }
 .prose table {
   width: 100%; border-collapse: collapse; margin: 1.8em 0;
   font-size: .9em; line-height: 1.6;
+  /* 숫자를 등폭으로 — 열이 세로로 정렬되지 않으면 값을 훑을 수 없다 */
+  font-variant-numeric: tabular-nums;
 }
 .prose thead th {
   border-bottom: 2px solid var(--border); padding: 8px 12px 10px; text-align: left;
   font-size: .88em; font-weight: 800; letter-spacing: .04em; color: var(--text-dim);
 }
-.prose tbody td { border-bottom: 1px solid var(--border); padding: 10px 12px; vertical-align: top; }
+.prose tbody td { border-bottom: 1px solid var(--border); padding: 12px; vertical-align: top; }
 .prose tbody tr:last-child td { border-bottom: 0; }
+/* 첫 열은 행의 이름이므로 값보다 진하게 둔다 */
+.prose tbody td:first-child { font-weight: 700; }
+
+/*
+ * 결론에 해당하는 행. 스윕 결과처럼 여러 후보 중 하나를 고른 표에서 "고른 것"을
+ * 본문으로 되짚지 않아도 보이게 한다. 마크다운 표는 행에 클래스를 줄 수 없어
+ * 이 표만 <table>을 직접 쓴다.
+ */
+.prose tbody tr.pick { background: var(--accent-soft); }
+.prose tbody tr.pick td:first-child { color: var(--accent); font-weight: 800; }
+.prose .tag {
+  display: inline-block; margin-left: 7px; padding: 0 7px;
+  border-radius: 999px; background: var(--accent); color: var(--bg);
+  font-size: .72em; font-weight: 700; letter-spacing: .03em; vertical-align: .12em;
+}
+
+/*
+ * 값을 훑는 표. 폭을 내용에 맞춰 줄여야 숫자가 라벨 옆에 붙는다(본문 폭으로 늘리면
+ * 라벨과 값이 멀찍이 떨어져 눈이 행을 잃는다). 좁은 화면에서는 접지 않고 가로로만 스크롤.
+ */
+.prose .table-scroll { overflow-x: auto; margin: 1.8em 0; }
+.prose .table-scroll table {
+  width: auto; min-width: min(100%, 400px); margin: 0; white-space: nowrap;
+}
+.prose .table-scroll th:not(:first-child),
+.prose .table-scroll td:not(:first-child) { text-align: right; padding-left: 30px; }
+
+/*
+ * 라벨과 수치 한 쌍만 있는 표는 카드로 세운다. 2열 표를 760px 본문에 그리면
+ * 값 칸이 두세 줄로 접혀서, 정작 보여주려는 숫자가 문장 속에 묻힌다.
+ * 마크다운에서 <dl class="stats">로 쓴다.
+ */
+.prose .stats {
+  display: grid; gap: 12px; margin: 1.8em 0;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.prose .stats > div {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 13px 15px; background: var(--bg-elev);
+}
+.prose .stats dt {
+  font-size: .78em; color: var(--text-dim); letter-spacing: .02em; margin-bottom: 4px;
+}
+.prose .stats dd { margin: 0; }
+.prose .stats b {
+  display: block; color: var(--accent);
+  font-size: 1.12em; font-weight: 800; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+.prose .stats small {
+  display: block; margin-top: 3px;
+  font-size: .76em; line-height: 1.5; color: var(--text-dim);
+}
 
 .prose hr {
   border: 0; height: 1px; background: var(--border);
@@ -129,6 +184,14 @@ img { max-width: 100%; height: auto; }
 }
 
 .prose img { border: 1px solid var(--border); border-radius: 10px; margin: 1.6em 0; }
+
+/* 설명이 붙는 그림. 여러 장을 한 줄에 늘어놓지 않고 한 장씩 본문 폭으로 세운다 */
+.prose figure { margin: 1.8em 0; }
+.prose figure img { display: block; margin: 0; }
+.prose figcaption {
+  margin-top: .7em; font-size: .82em; line-height: 1.6;
+  color: var(--text-dim); text-align: center;
+}
 
 /*
  * 본문 폭을 넘어 빠져나오는 그림. 마크다운에서 <figure class="wide">로 감싼다.
@@ -139,9 +202,6 @@ img { max-width: 100%; height: auto; }
   margin: 1.6em calc(-1 * var(--bleed, 0px));
 }
 .prose figure.wide img { display: block; width: 100%; margin: 0; }
-.prose figure.wide figcaption {
-  margin-top: .7em; font-size: .82em; color: var(--text-dim); text-align: center;
-}
 
 /* 표·코드블록이 좁은 화면에서 페이지를 밀지 않게 */
 .prose { overflow-wrap: break-word; }
