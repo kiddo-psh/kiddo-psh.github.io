@@ -74,7 +74,15 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
     column-gap: calc(var(--bleed) + 24px);
     justify-content: center;
   }
-  .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
+  /*
+   * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 150px씩 나간다.
+   * 660 + 300 = 960이라 넓은 화면에서는 다이어그램 원본 크기로 보이고, 700px 아래에서는 0이 된다.
+   */
+  .shell.read {
+    --bleed: clamp(0px, calc((100vw - 40px - var(--w-read)) / 2), 150px);
+    grid-template-columns: minmax(0, var(--w-read));
+    justify-content: center;
+  }
 
   header { margin-bottom: 30px; }
   .cat { margin: 0 0 10px; font-size: .74em; font-weight: 800; letter-spacing: .12em; color: var(--accent); }

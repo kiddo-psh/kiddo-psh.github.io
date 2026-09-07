@@ -9,7 +9,9 @@ category: retro
 
 7명이 4주 동안 AI 기반 주차 위반 감지 시스템을 개발했습니다. 차량 추적부터 백엔드, 앱, 관리자 웹까지 파트가 나뉘었고, 팀원 대부분이 Claude Code나 Codex를 개발에 적극적으로 썼어요.
 
-![시스템 구조. 카메라와 센서가 Jetson과 Raspberry Pi를 거쳐 Spring Backend로, 다시 앱과 관리자 웹으로 흐른다](/images/retro/01-system-overview.svg)
+<figure class="wide">
+  <img src="/images/retro/01-system-overview.svg" alt="시스템 구조. 카메라와 센서가 Jetson과 Raspberry Pi를 거쳐 Spring Backend로, 다시 앱과 관리자 웹으로 흐른다" />
+</figure>
 
 프로젝트가 끝난 뒤 Git 이력을 살펴보다가 예상하지 못한 차이를 발견했어요. 같은 팀에서 비슷한 AI 도구를 썼는데, **에이전트를 쓰는 방식은 사람마다 완전히 달랐거든요.** 그리고 그 차이는 코드에 그대로 남아 있었습니다.
 
@@ -17,7 +19,9 @@ category: retro
 
 저장소의 커밋 이력과 브랜치, 문서 파일을 다시 살펴봤어요. 사람마다 에이전트를 쓰는 방식이 세 지점에서 갈렸습니다.
 
-![팀원별 에이전트 워크플로우 비교. A는 바로 구현, B는 스펙과 계획 먼저, C는 도메인 계약 먼저](/images/retro/02-agent-workflows.svg)
+<figure class="wide">
+  <img src="/images/retro/02-agent-workflows.svg" alt="팀원별 에이전트 워크플로우 비교. A는 바로 구현, B는 스펙과 계획 먼저, C는 도메인 계약 먼저" />
+</figure>
 
 ### 코드를 쓰기 전에 무엇을 먼저 쓰는가
 
@@ -55,7 +59,9 @@ Claude Code나 Codex는 저장소 안의 규칙 파일(AGENTS.md, CLAUDE.md)을 
 
 7월 30일 아침, A가 전기차 충전구역 장기 점유 판정 기능을 커밋했어요. 235줄짜리 깔끔한 기능 커밋이었죠. A는 점심 무렵까지 리뷰 지적 세 건을 스스로 고쳤어요. 문제는 그다음이었습니다.
 
-![7월 30일 타임라인과 코드 양 비교. 내 작업 37분, A 브랜치 재작업 5시간 31분. 기능 커밋 235줄 대 재작업 1,402줄](/images/retro/03-ev-branch-timeline.svg)
+<figure class="wide">
+  <img src="/images/retro/03-ev-branch-timeline.svg" alt="7월 30일 타임라인과 코드 양 비교. 내 작업 37분, A 브랜치 재작업 5시간 31분. 기능 커밋 235줄 대 재작업 1,402줄" />
+</figure>
 
 > **Feature: 235 LOC**
 >
@@ -101,7 +107,9 @@ Claude Code나 Codex는 저장소 안의 규칙 파일(AGENTS.md, CLAUDE.md)을 
 
 기본적인 개발 흐름은 다음처럼 잡았어요.
 
-![팀 공통 개발 파이프라인. Task, Spec, Plan, Implement, Test, Review, Merge 일곱 단계와 모든 단계에 적용되는 AGENTS.md](/images/retro/04-team-pipeline.svg)
+<figure class="wide">
+  <img src="/images/retro/04-team-pipeline.svg" alt="팀 공통 개발 파이프라인. Task, Spec, Plan, Implement, Test, Review, Merge 일곱 단계와 모든 단계에 적용되는 AGENTS.md" />
+</figure>
 
 각 단계는 첫 프로젝트에서 생겼던 문제를 줄이기 위한 장치예요.
 
