@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="t1 d1">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="350" viewBox="0 0 960 350" role="img" aria-labelledby="t1 d1">
   <title id="t1">규칙 문서의 역할 계층</title>
-  <desc id="d1">문서를 AI 작업 절차, 규칙, 안내 세 층으로 나눈다. AI 작업 절차 문서는 규칙과 설계 계약을 따르고, 안내 문서는 규칙을 새로 정의하지 않고 규칙 문서를 링크만 한다. 같은 수준의 문서가 다르게 말하면 규칙 문서가 안내 문서보다 우선한다.</desc>
+  <desc id="d1">AI 작업 절차, 규칙, 안내 세 층. AGENTS.md는 규칙 문서와 설계·계약 문서를 따르고, ai-collaboration.md와 서로의 역할을 선언한다. 안내 문서는 규칙을 정의하지 않고 규칙 문서를 링크만 한다.</desc>
   <style>
     :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
     @media (prefers-color-scheme: dark) {
@@ -9,97 +9,56 @@
     text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
     .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "D2Coding", monospace; }
     .bg { fill: var(--bg); }
-    .title { font-size: 20px; font-weight: 700; }
-    .sub { font-size: 13px; fill: var(--ink2); }
-    .band { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
-    .band-label { font-size: 15px; font-weight: 600; }
-    .band-sub { font-size: 12px; fill: var(--ink2); }
-    .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
-    .box.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
-    .box.dashed { stroke-dasharray: 5 4; }
-    .name { font-size: 14px; font-weight: 600; }
-    .desc { font-size: 12px; fill: var(--ink2); }
-    .edge { fill: none; stroke: var(--ink2); stroke-width: 1.6; }
-    .edge.dashed { stroke-dasharray: 6 4; }
+    .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
+    .pill.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .step { font-size: 16px; font-weight: 600; }
+    .who { font-size: 15px; font-weight: 600; }
+    .flow { fill: none; stroke: var(--ink2); stroke-width: 1.5; }
+    .flow.dash { stroke-dasharray: 6 4; }
     .arrow { fill: var(--ink2); }
-    .label { font-size: 12px; fill: var(--ink2); }
-    .label-bg { fill: var(--bg2); }
-    .legend { font-size: 12.5px; fill: var(--ink2); }
-    .note { font-size: 13px; font-weight: 600; }
+    .lbl { font-size: 12px; fill: var(--ink2); }
+    .lg { font-size: 12px; fill: var(--ink2); }
   </style>
   <defs>
-    <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow"/>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
     </marker>
   </defs>
+  <rect class="bg" x="0" y="0" width="960" height="350" rx="12"/>
 
-  <rect class="bg" width="960" height="440"/>
+  <!-- row 1: AI 작업 절차 -->
+  <text class="who" x="30" y="82">AI 작업 절차</text>
+  <rect class="pill hi" x="200" y="50" width="260" height="52" rx="26"/>
+  <text class="mono step" x="330" y="82" text-anchor="middle">AGENTS.md</text>
+  <rect class="pill" x="580" y="50" width="300" height="52" rx="26"/>
+  <text class="mono step" x="730" y="82" text-anchor="middle">ai-collaboration.md</text>
+  <path class="flow" d="M464 76 H576" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="lbl" x="520" y="66" text-anchor="middle">서로의 역할 선언</text>
 
-  <text class="title" x="30" y="36">규칙 문서의 역할 계층</text>
-  <text class="sub" x="30" y="56">절차 문서는 규칙을 따르고, 안내 문서는 규칙을 링크만 한다.</text>
+  <!-- row 2: 규칙 -->
+  <text class="who" x="30" y="182">규칙</text>
+  <rect class="pill" x="200" y="150" width="260" height="52" rx="26"/>
+  <text class="step" x="330" y="182" text-anchor="middle">규칙 · 컨벤션</text>
+  <rect class="pill" x="580" y="150" width="300" height="52" rx="26"/>
+  <text class="step" x="730" y="182" text-anchor="middle">설계 · 계약</text>
 
-  <!-- bands -->
-  <rect class="band" x="170" y="78" width="760" height="92" rx="8"/>
-  <rect class="band" x="170" y="188" width="760" height="92" rx="8"/>
-  <rect class="band" x="170" y="298" width="760" height="92" rx="8"/>
+  <!-- row 3: 안내 -->
+  <text class="who" x="30" y="282">안내</text>
+  <rect class="pill" x="200" y="250" width="260" height="52" rx="26"/>
+  <text class="step" x="330" y="282" text-anchor="middle">README · 절차 안내</text>
 
-  <text class="band-label" x="30" y="118">AI 작업 절차</text>
-  <text class="band-sub" x="30" y="136">시작·수행·검증·보고</text>
-  <text class="band-label" x="30" y="228">규칙</text>
-  <text class="band-sub" x="30" y="246">어떻게 일하고 짓는가</text>
-  <text class="band-label" x="30" y="338">안내</text>
-  <text class="band-sub" x="30" y="356">규칙을 정의하지 않는다</text>
+  <!-- AGENTS.md → 규칙, 설계·계약 -->
+  <path class="flow" d="M290 102 V147" marker-end="url(#ar)"/>
+  <text class="lbl" x="300" y="130">따른다</text>
+  <path class="flow" d="M400 102 V126 H730 V147" marker-end="url(#ar)"/>
 
-  <!-- row 1 -->
-  <rect class="box hi" x="200" y="98" width="230" height="52" rx="6"/>
-  <text class="mono name" x="216" y="120">AGENTS.md</text>
-  <text class="desc" x="216" y="139">AI가 작업 하나를 수행하는 절차</text>
-
-  <rect class="box" x="600" y="98" width="300" height="52" rx="6"/>
-  <text class="mono name" x="616" y="120">ai-collaboration.md</text>
-  <text class="desc" x="616" y="139">여러 작업자와 AI가 동시에 일할 때의 조직</text>
-
-  <line class="edge" x1="434" y1="124" x2="596" y2="124" marker-start="url(#a1)" marker-end="url(#a1)"/>
-  <rect class="label-bg" x="468" y="104" width="94" height="16" rx="3"/>
-  <text class="label" x="515" y="116" text-anchor="middle">서로의 역할 선언</text>
-
-  <!-- row 2 -->
-  <rect class="box" x="200" y="208" width="300" height="52" rx="6"/>
-  <text class="name" x="216" y="230">규칙 문서</text>
-  <text class="desc" x="216" y="249">협업 규칙 · 코드 컨벤션 · 담당 영역</text>
-
-  <rect class="box" x="600" y="208" width="300" height="52" rx="6"/>
-  <text class="name" x="616" y="230">설계·계약 문서</text>
-  <text class="desc" x="616" y="249">요구사항 · API · ERD · ADR</text>
-
-  <!-- row 3 -->
-  <rect class="box" x="200" y="318" width="300" height="52" rx="6"/>
-  <text class="name" x="216" y="340">안내 문서</text>
-  <text class="desc" x="216" y="359">README · 절차 안내 · 도구 사용법</text>
-
-  <rect class="box dashed" x="600" y="318" width="300" height="52" rx="6"/>
-  <text class="mono name" x="616" y="340">docs/README.md</text>
-  <text class="desc" x="616" y="359">문서 역할 표 · 충돌 시 우선순위</text>
-
-  <!-- edges: AGENTS.md -> 규칙, 설계·계약 -->
-  <line class="edge" x1="260" y1="150" x2="260" y2="206" marker-end="url(#a1)"/>
-  <polyline class="edge" points="380,150 380,178 750,178 750,206" marker-end="url(#a1)"/>
-  <rect class="label-bg" x="500" y="170" width="130" height="16" rx="3"/>
-  <text class="label" x="565" y="182" text-anchor="middle">규칙과 계약을 따른다</text>
-  <rect class="label-bg" x="266" y="170" width="50" height="16" rx="3"/>
-  <text class="label" x="291" y="182" text-anchor="middle">따른다</text>
-
-  <!-- edge: 안내 --> 규칙 (dashed, link only) -->
-  <line class="edge dashed" x1="350" y1="318" x2="350" y2="262" marker-end="url(#a1)"/>
-  <rect class="label-bg" x="358" y="282" width="64" height="16" rx="3"/>
-  <text class="label" x="390" y="294" text-anchor="middle">링크만 한다</text>
+  <!-- 안내 --> 규칙 (링크만) -->
+  <path class="flow dash" d="M330 250 V205" marker-end="url(#ar)"/>
+  <text class="lbl" x="340" y="232">링크만 한다</text>
 
   <!-- legend -->
-  <g transform="translate(30,414)">
-    <line class="edge" x1="0" y1="0" x2="36" y2="0" marker-end="url(#a1)"/>
-    <text class="legend" x="44" y="4">규칙·기준을 따른다</text>
-    <line class="edge dashed" x1="190" y1="0" x2="226" y2="0" marker-end="url(#a1)"/>
-    <text class="legend" x="234" y="4">링크만 한다 (규칙을 정의하지 않음)</text>
-    <text class="note" x="560" y="4">충돌하면 고치기 전까지 규칙 문서를 따른다.</text>
-  </g>
+  <path class="flow" d="M30 326 H62" marker-end="url(#ar)"/>
+  <text class="lg" x="70" y="330">규칙을 따른다</text>
+  <path class="flow dash" d="M190 326 H222" marker-end="url(#ar)"/>
+  <text class="lg" x="230" y="330">링크만 한다 · 규칙을 새로 정의하지 않는다</text>
 </svg>
