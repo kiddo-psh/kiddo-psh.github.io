@@ -48,7 +48,8 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
    * 목차가 없는 글은 본문을 가운데 정렬한다.
    */
   .shell { display: grid; margin: 40px 0 0; }
-  .shell.doc { grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
+  /* --bleed: figure.wide가 본문 폭 밖으로 확장하는 폭. 목차와의 간격과 같은 값을 쓴다. */
+  .shell.doc { --bleed: clamp(48px, 7vw, 110px); grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
   /*
    * 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이 사라지고
    * 오른쪽만 비어서 레퍼런스와 반대가 된다.
@@ -59,7 +60,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
    */
   .shell.doc.toc {
     grid-template-columns: minmax(0, var(--w-doc)) minmax(170px, 200px);
-    column-gap: clamp(48px, 7vw, 110px);
+    column-gap: var(--bleed);
     justify-content: center;
   }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
@@ -73,6 +74,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
   /* 1120px 아래에서는 두 칼럼을 유지해도 좌우 여백이 20px대로 눌린다 — 그 전에 접는다 */
   @media (max-width: 1120px) {
+    .shell.doc { --bleed: 0px; }
     .shell.doc.toc {
       grid-template-columns: minmax(0, var(--w-doc));
       gap: 0;

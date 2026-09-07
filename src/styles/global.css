@@ -127,6 +127,19 @@ img { max-width: 100%; height: auto; }
 
 .prose img { border: 1px solid var(--border); border-radius: 10px; margin: 1.6em 0; }
 
+/*
+ * 본문 폭을 넘어 빠져나오는 그림. 마크다운에서 <figure class="wide">로 감싼다.
+ * 확장 폭(--bleed)은 PostLayout이 목차와의 간격과 같은 값으로 정해 주므로
+ * 목차를 침범하지 않는다. 변수가 없는 레이아웃(회고·에세이)에서는 0이다.
+ */
+.prose figure.wide {
+  margin: 1.6em calc(-1 * var(--bleed, 0px));
+}
+.prose figure.wide img { display: block; width: 100%; margin: 0; }
+.prose figure.wide figcaption {
+  margin-top: .7em; font-size: .82em; color: var(--text-dim); text-align: center;
+}
+
 /* 표·코드블록이 좁은 화면에서 페이지를 밀지 않게 */
 .prose { overflow-wrap: break-word; }
 
