@@ -9,8 +9,6 @@
     text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
     .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "D2Coding", monospace; }
     .bg { fill: var(--bg); }
-    .who { font-size: 15px; font-weight: 700; }
-    .who2 { font-size: 12px; fill: var(--ink2); }
     .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
     .card.hi { stroke: var(--blue); stroke-width: 2; }
     .sep { stroke: var(--line); stroke-width: 1; }
@@ -34,11 +32,9 @@
     </marker>
   </defs>
   <rect class="bg" x="0" y="0" width="960" height="450" rx="12"/>
+  <g transform="translate(-50,0)">
 
   <!-- ===== row 1: AI 작업 절차 ===== -->
-  <text class="who" x="30" y="76">AI 작업 절차</text>
-  <text class="who2" x="30" y="94">시작 · 수행 · 검증 · 보고</text>
-
   <rect class="card hi" x="180" y="40" width="280" height="72" rx="10"/>
   <text class="mono fn" x="196" y="64">AGENTS.md</text>
   <line class="sep" x1="180" y1="75" x2="460" y2="75"/>
@@ -53,9 +49,6 @@
   <text class="lbl" x="520" y="78" text-anchor="middle">서로의 역할 선언</text>
 
   <!-- ===== row 2: 규칙 ===== -->
-  <text class="who" x="30" y="214">규칙</text>
-  <text class="who2" x="30" y="232">어떻게 일하고 짓는가</text>
-
   <rect class="card" x="180" y="176" width="280" height="80" rx="10"/>
   <text class="fn" x="196" y="200">규칙 문서</text>
   <line class="sep" x1="180" y1="211" x2="460" y2="211"/>
@@ -71,9 +64,6 @@
   <rect class="chip" x="792" y="219" width="72" height="26" rx="13"/><text class="ct" x="828" y="237" text-anchor="middle">ADR</text>
 
   <!-- ===== row 3: 안내 ===== -->
-  <text class="who" x="30" y="358">안내</text>
-  <text class="who2" x="30" y="376">규칙을 정의하지 않는다</text>
-
   <rect class="card" x="180" y="320" width="280" height="80" rx="10"/>
   <text class="fn" x="196" y="344">README · 절차 안내</text>
   <line class="sep" x1="180" y1="355" x2="460" y2="355"/>
@@ -91,12 +81,13 @@
   <text class="lbl" x="397" y="294">링크만 한다</text>
 
   <!-- ===== legend ===== -->
-  <path class="flow" d="M30 428 H62" marker-end="url(#ar)"/>
-  <text class="lg" x="70" y="432">규칙을 따른다</text>
-  <path class="flow dash" d="M180 428 H212" marker-end="url(#ar)"/>
-  <text class="lg" x="220" y="432">링크만 한다 · 규칙을 새로 정의하지 않는다</text>
-  <rect class="chip" x="480" y="421" width="14" height="14" rx="4"/>
-  <text class="lg" x="502" y="432">규칙의 정의</text>
-  <rect class="chip own" x="600" y="421" width="14" height="14" rx="4"/>
-  <text class="lg" x="622" y="432">그 문서만의 내용</text>
+  <path class="flow" d="M80 428 H112" marker-end="url(#ar)"/>
+  <text class="lg" x="120" y="432">규칙을 따른다</text>
+  <path class="flow dash" d="M230 428 H262" marker-end="url(#ar)"/>
+  <text class="lg" x="270" y="432">링크만 한다 · 규칙을 새로 정의하지 않는다</text>
+  <rect class="chip" x="530" y="421" width="14" height="14" rx="4"/>
+  <text class="lg" x="552" y="432">규칙의 정의</text>
+  <rect class="chip own" x="650" y="421" width="14" height="14" rx="4"/>
+  <text class="lg" x="672" y="432">그 문서만의 내용</text>
+  </g>
 </svg>
