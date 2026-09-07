@@ -48,19 +48,30 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
    * 목차가 없는 글은 본문을 가운데 정렬한다.
    */
   .shell { display: grid; margin: 40px 0 0; }
-  /* --bleed: figure.wide가 본문 폭 밖으로 확장하는 폭. 목차와의 간격과 같은 값을 쓴다. */
-  .shell.doc { --bleed: clamp(48px, 7vw, 110px); grid-template-columns: minmax(0, var(--w-doc)); justify-content: center; }
   /*
-   * 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이 사라지고
-   * 오른쪽만 비어서 레퍼런스와 반대가 된다.
+   * --bleed: figure.wide가 본문 폭 밖으로 좌우 확장하는 폭.
+   * 목차가 없는 글은 본문이 가운데 있으므로 좌우 여백의 전부까지 나갈 수 있다.
+   */
+  .shell.doc {
+    --toc-w: 150px;
+    --bleed: clamp(48px, calc((100vw - 40px - var(--w-doc)) / 2), 180px);
+    grid-template-columns: minmax(0, var(--w-doc));
+    justify-content: center;
+  }
+  /*
+   * 목차가 있는 글: 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이
+   * 사라지고 오른쪽만 비어서 레퍼런스와 반대가 된다.
    *
-   * 사이 여백을 clamp로 둔 이유: 고정값으로 넓게 잡으면 1200px 안팎의 창에서
-   * 본문이 먼저 쪼그라든다. 좁아질 때 여백 → 목차 폭 → 목차 숨김 순으로
-   * 양보하게 만들어 본문 가독성을 마지막까지 지킨다.
+   * 본문과 목차 사이 간격은 --bleed + 24px다(24px는 빠져나온 그림과 목차 사이의 숨 쉴 공간).
+   * 그러면 좌우 여백 = (100vw - 40 - 본문 - bleed - 24 - 목차) / 2 이고, 이 값이 bleed 이상이어야
+   * 왼쪽으로 빠져나온 그림이 화면을 넘지 않는다. 그 조건을 풀면 bleed ≤ (100vw - 64 - 본문 - 목차) / 3.
+   * 창이 넓어질수록 간격·여백·그림이 함께 커지고 목차는 그만큼 오른쪽으로 밀린다.
+   * 좁아지면 간격이 먼저 줄고, 1120px에서 목차를 접는다.
    */
   .shell.doc.toc {
-    grid-template-columns: minmax(0, var(--w-doc)) minmax(170px, 200px);
-    column-gap: var(--bleed);
+    --bleed: clamp(48px, calc((100vw - 64px - var(--w-doc) - var(--toc-w)) / 3), 180px);
+    grid-template-columns: minmax(0, var(--w-doc)) var(--toc-w);
+    column-gap: calc(var(--bleed) + 24px);
     justify-content: center;
   }
   .shell.read { grid-template-columns: minmax(0, var(--w-read)); justify-content: center; }
