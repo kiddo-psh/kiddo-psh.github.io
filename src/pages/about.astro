@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
+import * as si from 'simple-icons';
 
 const projects = [
   {
@@ -29,15 +30,33 @@ const projects = [
   },
 ];
 
-const stacks = [
-  { group: '언어', items: 'Python, Java, TypeScript, SQL' },
-  { group: 'AI·비전', items: 'YOLOv8, ByteTrack, TensorRT, OpenCV, Jetson' },
-  { group: 'LLM', items: 'Claude API, RAG, ChromaDB' },
-  { group: '백엔드', items: 'Spring Boot, JPA, FastAPI' },
-  { group: '프론트엔드', items: 'Vue 3, React' },
-  { group: '데이터', items: 'MySQL, PostgreSQL, Redis' },
-  { group: '인프라', items: 'Docker, GitHub Actions' },
+const stacks: { group: string; items: { name: string; slug?: string }[] }[] = [
+  { group: '언어', items: [
+    { name: 'Python', slug: 'python' }, { name: 'Java', slug: 'openjdk' },
+    { name: 'TypeScript', slug: 'typescript' }, { name: 'SQL' } ] },
+  { group: 'AI·비전', items: [
+    { name: 'YOLOv8' }, { name: 'ByteTrack' }, { name: 'TensorRT', slug: 'nvidia' },
+    { name: 'OpenCV', slug: 'opencv' }, { name: 'Jetson', slug: 'nvidia' } ] },
+  { group: 'LLM', items: [
+    { name: 'Claude API', slug: 'claude' }, { name: 'RAG' }, { name: 'ChromaDB' } ] },
+  { group: '백엔드', items: [
+    { name: 'Spring Boot', slug: 'springboot' }, { name: 'JPA' },
+    { name: 'FastAPI', slug: 'fastapi' } ] },
+  { group: '프론트엔드', items: [
+    { name: 'Vue 3', slug: 'vuedotjs' }, { name: 'React', slug: 'react' } ] },
+  { group: '데이터', items: [
+    { name: 'MySQL', slug: 'mysql' }, { name: 'PostgreSQL', slug: 'postgresql' },
+    { name: 'Redis', slug: 'redis' } ] },
+  { group: '인프라', items: [
+    { name: 'Docker', slug: 'docker' }, { name: 'GitHub Actions', slug: 'githubactions' } ] },
 ];
+
+// simple-icons는 siPython 형태로 내보낸다. 로고가 없는 항목은 글자만 렌더한다.
+const icon = (slug?: string) => {
+  if (!slug) return null;
+  const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1);
+  return (si as Record<string, any>)[key] ?? null;
+};
 
 const timeline = [
   { when: '2026.01 ~', what: '삼성 청년 SW·AI 아카데미 15기' },
@@ -94,7 +113,17 @@ const awards = [
       {stacks.map((s) => (
         <div>
           <dt>{s.group}</dt>
-          <dd>{s.items}</dd>
+          <dd class="chips">
+            {s.items.map((it) => {
+              const ic = icon(it.slug);
+              return (
+                <span class="chip">
+                  {ic && <svg viewBox="0 0 24 24" aria-hidden="true"><path d={ic.path} /></svg>}
+                  {it.name}
+                </span>
+              );
+            })}
+          </dd>
         </div>
       ))}
     </dl>
@@ -144,8 +173,16 @@ const awards = [
   .pj-desc { margin: 7px 0 0; font-size: .9em; line-height: 1.65; }
   .pj-stack { margin: 7px 0 0; font-size: .78em; color: var(--text-dim); }
 
-  .stack { margin: 0; display: grid; gap: 9px; }
-  .stack div { display: flex; gap: 14px; font-size: .93em; }
+  .stack { margin: 0; display: grid; gap: 10px; }
+  .stack > div { display: flex; gap: 14px; font-size: .93em; align-items: baseline; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--bg-elev);
+    font-size: .86em; line-height: 1.4; white-space: nowrap;
+  }
+  .chip svg { width: 13px; height: 13px; flex: 0 0 auto; fill: currentColor; opacity: .72; }
   dt { flex: 0 0 88px; color: var(--text-dim); white-space: nowrap; }
   dt.wide { flex: 0 0 150px; }
   dd { margin: 0; }
