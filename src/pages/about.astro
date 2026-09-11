@@ -15,9 +15,9 @@ const projects = [
     name: 'yumyum (냠냠코치)',
     href: '/projects/yumyum',
     period: '2026.05 ~ 2026.06 · 2인 · 4주',
-    role: 'AI 영양 상담(RAG), 주간 코칭 Agent 구조',
+    role: '2인 팀에서 백엔드·AI·프론트 전반 — 운동 루틴·프로그램, 주간 코칭, AI 상담(RAG)',
     desc: '식단·운동 기록 기반 AI 영양 상담과 주간 코칭 서비스. 고정 DAG로 모든 Agent를 돌리던 구조를, 질문과 기록 상태에 따라 필요한 Agent만 고르는 동적 라우팅으로 바꿨습니다.',
-    stack: 'RAG · Multi-Agent · Claude API',
+    stack: 'Spring Boot · FastAPI · Vue 3 · Claude API · ChromaDB',
   },
   {
     name: 'feelm',
@@ -34,6 +34,7 @@ const stacks = [
   { group: 'AI·비전', items: 'YOLOv8, ByteTrack, TensorRT, OpenCV' },
   { group: 'LLM', items: 'RAG, Multi-Agent, Claude API' },
   { group: '백엔드', items: 'Spring Boot, JPA, FastAPI' },
+  { group: '프론트엔드', items: 'Vue 3, React' },
   { group: '데이터·인프라', items: 'MySQL, Spark/HDFS, Docker, GitHub Actions' },
 ];
 
@@ -56,20 +57,17 @@ const awards = [
 
     <div class="prose">
       <p>
-        카메라 영상에서 "이건 위반이다"를 판정하고, LLM 응답에서 "이건 근거가 약하다"를
-        걸러내는 일을 했습니다. 둘 다 모델을 부르는 것보다 <strong>기준을 정하는 일</strong>이
-        어려웠어요.
+        만드는 일보다 <strong>기준을 정하는 일</strong>이 어렵다고 생각합니다. 무엇을 위반으로 볼지,
+        어떤 근거를 믿을지, 언제 모델을 부르지 않을지. 경계를 정해두지 않으면 코드는 언제나
+        그럴듯한 답을 내놓거든요.
       </p>
       <p>
-        기준은 대체로 회의가 아니라 측정에서 나왔습니다. 이중주차를 몇 초 봐야 확정할지는
-        0.5·1.0·1.5초를 실제 영상에 돌려 오탐과 미탐을 세서 1초로 정했고, 판정 파이프라인이
-        6.5 fps에 머무른 원인도 추측하지 않고 구간별로 재서 찾았어요.
-        <a href="/projects/baro">주차바로</a>에 그 과정을 적어뒀습니다.
+        그래서 세 가지를 지키려고 합니다. 추측한 것은 재보고 나서 말하기. 근거가 없으면 답을
+        만들지 않기. 수치를 주장할 때는 그 수치가 나온 조건을 함께 적기.
       </p>
       <p>
-        그래서 이 블로그에는 "무엇을 만들었다"보다 <strong>무엇을 어떤 근거로 판단했는지</strong>를
-        씁니다. 기술 학습과 트러블슈팅, AI 도구를 개발에 쓰는 방법, 프로젝트 회고, 일하는 방식에
-        대한 생각이 올라옵니다.
+        기능이 되는 것보다 안 될 때 무슨 일이 일어나는지를 먼저 정합니다. 이 블로그에는 무엇을
+        만들었는지보다 <strong>무엇을 어떤 근거로 판단했는지</strong>를 씁니다.
       </p>
     </div>
 
