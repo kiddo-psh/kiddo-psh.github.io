@@ -58,6 +58,33 @@ const icon = (slug?: string) => {
   return (si as Record<string, any>)[key] ?? null;
 };
 
+/*
+ * 브랜드 원색은 테마 한쪽에서 묻힌다. Java(#000000)는 다크 배경에서 대비 1.31,
+ * React(#61DAFB)는 흰 칩 위에서 1.63이다. 칩 배경(--bg-elev)과의 대비가 2.2 미만인
+ * 로고만 그 테마에서 본문 색으로 떨어뜨린다. 나머지는 원색 그대로 간다.
+ */
+const luminance = (hex: string) => {
+  const c = [0, 2, 4]
+    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+const contrast = (a: number, b: number) =>
+  (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+const BG_LIGHT = luminance('ffffff'); // --bg-elev (light)
+const BG_DARK = luminance('211f1c');  // --bg-elev (dark)
+const MIN_CONTRAST = 2.2;
+
+const themeClass = (hex: string) => {
+  const l = luminance(hex);
+  return [
+    contrast(l, BG_LIGHT) < MIN_CONTRAST ? 'no-light' : '',
+    contrast(l, BG_DARK) < MIN_CONTRAST ? 'no-dark' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
+
 const timeline = [
   { when: '2026.01 ~', what: '삼성 청년 SW·AI 아카데미 15기' },
   { when: '2018.03 ~ 2024.02', what: '경희대학교 생체의공학과' },
@@ -118,7 +145,16 @@ const awards = [
               const ic = icon(it.slug);
               return (
                 <span class="chip">
-                  {ic && <svg viewBox="0 0 24 24" aria-hidden="true"><path d={ic.path} /></svg>}
+                  {ic && (
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      class={themeClass(ic.hex)}
+                      style={`--brand:#${ic.hex}`}
+                    >
+                      <path d={ic.path} />
+                    </svg>
+                  )}
                   {it.name}
                 </span>
               );
@@ -182,7 +218,9 @@ const awards = [
     border: 1px solid var(--border); background: var(--bg-elev);
     font-size: .86em; line-height: 1.4; white-space: nowrap;
   }
-  .chip svg { width: 13px; height: 13px; flex: 0 0 auto; fill: currentColor; opacity: .72; }
+  .chip svg { width: 13px; height: 13px; flex: 0 0 auto; fill: var(--brand, currentColor); }
+  :root[data-theme='light'] .chip svg.no-light { fill: currentColor; }
+  :root[data-theme='dark'] .chip svg.no-dark { fill: currentColor; }
   dt { flex: 0 0 88px; color: var(--text-dim); white-space: nowrap; }
   dt.wide { flex: 0 0 150px; }
   dd { margin: 0; }
