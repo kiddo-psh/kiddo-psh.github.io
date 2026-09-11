@@ -2,9 +2,8 @@ export const SITE = {
   url: 'https://kiddo-psh.github.io',
   title: 'kiddo-psh',
   author: 'kiddo-psh',
-  // TODO(본인): 실제 문구로 교체
-  tagline: '백엔드 개발자',
-  description: '백엔드 개발자 kiddo-psh의 기록. 기술, 프로젝트, 회고, 생각을 씁니다.',
+  tagline: 'AI 파이프라인 · 백엔드 개발자',
+  description: '판정 기준을 숫자로 만드는 개발자 kiddo-psh의 기록. 기술, 프로젝트, 회고, 생각을 씁니다.',
   links: {
     github: 'https://github.com/kiddo-psh',
     email: 'asded5655@naver.com',

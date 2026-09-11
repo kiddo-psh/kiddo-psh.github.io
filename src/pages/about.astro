@@ -2,11 +2,51 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
 
-/* TODO(본인): 아래 소개 문단과 기술 스택을 실제 내용으로 교체 */
+const projects = [
+  {
+    name: '주차바로',
+    href: '/projects/baro',
+    period: '2026.07 ~ 2026.08 · 7인 · 6주',
+    role: 'AI 파트(차량 추적·주차 판정 파이프라인), 스크럼 마스터',
+    desc: '천장 카메라와 엣지 AI로 이중주차·전용구역 무단 점유를 감지하고, 개인정보 노출 없이 이동 요청부터 재확인까지 중계하는 서비스.',
+    stack: 'Jetson Orin Nano · YOLOv8 · ByteTrack · TensorRT · FastAPI',
+  },
+  {
+    name: 'yumyum (냠냠코치)',
+    href: '/projects/yumyum',
+    period: '2026.05 ~ 2026.06 · 2인 · 4주',
+    role: 'AI 영양 상담(RAG), 주간 코칭 Agent 구조',
+    desc: '식단·운동 기록 기반 AI 영양 상담과 주간 코칭 서비스. 고정 DAG로 모든 Agent를 돌리던 구조를, 질문과 기록 상태에 따라 필요한 Agent만 고르는 동적 라우팅으로 바꿨습니다.',
+    stack: 'RAG · Multi-Agent · Claude API',
+  },
+  {
+    name: 'feelm',
+    href: '/projects/feelm',
+    period: '2026.08 ~ 진행 중 · 7인',
+    role: '백엔드 계정 도메인·인증 기반',
+    desc: 'MovieLens 32M 평점을 Hadoop/Spark로 처리하는 영화 추천 서비스. 인증은 정상 응답보다 실패·만료·중복·동시 요청을 먼저 명세하고 구현했습니다.',
+    stack: 'Spring Boot · PostgreSQL · Redis · Spark/HDFS',
+  },
+];
+
 const stacks = [
-  { group: '언어', items: ['Java', 'TypeScript', 'SQL'] },
-  { group: '프레임워크', items: ['Spring Boot', 'JPA'] },
-  { group: '인프라', items: ['MySQL', 'Redis', 'Docker', 'GitHub Actions'] },
+  { group: '언어', items: 'Python, Java, TypeScript, SQL' },
+  { group: 'AI·비전', items: 'YOLOv8, ByteTrack, TensorRT, OpenCV' },
+  { group: 'LLM', items: 'RAG, Multi-Agent, Claude API' },
+  { group: '백엔드', items: 'Spring Boot, JPA, FastAPI' },
+  { group: '데이터·인프라', items: 'MySQL, Spark/HDFS, Docker, GitHub Actions' },
+];
+
+const timeline = [
+  { when: '2026.01 ~', what: '삼성 청년 SW·AI 아카데미 15기' },
+  { when: '2018.03 ~ 2024.02', what: '경희대학교 생체의공학과' },
+];
+
+const awards = [
+  { title: '공통 프로젝트 우수상', note: '주차바로 · SSAFY 2학기', href: '/projects/baro' },
+  { title: '관통 프로젝트 최우수상', note: 'yumyum · SSAFY 1학기', href: '/projects/yumyum' },
+  { title: '성적 우수상', note: 'SSAFY 1학기', href: null },
+  { title: '삼성 SW역량테스트 B형 (Professional)', note: '2026.03', href: null },
 ];
 ---
 
@@ -16,28 +56,78 @@ const stacks = [
 
     <div class="prose">
       <p>
-        {SITE.author}입니다. 서버가 왜 느려졌는지 끝까지 파는 일을 좋아합니다.
-        문제를 재현하고 숫자로 확인한 뒤에 고칩니다.
+        카메라 영상에서 "이건 위반이다"를 판정하고, LLM 응답에서 "이건 근거가 약하다"를
+        걸러내는 일을 했습니다. 둘 다 모델을 부르는 것보다 <strong>기준을 정하는 일</strong>이
+        어려웠어요.
       </p>
       <p>
-        이 블로그에는 기술 학습과 트러블슈팅, AI 도구를 개발에 쓰는 방법,
-        프로젝트 회고, 일하는 방식에 대한 생각을 씁니다.
+        기준은 대체로 회의가 아니라 측정에서 나왔습니다. 이중주차를 몇 초 봐야 확정할지는
+        0.5·1.0·1.5초를 실제 영상에 돌려 오탐과 미탐을 세서 1초로 정했고, 판정 파이프라인이
+        6.5 fps에 머무른 원인도 추측하지 않고 구간별로 재서 찾았어요.
+        <a href="/projects/baro">주차바로</a>에 그 과정을 적어뒀습니다.
+      </p>
+      <p>
+        그래서 이 블로그에는 "무엇을 만들었다"보다 <strong>무엇을 어떤 근거로 판단했는지</strong>를
+        씁니다. 기술 학습과 트러블슈팅, AI 도구를 개발에 쓰는 방법, 프로젝트 회고, 일하는 방식에
+        대한 생각이 올라옵니다.
       </p>
     </div>
+
+    <h2>프로젝트</h2>
+    <ul class="pj">
+      {projects.map((p) => (
+        <li>
+          <div class="pj-hd">
+            <span class="pj-nm">
+              {p.href ? <a href={p.href}>{p.name}</a> : p.name}
+            </span>
+            <span class="pj-pd">{p.period}</span>
+          </div>
+          <p class="pj-role">{p.role}</p>
+          <p class="pj-desc">{p.desc}</p>
+          <p class="pj-stack">{p.stack}</p>
+        </li>
+      ))}
+    </ul>
 
     <h2>기술 스택</h2>
     <dl class="stack">
       {stacks.map((s) => (
         <div>
           <dt>{s.group}</dt>
-          <dd>{s.items.join(', ')}</dd>
+          <dd>{s.items}</dd>
         </div>
       ))}
     </dl>
 
+    <h2>이력</h2>
+    <dl class="stack">
+      {timeline.map((t) => (
+        <div>
+          <dt class="wide">{t.when}</dt>
+          <dd>{t.what}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <h2>수상·자격</h2>
+    <ul class="awards">
+      {awards.map((a) => (
+        <li>
+          {a.href ? <a href={a.href}>{a.title}</a> : <span>{a.title}</span>}
+          <small>{a.note}</small>
+        </li>
+      ))}
+    </ul>
+    <details class="certs">
+      <summary>그 외 자격증</summary>
+      <p>정보처리기사 (2026.09) · SQLD (2026.06) · ADsP (2026.06) · OPIc IH (2025.09)</p>
+    </details>
+
     <h2>연락</h2>
     <ul class="links">
       <li><a href={SITE.links.github}>GitHub</a></li>
+      <li><a href="https://solved.ac/asded3563">solved.ac</a></li>
       <li><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}</a></li>
     </ul>
   </div>
@@ -47,10 +137,37 @@ const stacks = [
   /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
   h1 { font-size: 1.6em; margin: 40px 0 20px; }
   h2 { font-size: 1.05em; margin: 40px 0 12px; }
+
+  .pj { list-style: none; margin: 0; padding: 0; }
+  .pj > li { padding: 14px 0; border-top: 1px solid var(--border); }
+  .pj > li:last-child { border-bottom: 1px solid var(--border); }
+  .pj-hd { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .pj-nm { font-weight: 800; font-size: .98em; }
+  .pj-pd { font-size: .8em; color: var(--text-dim); margin-left: auto; }
+  .pj-role { margin: 4px 0 0; font-size: .85em; color: var(--accent); }
+  .pj-desc { margin: 7px 0 0; font-size: .9em; line-height: 1.65; }
+  .pj-stack { margin: 7px 0 0; font-size: .78em; color: var(--text-dim); }
+
   .stack { margin: 0; display: grid; gap: 9px; }
   .stack div { display: flex; gap: 14px; font-size: .93em; }
   dt { flex: 0 0 72px; color: var(--text-dim); }
+  dt.wide { flex: 0 0 148px; }
   dd { margin: 0; }
+
+  .awards { list-style: none; margin: 0; padding: 0; font-size: .93em; }
+  .awards li { padding: 4px 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .awards small { font-size: .82em; color: var(--text-dim); }
+
+  .certs { margin-top: 14px; font-size: .88em; }
+  .certs summary { color: var(--text-dim); cursor: pointer; }
+  .certs p { margin: 8px 0 0; color: var(--text-dim); }
+
   .links { list-style: none; margin: 0; padding: 0; font-size: .93em; }
   .links li { padding: 3px 0; }
+
+  @media (max-width: 560px) {
+    .pj-pd { margin-left: 0; }
+    .stack div { flex-direction: column; gap: 2px; }
+    dt, dt.wide { flex: none; }
+  }
 </style>
