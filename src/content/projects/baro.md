@@ -16,6 +16,9 @@ stack:
   - Vue 3
 featured: true
 order: 1
+relatedPosts:
+  - seven-person-team-retrospective
+  - claude-code-retrospective
 ---
 
 > **한 줄 요약.** 아파트 주차장의 이중주차·전용구역 무단 점유를 천장 카메라와 엣지 AI로 자동 감지하고, 차주 개인정보를 노출하지 않은 채 이동 요청부터 이동 확인까지 중계하는 서비스.
@@ -149,8 +152,3 @@ Jetson에 처음 올렸을 때 처리율이 6.5 fps, 프레임당 약 154 ms였�
 **라이브러리 기본값의 단위를 확인하라.** 120초라고 믿었던 값이 6초였어요. 설정값이 기대대로 동작하는지는 재현으로 확인해야 하고, 확인했다면 그 재현을 테스트로 남겨야 해요.
 
 **측정 도구도 코드다.** 임계값을 실측하려고 만든 측정 스크립트가 항상 빈 결과를 내고 있었어요. 그걸 데이터(1,891건 중 후보 0건)로 알아챘죠. 측정값을 믿기 전에 측정 도구를 먼저 의심해야 합니다.
-
-## 관련 회고
-
-- [7명이 모이면 더 좋은 결정을 할 수 있을까](/posts/seven-person-team-retrospective)
-- [같은 Claude Code를 썼는데 왜 코드는 달랐을까](/posts/claude-code-retrospective)

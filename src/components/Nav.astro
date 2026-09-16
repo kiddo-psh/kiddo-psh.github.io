@@ -1,16 +1,40 @@
 ---
 import { SITE } from '../site.config';
 import ThemeToggle from './ThemeToggle.astro';
+
+const LINKS = [
+  { href: '/posts', label: '글' },
+  { href: '/ai-briefing', label: '브리핑' },
+  { href: '/projects', label: '프로젝트' },
+  { href: '/about', label: '소개' },
+];
+
+// 글 상세(/posts/…)에서도 "글"이 켜지도록 접두사까지 본다.
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
 <header>
   <nav class="page">
-    <a class="brand" href="/">{SITE.title}</a>
-    <a href="/posts">글</a>
-    <a href="/projects">프로젝트</a>
-    <a href="/about">소개</a>
+    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}>{SITE.title}</a>
+    {LINKS.map((l) => (
+      <a href={l.href} class:list={[{ on: isOn(l.href) }]} aria-current={isOn(l.href) ? 'page' : undefined}>
+        {l.label}
+      </a>
+    ))}
     <div class="right">
-      <a href="/search" aria-label="검색">⌕</a>
+      <a
+        href="/search"
+        aria-label="검색"
+        title="검색 (Ctrl/⌘ K)"
+        class:list={['icon', { on: isOn('/search') }]}
+      >
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+        </svg>
+      </a>
       <ThemeToggle />
     </div>
   </nav>
@@ -18,13 +42,67 @@ import ThemeToggle from './ThemeToggle.astro';
 
 <style>
   header { border-bottom: 1px solid var(--border); }
-  nav { display: flex; align-items: center; gap: 12px; height: 54px; font-size: 14px; }
-  .brand { color: var(--text); font-weight: 800; margin-right: 6px; }
-  nav a { color: var(--text-dim); }
-  nav a:hover { color: var(--text); text-decoration: none; }
-  .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
-  @media (max-width: 360px) {
-    nav { font-size: 12.5px; }
+  /*
+   * 링크가 헤더 높이를 통째로 쓰게 해서 누를 곳을 넓힌다. 전에는 글자 높이(25px)만
+   * 차지해서 "검색"이 8x25px이었다 — WCAG 2.5.8의 24x24를 못 넘긴다.
+   * min-width는 "글"처럼 두 글자보다 짧은 라벨을 위한 것이다.
+   */
+  nav { display: flex; align-items: stretch; gap: var(--space-05); height: 54px; font-size: var(--fs-300); }
+  nav a {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; padding: 0 var(--space-2);
+    color: var(--text-dim);
+    transition: color var(--dur) var(--ease);
+  }
+  nav a:hover { color: var(--text); text-decoration: none; }
+  .brand { color: var(--text); font-weight: 800; margin-right: var(--space-1); }
+
+  /*
+   * 현재 섹션 표시. 헤더 아래 테두리 위에 액센트 막대를 겹쳐 놓는다 —
+   * 글자색만 바꾸면 라이트 모드에서 hover와 구분되지 않는다.
+   */
+  nav a.on { color: var(--text); }
+  nav a.on:not(.brand) { position: relative; font-weight: 600; }
+  nav a.on:not(.brand)::after {
+    content: ''; position: absolute; left: var(--space-2); right: var(--space-2); bottom: -1px;
+    height: 2px; background: var(--accent);
+  }
+
+  .right { margin-left: auto; display: flex; align-items: stretch; gap: var(--space-05); }
+  .icon { padding: 0 var(--space-2); }
+  .icon svg { display: block; }
+
+  @media (max-width: 420px) {
+    nav { gap: 0; font-size: var(--fs-200); }
+    nav a { padding: 0 var(--space-1); }
+    .brand { margin-right: 0; }
+    nav a.on:not(.brand)::after { left: var(--space-1); right: var(--space-1); }
   }
 </style>
+
+<script>
+  /*
+   * 검색 단축키를 전역에 둔다. 전에는 /search 안 입력창에만 "Ctrl K" 힌트가 있었고
+   * 정작 단축키는 어디에도 없었다 — 이미 검색창에 들어온 사람에게만 알려주는 꼴이었다.
+   */
+  function focusSearchbox(): boolean {
+    const box = document.querySelector('pagefind-searchbox');
+    if (!box) return false;
+    const input =
+      box.querySelector('input') ??
+      box.shadowRoot?.querySelector('input') ??
+      null;
+    if (!input) return false;
+    input.focus();
+    input.select();
+    return true;
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() !== 'k' || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    e.preventDefault();
+    // 이미 검색 페이지면 입력창으로만 보낸다. 아직 커스텀 엘리먼트가 안 떴으면 이동.
+    if (!focusSearchbox()) window.location.href = '/search';
+  });
+</script>

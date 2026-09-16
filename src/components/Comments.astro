@@ -9,40 +9,49 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 
 {enabled && (
   <section class="comments" aria-label="댓글">
-    <script is:inline>
-      // giscus 로더 스크립트가 실행되기 전에 초기 테마를 정해서,
-      // 다크 모드 독자에게 라이트로 부팅되는 깜빡임을 막는다.
-      // (BaseLayout의 인라인 테마 스크립트와 동일한 우선순위: 저장값 → prefers-color-scheme)
+    <script is:inline define:vars={{ giscus: g }}>
+      /*
+       * giscus 로더를 마크업이 아니라 여기서 만들어 붙인다.
+       * 로더 <script>를 마크업에 두고 형제 참조로 data-theme을 꽂으려 하면,
+       * 이 인라인 스크립트가 실행되는 시점에 그 형제가 아직 파싱되지 않아
+       * null이다. 로더가 이미 뜬 뒤에 테마를 바꿔봐야 늦다 —
+       * 다크 모드 독자가 라이트로 부팅된 댓글창을 한 번 보게 된다.
+       * (초기 테마 우선순위는 BaseLayout의 인라인 테마 스크립트와 같다: 저장값 → prefers-color-scheme)
+       */
       (function () {
         const saved = localStorage.getItem('theme');
         const dark = saved
           ? saved === 'dark'
           : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.currentScript.nextElementSibling.dataset.theme = dark ? 'dark' : 'light';
+
+        const loader = document.createElement('script');
+        loader.src = 'https://giscus.app/client.js';
+        loader.async = true;
+        loader.crossOrigin = 'anonymous';
+        Object.assign(loader.dataset, {
+          repo: giscus.repo,
+          repoId: giscus.repoId,
+          category: giscus.category,
+          categoryId: giscus.categoryId,
+          mapping: 'pathname',
+          strict: '1',
+          reactionsEnabled: '1',
+          emitMetadata: '0',
+          inputPosition: 'top',
+          lang: 'ko',
+          loading: 'lazy',
+          theme: dark ? 'dark' : 'light',
+        });
+
+        // giscus는 자기 <script> 바로 뒤에 iframe을 꽂는다 — 이 섹션 안에 붙여야 한다.
+        document.currentScript.parentElement.appendChild(loader);
       })();
     </script>
-    <script
-      is:inline
-      src="https://giscus.app/client.js"
-      data-repo={g.repo}
-      data-repo-id={g.repoId}
-      data-category={g.category}
-      data-category-id={g.categoryId}
-      data-mapping="pathname"
-      data-strict="1"
-      data-reactions-enabled="1"
-      data-emit-metadata="0"
-      data-input-position="top"
-      data-lang="ko"
-      data-loading="lazy"
-      crossorigin="anonymous"
-      async
-    ></script>
   </section>
 )}
 
 <style>
-  .comments { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--border); }
+  .comments { margin-top: var(--space-14); padding-top: var(--space-6); border-top: 1px solid var(--border); }
 </style>
 
 <script>

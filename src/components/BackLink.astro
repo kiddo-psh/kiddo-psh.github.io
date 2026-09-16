@@ -1,0 +1,22 @@
+---
+/*
+ * 상세 페이지의 탈출구. 전에는 브리핑 상세에만 있어서, 검색이나 공유 링크로
+ * 글·프로젝트에 바로 들어온 사람은 상단 내비 말고는 목록으로 갈 길이 없었다.
+ */
+interface Props { href: string; label: string }
+const { href, label } = Astro.props;
+---
+
+<a class="back" href={href}>
+  <span aria-hidden="true">←</span>{label}
+</a>
+
+<style>
+  .back {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    color: var(--text-dim); font-size: var(--fs-300);
+    transition: color var(--dur) var(--ease);
+  }
+  .back:hover { color: var(--accent); text-decoration: none; }
+</style>

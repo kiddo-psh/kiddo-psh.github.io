@@ -9,7 +9,7 @@ const posts = await getVisiblePosts();
 
 <BaseLayout title="글" description="기술, AI 개발, 회고, 생각">
   <div class="page">
-    <h1>글</h1>
+    <h1 class="page-title">글</h1>
     <CategoryTabs active="all" />
     <div id="list" class="post-list">
       {posts.map((post) => (
@@ -22,9 +22,7 @@ const posts = await getVisiblePosts();
   </div>
 </BaseLayout>
 
-<style>
-  h1 { font-size: 1.6em; margin: 34px 0 18px; }
-</style>
+
 
 <script>
   function applyFilter() {

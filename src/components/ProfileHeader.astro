@@ -17,12 +17,12 @@ const { projectCount } = Astro.props;
 </div>
 
 <style>
-  .prof { display: flex; align-items: center; gap: 12px; margin: 36px 0 26px; }
+  .prof { display: flex; align-items: center; gap: var(--space-3); margin: var(--space-8) 0 var(--space-6); }
   .av {
-    width: 44px; height: 44px; border-radius: 50%; flex: 0 0 auto;
+    width: 44px; height: 44px; border-radius: var(--radius-full); flex: 0 0 auto;
     background: linear-gradient(135deg, var(--accent), var(--border));
   }
-  .nm { margin: 0; font-size: 1em; font-weight: 800; }
-  .tg { font-size: .88em; color: var(--text-dim); margin-top: 2px; }
-  .more { margin-left: auto; font-size: .85em; }
+  .nm { margin: 0; font-size: var(--fs-500); font-weight: 800; }
+  .tg { font-size: var(--fs-400); color: var(--text-dim); margin-top: var(--space-05); }
+  .more { margin-left: auto; font-size: var(--fs-300); }
 </style>

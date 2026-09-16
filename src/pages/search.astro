@@ -1,20 +1,46 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
+import { getVisiblePosts, readingMinutes } from '../lib/posts';
+import { CATEGORIES, getCategory } from '../site.config';
+
+const recent = (await getVisiblePosts()).slice(0, 5);
 ---
 
 <BaseLayout title="검색" description="사이트 내 글 검색">
   <div class="page w-doc">
-    <h1>검색</h1>
+    <h1 class="page-title">검색</h1>
     <noscript>검색에는 자바스크립트가 필요합니다. <a href="/posts">글 목록에서 분류별로 둘러보세요</a>.</noscript>
     <PagefindConfig />
     <pagefind-searchbox></pagefind-searchbox>
+
+    {/*
+      검색어를 넣기 전의 화면. 전에는 입력창 하나뿐이라 백지였다.
+      Pagefind 결과는 입력창 아래로 겹쳐 뜨므로 이 블록을 가려도 된다.
+    */}
+    <section class="start" aria-label="둘러보기">
+      <nav class="cats" aria-label="분류">
+        {CATEGORIES.map((c) => (
+          <a class="chip" href={`/posts?category=${c.id}`}>{c.name}</a>
+        ))}
+      </nav>
+
+      <h2 class="section-label">최근 글</h2>
+      <ul class="recent">
+        {recent.map((p) => (
+          <li>
+            <a href={`/posts/${p.id}`}>{p.data.title}</a>
+            <span class="meta">
+              {getCategory(p.data.category).label} · {readingMinutes(p.body)}분
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   </div>
 </BaseLayout>
 
 <style>
-  h1 { font-size: 1.6em; margin: 34px 0 18px; }
-
   /*
    * Pagefind 1.5+ 컴포넌트 UI는 --pf-* 커스텀 프로퍼티로 테마를 받는다
    * (구 Search.astro 번들 UI의 --pagefind-ui-* 와는 이름이 다르다).
@@ -34,5 +60,26 @@ import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
     --pf-font: var(--font-sans);
     --pf-searchbox-max-width: 100%;
     display: block;
+  }
+
+  .start { margin-top: var(--space-8); }
+
+  /* 칩은 CategoryTabs와 같은 모양이어야 한다 — .chip 유틸리티를 쓴다 */
+  .cats { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+  h2 { margin-top: var(--space-8); }
+
+  .recent { list-style: none; margin: 0; padding: 0; }
+  .recent li {
+    display: flex; align-items: baseline; gap: var(--space-3);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--border);
+  }
+  .recent a { color: var(--text); font-weight: 600; font-size: var(--fs-400); transition: color var(--dur) var(--ease); }
+  .recent a:hover { color: var(--accent); text-decoration: none; }
+  .recent .meta { margin-left: auto; flex: 0 0 auto; font-size: var(--fs-200); color: var(--text-dim); }
+
+  @media (max-width: 560px) {
+    .recent li { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+    .recent .meta { margin-left: 0; }
   }
 </style>

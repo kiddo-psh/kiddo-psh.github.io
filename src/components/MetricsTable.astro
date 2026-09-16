@@ -26,14 +26,14 @@ const shown = metrics;
 
 <style>
   .metrics {
-    display: grid; gap: 12px;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    margin: 24px 0 30px;
+    display: grid; gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+    margin: var(--space-6) 0 var(--space-8);
   }
-  .m { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--bg-elev); }
-  .lbl { font-size: .76em; color: var(--text-dim); margin-bottom: 5px; }
-  .val { display: flex; align-items: baseline; gap: 7px; }
-  s { color: var(--text-dim); opacity: .7; font-size: .86em; text-decoration: line-through; }
-  .arrow { color: var(--text-dim); font-size: .8em; }
-  b { color: var(--accent); font-size: 1.16em; font-weight: 800; letter-spacing: -.02em; }
+  .m { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4); background: var(--bg-elev); }
+  .lbl { font-size: var(--fs-300); color: var(--text-dim); margin-bottom: var(--space-1); }
+  .val { display: flex; align-items: baseline; gap: var(--space-2); }
+  s { color: var(--text-dim); opacity: .7; font-size: var(--fs-300); text-decoration: line-through; }
+  .arrow { color: var(--text-dim); font-size: var(--fs-200); }
+  b { color: var(--accent); font-size: var(--fs-600); font-weight: 800; letter-spacing: var(--ls-snug); }
 </style>

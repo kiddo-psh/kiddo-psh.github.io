@@ -1,45 +1,79 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import BackLink from '../components/BackLink.astro';
+import RelatedLinks from '../components/RelatedLinks.astro';
+import { getVisiblePosts, readingMinutes } from '../lib/posts';
+import { getCategory } from '../site.config';
 
-interface Props { project: CollectionEntry<'projects'> }
-const { project } = Astro.props;
+interface Props { project: CollectionEntry<'projects'>; headings: MarkdownHeading[] }
+const { project, headings } = Astro.props;
 const d = project.data;
+
+const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const showToc = tocItems.length > 0;
+
+// frontmatter의 relatedPosts를 실제 글로 바꾼다. 없는 slug는 조용히 버린다.
+const all = await getVisiblePosts();
+const related = (d.relatedPosts ?? [])
+  .map((id) => all.find((p) => p.id === id))
+  .filter((p): p is (typeof all)[number] => Boolean(p))
+  .map((p) => ({
+    href: `/posts/${p.id}`,
+    label: p.data.title,
+    meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
+  }));
 ---
 
 <BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
-  <div class="page w-doc">
-    <article data-pagefind-body>
-      <h1>{d.title}</h1>
+  <div class="page-wide">
+    <div class:list={['shell', 'doc', { toc: showToc }]}>
+      <article data-pagefind-body>
+        <BackLink href="/projects" label="프로젝트" />
+        <h1 class="page-title">{d.title}</h1>
 
-      <dl class="facts">
-        <div><dt>기간</dt><dd>{d.period}</dd></div>
-        <div><dt>역할</dt><dd>{d.role}</dd></div>
-        <div><dt>기술</dt><dd>{d.stack.join(', ')}</dd></div>
-        {(d.repo || d.demo) && (
-          <div>
-            <dt>링크</dt>
-            <dd>
-              {d.repo && <a href={d.repo}>GitHub</a>}
-              {d.repo && d.demo && ' · '}
-              {d.demo && <a href={d.demo}>Demo</a>}
-            </dd>
-          </div>
-        )}
-      </dl>
+        <dl class="facts">
+          <div><dt>기간</dt><dd>{d.period}</dd></div>
+          <div><dt>역할</dt><dd>{d.role}</dd></div>
+          <div><dt>기술</dt><dd>{d.stack.join(', ')}</dd></div>
+          {(d.repo || d.demo) && (
+            <div>
+              <dt>링크</dt>
+              <dd>
+                {d.repo && <a href={d.repo}>GitHub</a>}
+                {d.repo && d.demo && ' · '}
+                {d.demo && <a href={d.demo}>Demo</a>}
+              </dd>
+            </div>
+          )}
+        </dl>
 
-      <MetricsTable metrics={d.metrics} />
+        <MetricsTable metrics={d.metrics} />
 
-      <div class="prose"><slot /></div>
-    </article>
+        <div class="prose"><slot /></div>
+
+        <RelatedLinks title="관련 회고" links={related} />
+      </article>
+
+      {/* 목차를 본문 뒤에 둔다 — 키보드·스크린리더 사용자가 목차 링크를 먼저 지나지 않는다 */}
+      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  h1 { margin: 40px 0 10px; font-size: 1.8em; letter-spacing: -.025em; }
-  .facts { margin: 0 0 4px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; gap: 9px; }
-  .facts div { display: flex; gap: 12px; font-size: .89em; }
+  /* 제목 위 여백은 BackLink가 만든다 */
+  .page-title { margin-top: 0; }
+
+  .facts {
+    margin: 0 0 var(--space-1); padding: var(--space-4) 0;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    display: grid; gap: var(--space-2);
+  }
+  .facts div { display: flex; gap: var(--space-3); font-size: var(--fs-400); }
   dt { flex: 0 0 52px; color: var(--text-dim); }
   dd { margin: 0; }
 </style>

@@ -2,7 +2,8 @@
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
-import RelatedPosts from '../components/RelatedPosts.astro';
+import RelatedLinks from '../components/RelatedLinks.astro';
+import BackLink from '../components/BackLink.astro';
 import Comments from '../components/Comments.astro';
 import { getCategory } from '../site.config';
 import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
@@ -14,7 +15,11 @@ const cat = getCategory(post.data.category);
 const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const isDoc = cat.layout === 'doc';           // controls width and lead font
 const showToc = isDoc && tocItems.length > 0; // controls the aside and the grid columns
-const related = await getRelatedPosts(post);
+const related = (await getRelatedPosts(post)).map((p) => ({
+  href: `/posts/${p.id}`,
+  label: p.data.title,
+  meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
+}));
 const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
 const minutes = readingMinutes(post.body);
 const ogImage = post.data.cover ?? `/og/${post.id}.png`;
@@ -24,6 +29,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
   <div class="page-wide">
     <div class:list={['shell', isDoc ? 'doc' : 'read', { toc: showToc }]}>
       <article data-pagefind-body>
+        <BackLink href="/posts" label="글" />
         <header>
           <p class="cat">{cat.label}</p>
           <h1>{post.data.title}</h1>
@@ -32,7 +38,7 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
         <div class="prose"><slot /></div>
 
-        <RelatedPosts posts={related} />
+        <RelatedLinks title="같은 분류의 다른 글" links={related} />
         <Comments slug={post.id} />
       </article>
 
@@ -43,63 +49,11 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 </BaseLayout>
 
 <style>
-  /*
-   * 목차가 있는 글: 본문을 왼쪽에 두고 목차를 오른쪽에, 사이를 넓게 벌린다.
-   * 목차가 없는 글은 본문을 가운데 정렬한다.
-   */
-  .shell { display: grid; margin: 40px 0 0; }
-  /*
-   * --bleed: figure.wide가 본문 폭 밖으로 좌우 확장하는 폭.
-   * 목차가 없는 글은 본문이 가운데 있으므로 좌우 여백의 전부까지 나갈 수 있다.
-   */
-  .shell.doc {
-    --toc-w: 150px;
-    --bleed: clamp(48px, calc((100vw - 40px - var(--w-doc)) / 2), 180px);
-    grid-template-columns: minmax(0, var(--w-doc));
-    justify-content: center;
-  }
-  /*
-   * 목차가 있는 글: 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이
-   * 사라지고 오른쪽만 비어서 레퍼런스와 반대가 된다.
-   *
-   * 본문과 목차 사이 간격은 --bleed + 24px다(24px는 빠져나온 그림과 목차 사이의 숨 쉴 공간).
-   * 그러면 좌우 여백 = (100vw - 40 - 본문 - bleed - 24 - 목차) / 2 이고, 이 값이 bleed 이상이어야
-   * 왼쪽으로 빠져나온 그림이 화면을 넘지 않는다. 그 조건을 풀면 bleed ≤ (100vw - 64 - 본문 - 목차) / 3.
-   * 창이 넓어질수록 간격·여백·그림이 함께 커지고 목차는 그만큼 오른쪽으로 밀린다.
-   * 좁아지면 간격이 먼저 줄고, 1120px에서 목차를 접는다.
-   */
-  .shell.doc.toc {
-    --bleed: clamp(48px, calc((100vw - 64px - var(--w-doc) - var(--toc-w)) / 3), 180px);
-    grid-template-columns: minmax(0, var(--w-doc)) var(--toc-w);
-    column-gap: calc(var(--bleed) + 24px);
-    justify-content: center;
-  }
-  /*
-   * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 150px씩 나간다.
-   * 660 + 300 = 960이라 넓은 화면에서는 다이어그램 원본 크기로 보이고, 700px 아래에서는 0이 된다.
-   */
-  .shell.read {
-    --bleed: clamp(0px, calc((100vw - 40px - var(--w-read)) / 2), 150px);
-    grid-template-columns: minmax(0, var(--w-read));
-    justify-content: center;
-  }
+  header { margin-bottom: var(--space-8); }
+  .cat { margin: 0 0 var(--space-3); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); color: var(--accent); }
+  h1 { margin: 0 0 var(--space-4); font-size: var(--fs-900); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+  .date { margin: 0; padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); font-size: var(--fs-300); color: var(--text-dim); }
 
-  header { margin-bottom: 30px; }
-  .cat { margin: 0 0 10px; font-size: .74em; font-weight: 800; letter-spacing: .12em; color: var(--accent); }
-  h1 { margin: 0 0 14px; font-size: 2.1em; line-height: 1.32; letter-spacing: -.03em; }
-  .date { margin: 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); font-size: .8em; color: var(--text-dim); }
+  .shell.read .prose { line-height: var(--lh-loose); }
 
-  .shell.read .prose { line-height: 1.95; }
-
-  /* 1120px 아래에서는 두 칼럼을 유지해도 좌우 여백이 20px대로 눌린다 — 그 전에 접는다 */
-  @media (max-width: 1120px) {
-    /* .doc.toc가 자기 --bleed(최소 48px)를 갖고 있으므로 둘 다 0으로 눌러야 모바일에서 그림이 넘치지 않는다 */
-    .shell.doc, .shell.doc.toc { --bleed: 0px; }
-    .shell.doc.toc {
-      grid-template-columns: minmax(0, var(--w-doc));
-      gap: 0;
-      justify-content: center;
-    }
-    .side { display: none; }
-  }
 </style>

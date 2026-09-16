@@ -12,18 +12,40 @@ html { color-scheme: light dark; }
 :root[data-theme='light'] { color-scheme: light; }
 :root[data-theme='dark'] { color-scheme: dark; }
 
+/*
+ * 푸터를 화면 바닥에 붙인다. 검색 첫 화면·404·결과가 적은 필터처럼 내용이
+ * 짧은 페이지에서 푸터가 중간에 뜨고 그 아래로 빈 배경이 깔리는 걸 막는다.
+ */
 body {
   margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 19px;
-  line-height: 1.8;
+  font-size: var(--fs-500);
+  line-height: var(--lh-relaxed);
   -webkit-font-smoothing: antialiased;
 }
+main { flex: 1 0 auto; }
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
+
+/*
+ * 포커스 링. 전에는 규칙이 하나도 없어서 브라우저 기본에만 기댔다 —
+ * outline: none을 지운 적이 없으니 깨지진 않았지만, 키보드로 도는 동안만
+ * 디자인 밖으로 나갔다. :focus-visible이라 마우스 클릭에는 뜨지 않는다.
+ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+/* 칩·카드는 자기 모서리를 그대로 따라가게 한다 */
+.chip:focus-visible { border-radius: var(--radius-pill); }
 
 img { max-width: 100%; height: auto; }
 
@@ -33,21 +55,139 @@ img { max-width: 100%; height: auto; }
 .w-read { max-width: var(--w-read); }
 
 /*
+ * 좁은 본문도 시작선은 헤더·푸터와 같은 1100 그리드에 맞춘다.
+ * 가운데 정렬로 두면 소개(660)·프로젝트(760)·글 목록(1100)을 오갈 때
+ * 헤더는 가만히 있는데 본문 덩어리만 좌우로 튄다.
+ * 화면이 1100보다 좁으면 max()가 0을 골라 .page 기본 동작으로 돌아간다.
+ */
+.page.w-doc,
+.page.w-read {
+  margin-left: max(0px, calc((100% - var(--w-page)) / 2));
+  margin-right: auto;
+}
+
+/*
+ * 페이지 제목과 섹션 라벨.
+ *
+ * 전에는 페이지마다 h1 규칙을 따로 썼고, 그래서 1.5em/1.6em(28.5/30.4px)과
+ * 34/40px 여백이 섞여 있었다. 섹션 라벨은 더 심해서 홈 한 페이지 안에서도
+ * "AI 브리핑"(24.3px 잉크색)과 "프로젝트"(14.8px 흐린색)가 같은 층위인데
+ * 다르게 보였다. 두 역할을 여기서 한 번만 정의하고 각 페이지는 클래스만 붙인다.
+ */
+.page-title {
+  margin: var(--space-8) 0 var(--space-5);
+  font-size: var(--fs-800); line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight); font-weight: 700;
+}
+/*
+ * 칩. 한때 분류 탭(radius 20px)·브리핑 필터(100px)·기술 스택(999px)·검색 분류가
+ * 각자 다른 radius·크기·padding으로 네 벌 있었다. 모양은 여기서만 정한다.
+ * 변형은 배경이나 안쪽 요소만 덧붙이고 기하는 건드리지 않는다.
+ */
+.chip {
+  display: inline-flex; align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border); border-radius: var(--radius-pill);
+  background: var(--code-bg); color: var(--text-dim);
+  font: inherit; font-size: var(--fs-300); line-height: var(--lh-normal);
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+button.chip { cursor: pointer; }
+a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decoration: none; }
+/* 선택 상태. 탭은 .on, 필터 버튼은 aria-pressed를 쓴다 */
+.chip.on, .chip[aria-pressed='true'] {
+  background: var(--text); color: var(--bg); border-color: var(--text);
+}
+/* 칩 안의 개수 */
+.chip .count { margin-left: var(--space-1); opacity: .65; font-size: var(--fs-100); }
+
+.section-label {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-200); font-weight: 800;
+  letter-spacing: var(--ls-label); line-height: var(--lh-normal);
+  color: var(--text-dim);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   문서 껍데기. 글 상세와 프로젝트 상세가 같이 쓴다 — 프로젝트 문서가
+   글보다 길면서(baro는 1만 픽셀이 넘는다) 목차가 없던 것이 이 둘을
+   따로 두고 있었기 때문이다. 폭·목차·그림 확장 규칙을 한 군데서 정한다.
+   ───────────────────────────────────────────────────────────── */
+/*
+ * 목차가 있는 글: 본문을 왼쪽에 두고 목차를 오른쪽에, 사이를 넓게 벌린다.
+ * 목차가 없는 글은 본문을 가운데 정렬한다.
+ */
+.shell { display: grid; margin: var(--space-10) 0 0; }
+/*
+ * --bleed: figure.wide가 본문 폭 밖으로 좌우 확장하는 폭.
+ * 목차가 없는 글은 본문이 가운데 있으므로 좌우 여백의 전부까지 나갈 수 있다.
+ */
+.shell.doc {
+  --toc-w: 150px;
+  --bleed: clamp(48px, calc((100vw - 40px - var(--w-doc)) / 2), 180px);
+  grid-template-columns: minmax(0, var(--w-doc));
+  justify-content: center;
+}
+/*
+ * 목차가 있는 글: 본문 + 목차 블록을 가운데 정렬한다. start로 두면 왼쪽 여백이
+ * 사라지고 오른쪽만 비어서 레퍼런스와 반대가 된다.
+ *
+ * 본문과 목차 사이 간격은 --bleed + 24px다(24px는 빠져나온 그림과 목차 사이의 숨 쉴 공간).
+ * 그러면 좌우 여백 = (100vw - 40 - 본문 - bleed - 24 - 목차) / 2 이고, 이 값이 bleed 이상이어야
+ * 왼쪽으로 빠져나온 그림이 화면을 넘지 않는다. 그 조건을 풀면 bleed ≤ (100vw - 64 - 본문 - 목차) / 3.
+ * 창이 넓어질수록 간격·여백·그림이 함께 커지고 목차는 그만큼 오른쪽으로 밀린다.
+ * 좁아지면 간격이 먼저 줄고, 1120px에서 목차를 접는다.
+ */
+.shell.doc.toc {
+  --bleed: clamp(48px, calc((100vw - 64px - var(--w-doc) - var(--toc-w)) / 3), 180px);
+  grid-template-columns: minmax(0, var(--w-doc)) var(--toc-w);
+  column-gap: calc(var(--bleed) + 24px);
+  justify-content: center;
+}
+/*
+ * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 150px씩 나간다.
+ * 660 + 300 = 960이라 넓은 화면에서는 다이어그램 원본 크기로 보이고, 700px 아래에서는 0이 된다.
+ */
+.shell.read {
+  --bleed: clamp(0px, calc((100vw - 40px - var(--w-read)) / 2), 150px);
+  grid-template-columns: minmax(0, var(--w-read));
+  justify-content: center;
+}
+
+/* 1120px 아래에서는 두 칼럼을 유지해도 좌우 여백이 20px대로 눌린다 — 그 전에 접는다 */
+@media (max-width: 1120px) {
+  /* .doc.toc가 자기 --bleed(최소 48px)를 갖고 있으므로 둘 다 0으로 눌러야 모바일에서 그림이 넘치지 않는다 */
+  .shell.doc, .shell.doc.toc { --bleed: 0px; }
+  .shell.doc.toc {
+    grid-template-columns: minmax(0, var(--w-doc));
+    gap: 0;
+    justify-content: center;
+  }
+  .side { display: none; }
+}
+
+/*
  * 글 목록은 리스트, 프로젝트는 카드.
  *
  * 글은 계속 늘어나며 훑는 대상이라, 카드의 썸네일 자리가 정보 없는 장식이
  * 되고 밀도를 깎는다(이미지를 매 글마다 만들지 않기로 했으므로). 프로젝트는
  * 성과 숫자와 기술 스택처럼 카드가 실제로 담을 것이 있고 개수가 적다.
  */
-.post-list { margin-top: 16px; border-top: 1px solid var(--border); }
+.post-list { margin-top: var(--space-4); border-top: 1px solid var(--border); }
 
 /*
  * 프로젝트는 최대 2열. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
  * 카드 내용이 제목과 설명뿐이라 전체 폭으로 늘리면 가로로 긴 띠가 된다.
  */
 .pj-grid {
-  display: grid; gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  display: grid; gap: var(--space-4);
+  /*
+   * min()이 없으면 컨테이너가 360보다 좁아도 트랙이 360으로 잡혀 페이지가
+   * 가로로 밀린다(390px 폰에서 10px, 360px 폰에서 40px 넘침).
+   */
+  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -58,26 +198,26 @@ img { max-width: 100%; height: auto; }
 .prose > :first-child { margin-top: 0; }
 
 .prose h2 {
-  margin: 2.8em 0 .8em; font-size: 1.55em; line-height: 1.35;
-  font-weight: 800; letter-spacing: -.03em; scroll-margin-top: 32px;
+  margin: var(--space-20) 0 var(--space-6); font-size: var(--fs-800); line-height: var(--lh-tight);
+  font-weight: 800; letter-spacing: var(--ls-tight); scroll-margin-top: var(--space-8);
 }
 .prose h3 {
-  margin: 2em 0 .6em; font-size: 1.22em; line-height: 1.45;
-  font-weight: 700; letter-spacing: -.02em; scroll-margin-top: 32px;
+  margin: var(--space-12) 0 var(--space-3); font-size: var(--fs-600); line-height: var(--lh-snug);
+  font-weight: 700; letter-spacing: var(--ls-snug); scroll-margin-top: var(--space-8);
 }
 /* h2 바로 뒤에 h3가 오면 사이를 좁힌다 */
-.prose h2 + h3 { margin-top: 1.2em; }
+.prose h2 + h3 { margin-top: var(--space-7); }
 
-.prose p { margin: 0 0 1.3em; }
+.prose p { margin: 0 0 var(--space-6); }
 .prose strong { font-weight: 700; }
 
 /* 본문 링크는 밑줄을 기본으로 둔다 — 색만으로 구분하지 않는다 */
 .prose a { text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 .prose a:hover { text-decoration-thickness: 2px; }
 
-.prose ul, .prose ol { margin: 0 0 1.3em; padding-left: 1.4em; }
-.prose li { margin-bottom: .5em; }
-.prose li > ul, .prose li > ol { margin: .5em 0 0; }
+.prose ul, .prose ol { margin: 0 0 var(--space-6); padding-left: 1.4em; }
+.prose li { margin-bottom: var(--space-2); }
+.prose li > ul, .prose li > ol { margin: var(--space-2) 0 0; }
 .prose ul > li::marker { color: var(--accent); }
 .prose ol > li::marker { color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
@@ -87,42 +227,42 @@ img { max-width: 100%; height: auto; }
  * 카드처럼 튀지 않게, 글자는 본문보다 살짝 크고 줄 간격을 넉넉히 준다.
  */
 .prose blockquote {
-  margin: 2em 0; padding: 2px 0 2px 22px;
+  margin: var(--space-10) 0; padding: var(--space-05) 0 var(--space-05) var(--space-6);
   border-left: 3px solid var(--accent);
   color: var(--text);
-  font-size: 1.02em;
-  line-height: 1.85;
+  font-size: var(--fs-500);
+  line-height: var(--lh-loose);
 }
 .prose blockquote > :first-child { margin-top: 0; }
 .prose blockquote > :last-child { margin-bottom: 0; }
-.prose blockquote p { margin-bottom: .9em; }
+.prose blockquote p { margin-bottom: var(--space-4); }
 .prose blockquote strong { color: var(--accent); }
 
 .prose :not(pre) > code {
   background: var(--code-bg); border: 1px solid var(--border);
-  border-radius: 4px; padding: .1em .35em;
-  font-family: var(--font-mono); font-size: .86em;
+  border-radius: var(--radius-sm); padding: .1em .35em;
+  font-family: var(--font-mono); font-size: var(--fs-400);
   word-break: break-word;
 }
 .prose pre {
   background: var(--code-bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 16px 18px; overflow-x: auto;
-  margin: 1.6em 0;
-  font-size: .84em; line-height: 1.75;
+  border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5); overflow-x: auto;
+  margin: var(--space-6) 0;
+  font-size: var(--fs-300); line-height: var(--lh-normal);
 }
 
 /* 표는 칸을 두르지 않고 가로줄만 남긴다 */
 .prose table {
-  width: 100%; border-collapse: collapse; margin: 1.8em 0;
-  font-size: .9em; line-height: 1.6;
+  width: 100%; border-collapse: collapse; margin: var(--space-8) 0;
+  font-size: var(--fs-400); line-height: var(--lh-normal);
   /* 숫자를 등폭으로 — 열이 세로로 정렬되지 않으면 값을 훑을 수 없다 */
   font-variant-numeric: tabular-nums;
 }
 .prose thead th {
-  border-bottom: 2px solid var(--border); padding: 8px 12px 10px; text-align: left;
-  font-size: .88em; font-weight: 800; letter-spacing: .04em; color: var(--text-dim);
+  border-bottom: 2px solid var(--border); padding: var(--space-2) var(--space-3) var(--space-3); text-align: left;
+  font-size: var(--fs-300); font-weight: 800; letter-spacing: .04em; color: var(--text-dim);
 }
-.prose tbody td { border-bottom: 1px solid var(--border); padding: 12px; vertical-align: top; }
+.prose tbody td { border-bottom: 1px solid var(--border); padding: var(--space-3); vertical-align: top; }
 .prose tbody tr:last-child td { border-bottom: 0; }
 /* 첫 열은 행의 이름이므로 값보다 진하게 둔다 */
 .prose tbody td:first-child { font-weight: 700; }
@@ -135,21 +275,21 @@ img { max-width: 100%; height: auto; }
 .prose tbody tr.pick { background: var(--accent-soft); }
 .prose tbody tr.pick td:first-child { color: var(--accent); font-weight: 800; }
 .prose .tag {
-  display: inline-block; margin-left: 7px; padding: 0 7px;
-  border-radius: 999px; background: var(--accent); color: var(--bg);
-  font-size: .72em; font-weight: 700; letter-spacing: .03em; vertical-align: .12em;
+  display: inline-block; margin-left: var(--space-2); padding: 0 var(--space-2);
+  border-radius: var(--radius-pill); background: var(--accent); color: var(--bg);
+  font-size: var(--fs-200); font-weight: 700; letter-spacing: .03em; vertical-align: .12em;
 }
 
 /*
  * 값을 훑는 표. 폭을 내용에 맞춰 줄여야 숫자가 라벨 옆에 붙는다(본문 폭으로 늘리면
  * 라벨과 값이 멀찍이 떨어져 눈이 행을 잃는다). 좁은 화면에서는 접지 않고 가로로만 스크롤.
  */
-.prose .table-scroll { overflow-x: auto; margin: 1.8em 0; }
+.prose .table-scroll { overflow-x: auto; margin: var(--space-8) 0; }
 .prose .table-scroll table {
   width: auto; min-width: min(100%, 400px); margin: 0; white-space: nowrap;
 }
 .prose .table-scroll th:not(:first-child),
-.prose .table-scroll td:not(:first-child) { text-align: right; padding-left: 30px; }
+.prose .table-scroll td:not(:first-child) { text-align: right; padding-left: var(--space-8); }
 
 /*
  * 라벨과 수치 한 쌍만 있는 표는 카드로 세운다. 2열 표를 760px 본문에 그리면
@@ -157,39 +297,39 @@ img { max-width: 100%; height: auto; }
  * 마크다운에서 <dl class="stats">로 쓴다.
  */
 .prose .stats {
-  display: grid; gap: 12px; margin: 1.8em 0;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  display: grid; gap: var(--space-3); margin: var(--space-8) 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
 }
 .prose .stats > div {
-  border: 1px solid var(--border); border-radius: 10px;
-  padding: 13px 15px; background: var(--bg-elev);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4); background: var(--bg-elev);
 }
 .prose .stats dt {
-  font-size: .78em; color: var(--text-dim); letter-spacing: .02em; margin-bottom: 4px;
+  font-size: var(--fs-300); color: var(--text-dim); letter-spacing: .02em; margin-bottom: var(--space-1);
 }
 .prose .stats dd { margin: 0; }
 .prose .stats b {
   display: block; color: var(--accent);
-  font-size: 1.12em; font-weight: 800; letter-spacing: -.02em;
+  font-size: var(--fs-600); font-weight: 800; letter-spacing: var(--ls-snug);
   font-variant-numeric: tabular-nums;
 }
 .prose .stats small {
-  display: block; margin-top: 3px;
-  font-size: .76em; line-height: 1.5; color: var(--text-dim);
+  display: block; margin-top: var(--space-1);
+  font-size: var(--fs-300); line-height: var(--lh-snug); color: var(--text-dim);
 }
 
 .prose hr {
   border: 0; height: 1px; background: var(--border);
-  margin: 3em auto; width: 60%;
+  margin: var(--space-14) auto; width: 60%;
 }
 
-.prose img { border: 1px solid var(--border); border-radius: 10px; margin: 1.6em 0; }
+.prose img { border: 1px solid var(--border); border-radius: var(--radius-lg); margin: var(--space-8) 0; }
 
 /* 설명이 붙는 그림. 여러 장을 한 줄에 늘어놓지 않고 한 장씩 본문 폭으로 세운다 */
-.prose figure { margin: 1.8em 0; }
+.prose figure { margin: var(--space-8) 0; }
 .prose figure img { display: block; margin: 0; }
 .prose figcaption {
-  margin-top: .7em; font-size: .82em; line-height: 1.6;
+  margin-top: var(--space-3); font-size: var(--fs-300); line-height: var(--lh-normal);
   color: var(--text-dim); text-align: center;
 }
 
@@ -199,7 +339,7 @@ img { max-width: 100%; height: auto; }
  * 목차를 침범하지 않는다. 변수가 없는 레이아웃(회고·에세이)에서는 0이다.
  */
 .prose figure.wide {
-  margin: 1.6em calc(-1 * var(--bleed, 0px));
+  margin: var(--space-8) calc(-1 * var(--bleed, 0px));
 }
 .prose figure.wide img { display: block; width: 100%; margin: 0; }
 

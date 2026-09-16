@@ -38,6 +38,12 @@ const projects = defineCollection({
       .default([]),
     featured: z.boolean().default(false),
     order: z.number().default(99),
+    /*
+     * 관련 회고. 전에는 본문 마크다운에 "## 관련 회고 + 불릿"으로 적혀 있어서
+     * 글 상세의 "같은 분류의 다른 글"과 생김새가 달랐다. 관계는 산문이 아니라
+     * 데이터로 두고, 화면 모양은 RelatedLinks가 정한다.
+     */
+    relatedPosts: z.array(z.string()).default([]),
   }),
 });
 

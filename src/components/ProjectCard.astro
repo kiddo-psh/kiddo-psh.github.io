@@ -26,10 +26,10 @@ const tone = TONES[((d.order - 1) % TONES.length + TONES.length) % TONES.length]
    */
   .card {
     display: block;
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 30px 28px 32px;
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-7);
     color: var(--text);
-    transition: border-color .15s, transform .15s;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
   }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
 
@@ -38,7 +38,11 @@ const tone = TONES[((d.order - 1) % TONES.length + TONES.length) % TONES.length]
   .t-c { background: var(--pj-c); }
   .t-d { background: var(--pj-d); }
 
-  h2, h3 { margin: 0 0 10px; font-size: 1.35em; font-weight: 700; letter-spacing: -.025em; line-height: 1.35; }
+  h2, h3 {
+    margin: 0 0 var(--space-3); font-size: var(--fs-600); font-weight: 700;
+    letter-spacing: var(--ls-snug); line-height: var(--lh-snug);
+    transition: color var(--dur) var(--ease);
+  }
   .card:hover h2, .card:hover h3 { color: var(--accent); }
-  .sum { margin: 0; color: var(--text-dim); font-size: .86em; line-height: 1.65; }
+  .sum { margin: 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-normal); }
 </style>

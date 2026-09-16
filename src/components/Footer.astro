@@ -12,7 +12,8 @@ import { SITE } from '../site.config';
 </footer>
 
 <style>
-  footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 26px 0 50px; }
-  footer div { display: flex; gap: 14px; font-size: 13px; color: var(--text-dim); }
-  footer a { color: var(--text-dim); }
+  footer { border-top: 1px solid var(--border); margin-top: var(--space-20); padding: var(--space-6) 0 var(--space-12); }
+  footer div { display: flex; gap: var(--space-4); font-size: var(--fs-200); color: var(--text-dim); }
+  footer a { color: var(--text-dim); transition: color var(--dur) var(--ease); }
+  footer a:hover { color: var(--text); }
 </style>

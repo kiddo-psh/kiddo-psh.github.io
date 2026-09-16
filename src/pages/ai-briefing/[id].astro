@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  briefings,
+  briefingLabels,
+  briefingTagLabels,
+  type Briefing,
+} from '../../lib/briefings';
+import BackLink from '../../components/BackLink.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+
+export function getStaticPaths() {
+  return briefings.map((item) => ({
+    params: { id: item.id },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props as { item: Briefing };
+
+/*
+ * 같은 주제 태그를 하나라도 공유하는 다른 브리핑. 전에는 이 페이지 끝이
+ * 출처 박스로 끝나서 다음에 볼 것이 없었다 — 상단 뒤로 가기만이 유일한 출구였다.
+ */
+const others = briefings
+  .filter((b) => b.id !== item.id)
+  .map((b) => ({ b, shared: b.tags.filter((t) => item.tags.includes(t)).length }))
+  .sort((a, c) => c.shared - a.shared || c.b.publishedAt.localeCompare(a.b.publishedAt))
+  .slice(0, 3)
+  .map(({ b }) => ({
+    href: `/ai-briefing/${b.id}`,
+    label: b.title,
+    meta: `${briefingLabels[b.type]} · ${b.publishedAt.replaceAll('-', '.')}`,
+  }));
+---
+
+<BaseLayout title={item.title} description={item.preview}>
+  <article class="page w-doc briefing-detail">
+    <BackLink href="/ai-briefing" label="AI 브리핑" />
+
+    <header>
+      <div class="meta">
+        <span class="type">{briefingLabels[item.type]}</span>
+        <span>{item.source}</span>
+        <time datetime={item.publishedAt}>{item.publishedAt.replaceAll('-', '.')}</time>
+      </div>
+      <h1>{item.title}</h1>
+      <div class="tags" aria-label="주제 태그">
+        {item.tags.map((tag) => <span>{briefingTagLabels[tag]}</span>)}
+      </div>
+      <p class="lead">{item.preview}</p>
+    </header>
+
+    <div class="summary-note">
+      <span>AI 요약 · {item.generatedAt.replaceAll('-', '.')}</span>
+      <span>{item.basis} 기반</span>
+      <span>중요한 판단에는 원문 확인 권장</span>
+    </div>
+
+    <div class="summary">
+      <section>
+        <h2>핵심 내용</h2>
+        <ul>{item.keyPoints.map((point) => <li>{point}</li>)}</ul>
+      </section>
+
+      <section>
+        <h2>근거와 한계</h2>
+        <ul>{item.limitations.map((limit) => <li>{limit}</li>)}</ul>
+      </section>
+
+      <section>
+        <h2>개발에 적용할 점</h2>
+        <p>{item.takeaway}</p>
+      </section>
+    </div>
+
+    <footer class="source-box">
+      <div>
+        <span class="source-label">원문</span>
+        <strong>{item.source}</strong>
+      </div>
+      <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>
+    </footer>
+
+    <RelatedLinks title="다른 브리핑" links={others} />
+  </article>
+</BaseLayout>
+
+<style>
+  .briefing-detail { padding-top: var(--space-8); padding-bottom: var(--space-20); }
+  header { padding-bottom: var(--space-8); border-bottom: 1px solid var(--border); }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; color: var(--text-dim); font-size: var(--fs-200); }
+  .meta span + span::before, .meta time::before { content: '·'; margin-right: var(--space-3); color: var(--border); }
+  .meta .type { color: var(--accent); font-weight: 800; }
+  h1 { margin: var(--space-4) 0 var(--space-4); font-size: clamp(var(--fs-700), 5vw, var(--fs-900)); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+  /* 태그는 목록 페이지의 .item-tags와 같은 모양이다 */
+  .tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; }
+  .lead { margin: var(--space-6) 0 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-relaxed); }
+  .summary-note {
+    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+    margin: var(--space-6) 0 0; padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md); background: var(--code-bg);
+    color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-snug);
+  }
+  .summary-note span + span::before { content: '·'; margin-right: var(--space-3); }
+
+  .summary { padding: var(--space-3) 0; }
+  .summary section { padding: var(--space-7) 0; border-bottom: 1px solid var(--border); }
+  .summary h2 { margin: 0 0 var(--space-3); font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+  .summary ul { margin: 0; padding-left: var(--space-6); }
+  .summary li { margin: 0 0 var(--space-2); line-height: var(--lh-relaxed); }
+  .summary li:last-child { margin-bottom: 0; }
+  .summary p { margin: 0; line-height: var(--lh-relaxed); }
+
+  .source-box {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-5);
+    margin-top: var(--space-6); padding: var(--space-5);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .source-box div { display: grid; gap: var(--space-1); }
+  .source-label { color: var(--text-dim); font-size: var(--fs-200); }
+  .source-box strong { font-size: var(--fs-400); }
+  .source-box a {
+    padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+    background: var(--accent); color: var(--bg);
+    font-size: var(--fs-200); font-weight: 800; white-space: nowrap;
+    transition: filter var(--dur) var(--ease);
+  }
+  .source-box a:hover { text-decoration: none; filter: brightness(1.08); }
+
+  @media (max-width: 600px) {
+    .briefing-detail { padding-top: var(--space-6); padding-bottom: var(--space-16); }
+    .summary-note { display: grid; gap: var(--space-1); }
+    .summary-note span + span::before { content: none; }
+    .source-box { align-items: flex-start; flex-direction: column; }
+  }
+</style>

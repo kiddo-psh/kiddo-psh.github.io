@@ -1,26 +1,44 @@
 <button id="theme-toggle" type="button" aria-label="다크 모드로 전환" aria-pressed="false">
-  <span aria-hidden="true">☾</span>
+  <svg class="moon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"></path>
+  </svg>
+  <svg class="sun" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="4.2"></circle>
+    <path d="M12 2.6v2.1M12 19.3v2.1M4.4 4.4l1.5 1.5M18.1 18.1l1.5 1.5M2.6 12h2.1M19.3 12h2.1M4.4 19.6l1.5-1.5M18.1 5.9l1.5-1.5"></path>
+  </svg>
 </button>
 
 <style>
+  /*
+   * 헤더의 검색 아이콘과 같은 박스·같은 선 두께를 쓴다.
+   * 전에는 토글만 테두리가 있고 검색은 없어서 짝이 안 맞았고,
+   * 둘 다 유니코드 글리프(⌕ ☾)라 플랫폼마다 다르게 그려졌다.
+   */
   button {
-    background: none; border: 1px solid var(--border); border-radius: 6px;
-    color: var(--text-dim); cursor: pointer; padding: 3px 8px; font-size: 13px;
-    line-height: 1.4;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; padding: 0 var(--space-2);
+    background: none; border: 0; border-radius: var(--radius-md);
+    color: var(--text-dim); cursor: pointer;
+    transition: color var(--dur) var(--ease);
   }
   button:hover { color: var(--text); }
+  svg { display: block; }
+
+  /* 아이콘 교체를 CSS로 둔다 — 스크립트가 늦게 붙어도 첫 프레임부터 맞는 아이콘이 뜬다 */
+  .sun { display: none; }
+  :root[data-theme='dark'] .moon { display: none; }
+  :root[data-theme='dark'] .sun { display: block; }
 </style>
 
 <script>
   const btn = document.getElementById('theme-toggle');
-  const glyph = btn?.querySelector('span');
 
-  // 버튼의 겉모습(아이콘/레이블/aria-pressed)을 현재 테마 상태에 맞춰 갱신한다.
-  // 아이콘과 문구는 "누르면 일어날 동작"을 일관되게 가리킨다:
-  // 라이트 모드에선 ☾(다크로 전환), 다크 모드에선 ☀(라이트로 전환).
+  // 아이콘은 CSS가 바꾼다. 여기서는 접근성 상태만 현재 테마에 맞춘다.
+  // 레이블은 "누르면 일어날 동작"을 가리킨다: 라이트에선 "다크 모드로 전환".
   function sync() {
     const dark = document.documentElement.dataset.theme === 'dark';
-    if (glyph) glyph.textContent = dark ? '☀' : '☾';
     btn?.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
     btn?.setAttribute('aria-pressed', String(dark));
   }

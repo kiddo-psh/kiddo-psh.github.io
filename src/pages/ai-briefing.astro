@@ -1,0 +1,238 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { briefings, briefingLabels, briefingTagLabels } from '../lib/briefings';
+
+const counts = {
+  article: briefings.filter((item) => item.type === 'article').length,
+  interview: briefings.filter((item) => item.type === 'interview').length,
+  paper: briefings.filter((item) => item.type === 'paper').length,
+};
+
+const tagCounts = Object.fromEntries(
+  Object.keys(briefingTagLabels).map((tag) => [tag, briefings.filter((item) => item.tags.includes(tag as keyof typeof briefingTagLabels)).length]),
+);
+const usedTags = Object.keys(briefingTagLabels).filter((tag) => tagCounts[tag] > 0) as Array<keyof typeof briefingTagLabels>;
+---
+
+<BaseLayout title="AI 브리핑" description="AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문 요약">
+  <div class="page briefing-page">
+    <header class="intro">
+      <h1 class="page-title">AI 브리핑</h1>
+      <p>AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문을 정리합니다.</p>
+    </header>
+
+    <div class="content-grid">
+      <section class="feed" aria-labelledby="feed-title">
+        <div class="feed-head">
+          <h2 id="feed-title">브리핑 목록 <span id="result-count">{String(briefings.length).padStart(2, '0')}</span></h2>
+        </div>
+
+        <div class="filter-panel">
+          <div class="filter-row">
+            <span class="filter-label">형식</span>
+            <div class="type-filters" aria-label="자료 형식">
+              <button type="button" class="chip selected" data-filter="all" aria-pressed="true">전체 <span class="count">{briefings.length}</span></button>
+              <button type="button" class="chip" data-filter="article" aria-pressed="false">기사 <span class="count">{counts.article}</span></button>
+              <button type="button" class="chip" data-filter="interview" aria-pressed="false">인터뷰 <span class="count">{counts.interview}</span></button>
+              <button type="button" class="chip" data-filter="paper" aria-pressed="false">논문 <span class="count">{counts.paper}</span></button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <span class="filter-label">주제</span>
+            <div class="tag-filters" aria-label="관심 주제">
+              {usedTags.map((tag) => (
+                <button type="button" class="chip" data-tag={tag} aria-pressed="false">{briefingTagLabels[tag]} <span class="count">{tagCounts[tag]}</span></button>
+              ))}
+              <button type="button" class="chip reset-tags" disabled>초기화</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="items">
+          {briefings.map((item, index) => (
+            <article class="item" data-type={item.type} data-tags={item.tags.join(' ')}>
+              <a class="item-link" href={`/ai-briefing/${item.id}`}>
+                <div class="item-top">
+                  <span class="index">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="type">{briefingLabels[item.type]}</span>
+                  <span class="date">{item.publishedAt.replaceAll('-', '.')}</span>
+                </div>
+                <h3>{item.title}</h3>
+                <div class="item-tags" aria-label="주제 태그">
+                  {item.tags.map((tag) => <span>{briefingTagLabels[tag]}</span>)}
+                </div>
+                <p class="preview">{item.preview}</p>
+                <div class="item-bottom">
+                  <p class="source"><span>출처</span> {item.source}</p>
+                  <span class="read-more">요약 읽기 <span aria-hidden="true">→</span></span>
+                </div>
+              </a>
+            </article>
+          ))}
+          <div class="empty filter-empty" id="filter-empty" hidden>
+            <h3>조건에 맞는 브리핑이 없습니다.</h3>
+            <p>자료 형식이나 주제 태그를 바꿔 보세요.</p>
+          </div>
+          {briefings.length === 0 && (
+            <div class="empty">
+              <h3>아직 게시된 브리핑이 없습니다.</h3>
+              <p>새 자료가 선별되고 요약되면 이곳에서 바로 읽을 수 있습니다.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .briefing-page { padding-bottom: var(--space-20); }
+  .intro { margin: var(--space-8) 0 0; }
+  /* 제목은 .page-title이 담당한다. 설명이 바로 붙으므로 아래 여백만 줄인다 */
+  .intro h1 { margin: 0 0 var(--space-2); }
+  .intro p { margin: 0; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); }
+
+  .content-grid { padding-top: var(--space-8); }
+  .feed-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); }
+  .feed-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+  .feed-head h2 span { margin-left: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); font-weight: 600; letter-spacing: 0; vertical-align: .2em; }
+  .filter-panel { margin: var(--space-6) 0 var(--space-3); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-elev); }
+  .filter-row { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: start; gap: var(--space-3); }
+  .filter-row + .filter-row { margin-top: var(--space-3); }
+  .filter-label { padding-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-200); font-weight: 800; }
+  /* 칩 모양은 global.css의 .chip — 여기서는 배치와 초기화 버튼 변형만 */
+  .type-filters, .tag-filters { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .tag-filters .reset-tags { border-color: transparent; background: transparent; color: var(--accent); }
+  .tag-filters .reset-tags:disabled { color: var(--text-dim); cursor: default; opacity: .45; }
+  .items { border-top: 1px solid var(--border); }
+  .empty { padding: var(--space-7) 0 var(--space-12); border-bottom: 1px solid var(--border); }
+  .empty[hidden] { display: none; }
+  .empty h3 { margin: 0 0 var(--space-2); font-size: var(--fs-500); }
+  .empty p { margin: 0; color: var(--text-dim); font-size: var(--fs-300); }
+  .item { border-bottom: 1px solid var(--border); }
+  .item[hidden] { display: none; }
+  .item-link { display: block; padding: var(--space-7) 0; color: var(--text); }
+  .item-link:hover { text-decoration: none; }
+  .item-top { display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-200); line-height: var(--lh-snug); }
+  .index { width: 28px; font-family: var(--font-mono); color: var(--text-dim); }
+  .type { color: var(--accent); font-weight: 800; }
+  .date { margin-left: auto; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .item h3 { margin: var(--space-3) 0 var(--space-2) 40px; font-size: var(--fs-700); line-height: var(--lh-snug); letter-spacing: var(--ls-tight); transition: color var(--dur) var(--ease); }
+  .item-link:hover h3 { color: var(--accent); }
+  .item-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0 0 var(--space-3) 40px; }
+  .item-tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; line-height: var(--lh-snug); }
+  .preview { margin: 0 0 var(--space-4) 40px; max-width: 760px; font-size: var(--fs-400); line-height: var(--lh-normal); color: var(--text-dim); }
+  .item-bottom { display: flex; align-items: end; justify-content: space-between; gap: var(--space-4); margin-left: 40px; }
+  .source { margin: 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
+  .source span { font-weight: 800; color: var(--text); }
+  .read-more { color: var(--accent); font-size: var(--fs-200); font-weight: 700; white-space: nowrap; }
+
+  @media (max-width: 600px) {
+    .briefing-page { padding-bottom: var(--space-16); }
+    .content-grid { padding-top: var(--space-6); }
+    .filter-row { grid-template-columns: 1fr; gap: var(--space-1); }
+    .filter-label { padding-top: 0; }
+    .item h3, .item-tags, .preview, .item-bottom { margin-left: 0; }
+    .item h3 { font-size: var(--fs-600); }
+  }
+</style>
+
+<script>
+  /*
+   * 필터 상태를 주소에 싣는다(?type=paper&tags=a,b).
+   *
+   * 전에는 상태가 메모리에만 있어서, "논문만" 골라놓고 주소를 복사해 보내면
+   * 받는 사람은 전체 목록을 봤고 새로고침하면 초기화됐다. 글 목록은 이미
+   * /posts?category=…로 같은 일을 한다 — 두 목록이 같은 기능을 반대로 하고 있었다.
+   *
+   * pushState가 아니라 replaceState인 이유: 칩은 훑는 동안 여러 번 눌리므로
+   * 누를 때마다 히스토리를 쌓으면 뒤로 가기가 필터 되감기로 변한다.
+   */
+  const typeButtons = document.querySelectorAll<HTMLButtonElement>('.type-filters button');
+  const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filters button[data-tag]');
+  const resetTags = document.querySelector<HTMLButtonElement>('.reset-tags');
+  const items = document.querySelectorAll<HTMLElement>('.items .item');
+  const resultCount = document.querySelector<HTMLElement>('#result-count');
+  const filterEmpty = document.querySelector<HTMLElement>('#filter-empty');
+
+  const knownTypes = new Set([...typeButtons].map((b) => b.dataset.filter ?? ''));
+  const knownTags = new Set([...tagButtons].map((b) => b.dataset.tag ?? ''));
+
+  let activeType = 'all';
+  const selectedTags = new Set<string>();
+
+  const syncUrl = () => {
+    const params = new URLSearchParams();
+    if (activeType !== 'all') params.set('type', activeType);
+    if (selectedTags.size > 0) params.set('tags', [...selectedTags].join(','));
+    const query = params.toString();
+    history.replaceState(null, '', query ? `?${query}` : location.pathname);
+  };
+
+  const paintButtons = () => {
+    typeButtons.forEach((tab) => {
+      const selected = (tab.dataset.filter ?? 'all') === activeType;
+      tab.classList.toggle('selected', selected);
+      tab.setAttribute('aria-pressed', String(selected));
+    });
+    tagButtons.forEach((tab) => {
+      const selected = selectedTags.has(tab.dataset.tag ?? '');
+      tab.classList.toggle('selected', selected);
+      tab.setAttribute('aria-pressed', String(selected));
+    });
+  };
+
+  const applyFilters = () => {
+    let visibleCount = 0;
+    items.forEach((item) => {
+      const tags = (item.dataset.tags ?? '').split(' ').filter(Boolean);
+      const matchesType = activeType === 'all' || item.dataset.type === activeType;
+      const matchesTags = selectedTags.size === 0 || tags.some((tag) => selectedTags.has(tag));
+      item.hidden = !(matchesType && matchesTags);
+      if (!item.hidden) visibleCount += 1;
+    });
+    if (resultCount) resultCount.textContent = String(visibleCount).padStart(2, '0');
+    if (filterEmpty) filterEmpty.hidden = visibleCount > 0 || items.length === 0;
+    if (resetTags) resetTags.disabled = selectedTags.size === 0;
+  };
+
+  // 주소에 실려 온 상태를 복원한다. 모르는 값은 조용히 버려서 손으로 고친 주소에도 견딘다.
+  const restore = () => {
+    const params = new URLSearchParams(location.search);
+    const type = params.get('type');
+    if (type && knownTypes.has(type)) activeType = type;
+    (params.get('tags') ?? '')
+      .split(',')
+      .filter((tag) => knownTags.has(tag))
+      .forEach((tag) => selectedTags.add(tag));
+    paintButtons();
+    applyFilters();
+  };
+
+  typeButtons.forEach((button) => button.addEventListener('click', () => {
+    activeType = button.dataset.filter ?? 'all';
+    paintButtons();
+    applyFilters();
+    syncUrl();
+  }));
+
+  tagButtons.forEach((button) => button.addEventListener('click', () => {
+    const tag = button.dataset.tag;
+    if (!tag) return;
+    if (selectedTags.has(tag)) selectedTags.delete(tag);
+    else selectedTags.add(tag);
+    paintButtons();
+    applyFilters();
+    syncUrl();
+  }));
+
+  resetTags?.addEventListener('click', () => {
+    selectedTags.clear();
+    paintButtons();
+    applyFilters();
+    syncUrl();
+  });
+
+  restore();
+</script>

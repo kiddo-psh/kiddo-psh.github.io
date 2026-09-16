@@ -100,7 +100,7 @@ const awards = [
 
 <BaseLayout title="소개" description={SITE.description}>
   <div class="page w-read">
-    <h1>소개</h1>
+    <h1 class="page-title">소개</h1>
 
     <div class="prose">
       <p>
@@ -144,7 +144,7 @@ const awards = [
             {s.items.map((it) => {
               const ic = icon(it.slug);
               return (
-                <span class="chip">
+                <span class="chip stack-chip">
                   {ic && (
                     <svg
                       viewBox="0 0 24 24"
@@ -196,47 +196,42 @@ const awards = [
 
 <style>
   /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
-  h1 { font-size: 1.6em; margin: 40px 0 20px; }
-  h2 { font-size: 1.05em; margin: 40px 0 12px; }
+  h2 { font-size: var(--fs-600); margin: var(--space-10) 0 var(--space-3); line-height: var(--lh-snug); }
 
   .pj { list-style: none; margin: 0; padding: 0; }
-  .pj > li { padding: 14px 0; border-top: 1px solid var(--border); }
+  .pj > li { padding: var(--space-4) 0; border-top: 1px solid var(--border); }
   .pj > li:last-child { border-bottom: 1px solid var(--border); }
-  .pj-hd { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .pj-nm { font-weight: 800; font-size: .98em; }
-  .pj-pd { font-size: .8em; color: var(--text-dim); margin-left: auto; }
-  .pj-role { margin: 4px 0 0; font-size: .85em; color: var(--accent); }
-  .pj-desc { margin: 7px 0 0; font-size: .9em; line-height: 1.65; }
-  .pj-stack { margin: 7px 0 0; font-size: .78em; color: var(--text-dim); }
+  .pj-hd { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+  .pj-nm { font-weight: 800; font-size: var(--fs-500); }
+  .pj-pd { font-size: var(--fs-300); color: var(--text-dim); margin-left: auto; }
+  .pj-role { margin: var(--space-1) 0 0; font-size: var(--fs-300); color: var(--accent); }
+  .pj-desc { margin: var(--space-2) 0 0; font-size: var(--fs-400); line-height: var(--lh-normal); }
+  .pj-stack { margin: var(--space-2) 0 0; font-size: var(--fs-300); color: var(--text-dim); }
 
-  .stack { margin: 0; display: grid; gap: 10px; }
-  .stack > div { display: flex; gap: 14px; font-size: .93em; align-items: baseline; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 10px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--bg-elev);
-    font-size: .86em; line-height: 1.4; white-space: nowrap;
-  }
-  .chip svg { width: 13px; height: 13px; flex: 0 0 auto; fill: var(--brand, currentColor); }
-  :root[data-theme='light'] .chip svg.no-light { fill: currentColor; }
-  :root[data-theme='dark'] .chip svg.no-dark { fill: currentColor; }
+  .stack { margin: 0; display: grid; gap: var(--space-3); }
+  .stack > div { display: flex; gap: var(--space-4); font-size: var(--fs-400); align-items: baseline; }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  /* 기하는 global.css의 .chip이 정한다. 여기서는 로고 자리와 배경만 더한다 */
+  .stack-chip { gap: var(--space-2); background: var(--bg-elev); color: var(--text); }
+  .stack-chip svg { width: 13px; height: 13px; flex: 0 0 auto; fill: var(--brand, currentColor); }
+  :root[data-theme='light'] .stack-chip svg.no-light { fill: currentColor; }
+  :root[data-theme='dark'] .stack-chip svg.no-dark { fill: currentColor; }
   dt { flex: 0 0 88px; color: var(--text-dim); white-space: nowrap; }
   dt.wide { flex: 0 0 150px; }
   dd { margin: 0; }
 
-  .awards { list-style: none; margin: 0; padding: 0; font-size: .93em; }
-  .awards li { padding: 4px 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .awards small { font-size: .82em; color: var(--text-dim); }
+  .awards { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
+  .awards li { padding: var(--space-1) 0; display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+  .awards small { font-size: var(--fs-300); color: var(--text-dim); }
 
-  .certs { margin: 10px 0 0; font-size: .88em; color: var(--text-dim); }
+  .certs { margin: var(--space-3) 0 0; font-size: var(--fs-400); color: var(--text-dim); }
 
-  .links { list-style: none; margin: 0; padding: 0; font-size: .93em; }
-  .links li { padding: 3px 0; }
+  .links { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
+  .links li { padding: var(--space-1) 0; }
 
   @media (max-width: 560px) {
     .pj-pd { margin-left: 0; }
-    .stack div { flex-direction: column; gap: 2px; }
+    .stack div { flex-direction: column; gap: var(--space-05); }
     dt, dt.wide { flex: none; }
   }
 </style>
