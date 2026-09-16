@@ -51,28 +51,51 @@ const others = briefings
       <p class="lead">{item.preview}</p>
     </header>
 
-    <div class="summary-note">
-      <span>AI 요약 · {item.generatedAt.replaceAll('-', '.')}</span>
-      <span>{item.basis} 기반</span>
-      <span>중요한 판단에는 원문 확인 권장</span>
-    </div>
+    {/*
+      * 원문에서 온 것과 내가 쓴 것을 나눈다.
+      *
+      * 전에는 페이지 전체에 "AI 요약"이라는 딱지 하나가 붙어 있었다. 그러면 읽는
+      * 사람이 아래 전부를 미리 할인해서 읽는다 — 마지막 한 줄이 내가 읽고 내린
+      * 판단인데 그것까지 기계가 쓴 것으로 읽힌다. 딱지를 페이지가 아니라 구획에
+      * 붙이면, 같은 문장이 변명이 아니라 출처 표시가 된다.
+      */}
+    <section class="part" aria-labelledby="from-source">
+      <div class="part-head">
+        <h2 id="from-source">원문에서</h2>
+        <p class="by">AI가 {item.basis}에서 정리 · {item.generatedAt.replaceAll('-', '.')} · 중요한 판단에는 원문 확인</p>
+      </div>
 
-    <div class="summary">
-      <section>
-        <h2>핵심 내용</h2>
+      <div class="block">
+        <h3>핵심 내용</h3>
         <ul>{item.keyPoints.map((point) => <li>{point}</li>)}</ul>
-      </section>
+      </div>
 
-      <section>
-        <h2>근거와 한계</h2>
+      <div class="block">
+        <h3>근거와 한계</h3>
         <ul>{item.limitations.map((limit) => <li>{limit}</li>)}</ul>
-      </section>
+      </div>
 
-      <section>
-        <h2>개발에 적용할 점</h2>
-        <p>{item.takeaway}</p>
-      </section>
-    </div>
+      {/*
+        * 원문 문장 인용. 본문을 통째로 번역해 싣는 것은 2차적저작물이라 저작권자의
+        * 허락이 필요하지만, 한두 문장 인용은 허용되고 요약만 있을 때보다 근거를
+        * 직접 보여 준다. 채운 브리핑에서만 나타난다.
+        */}
+      {item.quote && (
+        <figure class="quote">
+          <blockquote>{item.quote.text}</blockquote>
+          <p class="quote-ko">{item.quote.ko}</p>
+          <figcaption>{item.source}{item.quote.where ? ` · ${item.quote.where}` : ''}</figcaption>
+        </figure>
+      )}
+    </section>
+
+    <section class="part mine" aria-labelledby="mine">
+      <div class="part-head">
+        <h2 id="mine">내가 본 것</h2>
+        <p class="by">요약이 아니라 이 자료를 읽고 내린 판단입니다</p>
+      </div>
+      <p class="take">{item.takeaway}</p>
+    </section>
 
     <footer class="source-box">
       <div>
@@ -93,29 +116,45 @@ const others = briefings
   .meta span + span::before, .meta time::before { content: '·'; margin-right: var(--space-3); color: var(--border); }
   .meta .type { color: var(--accent); font-weight: 800; }
   h1 { margin: var(--space-4) 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-  /* 태그는 목록 페이지의 .item-tags와 같은 모양이다 */
+  /* 태그는 목록 페이지에서 쓰던 것과 같은 모양이다 */
   .tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
   .tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; }
   .lead { margin: var(--space-6) 0 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-relaxed); }
-  .summary-note {
-    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
-    margin: var(--space-6) 0 0; padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-md); background: var(--code-bg);
-    color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-snug);
-  }
-  .summary-note span + span::before { content: '·'; margin-right: var(--space-3); }
 
-  .summary { padding: var(--space-3) 0; }
-  .summary section { padding: var(--space-7) 0; border-bottom: 1px solid var(--border); }
-  .summary h2 { margin: 0 0 var(--space-3); font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
-  .summary ul { margin: 0; padding-left: var(--space-6); }
-  .summary li { margin: 0 0 var(--space-2); line-height: var(--lh-relaxed); }
-  .summary li:last-child { margin-bottom: 0; }
-  .summary p { margin: 0; line-height: var(--lh-relaxed); }
+  /* ── 구획 ─────────────────────────────────────────────────────── */
+  .part { padding: var(--space-10) 0 0; }
+  .part-head { padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); }
+  .part-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+  .by { margin: var(--space-2) 0 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
+
+  .block { padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
+  .block h3 { margin: 0 0 var(--space-3); font-size: var(--fs-400); letter-spacing: var(--ls-snug); }
+  .block ul { margin: 0; padding-left: var(--space-6); }
+  .block li { margin: 0 0 var(--space-2); line-height: var(--lh-relaxed); }
+  .block li:last-child { margin-bottom: 0; }
+
+  .quote {
+    margin: var(--space-7) 0 0; padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-md); background: var(--code-bg);
+  }
+  .quote blockquote { margin: 0; font-size: var(--fs-400); line-height: var(--lh-relaxed); }
+  .quote-ko { margin: var(--space-3) 0 0; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
+  .quote figcaption { margin-top: var(--space-3); color: var(--text-dim); font-size: var(--fs-200); }
+
+  /*
+   * 내가 쓴 구획. 세로선 하나와 한 단 큰 글씨로 다른 구획과 갈라 둔다 —
+   * 페이지에서 유일하게 남이 만들지 않은 문장이라 여기가 결론이어야 한다.
+   */
+  .mine .part-head { border-bottom-color: var(--accent); }
+  .take {
+    margin: var(--space-6) 0 0; padding-left: var(--space-6);
+    border-left: 3px solid var(--accent);
+    font-size: var(--fs-500); line-height: var(--lh-relaxed);
+  }
 
   .source-box {
     display: flex; align-items: center; justify-content: space-between; gap: var(--space-5);
-    margin-top: var(--space-6); padding: var(--space-5);
+    margin-top: var(--space-10); padding: var(--space-5);
     border: 1px solid var(--border); border-radius: var(--radius-lg);
   }
   .source-box div { display: grid; gap: var(--space-1); }
@@ -131,8 +170,7 @@ const others = briefings
 
   @media (max-width: 600px) {
     .briefing-detail { padding-top: var(--space-6); padding-bottom: var(--space-16); }
-    .summary-note { display: grid; gap: var(--space-1); }
-    .summary-note span + span::before { content: none; }
+    .take { padding-left: var(--space-4); font-size: var(--fs-400); }
     .source-box { align-items: flex-start; flex-direction: column; }
   }
 </style>

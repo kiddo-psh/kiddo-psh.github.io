@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { briefings, briefingLabels, briefingTagLabels } from '../lib/briefings';
+import Motif from '../components/Motif.astro';
+import { briefings, briefingLabels, briefingTagLabels, type Briefing } from '../lib/briefings';
+import { briefingTone } from '../lib/motif';
 
 const counts = {
   article: briefings.filter((item) => item.type === 'article').length,
@@ -8,10 +10,30 @@ const counts = {
   paper: briefings.filter((item) => item.type === 'paper').length,
 };
 
-const tagCounts = Object.fromEntries(
-  Object.keys(briefingTagLabels).map((tag) => [tag, briefings.filter((item) => item.tags.includes(tag as keyof typeof briefingTagLabels)).length]),
-);
-const usedTags = Object.keys(briefingTagLabels).filter((tag) => tagCounts[tag] > 0) as Array<keyof typeof briefingTagLabels>;
+/*
+ * 맨 위 한 건은 가장 최근 것이다. 표만 있으면 페이지에 들어가는 문이 없다 —
+ * 레퍼런스(뉴스룸)도 표 위에 큰 한 건을 세우고 거기서만 리드를 읽힌다.
+ *
+ * 다만 레퍼런스는 이 한 건을 아래 표에서 빼고, 여기서는 넣는다. 저쪽은 목록이
+ * 100건이 넘어 한 건이 빠져도 표가 표로 보이는데, 이쪽은 아직 세 건이라 한 건을
+ * 빼면 두 줄짜리 표가 남는다. 대신 거르는 중에는 이 한 건을 감춘다(아래 스크립트).
+ */
+const [featured] = briefings;
+const leadTone = briefingTone(featured?.type ?? 'article');
+
+const date = (s: string) => s.replaceAll('-', '.');
+
+/*
+ * 검색이 훑을 문자열. 제목·출처뿐 아니라 형식과 주제 이름까지 넣는다.
+ *
+ * 전에는 주제를 칩 여덟 개로 골랐다. 세 건짜리 목록 위에 여덟 개의 칩이 놓이면
+ * 조작판이 목록보다 크다. "보안"을 쳤을 때 보안 태그가 걸리게 하면 같은 일을
+ * 하면서 화면에서는 사라진다.
+ */
+const haystack = (item: Briefing) =>
+  [item.title, item.source, briefingLabels[item.type], ...item.tags.map((t) => briefingTagLabels[t])]
+    .join(' ')
+    .toLowerCase();
 ---
 
 <BaseLayout title="AI 브리핑" description="AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문 요약">
@@ -21,214 +43,245 @@ const usedTags = Object.keys(briefingTagLabels).filter((tag) => tagCounts[tag] >
       <p class="page-lead">AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문을 정리합니다. 읽고 나서 개발에 연결되는 것만 남깁니다.</p>
     </header>
 
-    <div class="content-grid">
-      <section class="feed" aria-labelledby="feed-title">
-        <div class="feed-head">
-          <h2 id="feed-title">브리핑 목록 <span id="result-count">{String(briefings.length).padStart(2, '0')}</span></h2>
-        </div>
+    {featured && (
+      <a class="lead" href={`/ai-briefing/${featured.id}`} id="lead">
+        <span class:list={['art-frame', 'lead-art', `t-${leadTone}`]}>
+          <span class="art-plate"><Motif seed={featured.id} tone={leadTone} size={92} plain /></span>
+        </span>
+        <span class="lead-body">
+          <span class="lead-meta">
+            <span class="type">{briefingLabels[featured.type]}</span>
+            <time datetime={featured.publishedAt}>{date(featured.publishedAt)}</time>
+          </span>
+          <span class="lead-title serif">{featured.title}</span>
+          <span class="lead-pre">{featured.preview}</span>
+          <span class="lead-src">{featured.source}</span>
+        </span>
+      </a>
+    )}
 
-        <div class="filter-panel">
-          <div class="filter-row">
-            <span class="filter-label">형식</span>
-            <div class="type-filters" aria-label="자료 형식">
-              <button type="button" class="chip selected" data-filter="all" aria-pressed="true">전체 <span class="count">{briefings.length}</span></button>
-              <button type="button" class="chip" data-filter="article" aria-pressed="false">기사 <span class="count">{counts.article}</span></button>
-              <button type="button" class="chip" data-filter="interview" aria-pressed="false">인터뷰 <span class="count">{counts.interview}</span></button>
-              <button type="button" class="chip" data-filter="paper" aria-pressed="false">논문 <span class="count">{counts.paper}</span></button>
-            </div>
+    <section class="feed" aria-labelledby="feed-title">
+      <div class="feed-head">
+        <h2 id="feed-title">브리핑 목록 <span id="result-count">{String(briefings.length).padStart(2, '0')}</span></h2>
+        <div class="tools">
+          <div class="types" aria-label="자료 형식">
+            <button type="button" class="tab on" data-filter="all" aria-pressed="true">전체 <span class="ct">{briefings.length}</span></button>
+            <button type="button" class="tab" data-filter="article" aria-pressed="false">기사 <span class="ct">{counts.article}</span></button>
+            <button type="button" class="tab" data-filter="interview" aria-pressed="false">인터뷰 <span class="ct">{counts.interview}</span></button>
+            <button type="button" class="tab" data-filter="paper" aria-pressed="false">논문 <span class="ct">{counts.paper}</span></button>
           </div>
-          <div class="filter-row">
-            <span class="filter-label">주제</span>
-            <div class="tag-filters" aria-label="관심 주제">
-              {usedTags.map((tag) => (
-                <button type="button" class="chip" data-tag={tag} aria-pressed="false">{briefingTagLabels[tag]} <span class="count">{tagCounts[tag]}</span></button>
-              ))}
-              <button type="button" class="chip reset-tags" disabled>초기화</button>
-            </div>
-          </div>
+          <input id="q" class="q" type="search" placeholder="제목 · 출처 · 주제" aria-label="브리핑 검색" autocomplete="off" />
         </div>
+      </div>
 
-        <div class="items">
-          {briefings.map((item, index) => (
-            <article class="item" data-type={item.type} data-tags={item.tags.join(' ')}>
-              <a class="item-link" href={`/ai-briefing/${item.id}`}>
-                <div class="item-top">
-                  <span class="index">{String(index + 1).padStart(2, '0')}</span>
-                  <span class="type">{briefingLabels[item.type]}</span>
-                  <span class="date">{item.publishedAt.replaceAll('-', '.')}</span>
-                </div>
-                <h3>{item.title}</h3>
-                <div class="item-tags" aria-label="주제 태그">
-                  {item.tags.map((tag) => <span>{briefingTagLabels[tag]}</span>)}
-                </div>
-                <p class="preview">{item.preview}</p>
-                <div class="item-bottom">
-                  <p class="source"><span>출처</span> {item.source}</p>
-                  <span class="read-more">요약 읽기 <span aria-hidden="true">→</span></span>
-                </div>
-              </a>
-            </article>
-          ))}
-          <div class="empty filter-empty" id="filter-empty" hidden>
-            <h3>조건에 맞는 브리핑이 없습니다.</h3>
-            <p>자료 형식이나 주제 태그를 바꿔 보세요.</p>
-          </div>
-          {briefings.length === 0 && (
-            <div class="empty">
-              <h3>아직 게시된 브리핑이 없습니다.</h3>
-              <p>새 자료가 선별되고 요약되면 이곳에서 바로 읽을 수 있습니다.</p>
-            </div>
-          )}
+      <div class="rows">
+        <div class="rhead" aria-hidden="true">
+          <span>날짜</span><span>형식</span><span>출처</span><span>제목</span>
         </div>
-      </section>
-
-    </div>
+        {briefings.map((item) => (
+          <a class="row" href={`/ai-briefing/${item.id}`} data-type={item.type} data-hay={haystack(item)}>
+            <time class="c-date" datetime={item.publishedAt}>{date(item.publishedAt)}</time>
+            <span class="c-type">{briefingLabels[item.type]}</span>
+            <span class="c-src">{item.source}</span>
+            <span class="c-title">{item.title}</span>
+          </a>
+        ))}
+        <p class="none" id="none" hidden>조건에 맞는 브리핑이 없습니다.</p>
+        {briefings.length === 0 && <p class="none">아직 게시된 브리핑이 없습니다.</p>}
+      </div>
+    </section>
   </div>
 </BaseLayout>
 
 <style>
   .briefing-page { padding-bottom: var(--space-20); }
-  /* 제목과 설명은 .page-title / .page-lead가 담당한다 */
-  .content-grid { padding-top: 0; }
-  .feed-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); }
-  .feed-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
-  .feed-head h2 span { margin-left: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); font-weight: 600; letter-spacing: 0; vertical-align: .2em; }
-  .filter-panel { margin: var(--space-6) 0 var(--space-3); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-elev); }
-  .filter-row { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: start; gap: var(--space-3); }
-  .filter-row + .filter-row { margin-top: var(--space-3); }
-  .filter-label { padding-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-200); font-weight: 800; }
-  /* 칩 모양은 global.css의 .chip — 여기서는 배치와 초기화 버튼 변형만 */
-  .type-filters, .tag-filters { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-  .tag-filters .reset-tags { border-color: transparent; background: transparent; color: var(--accent); }
-  .tag-filters .reset-tags:disabled { color: var(--text-dim); cursor: default; opacity: .45; }
-  .items { border-top: 1px solid var(--border); }
-  .empty { padding: var(--space-7) 0 var(--space-12); border-bottom: 1px solid var(--border); }
-  .empty[hidden] { display: none; }
-  .empty h3 { margin: 0 0 var(--space-2); font-size: var(--fs-500); }
-  .empty p { margin: 0; color: var(--text-dim); font-size: var(--fs-300); }
-  .item { border-bottom: 1px solid var(--border); }
-  .item[hidden] { display: none; }
-  .item-link { display: block; padding: var(--space-7) 0; color: var(--text); }
-  .item-link:hover { text-decoration: none; }
-  .item-top { display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-200); line-height: var(--lh-snug); }
-  .index { width: 28px; font-family: var(--font-mono); color: var(--text-dim); }
-  .type { color: var(--accent); font-weight: 800; }
-  .date { margin-left: auto; color: var(--text-dim); font-variant-numeric: tabular-nums; }
-  .item h3 { margin: var(--space-3) 0 var(--space-2) 40px; font-size: var(--fs-700); line-height: var(--lh-snug); letter-spacing: var(--ls-tight); transition: color var(--dur) var(--ease); }
-  .item-link:hover h3 { color: var(--accent); }
-  .item-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0 0 var(--space-3) 40px; }
-  .item-tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; line-height: var(--lh-snug); }
-  .preview { margin: 0 0 var(--space-4) 40px; max-width: 760px; font-size: var(--fs-400); line-height: var(--lh-normal); color: var(--text-dim); }
-  .item-bottom { display: flex; align-items: end; justify-content: space-between; gap: var(--space-4); margin-left: 40px; }
-  .source { margin: 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
-  .source span { font-weight: 800; color: var(--text); }
-  .read-more { color: var(--accent); font-size: var(--fs-200); font-weight: 700; white-space: nowrap; }
 
-  @media (max-width: 600px) {
+  /* ── 맨 위 한 건 ───────────────────────────────────────────────── */
+  .lead {
+    display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-8);
+    align-items: center; margin-bottom: var(--space-14); color: var(--text);
+  }
+  .lead:hover { text-decoration: none; }
+  .lead-art { height: 190px; border-radius: var(--radius-xl); }
+  .lead-art .art-plate { padding: var(--space-4) var(--space-8); }
+  .lead:hover .art-plate { transform: scale(1.04); }
+  .lead-body { display: grid; gap: var(--space-3); }
+  .lead-meta { display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-200); color: var(--text-dim); }
+  .lead-meta .type { color: var(--accent); font-weight: 800; }
+  .lead-title {
+    font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight);
+    transition: color var(--dur) var(--ease);
+  }
+  .lead:hover .lead-title { color: var(--accent); }
+  .lead-pre { max-width: 56ch; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-relaxed); }
+  .lead-src { font-size: var(--fs-200); color: var(--text-dim); }
+
+  /* ── 목록 머리와 조작 ──────────────────────────────────────────── */
+  .feed-head {
+    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between;
+    gap: var(--space-4); padding-bottom: var(--space-4);
+  }
+  .feed-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+  .feed-head h2 span { margin-left: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); font-weight: 600; vertical-align: .2em; }
+  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+
+  /*
+   * 형식 고르개. 테두리 있는 칩 대신 밑줄 하나로 고른 것을 표시한다 —
+   * 칩은 그 자체가 상자라서, 상자 없는 표 위에 얹으면 조작판이 목록보다 무거워진다.
+   * 네비게이션이 현재 위치를 표시하는 방식과 같다.
+   */
+  .types { display: flex; gap: var(--space-4); }
+  .tab {
+    padding: var(--space-1) 0; border: 0; border-bottom: 2px solid transparent;
+    background: none; color: var(--text-dim);
+    font: inherit; font-size: var(--fs-300); line-height: var(--lh-normal);
+    cursor: pointer; white-space: nowrap;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .tab:hover { color: var(--text); }
+  .tab.on { color: var(--text); font-weight: 700; border-bottom-color: var(--accent); }
+  .tab .ct { margin-left: var(--space-1); font-size: var(--fs-100); opacity: .6; }
+
+  .q {
+    width: 220px; padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border); border-radius: var(--radius-pill);
+    background: var(--bg-elev); color: var(--text);
+    font: inherit; font-size: var(--fs-300);
+  }
+  .q::placeholder { color: var(--text-dim); }
+
+  /* ── 표 ───────────────────────────────────────────────────────── */
+  .rows { border-top: 1px solid var(--border); }
+  .rhead, .row {
+    display: grid; grid-template-columns: 96px 60px 200px minmax(0, 1fr);
+    gap: var(--space-5); align-items: baseline;
+  }
+  .rhead {
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--border);
+    color: var(--text-dim); font-size: var(--fs-200);
+  }
+  .row {
+    padding: var(--space-5) 0; border-bottom: 1px solid var(--border);
+    color: var(--text); font-size: var(--fs-300); line-height: var(--lh-snug);
+    transition: color var(--dur) var(--ease);
+  }
+  .row[hidden] { display: none; }
+  .row:hover { text-decoration: none; color: var(--accent); }
+  .c-date { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .c-type { color: var(--accent); font-weight: 700; }
+  .c-src { color: var(--text-dim); }
+  .c-title { font-size: var(--fs-400); font-weight: 700; letter-spacing: var(--ls-snug); }
+
+  .none { padding: var(--space-8) 0; margin: 0; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  .none[hidden] { display: none; }
+
+  @media (max-width: 900px) {
+    .lead { grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-6); }
+    .lead-art { height: 150px; }
+    /* 출처 열을 접는다 — 세 열까지가 한 줄에 설 수 있는 한계다 */
+    .rhead, .row { grid-template-columns: 92px 56px minmax(0, 1fr); }
+    .rhead span:nth-child(3), .c-src { display: none; }
+  }
+
+  @media (max-width: 620px) {
     .briefing-page { padding-bottom: var(--space-16); }
-    .content-grid { padding-top: var(--space-6); }
-    .filter-row { grid-template-columns: 1fr; gap: var(--space-1); }
-    .filter-label { padding-top: 0; }
-    .item h3, .item-tags, .preview, .item-bottom { margin-left: 0; }
-    .item h3 { font-size: var(--fs-600); }
+    /* 머리그림을 제목 위로 올린다. 옆에 세우기엔 폭이 없고, 없애면 페이지가 글로만 시작한다 */
+    .lead { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); margin-bottom: var(--space-10); }
+    .lead-art { height: 132px; }
+    .tools { width: 100%; }
+    .q { flex: 1; width: auto; min-width: 0; }
+    .rhead { display: none; }
+    /*
+     * 한 줄이던 행을 두 줄로 접는다. 열 이름이 사라지므로 제목이 먼저 와야 한다.
+     * 칸을 그리드 영역으로 지정한다 — 한 칸짜리 그리드에 order만 주면 날짜와 형식이
+     * 각자 한 줄을 차지한다(그리드 자식은 inline이 되지 않는다).
+     */
+    .row {
+      grid-template-columns: max-content max-content minmax(0, 1fr);
+      grid-template-areas: 'title title title' 'date type .';
+      gap: var(--space-2) var(--space-3);
+      padding: var(--space-4) 0; align-items: baseline;
+    }
+    .c-title { grid-area: title; font-size: var(--fs-500); }
+    .c-date { grid-area: date; }
+    .c-type { grid-area: type; }
   }
 </style>
 
 <script>
   /*
-   * 필터 상태를 주소에 싣는다(?type=paper&tags=a,b).
+   * 거르는 상태를 주소에 싣는다(?type=paper&q=보안).
    *
-   * 전에는 상태가 메모리에만 있어서, "논문만" 골라놓고 주소를 복사해 보내면
-   * 받는 사람은 전체 목록을 봤고 새로고침하면 초기화됐다. 글 목록은 이미
-   * /posts?category=…로 같은 일을 한다 — 두 목록이 같은 기능을 반대로 하고 있었다.
+   * 전에는 주제를 태그 칩으로 골랐고 ?tags=에 실렸다. 칩 여덟 개를 검색 한 칸으로
+   * 바꾸면서 그 주소가 끊기므로, 들어온 ?tags=는 주제 이름으로 바꿔 검색창에 넣는다.
    *
-   * pushState가 아니라 replaceState인 이유: 칩은 훑는 동안 여러 번 눌리므로
-   * 누를 때마다 히스토리를 쌓으면 뒤로 가기가 필터 되감기로 변한다.
+   * pushState가 아니라 replaceState인 이유: 훑는 동안 여러 번 바뀌므로
+   * 바뀔 때마다 히스토리를 쌓으면 뒤로 가기가 필터 되감기로 변한다.
    */
-  const typeButtons = document.querySelectorAll<HTMLButtonElement>('.type-filters button');
-  const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filters button[data-tag]');
-  const resetTags = document.querySelector<HTMLButtonElement>('.reset-tags');
-  const items = document.querySelectorAll<HTMLElement>('.items .item');
-  const resultCount = document.querySelector<HTMLElement>('#result-count');
-  const filterEmpty = document.querySelector<HTMLElement>('#filter-empty');
+  const TAG_LABELS: Record<string, string> = {
+    'agent-design': '에이전트 설계',
+    'coding-agent': '코딩 에이전트',
+    'tools-mcp': '도구·MCP',
+    'memory-context': '메모리·컨텍스트',
+    evaluation: '평가',
+    security: '보안',
+    'multi-agent': '멀티 에이전트',
+    'model-inference': '모델·추론',
+  };
 
-  const knownTypes = new Set([...typeButtons].map((b) => b.dataset.filter ?? ''));
-  const knownTags = new Set([...tagButtons].map((b) => b.dataset.tag ?? ''));
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.types .tab');
+  const q = document.querySelector<HTMLInputElement>('#q');
+  const rows = document.querySelectorAll<HTMLElement>('.rows .row');
+  const lead = document.querySelector<HTMLElement>('#lead');
+  const count = document.querySelector<HTMLElement>('#result-count');
+  const none = document.querySelector<HTMLElement>('#none');
 
-  let activeType = 'all';
-  const selectedTags = new Set<string>();
+  const knownTypes = new Set([...tabs].map((t) => t.dataset.filter ?? ''));
+  let type = 'all';
+
+  const term = () => (q?.value ?? '').trim().toLowerCase();
 
   const syncUrl = () => {
     const params = new URLSearchParams();
-    if (activeType !== 'all') params.set('type', activeType);
-    if (selectedTags.size > 0) params.set('tags', [...selectedTags].join(','));
+    if (type !== 'all') params.set('type', type);
+    if (term()) params.set('q', term());
     const query = params.toString();
     history.replaceState(null, '', query ? `?${query}` : location.pathname);
   };
 
-  const paintButtons = () => {
-    typeButtons.forEach((tab) => {
-      const selected = (tab.dataset.filter ?? 'all') === activeType;
-      tab.classList.toggle('selected', selected);
-      tab.setAttribute('aria-pressed', String(selected));
+  const apply = () => {
+    const t = term();
+    let shown = 0;
+    rows.forEach((row) => {
+      const okType = type === 'all' || row.dataset.type === type;
+      const okTerm = !t || (row.dataset.hay ?? '').includes(t);
+      row.hidden = !(okType && okTerm);
+      if (!row.hidden) shown += 1;
     });
-    tagButtons.forEach((tab) => {
-      const selected = selectedTags.has(tab.dataset.tag ?? '');
-      tab.classList.toggle('selected', selected);
-      tab.setAttribute('aria-pressed', String(selected));
+    if (count) count.textContent = String(shown).padStart(2, '0');
+    if (none) none.hidden = shown > 0 || rows.length === 0;
+    /* 거르는 중에는 맨 위 한 건을 감춘다 — 걸러낸 목록 위에 남으면 결과로 오해된다 */
+    if (lead) lead.hidden = type !== 'all' || t !== '';
+    tabs.forEach((tab) => {
+      const on = (tab.dataset.filter ?? 'all') === type;
+      tab.classList.toggle('on', on);
+      tab.setAttribute('aria-pressed', String(on));
     });
   };
 
-  const applyFilters = () => {
-    let visibleCount = 0;
-    items.forEach((item) => {
-      const tags = (item.dataset.tags ?? '').split(' ').filter(Boolean);
-      const matchesType = activeType === 'all' || item.dataset.type === activeType;
-      const matchesTags = selectedTags.size === 0 || tags.some((tag) => selectedTags.has(tag));
-      item.hidden = !(matchesType && matchesTags);
-      if (!item.hidden) visibleCount += 1;
-    });
-    if (resultCount) resultCount.textContent = String(visibleCount).padStart(2, '0');
-    if (filterEmpty) filterEmpty.hidden = visibleCount > 0 || items.length === 0;
-    if (resetTags) resetTags.disabled = selectedTags.size === 0;
-  };
-
-  // 주소에 실려 온 상태를 복원한다. 모르는 값은 조용히 버려서 손으로 고친 주소에도 견딘다.
-  const restore = () => {
-    const params = new URLSearchParams(location.search);
-    const type = params.get('type');
-    if (type && knownTypes.has(type)) activeType = type;
-    (params.get('tags') ?? '')
-      .split(',')
-      .filter((tag) => knownTags.has(tag))
-      .forEach((tag) => selectedTags.add(tag));
-    paintButtons();
-    applyFilters();
-  };
-
-  typeButtons.forEach((button) => button.addEventListener('click', () => {
-    activeType = button.dataset.filter ?? 'all';
-    paintButtons();
-    applyFilters();
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    type = tab.dataset.filter ?? 'all';
+    apply();
     syncUrl();
   }));
 
-  tagButtons.forEach((button) => button.addEventListener('click', () => {
-    const tag = button.dataset.tag;
-    if (!tag) return;
-    if (selectedTags.has(tag)) selectedTags.delete(tag);
-    else selectedTags.add(tag);
-    paintButtons();
-    applyFilters();
-    syncUrl();
-  }));
+  q?.addEventListener('input', () => { apply(); syncUrl(); });
 
-  resetTags?.addEventListener('click', () => {
-    selectedTags.clear();
-    paintButtons();
-    applyFilters();
-    syncUrl();
-  });
-
-  restore();
+  /* 주소에 실려 온 상태를 되살린다. 모르는 값은 조용히 버려서 손으로 고친 주소에도 견딘다 */
+  const params = new URLSearchParams(location.search);
+  const urlType = params.get('type');
+  if (urlType && knownTypes.has(urlType)) type = urlType;
+  const legacyTag = (params.get('tags') ?? '').split(',').find((tag) => TAG_LABELS[tag]);
+  if (q) q.value = params.get('q') ?? (legacyTag ? TAG_LABELS[legacyTag] : '');
+  apply();
 </script>
