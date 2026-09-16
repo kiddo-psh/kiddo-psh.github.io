@@ -44,7 +44,8 @@
     .dg .n.t { fill:var(--t-fill); stroke:var(--t-line); }
     .dg .n.q { fill:var(--q-fill); stroke:var(--q-line); }
 
-    .dg .l { font-size:15px; font-weight:700; }
+    /* 색 클래스를 빠뜨려도 검게 떨어지지 않도록 기본값을 둔다 */
+    .dg .l { font-size:15px; font-weight:700; fill:var(--ink); }
     .dg .l.g { fill:var(--g-text); } .dg .l.v { fill:var(--v-text); }
     .dg .l.t { fill:var(--t-text); } .dg .l.q { fill:var(--q-text); }
     .dg .l.sm { font-size:13.5px; }
@@ -62,6 +63,18 @@
     .dg .sub.t { fill:var(--t-text); font-weight:700; }
     .dg .hd { font-size:16px; font-weight:700; fill:var(--ink); }
     .dg .grp { fill:none; stroke:var(--hair); stroke-width:1.2; stroke-dasharray:5 4; }
+
+    /*
+     * 값을 재는 그림의 막대와 눈금. 칸(.n)은 옅은 면 + 테두리지만, 막대는 길이 자체가
+     * 값이므로 테두리 없이 진한 면 하나로 칠한다. 색 뜻은 칸과 같다 — t는 되돌아간 비용.
+     */
+    .dg .bar { stroke:none; }
+    .dg .bar.g { fill:var(--g-text); } .dg .bar.v { fill:var(--v-text); }
+    .dg .bar.t { fill:var(--t-text); } .dg .bar.q { fill:var(--q-text); }
+    .dg .tick { font-size:13px; fill:var(--ink2); }
+    .dg .grid { fill:none; stroke:var(--hair); stroke-width:1; }
+    /* 판 안을 가르는 실선. 선분이므로 fill:none을 반드시 준다 */
+    .dg .rule { fill:none; stroke:var(--hair); stroke-width:1; }
   </style>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -106,6 +119,7 @@
   <rect class="n g" x="406" y="305" width="92" height="38" rx="3"/>
   <text class="l g sm" x="452" y="328.7" text-anchor="middle">기본</text>
   <path class="e" d="M498 324 H532" marker-end="url(#a)"/>
+  <rect class="grp" x="530" y="299" width="244" height="50" rx="6"/>
   <rect class="n g" x="538" y="305" width="228" height="38" rx="3"/>
   <text class="l g sm" x="652" y="328.7" text-anchor="middle">플랜 · 구현 · 테스트 · 빌드</text>
   <text class="sub" x="406" y="363" text-anchor="start">위험 트리거 없는 일반 코드 · 한 세션에서 완료</text>

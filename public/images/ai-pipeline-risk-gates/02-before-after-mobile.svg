@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="360" height="759" viewBox="0 -6 360 759" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="360" height="780" viewBox="0 -6 360 780" role="img" aria-labelledby="t d">
   <title id="t">절차를 줄인 것이 아니라 갈래로 나눴다</title>
   <desc id="d">기존에는 어떤 코드 변경이든 플랜, 테스트 선행, 구현, 검토 네 단계를 각각 새 세션으로 거쳤다. 개정 후에는 위험 트리거 판정이 세 갈래를 고른다. 검증만은 빌드만 확인하고, 기본은 플랜부터 빌드까지 한 세션에서 마치며, 게이트는 기본 절차에 A와 B의 독립 리뷰를 더한다. 판정이 앞에 서므로 절차가 짧아진 것이 아니라 변경에 따라 갈라진 것이다.</desc>
   <style>
@@ -44,7 +44,8 @@
     .dg .n.t { fill:var(--t-fill); stroke:var(--t-line); }
     .dg .n.q { fill:var(--q-fill); stroke:var(--q-line); }
 
-    .dg .l { font-size:15px; font-weight:700; }
+    /* 색 클래스를 빠뜨려도 검게 떨어지지 않도록 기본값을 둔다 */
+    .dg .l { font-size:15px; font-weight:700; fill:var(--ink); }
     .dg .l.g { fill:var(--g-text); } .dg .l.v { fill:var(--v-text); }
     .dg .l.t { fill:var(--t-text); } .dg .l.q { fill:var(--q-text); }
     .dg .l.sm { font-size:13.5px; }
@@ -62,6 +63,18 @@
     .dg .sub.t { fill:var(--t-text); font-weight:700; }
     .dg .hd { font-size:16px; font-weight:700; fill:var(--ink); }
     .dg .grp { fill:none; stroke:var(--hair); stroke-width:1.2; stroke-dasharray:5 4; }
+
+    /*
+     * 값을 재는 그림의 막대와 눈금. 칸(.n)은 옅은 면 + 테두리지만, 막대는 길이 자체가
+     * 값이므로 테두리 없이 진한 면 하나로 칠한다. 색 뜻은 칸과 같다 — t는 되돌아간 비용.
+     */
+    .dg .bar { stroke:none; }
+    .dg .bar.g { fill:var(--g-text); } .dg .bar.v { fill:var(--v-text); }
+    .dg .bar.t { fill:var(--t-text); } .dg .bar.q { fill:var(--q-text); }
+    .dg .tick { font-size:13px; fill:var(--ink2); }
+    .dg .grid { fill:none; stroke:var(--hair); stroke-width:1; }
+    /* 판 안을 가르는 실선. 선분이므로 fill:none을 반드시 준다 */
+    .dg .rule { fill:none; stroke:var(--hair); stroke-width:1; }
   </style>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -94,14 +107,15 @@
   <path class="e" d="M136 504 H158" marker-end="url(#a)"/>
   <rect class="n g" x="164" y="486" width="104" height="36" rx="3"/>
   <text class="l g sm" x="216" y="508.7" text-anchor="middle">빌드 확인</text>
-  <text class="sub" x="56" y="540" text-anchor="start">위험 트리거 없는 문서 · 테스트</text>
+  <text class="sub" x="56" y="540" text-anchor="start">위험 트리거 없는 문서 · 주석 · 테스트 코드</text>
   <path class="e" d="M38 594 H50" marker-end="url(#a)"/>
   <rect class="n g" x="56" y="576" width="68" height="36" rx="3"/>
   <text class="l g sm" x="90" y="598.7" text-anchor="middle">기본</text>
   <path class="e" d="M124 594 H146" marker-end="url(#a)"/>
-  <rect class="n g" x="152" y="576" width="154" height="36" rx="3"/>
-  <text class="l g sm" x="229" y="598.7" text-anchor="middle">플랜 → 구현 → 검증</text>
-  <text class="sub" x="56" y="630" text-anchor="start">한 세션에서 완료</text>
+  <rect class="n g" x="152" y="576" width="184" height="36" rx="3"/>
+  <text class="l g sm" x="244" y="598.7" text-anchor="middle">플랜 · 구현 · 테스트 · 빌드</text>
+  <text class="sub" x="56" y="636" text-anchor="start">위험 트리거 없는 일반 코드</text>
+  <text class="sub" x="56" y="654" text-anchor="start">한 세션에서 완료</text>
   <path class="e" d="M38 684 H50" marker-end="url(#a)"/>
   <rect class="n v" x="56" y="666" width="80" height="36" rx="3"/>
   <text class="l v sm" x="96" y="688.7" text-anchor="middle">게이트</text>
@@ -109,4 +123,5 @@
   <rect class="n v" x="164" y="666" width="148" height="36" rx="3"/>
   <text class="l v sm" x="238" y="688.7" text-anchor="middle">기본 + A · B 리뷰</text>
   <text class="sub" x="56" y="720" text-anchor="start">계약 · 인가 · 트랜잭션 등</text>
+  <text class="sub" x="56" y="738" text-anchor="start">두 리뷰어가 서로의 결과를 보지 않는다</text>
 </svg>
