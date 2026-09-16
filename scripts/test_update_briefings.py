@@ -47,8 +47,8 @@ class BriefingSelectionTest(unittest.TestCase):
         self.assertEqual(briefing.transcript_text("<article><p>Show notes only</p></article>"), "")
 
     def test_structured_summary_response_is_validated(self):
-        summary = {"preview": "한눈에 보기", "keyPoints": ["a", "b", "c"],
-                   "limitations": ["한계 1", "한계 2"], "takeaway": "적용점",
+        summary = {"preview": "한눈에 보기",
+                   "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
                    "tags": ["agent-design", "tools-mcp"]}
         response = {"status": "completed", "output": [{"type": "message", "content": [
             {"type": "output_text", "text": json.dumps(summary)}]}]}
@@ -65,9 +65,22 @@ class BriefingSelectionTest(unittest.TestCase):
                                         "Source text", "기사 본문", "test-key", "gpt-5-mini")
         self.assertEqual(result, summary)
 
+    def test_structured_summary_rejects_missing_body_slot(self):
+        summary = {"preview": "한눈에 보기",
+                   "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나"},
+                   "tags": ["agent-design"]}
+        response = {"status": "completed", "output": [{"type": "message", "content": [
+            {"type": "output_text", "text": json.dumps(summary)}]}]}
+
+        with patch.object(briefing, "urlopen", lambda request, timeout: io.BytesIO(json.dumps(response).encode())):
+            with self.assertRaisesRegex(RuntimeError, "본문 칸"):
+                briefing.summarize({"type": "article", "title": "Agent tools",
+                                     "sourceUrl": "https://openai.com/news/example"},
+                                    "Source text", "기사 본문", "test-key", "gpt-5-mini")
+
     def test_structured_summary_rejects_unknown_tag(self):
-        summary = {"preview": "한눈에 보기", "keyPoints": ["a", "b", "c"],
-                   "limitations": ["한계 1", "한계 2"], "takeaway": "적용점",
+        summary = {"preview": "한눈에 보기",
+                   "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
                    "tags": ["unknown-topic"]}
         response = {"status": "completed", "output": [{"type": "message", "content": [
             {"type": "output_text", "text": json.dumps(summary)}]}]}
