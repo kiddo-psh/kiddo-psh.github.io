@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="960" height="499" viewBox="0 7 960 499" role="img" aria-labelledby="t d">
+  <title id="t">평균 2.5개가 나온 자리</title>
+  <desc id="d">평가에 쓴 fixture 여덟 개마다 어떤 Agent가 실행되는지 보여준다. 기록이 없는 요청은 Agent가 하나도 실행되지 않고, 영양만 기록한 요청은 영양과 종합 둘, 영양과 운동을 모두 기록한 요청은 넷이 실행된다. 영양 Agent가 켜진 네 요청에서만 RAG 검색이 붙는다. 여덟 요청의 평균은 2.5개이고, 고정 DAG는 어떤 요청에도 4.0개를 실행했다.</desc>
+  <style>
+    /*
+     * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
+     *
+     * 색은 "무엇인가"가 아니라 "어떤 역할인가"를 말한다.
+     *   g 초록  코드가 실제로 바뀌는 단계
+     *   v 보라  사람이 기준을 정하거나 확인하는 지점 (문서 · 판정 · 리뷰 · 게이트)
+     *   t 주황  경계 — 들어오고 나가는 지점, 그리고 되돌아간 비용
+     *   q 회색  맥락. 이 그림의 주인공이 아닌 것
+     * 한 칸은 면 · 선 · 글자를 같은 색 한 벌로 쓴다. 색이 역할이므로 강조용 테두리를
+     * 따로 두지 않는다.
+     *
+     * 설명은 칸이 아니라 선과 여백이 한다. 칸 안에는 이름 한 줄만 넣고, 무엇이
+     * 흐르는지는 선 위 이름표로, 그 칸이 무슨 일을 하는지는 칸 아래 작은 글로 쓴다.
+     *
+     * 이 파일은 빌드 때 본문에 인라인으로 들어간다(src/lib/inline-svg.mjs). 그래서
+     * 규칙을 전부 .dg 아래에 두어 페이지의 다른 요소에 새지 않게 하고, 다크 값은
+     * OS 설정이 아니라 사이트의 테마 토글(html[data-theme])을 따른다. 파일을 직접
+     * 열면 라이트 값만 보인다.
+     */
+    .dg {
+      --ink:#23211d; --ink2:#57534a; --hair:#cec8bb; --arrow:#a39c91;
+      --g-fill:#e7f0ea; --g-line:#4e8f74; --g-text:#1d6b4f;
+      --v-fill:#ecebf4; --v-line:#7d74ab; --v-text:#544a87;
+      --t-fill:#f7ebe3; --t-line:#c07a4e; --t-text:#9c4a15;
+      --q-fill:#f4f1ea; --q-line:#cec8bb; --q-text:#57534a;
+    }
+    :root[data-theme='dark'] .dg {
+      --ink:#edeae3; --ink2:#a8a199; --hair:#3f3b35; --arrow:#6f685f;
+      --g-fill:#1d2a24; --g-line:#3f7a5f; --g-text:#4fbe8f;
+      --v-fill:#24222e; --v-line:#6a5f96; --v-text:#a396d8;
+      --t-fill:#2c211a; --t-line:#8f5c38; --t-text:#d98b52;
+      --q-fill:#2a2724; --q-line:#4a453e; --q-text:#a8a199;
+    }
+    /* 인라인이면 페이지의 Pretendard를 그대로 받는다. 직접 열었을 때만 시스템 고딕으로 떨어진다 */
+    .dg text { font-family: 'Pretendard Variable', Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; }
+
+    .dg .n { stroke-width:1.5; }
+    .dg .n.g { fill:var(--g-fill); stroke:var(--g-line); }
+    .dg .n.v { fill:var(--v-fill); stroke:var(--v-line); }
+    .dg .n.t { fill:var(--t-fill); stroke:var(--t-line); }
+    .dg .n.q { fill:var(--q-fill); stroke:var(--q-line); }
+
+    /* 색 클래스를 빠뜨려도 검게 떨어지지 않도록 기본값을 둔다 */
+    .dg .l { font-size:15px; font-weight:700; fill:var(--ink); }
+    .dg .l.g { fill:var(--g-text); } .dg .l.v { fill:var(--v-text); }
+    .dg .l.t { fill:var(--t-text); } .dg .l.q { fill:var(--q-text); }
+    .dg .l.sm { font-size:13.5px; }
+
+    .dg .e { fill:none; stroke:var(--arrow); stroke-width:1.8; }
+    .dg .e.d { stroke-dasharray:5 4; }
+    .dg .e.t { stroke:var(--t-line); stroke-width:1.4; }
+    .dg .ah { fill:var(--arrow); }
+    .dg .el { font-size:13.5px; fill:var(--ink2); }
+
+    .dg .sub { font-size:13px; fill:var(--ink2); }
+    /* 그림이 가리키는 한 곳을 이름으로 부를 때. 가리키는 칸과 같은 색을 쓴다 */
+    .dg .sub.g { fill:var(--g-text); font-weight:700; }
+    .dg .sub.v { fill:var(--v-text); font-weight:700; }
+    .dg .sub.t { fill:var(--t-text); font-weight:700; }
+    .dg .hd { font-size:16px; font-weight:700; fill:var(--ink); }
+    .dg .grp { fill:none; stroke:var(--hair); stroke-width:1.2; stroke-dasharray:5 4; }
+
+    /*
+     * 값을 재는 그림의 막대와 눈금. 칸(.n)은 옅은 면 + 테두리지만, 막대는 길이 자체가
+     * 값이므로 테두리 없이 진한 면 하나로 칠한다. 색 뜻은 칸과 같다 — t는 되돌아간 비용.
+     */
+    .dg .bar { stroke:none; }
+    .dg .bar.g { fill:var(--g-text); } .dg .bar.v { fill:var(--v-text); }
+    .dg .bar.t { fill:var(--t-text); } .dg .bar.q { fill:var(--q-text); }
+    .dg .tick { font-size:13px; fill:var(--ink2); }
+    .dg .grid { fill:none; stroke:var(--hair); stroke-width:1; }
+    /* 판 안을 가르는 실선. 선분이므로 fill:none을 반드시 준다 */
+    .dg .rule { fill:none; stroke:var(--hair); stroke-width:1; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="ah" d="M0 0 L10 5 L0 10 Z"/>
+    </marker>
+  </defs>
+  <text class="l sm g" x="300" y="52" text-anchor="middle">영양</text>
+  <text class="l sm g" x="380" y="52" text-anchor="middle">운동</text>
+  <text class="l sm g" x="460" y="52" text-anchor="middle">목표</text>
+  <text class="l sm g" x="540" y="52" text-anchor="middle">종합</text>
+  <text class="l sm v" x="648" y="52" text-anchor="middle">RAG</text>
+  <text class="sub" x="740" y="52" text-anchor="start">실행 Agent 수</text>
+  <text class="sub" x="56" y="52" text-anchor="start">fixture</text>
+  <path class="rule" d="M56 66 H904"/>
+  <text class="l sm q" x="56" y="99" text-anchor="start">기록 없음</text>
+  <path class="grid" d="M294 94 H306"/>
+  <path class="grid" d="M374 94 H386"/>
+  <path class="grid" d="M454 94 H466"/>
+  <path class="grid" d="M534 94 H546"/>
+  <path class="grid" d="M642 94 H654"/>
+  <text class="sub" x="834" y="99" text-anchor="start">0개</text>
+  <text class="l sm" x="56" y="135" text-anchor="start">영양만</text>
+  <circle class="bar g" cx="300" cy="130" r="6"/>
+  <path class="grid" d="M374 130 H386"/>
+  <path class="grid" d="M454 130 H466"/>
+  <circle class="bar g" cx="540" cy="130" r="6"/>
+  <circle class="bar v" cx="648" cy="130" r="6"/>
+  <rect class="bar g" x="740" y="122" width="40" height="16" rx="3"/>
+  <text class="sub" x="834" y="135" text-anchor="start">2개</text>
+  <text class="l sm" x="56" y="171" text-anchor="start">운동만</text>
+  <path class="grid" d="M294 166 H306"/>
+  <circle class="bar g" cx="380" cy="166" r="6"/>
+  <path class="grid" d="M454 166 H466"/>
+  <circle class="bar g" cx="540" cy="166" r="6"/>
+  <path class="grid" d="M642 166 H654"/>
+  <rect class="bar g" x="740" y="158" width="40" height="16" rx="3"/>
+  <text class="sub" x="834" y="171" text-anchor="start">2개</text>
+  <text class="l sm" x="56" y="207" text-anchor="start">체중만</text>
+  <path class="grid" d="M294 202 H306"/>
+  <path class="grid" d="M374 202 H386"/>
+  <circle class="bar g" cx="460" cy="202" r="6"/>
+  <circle class="bar g" cx="540" cy="202" r="6"/>
+  <path class="grid" d="M642 202 H654"/>
+  <rect class="bar g" x="740" y="194" width="40" height="16" rx="3"/>
+  <text class="sub" x="834" y="207" text-anchor="start">2개</text>
+  <text class="l sm" x="56" y="243" text-anchor="start">영양 + 체중</text>
+  <circle class="bar g" cx="300" cy="238" r="6"/>
+  <path class="grid" d="M374 238 H386"/>
+  <circle class="bar g" cx="460" cy="238" r="6"/>
+  <circle class="bar g" cx="540" cy="238" r="6"/>
+  <circle class="bar v" cx="648" cy="238" r="6"/>
+  <rect class="bar g" x="740" y="230" width="60" height="16" rx="3"/>
+  <text class="sub" x="834" y="243" text-anchor="start">3개</text>
+  <text class="l sm" x="56" y="279" text-anchor="start">운동 + 체중</text>
+  <path class="grid" d="M294 274 H306"/>
+  <circle class="bar g" cx="380" cy="274" r="6"/>
+  <circle class="bar g" cx="460" cy="274" r="6"/>
+  <circle class="bar g" cx="540" cy="274" r="6"/>
+  <path class="grid" d="M642 274 H654"/>
+  <rect class="bar g" x="740" y="266" width="60" height="16" rx="3"/>
+  <text class="sub" x="834" y="279" text-anchor="start">3개</text>
+  <text class="l sm" x="56" y="315" text-anchor="start">영양 + 운동</text>
+  <circle class="bar g" cx="300" cy="310" r="6"/>
+  <circle class="bar g" cx="380" cy="310" r="6"/>
+  <circle class="bar g" cx="460" cy="310" r="6"/>
+  <circle class="bar g" cx="540" cy="310" r="6"/>
+  <circle class="bar v" cx="648" cy="310" r="6"/>
+  <rect class="bar g" x="740" y="302" width="80" height="16" rx="3"/>
+  <text class="sub" x="834" y="315" text-anchor="start">4개</text>
+  <text class="l sm" x="56" y="351" text-anchor="start">전부</text>
+  <circle class="bar g" cx="300" cy="346" r="6"/>
+  <circle class="bar g" cx="380" cy="346" r="6"/>
+  <circle class="bar g" cx="460" cy="346" r="6"/>
+  <circle class="bar g" cx="540" cy="346" r="6"/>
+  <circle class="bar v" cx="648" cy="346" r="6"/>
+  <rect class="bar g" x="740" y="338" width="80" height="16" rx="3"/>
+  <text class="sub" x="834" y="351" text-anchor="start">4개</text>
+  <path class="rule" d="M56 370 H904"/>
+  <text class="l sm q" x="56" y="405" text-anchor="start">고정 DAG</text>
+  <rect class="bar q" x="740" y="392" width="80" height="16" rx="3"/>
+  <text class="sub" x="834" y="405" text-anchor="start">4.0개</text>
+  <text class="l sm g" x="56" y="439" text-anchor="start">동적 라우팅</text>
+  <rect class="bar g" x="740" y="426" width="50" height="16" rx="3"/>
+  <text class="sub" x="834" y="439" text-anchor="start">2.5개</text>
+  <text class="sub" x="56" y="470" text-anchor="start">fixture 8개를 같은 비중으로 셌습니다. 실제 사용자 분포의 평균이 아닙니다.</text>
+</svg>

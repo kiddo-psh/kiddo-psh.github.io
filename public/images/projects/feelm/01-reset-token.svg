@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="960" height="235" viewBox="0 44 960 235" role="img" aria-labelledby="t d">
-  <title id="t">시스템 구조</title>
-  <desc id="d">센서 두 종류가 엣지 장치 둘로 들어가고, 두 장치가 Spring Backend로 결과를 보내며, Backend가 Mobile App과 Admin Web에 전달한다. 천장 광각 카메라는 주차장 전경 영상을, 입구 카메라와 ToF는 번호판과 차량 감지를 맡는다. Jetson이 AI 차량 추적과 구역 판정을, Raspberry Pi가 입차 제어와 LED · 스피커를 담당한다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="t d">
+  <title id="t">비밀번호를 바꿔도 링크가 살아 있었다</title>
+  <desc id="d">고치기 전에는 비밀번호 재설정 토큰이 발급되면 30분 만료까지 유효했다. 사용자가 그 사이에 로그인해서 직접 비밀번호를 바꿔도 메일 속 링크는 남은 시간 동안 그대로 동작했다. 고친 뒤에는 비밀번호가 바뀌는 모든 경로에서 그 계정의 재설정 토큰을 무효화해, 비밀번호가 바뀌는 순간 링크가 끊긴다.</desc>
   <style>
     /*
      * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
@@ -81,31 +81,24 @@
       <path class="ah" d="M0 0 L10 5 L0 10 Z"/>
     </marker>
   </defs>
-  <rect class="n q" x="56" y="76" width="150" height="40" rx="3"/>
-  <text class="l q" x="131" y="101.3" text-anchor="middle">천장 광각 카메라</text>
-  <text class="sub" x="131" y="136" text-anchor="middle">주차장 전경 영상</text>
-  <rect class="n q" x="56" y="186" width="150" height="40" rx="3"/>
-  <text class="l q" x="131" y="211.3" text-anchor="middle">입구 카메라 · ToF</text>
-  <text class="sub" x="131" y="246" text-anchor="middle">번호판 · 차량 감지</text>
-  <rect class="n g" x="286" y="76" width="150" height="40" rx="3"/>
-  <text class="l g" x="361" y="101.3" text-anchor="middle">Jetson</text>
-  <text class="sub" x="361" y="136" text-anchor="middle">AI 차량 추적 · 구역 판정</text>
-  <rect class="n g" x="286" y="186" width="150" height="40" rx="3"/>
-  <text class="l g" x="361" y="211.3" text-anchor="middle">Raspberry Pi</text>
-  <text class="sub" x="361" y="246" text-anchor="middle">입차 제어 · LED · 스피커</text>
-  <rect class="n v" x="516" y="131" width="150" height="40" rx="3"/>
-  <text class="l v" x="591" y="156.3" text-anchor="middle">Spring Backend</text>
-  <text class="sub" x="591" y="191" text-anchor="middle">사건 · 세션 · 알림</text>
-  <rect class="n t" x="746" y="76" width="150" height="40" rx="3"/>
-  <text class="l t" x="821" y="101.3" text-anchor="middle">Mobile App</text>
-  <text class="sub" x="821" y="136" text-anchor="middle">거주자 · 위반 알림</text>
-  <rect class="n t" x="746" y="186" width="150" height="40" rx="3"/>
-  <text class="l t" x="821" y="211.3" text-anchor="middle">Admin Web</text>
-  <text class="sub" x="821" y="246" text-anchor="middle">관리자 · 사건 처리</text>
-  <path class="e" d="M206 96 H278" marker-end="url(#a)"/>
-  <path class="e" d="M206 206 H278" marker-end="url(#a)"/>
-  <path class="e" d="M436 96 C470 96 478 151 508 151" marker-end="url(#a)"/>
-  <path class="e" d="M436 206 C470 206 478 151 508 151" marker-end="url(#a)"/>
-  <path class="e" d="M666 151 C700 151 708 96 738 96" marker-end="url(#a)"/>
-  <path class="e" d="M666 151 C700 151 708 206 738 206" marker-end="url(#a)"/>
+  <text class="hd" x="56" y="46" text-anchor="start">고치기 전</text>
+  <text class="sub" x="150" y="46" text-anchor="start">비밀번호를 바꿔도 메일 속 링크는 살아 있었다</text>
+  <text class="el" x="200" y="86" text-anchor="start">재설정 메일 발송</text>
+  <text class="el" x="430" y="86" text-anchor="middle">로그인해서 직접 변경</text>
+  <text class="el" x="700" y="86" text-anchor="end">토큰 만료 · 30분</text>
+  <path class="grid" d="M200 92 V130"/>
+  <path class="grid" d="M430 92 V130"/>
+  <path class="grid" d="M700 92 V130"/>
+  <rect class="bar q" x="200" y="100" width="230" height="18" rx="3"/>
+  <rect class="bar t" x="430" y="100" width="270" height="18" rx="3"/>
+  <text class="sub" x="430" y="152" text-anchor="start">이 구간에도 메일 속 링크가 그대로 동작했다</text>
+  <path class="rule" d="M56 182 H904"/>
+  <text class="hd" x="56" y="218" text-anchor="start">고친 뒤</text>
+  <text class="sub" x="150" y="218" text-anchor="start">비밀번호가 바뀌는 순간 링크가 끊긴다</text>
+  <text class="el" x="200" y="258" text-anchor="start">재설정 메일 발송</text>
+  <text class="el" x="440" y="258" text-anchor="start">비밀번호 변경 · 재설정 토큰 무효화</text>
+  <path class="grid" d="M200 264 V302"/>
+  <rect class="bar q" x="200" y="272" width="230" height="18" rx="3"/>
+  <path class="e t" d="M430 262 V304"/>
+  <text class="sub" x="200" y="324" text-anchor="start">비밀번호가 바뀌는 모든 경로에서 그 계정의 재설정 토큰을 지웁니다.</text>
 </svg>

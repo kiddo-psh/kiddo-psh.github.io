@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="960" height="235" viewBox="0 44 960 235" role="img" aria-labelledby="t d">
-  <title id="t">시스템 구조</title>
-  <desc id="d">센서 두 종류가 엣지 장치 둘로 들어가고, 두 장치가 Spring Backend로 결과를 보내며, Backend가 Mobile App과 Admin Web에 전달한다. 천장 광각 카메라는 주차장 전경 영상을, 입구 카메라와 ToF는 번호판과 차량 감지를 맡는다. Jetson이 AI 차량 추적과 구역 판정을, Raspberry Pi가 입차 제어와 LED · 스피커를 담당한다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" width="960" height="268" viewBox="0 24 960 268" role="img" aria-labelledby="t d">
+  <title id="t">지시를 늘리는 대신 루프를 닫는다</title>
+  <desc id="d">모델에게 주는 것은 무엇을 만드는가, 무엇을 하면 안 되는가, 언제 끝났다고 보는가 셋이다. 방법은 모델이 고른다. 결과는 모델이 스스로 검증하고, 기준을 만족하면 완료로 나가고, 만족하지 못하면 다시 방법을 고르는 자리로 돌아간다. 단계를 지시하는 자리가 아니라 되돌아오는 선이 이 그림의 요지다.</desc>
   <style>
     /*
      * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
@@ -81,31 +81,25 @@
       <path class="ah" d="M0 0 L10 5 L0 10 Z"/>
     </marker>
   </defs>
-  <rect class="n q" x="56" y="76" width="150" height="40" rx="3"/>
-  <text class="l q" x="131" y="101.3" text-anchor="middle">천장 광각 카메라</text>
-  <text class="sub" x="131" y="136" text-anchor="middle">주차장 전경 영상</text>
-  <rect class="n q" x="56" y="186" width="150" height="40" rx="3"/>
-  <text class="l q" x="131" y="211.3" text-anchor="middle">입구 카메라 · ToF</text>
-  <text class="sub" x="131" y="246" text-anchor="middle">번호판 · 차량 감지</text>
-  <rect class="n g" x="286" y="76" width="150" height="40" rx="3"/>
-  <text class="l g" x="361" y="101.3" text-anchor="middle">Jetson</text>
-  <text class="sub" x="361" y="136" text-anchor="middle">AI 차량 추적 · 구역 판정</text>
-  <rect class="n g" x="286" y="186" width="150" height="40" rx="3"/>
-  <text class="l g" x="361" y="211.3" text-anchor="middle">Raspberry Pi</text>
-  <text class="sub" x="361" y="246" text-anchor="middle">입차 제어 · LED · 스피커</text>
-  <rect class="n v" x="516" y="131" width="150" height="40" rx="3"/>
-  <text class="l v" x="591" y="156.3" text-anchor="middle">Spring Backend</text>
-  <text class="sub" x="591" y="191" text-anchor="middle">사건 · 세션 · 알림</text>
-  <rect class="n t" x="746" y="76" width="150" height="40" rx="3"/>
-  <text class="l t" x="821" y="101.3" text-anchor="middle">Mobile App</text>
-  <text class="sub" x="821" y="136" text-anchor="middle">거주자 · 위반 알림</text>
-  <rect class="n t" x="746" y="186" width="150" height="40" rx="3"/>
-  <text class="l t" x="821" y="211.3" text-anchor="middle">Admin Web</text>
-  <text class="sub" x="821" y="246" text-anchor="middle">관리자 · 사건 처리</text>
-  <path class="e" d="M206 96 H278" marker-end="url(#a)"/>
-  <path class="e" d="M206 206 H278" marker-end="url(#a)"/>
-  <path class="e" d="M436 96 C470 96 478 151 508 151" marker-end="url(#a)"/>
-  <path class="e" d="M436 206 C470 206 478 151 508 151" marker-end="url(#a)"/>
-  <path class="e" d="M666 151 C700 151 708 96 738 96" marker-end="url(#a)"/>
-  <path class="e" d="M666 151 C700 151 708 206 738 206" marker-end="url(#a)"/>
+  <rect class="n v" x="56" y="56" width="190" height="38" rx="3"/>
+  <text class="l v sm" x="151" y="79.7" text-anchor="middle">무엇을 만드는가</text>
+  <path class="e" d="M246 75 C276 75 282 133 304 133" marker-end="url(#a)"/>
+  <rect class="n v" x="56" y="114" width="190" height="38" rx="3"/>
+  <text class="l v sm" x="151" y="137.7" text-anchor="middle">무엇을 하면 안 되는가</text>
+  <path class="e" d="M246 133 C276 133 282 133 304 133" marker-end="url(#a)"/>
+  <rect class="n v" x="56" y="172" width="190" height="38" rx="3"/>
+  <text class="l v sm" x="151" y="195.7" text-anchor="middle">언제 끝났다고 보는가</text>
+  <path class="e" d="M246 191 C276 191 282 133 304 133" marker-end="url(#a)"/>
+  <rect class="n g" x="310" y="114" width="210" height="38" rx="3"/>
+  <text class="l g sm" x="415" y="137.7" text-anchor="middle">모델이 방법을 고른다</text>
+  <rect class="n v" x="580" y="114" width="130" height="38" rx="3"/>
+  <text class="l v sm" x="645" y="137.7" text-anchor="middle">스스로 검증</text>
+  <rect class="n t" x="780" y="114" width="110" height="38" rx="3"/>
+  <text class="l t sm" x="835" y="137.7" text-anchor="middle">완료</text>
+  <path class="e" d="M520 133 H574" marker-end="url(#a)"/>
+  <path class="e" d="M710 133 H774" marker-end="url(#a)"/>
+  <text class="el" x="742" y="124" text-anchor="middle">기준 만족</text>
+  <path class="e t d" d="M645 152 C645 214 610 236 525 236 C440 236 415 214 415 152" marker-end="url(#a)"/>
+  <text class="el" x="525" y="256" text-anchor="middle">아직 끝나지 않았다</text>
+  <text class="sub" x="56" y="236" text-anchor="start">모델이 읽는 것은 이 셋이다</text>
 </svg>

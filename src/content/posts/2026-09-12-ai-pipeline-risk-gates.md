@@ -14,7 +14,7 @@ category: dev
 <figure class="wide">
   <picture>
     <source media="(max-width: 700px)" srcset="/images/ai-pipeline-risk-gates/02-before-after-mobile.svg" />
-    <img src="/images/ai-pipeline-risk-gates/01-before-after.svg" alt="기존에는 모든 코드 변경에 플랜, 실패 테스트, 구현, 검토 네 단계를 각각 새 세션으로 적용했다. 개정 후에는 일반 문서와 테스트만 바꾸면 빌드만 확인하고, 일반 코드는 플랜부터 검증까지 한 세션에서 마치며, 계약·인가·트랜잭션 등 위험한 변경에는 A와 B의 독립 리뷰를 더한다" />
+    <img src="/images/ai-pipeline-risk-gates/01-before-after.svg" alt="기존에는 어떤 코드 변경이든 플랜, 테스트 선행, 구현, 검토 네 단계를 각각 새 세션으로 거쳤다. 개정 후에는 위험 트리거 판정이 세 갈래를 고른다. 검증만은 빌드만 확인하고, 기본은 플랜부터 빌드까지 한 세션에서 마치며, 게이트는 기본 절차에 A와 B의 독립 리뷰를 더한다" />
   </picture>
   <figcaption>네 단계를 세 단계로 줄인 것이 아니라, 변경에 따라 세 갈래로 나눴습니다.</figcaption>
 </figure>
