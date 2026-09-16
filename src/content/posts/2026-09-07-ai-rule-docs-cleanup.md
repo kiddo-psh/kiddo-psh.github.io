@@ -81,7 +81,8 @@ Claude Code를 만든 Boris Cherny가 인터뷰에서 한 말이에요. 최신 �
 개발 절차 문서의 시작 절차는 그대로 뒀어요. git 명령이 들어 있는 사람용 절차라 AI 체크리스트와 성격이 다르다고 판단했거든요.
 
 <figure class="wide">
-  <img src="/images/ai-rule-docs-cleanup/02-rule-dedup.svg" alt="정리 전에는 시작 전 확인, 보고 양식, 검증 항목이 두세 문서에 서로 다른 형태로 있었고, 정리 후에는 정의를 한 곳에 두고 나머지는 참조만 한다" />
+  <img src="/images/ai-rule-docs-cleanup/02-rule-dedup.svg" alt="정리 전에는 세 규칙이 두 문서로 갈라져 선이 엉켜 있고, 정리 후에는 같은 선이 AGENTS.md 한 곳으로 모인다" />
+  <figcaption>줄 수가 준 건 부수 효과예요. 없애고 싶었던 건 어느 문서를 따를지 고민하는 순간이었습니다.</figcaption>
 </figure>
 
 줄 수가 줄어든 건 부수 효과예요. 어느 문서를 따를지 고민하는 순간을 없애고 싶었거든요.
@@ -103,7 +104,8 @@ Claude Code를 만든 Boris Cherny가 인터뷰에서 한 말이에요. 최신 �
 `AGENTS.md` 서문에는 "이 문서는 AI가 하나의 작업을 수행하는 절차를 정의한다. 여러 작업자가 동시에 작업할 때의 조직 방식은 협업 문서가 정의한다"를 넣고 협업 문서에도 같은 취지의 문장을 넣어 서로를 가리키게 했어요.
 
 <figure class="wide">
-  <img src="/images/ai-rule-docs-cleanup/01-doc-roles.svg" alt="문서를 AI 작업 절차, 규칙, 안내 세 층으로 나눈 그림. 절차 문서는 규칙과 계약을 따르고, 안내 문서는 규칙을 링크만 한다" />
+  <img src="/images/ai-rule-docs-cleanup/01-doc-roles.svg" alt="절차 문서 둘이 규칙 문서와 설계·계약 문서를 따르고, 안내 문서는 규칙을 정의하지 않고 링크만 한다" />
+  <figcaption>규칙을 정의하는 문서와 링크만 하는 문서를 나눴습니다.</figcaption>
 </figure>
 
 우선순위도 정했어요. **같은 수준의 문서가 다르게 말하면 규칙 문서가 안내 문서보다 우선한다.**
