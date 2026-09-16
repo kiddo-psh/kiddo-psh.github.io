@@ -4,6 +4,7 @@ import {
   briefings,
   briefingLabels,
   briefingTagLabels,
+  bodyLabels,
   type Briefing,
 } from '../../lib/briefings';
 import BackLink from '../../components/BackLink.astro';
@@ -17,6 +18,7 @@ export function getStaticPaths() {
 }
 
 const { item } = Astro.props as { item: Briefing };
+const label = bodyLabels[item.type];
 
 /*
  * 같은 주제 태그를 하나라도 공유하는 다른 브리핑. 전에는 이 페이지 끝이
@@ -45,34 +47,35 @@ const others = briefings
         <time datetime={item.publishedAt}>{item.publishedAt.replaceAll('-', '.')}</time>
       </div>
       <h1 class="serif">{item.title}</h1>
+      {/* 태그는 목록으로 되돌아가는 문이다. 장식으로 두면 여기서 길이 끊긴다 */}
       <div class="tags" aria-label="주제 태그">
-        {item.tags.map((tag) => <span>{briefingTagLabels[tag]}</span>)}
+        {item.tags.map((tag) => (
+          <a href={`/ai-briefing?q=${encodeURIComponent(briefingTagLabels[tag])}`}>{briefingTagLabels[tag]}</a>
+        ))}
       </div>
       <p class="lead">{item.preview}</p>
+      {/*
+        * 무엇을 근거로 정리했는지는 본문이 아니라 여기 한 줄로 둔다. 전에는 이 문장이
+        * "근거와 한계" 항목으로 본문에 들어가 있었는데, 세 건이 전부 "일부만 봤다 ·
+        * 아직 검증 안 됐다"로 같아져서 자료 얘기가 아니라 면책조항이 됐다.
+        */}
+      <p class="basis">AI가 {item.basis}에서 정리 · {item.generatedAt.replaceAll('-', '.')}</p>
     </header>
 
     {/*
-      * 원문에서 온 것과 내가 쓴 것을 나눈다.
-      *
-      * 전에는 페이지 전체에 "AI 요약"이라는 딱지 하나가 붙어 있었다. 그러면 읽는
-      * 사람이 아래 전부를 미리 할인해서 읽는다 — 마지막 한 줄이 내가 읽고 내린
-      * 판단인데 그것까지 기계가 쓴 것으로 읽힌다. 딱지를 페이지가 아니라 구획에
-      * 붙이면, 같은 문장이 변명이 아니라 출처 표시가 된다.
+      * 본문 세 칸. 칸 이름은 자료 형식을 따른다(lib/briefings의 bodyLabels).
+      * 다 말하지 않는 것이 이 양식의 목적이다 — 마지막 칸은 요약이 답하지 못하는
+      * 자리이고, 원문 링크가 바로 그 밑에 붙는다.
       */}
-    <section class="part" aria-labelledby="from-source">
-      <div class="part-head">
-        <h2 id="from-source">원문에서</h2>
-        <p class="by">AI가 {item.basis}에서 정리 · {item.generatedAt.replaceAll('-', '.')} · 중요한 판단에는 원문 확인</p>
+    <section class="body" aria-label="요약">
+      <div class="block">
+        <h2>{label.what}</h2>
+        <p>{item.body.what}</p>
       </div>
 
       <div class="block">
-        <h3>핵심 내용</h3>
-        <ul>{item.keyPoints.map((point) => <li>{point}</li>)}</ul>
-      </div>
-
-      <div class="block">
-        <h3>근거와 한계</h3>
-        <ul>{item.limitations.map((limit) => <li>{limit}</li>)}</ul>
+        <h2>{label.concrete}</h2>
+        <p>{item.body.concrete}</p>
       </div>
 
       {/*
@@ -89,21 +92,16 @@ const others = briefings
       )}
     </section>
 
-    <section class="part mine" aria-labelledby="mine">
-      <div class="part-head">
-        <h2 id="mine">내가 본 것</h2>
-        <p class="by">요약이 아니라 이 자료를 읽고 내린 판단입니다</p>
-      </div>
-      <p class="take">{item.takeaway}</p>
+    <section class="open" aria-label={label.open}>
+      <h2>{label.open}</h2>
+      <p>{item.body.open}</p>
+      <p class="go-row">
+        <a class="go" href={item.sourceUrl} target="_blank" rel="noopener noreferrer">
+          원문 읽기 <span aria-hidden="true">↗</span>
+        </a>
+        <span class="go-src">{item.source}</span>
+      </p>
     </section>
-
-    <footer class="source-box">
-      <div>
-        <span class="source-label">원문</span>
-        <strong>{item.source}</strong>
-      </div>
-      <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>
-    </footer>
 
     <RelatedLinks title="다른 브리핑" links={others} />
   </article>
@@ -111,27 +109,27 @@ const others = briefings
 
 <style>
   .briefing-detail { padding-top: var(--space-8); padding-bottom: var(--space-20); }
-  header { padding-bottom: var(--space-8); border-bottom: 1px solid var(--border); }
+  header { padding-bottom: var(--space-7); border-bottom: 1px solid var(--border); }
   .meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; color: var(--text-dim); font-size: var(--fs-200); }
   .meta span + span::before, .meta time::before { content: '·'; margin-right: var(--space-3); color: var(--border); }
   .meta .type { color: var(--accent); font-weight: 800; }
   h1 { margin: var(--space-4) 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-  /* 태그는 목록 페이지에서 쓰던 것과 같은 모양이다 */
+
   .tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
-  .tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; }
+  .tags a {
+    padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm);
+    background: var(--accent-soft); color: var(--accent);
+    font-size: var(--fs-100); font-weight: 700;
+  }
+  .tags a:hover { text-decoration: none; filter: brightness(.94); }
+
   .lead { margin: var(--space-6) 0 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-relaxed); }
+  .basis { margin: var(--space-4) 0 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
 
-  /* ── 구획 ─────────────────────────────────────────────────────── */
-  .part { padding: var(--space-10) 0 0; }
-  .part-head { padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); }
-  .part-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
-  .by { margin: var(--space-2) 0 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
-
-  .block { padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
-  .block h3 { margin: 0 0 var(--space-3); font-size: var(--fs-400); letter-spacing: var(--ls-snug); }
-  .block ul { margin: 0; padding-left: var(--space-6); }
-  .block li { margin: 0 0 var(--space-2); line-height: var(--lh-relaxed); }
-  .block li:last-child { margin-bottom: 0; }
+  /* ── 요약 두 칸 ───────────────────────────────────────────────── */
+  .block { padding: var(--space-7) 0; border-bottom: 1px solid var(--border); }
+  .block h2 { margin: 0 0 var(--space-3); font-size: var(--fs-400); letter-spacing: var(--ls-snug); }
+  .block p { margin: 0; line-height: var(--lh-relaxed); }
 
   .quote {
     margin: var(--space-7) 0 0; padding: var(--space-5) var(--space-6);
@@ -142,35 +140,30 @@ const others = briefings
   .quote figcaption { margin-top: var(--space-3); color: var(--text-dim); font-size: var(--fs-200); }
 
   /*
-   * 내가 쓴 구획. 세로선 하나와 한 단 큰 글씨로 다른 구획과 갈라 둔다 —
-   * 페이지에서 유일하게 남이 만들지 않은 문장이라 여기가 결론이어야 한다.
+   * 마지막 칸. 여기가 원문으로 가는 자리라 링크를 안에 둔다 — 빈자리를 말한
+   * 문단과 그 빈자리를 채우는 링크가 떨어져 있으면 둘이 이어지지 않는다.
    */
-  .mine .part-head { border-bottom-color: var(--accent); }
-  .take {
-    margin: var(--space-6) 0 0; padding-left: var(--space-6);
-    border-left: 3px solid var(--accent);
-    font-size: var(--fs-500); line-height: var(--lh-relaxed);
+  .open {
+    margin-top: var(--space-8); padding: var(--space-7);
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: var(--radius-lg); background: var(--bg-elev);
   }
-
-  .source-box {
-    display: flex; align-items: center; justify-content: space-between; gap: var(--space-5);
-    margin-top: var(--space-10); padding: var(--space-5);
-    border: 1px solid var(--border); border-radius: var(--radius-lg);
-  }
-  .source-box div { display: grid; gap: var(--space-1); }
-  .source-label { color: var(--text-dim); font-size: var(--fs-200); }
-  .source-box strong { font-size: var(--fs-400); }
-  .source-box a {
-    padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+  .open h2 { margin: 0 0 var(--space-3); font-size: var(--fs-500); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+  .open p { margin: 0; line-height: var(--lh-relaxed); }
+  /* 어디로 가는지는 버튼 옆에 둔다 — 출처 이름을 버튼에 넣으면 "arXiv · EchoPath (Zhao 외)에서 읽기"가 된다 */
+  .go-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: var(--space-5) 0 0; }
+  .go-src { color: var(--text-dim); font-size: var(--fs-200); }
+  .go {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4); border-radius: var(--radius-md);
     background: var(--accent); color: var(--bg);
-    font-size: var(--fs-200); font-weight: 800; white-space: nowrap;
+    font-size: var(--fs-300); font-weight: 800;
     transition: filter var(--dur) var(--ease);
   }
-  .source-box a:hover { text-decoration: none; filter: brightness(1.08); }
+  .go:hover { text-decoration: none; filter: brightness(1.08); }
 
   @media (max-width: 600px) {
     .briefing-detail { padding-top: var(--space-6); padding-bottom: var(--space-16); }
-    .take { padding-left: var(--space-4); font-size: var(--fs-400); }
-    .source-box { align-items: flex-start; flex-direction: column; }
+    .open { padding: var(--space-5); }
   }
 </style>
