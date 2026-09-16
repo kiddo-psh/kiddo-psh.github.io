@@ -12,13 +12,13 @@ npm run build   # dist/ 에 정적 사이트 생성
 
 ## AI 브리핑
 
-`/ai-briefing`에는 AI 개발·에이전트 활용에 관한 기사, 인터뷰, 논문 요약이 표시된다. 요약은 목록에서 바로 읽을 수 있고, 자료 형식과 주제 태그를 함께 골라 원하는 글만 볼 수 있다. 각 항목에는 원문 주소·발행일·요약 생성일·요약 근거가 표시된다.
+`/ai-briefing`에는 AI 개발·에이전트 활용에 관한 기사, 인터뷰, 논문, 국내 기술블로그 요약이 표시된다. 요약은 목록에서 바로 읽을 수 있고, 자료 형식과 주제 태그를 함께 골라 원하는 글만 볼 수 있다. 각 항목에는 원문 주소·발행일·요약 생성일·요약 근거가 표시된다.
 
 주제 태그는 에이전트 설계, 코딩 에이전트, 도구·MCP, 메모리·컨텍스트, 평가, 보안, 멀티 에이전트, 모델·추론의 제한된 분류를 사용한다. 자동 갱신 시 AI가 이 중 1~3개를 선택하고 스크립트가 허용되지 않은 태그를 거부한다.
 
 초기 자료는 `src/data/briefings.json`에 들어 있다. 자동 갱신을 켜려면 GitHub 저장소의 **Settings → Secrets and variables → Actions**에서 저장소 Secret `OPENAI_API_KEY`를 등록한다. 이 키는 GitHub Actions에서만 사용되며 정적 사이트나 방문자 브라우저로 전달되지 않는다. 필요하면 저장소 Variable `OPENAI_MODEL`로 요약 모델을 지정할 수 있다. 비워두면 `gpt-5-mini`를 사용한다.
 
-배포 워크플로는 매주 월요일 오전 9:17(KST)에 브리핑을 갱신하고, Actions에서 수동 실행해 바로 갱신할 수도 있다. 한 번에 기사·인터뷰·논문을 각 1편까지만 추가하며 최신 18편을 보관한다. 현재 수집처는 OpenAI News, Google DeepMind Blog, Latent Space, Dwarkesh Podcast, arXiv `cs.AI`·`cs.CL`이다. 인터뷰는 공개 대본이 없으면 건너뛴다. 논문 본문을 읽지 못한 경우 논문 요약문(abstract) 기반으로 표시한다. 모든 새 브리핑에는 원문에서 확인된 25단어 이하의 인용, 한국어 풀이, 인용 위치가 함께 저장된다. 키가 없으면 자동 갱신은 건너뛰고 기존 브리핑을 배포한다.
+배포 워크플로는 매주 월요일 오전 9:17(KST)에 브리핑을 갱신하고, Actions에서 수동 실행해 바로 갱신할 수도 있다. 한 번에 기사 3편, 국내 1편, 인터뷰 1편, 논문 2편까지(주 7편) 추가하며 최신 28편을 보관한다. 같은 출처는 한 번에 1편만 실리고, 관련성 점수가 하한(4점) 미만이면 자리가 남아도 싣지 않는다. 수집처는 `scripts/update_briefings.py`의 `FEEDS`에 있다. 기사는 OpenAI, Google DeepMind, Google Research, GitHub Blog, Simon Willison, Hamel Husain, Eugene Yan, Lilian Weng, Interconnects, Import AI. 인터뷰는 Latent Space, Dwarkesh Podcast, Practical AI. 국내는 올리브영, 카카오, 우아한형제들, 토스, 네이버 D2, 당근, LY Corporation 기술블로그. 논문은 arXiv `cs.AI`·`cs.CL`·`cs.SE`·`cs.CR`에서 제목에 agent, tool use, prompt injection, code generation, SWE-bench가 들어간 것이다. 인터뷰는 공개 대본이 없으면 건너뛴다. 논문 본문을 읽지 못한 경우 논문 요약문(abstract) 기반으로 표시한다. 모든 새 브리핑에는 원문에서 확인된 25단어 이하의 인용, 한국어 풀이, 인용 위치가 함께 저장된다. 키가 없으면 자동 갱신은 건너뛰고 기존 브리핑을 배포한다.
 
 수집 규칙은 오프라인에서 `python -m unittest scripts/test_update_briefings.py`로 확인할 수 있다. 로컬 갱신은 `OPENAI_API_KEY` 환경 변수를 설정한 뒤 `python scripts/update_briefings.py`로 실행한다. API 요청에는 비용이 발생할 수 있다.
 

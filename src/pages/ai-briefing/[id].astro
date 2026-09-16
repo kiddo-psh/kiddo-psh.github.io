@@ -85,7 +85,8 @@ const others = briefings
         */}
       <figure class="quote">
         <blockquote>{item.quote.text}</blockquote>
-        <p class="quote-ko">{item.quote.ko}</p>
+        {/* 국내 글은 인용이 이미 한국어라 풀이가 원문과 같다. 같은 문장을 두 번 보이지 않는다 */}
+        {item.quote.ko !== item.quote.text && <p class="quote-ko">{item.quote.ko}</p>}
         <figcaption>{item.source} · {item.quote.where}</figcaption>
       </figure>
     </section>

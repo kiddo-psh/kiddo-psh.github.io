@@ -22,7 +22,7 @@ export function postTone(category: string): Tone {
 }
 
 /* 브리핑: 자료 형식마다 고정색. 목록 머리그림과 상세가 같은 색을 갖는다 */
-const BY_BRIEFING_TYPE: Record<string, Tone> = { article: 'b', interview: 'c', paper: 'd' };
+const BY_BRIEFING_TYPE: Record<string, Tone> = { article: 'b', interview: 'c', paper: 'd', domestic: 'a' };
 
 export function briefingTone(type: string): Tone {
   return BY_BRIEFING_TYPE[type] ?? 'a';

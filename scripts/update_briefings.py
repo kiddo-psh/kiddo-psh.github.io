@@ -22,22 +22,59 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "src" / "data" / "briefings.json"
 USER_AGENT = "kiddo-psh-briefing/1.0 (+https://kiddo-psh.github.io)"
-OPENAI_FEED = "https://openai.com/news/rss.xml"
-DEEPMIND_FEED = "https://deepmind.google/blog/rss.xml"
-INTERVIEW_FEED = "https://www.latent.space/feed"
-DWARKESH_FEED = "https://www.dwarkesh.com/feed"
 ARXIV_API = "https://export.arxiv.org/api/query"
-MAX_PER_RUN = {"article": 1, "interview": 1, "paper": 1}
-MAX_STORED = 18
+
+# 수집처. (피드 주소, 자료 형식, 출처 표기, 링크로 허용하는 호스트)
+# 피드가 다른 도메인으로 보내는 항목은 버린다 — 광고·재게시·추적 링크를 막는 가장 단순한 장치다.
+# 형식별로 한 번에 몇 편을 실을지는 MAX_PER_RUN이, 같은 출처가 한 주를 독차지하지 않게는
+# MAX_PER_SOURCE가 막는다. 매일 쓰는 개인 블로그(Willison)가 기사 세 자리를 다 채우면 안 된다.
+FEEDS: list[tuple[str, str, str, set[str]]] = [
+    # 기사 — 연구소 공식 채널
+    ("https://openai.com/news/rss.xml", "article", "OpenAI", {"openai.com", "www.openai.com"}),
+    ("https://deepmind.google/blog/rss.xml", "article", "Google DeepMind", {"deepmind.google"}),
+    ("https://research.google/blog/rss/", "article", "Google Research", {"research.google"}),
+    ("https://github.blog/ai-and-ml/feed/", "article", "GitHub Blog", {"github.blog"}),
+    # 기사 — 에이전트·평가를 실무로 다루는 개인 블로그
+    ("https://simonwillison.net/atom/everything/", "article", "Simon Willison", {"simonwillison.net"}),
+    ("https://hamel.dev/index.xml", "article", "Hamel Husain", {"hamel.dev"}),
+    ("https://eugeneyan.com/rss/", "article", "Eugene Yan", {"eugeneyan.com"}),
+    ("https://lilianweng.github.io/index.xml", "article", "Lilian Weng", {"lilianweng.github.io"}),
+    ("https://www.interconnects.ai/feed", "article", "Interconnects", {"interconnects.ai", "www.interconnects.ai"}),
+    ("https://importai.substack.com/feed", "article", "Import AI", {"importai.substack.com"}),
+    # 인터뷰 — 공개 대본이 있는 팟캐스트만 실린다(get_source_text)
+    ("https://www.latent.space/feed", "interview", "Latent Space", {"latent.space", "www.latent.space"}),
+    ("https://www.dwarkesh.com/feed", "interview", "Dwarkesh Podcast", {"dwarkesh.com", "www.dwarkesh.com"}),
+    ("https://changelog.com/practicalai/feed", "interview", "Practical AI", {"changelog.com"}),
+    # 국내 — 기술블로그. 독자가 원문을 바로 읽을 수 있어 요약보다 "왜 골랐나"가 역할이다
+    ("https://oliveyoung.tech/rss.xml", "domestic", "올리브영 테크블로그", {"oliveyoung.tech"}),
+    ("https://tech.kakao.com/feed", "domestic", "카카오 테크", {"tech.kakao.com"}),
+    ("https://techblog.woowahan.com/feed", "domestic", "우아한형제들 기술블로그", {"techblog.woowahan.com"}),
+    ("https://toss.tech/rss.xml", "domestic", "토스 테크", {"toss.tech"}),
+    ("https://d2.naver.com/d2.atom", "domestic", "네이버 D2", {"d2.naver.com"}),
+    ("https://medium.com/feed/daangn", "domestic", "당근 테크 블로그", {"medium.com"}),
+    ("https://techblog.lycorp.co.jp/ko/feed/index.xml", "domestic", "LY Corporation 기술블로그", {"techblog.lycorp.co.jp"}),
+]
+ALLOWED_ARTICLE_HOSTS = set().union(*(hosts for _, kind, _, hosts in FEEDS if kind == "article"))
+ALLOWED_INTERVIEW_HOSTS = set().union(*(hosts for _, kind, _, hosts in FEEDS if kind == "interview"))
+ALLOWED_DOMESTIC_HOSTS = set().union(*(hosts for _, kind, _, hosts in FEEDS if kind == "domestic"))
+
+# 주 7편. 홈에 3편이 보이므로 매주 홈이 한 번 다 갈리고, 4주치를 보관해도 30편을 넘지 않는다.
+# 상한만 있고 하한이 없으면 조용한 주에 억지로 채우게 되므로 eligible()이 관련성 하한(MIN_SCORE)을 함께 건다.
+MAX_PER_RUN = {"article": 3, "domestic": 1, "interview": 1, "paper": 2}
+MAX_PER_SOURCE = 1  # 논문(arXiv)은 출처가 하나라 예외
+MAX_STORED = 28
 LOOKBACK_DAYS = 45
-ALLOWED_ARTICLE_HOSTS = {"openai.com", "www.openai.com", "deepmind.google"}
-ALLOWED_INTERVIEW_HOSTS = {"latent.space", "www.latent.space", "dwarkesh.com", "www.dwarkesh.com"}
+MIN_SCORE = 4
+# 제목·요약에 이 말이 있으면 가중치를 더한다. 국내 글은 한글로만 걸리므로 같은 뜻의 한글을 함께 둔다.
 RELEVANT = {
-    "agent": 4, "agentic": 4, "coding": 3, "codex": 3, "eval": 3,
+    "agent": 4, "agentic": 4, "coding": 3, "codex": 3, "eval": 3, "mcp": 3,
     "benchmark": 2, "tool": 2, "memory": 2, "context": 2, "inference": 1,
-    "developer": 2, "api": 1, "llm": 1, "reasoning": 1, "security": 2,
+    "developer": 2, "api": 1, "llm": 1, "reasoning": 1, "security": 2, "prompt": 1, "guardrail": 2,
+    "에이전트": 4, "코딩": 2, "평가": 3, "벤치마크": 2, "도구": 2, "메모리": 2, "컨텍스트": 2,
+    "추론": 1, "보안": 2, "프롬프트": 1, "가드레일": 2,
 }
-EXCLUDE_TITLE = {"funding", "partnership", "appoints", "award", "acquires"}
+# "quoting"은 Willison 블로그의 한 문단짜리 인용 포스트, "세션 소개"는 컨퍼런스 안내글이다. 둘 다 기사가 아니다.
+EXCLUDE_TITLE = {"funding", "partnership", "appoints", "award", "acquires", "quoting", "채용", "모집", "수상", "세션 소개"}
 BRIEFING_TAGS = (
     "agent-design",
     "coding-agent",
@@ -106,13 +143,13 @@ def sample_source_text(value: str, max_chars: int = 22000) -> str:
     return "\n\n[중간 부분 생략]\n\n".join((first, middle, last))
 
 
-def fetch(url: str, *, timeout: int = 25) -> str:
+def fetch(url: str, *, timeout: int = 25, max_bytes: int = 2_000_000) -> str:
     request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xml,application/atom+xml,*/*"})
     with urlopen(request, timeout=timeout) as response:
         if response.status != 200:
             raise RuntimeError(f"HTTP {response.status}: {url}")
-        raw = response.read(2_000_001)
-        if len(raw) > 2_000_000:
+        raw = response.read(max_bytes + 1)
+        if len(raw) > max_bytes:
             raise RuntimeError(f"응답이 너무 큽니다: {url}")
         charset = response.headers.get_content_charset() or "utf-8"
         return raw.decode(charset, errors="replace")
@@ -199,12 +236,14 @@ def paper_candidates(xml: str) -> list[dict]:
 
 
 def eligible(items: list[dict], existing_urls: set[str], today: datetime) -> list[dict]:
+    # 관련성 점수를 먼저, 날짜를 다음에 본다. 전에는 날짜가 먼저였는데, 수집처가 스무 곳이 되면
+    # 월요일에 올라온 4점 글이 목요일의 12점 글을 이긴다. 주 7편을 고르는 기준은 최신성이 아니라 관련성이다.
     cutoff = (today.date() - timedelta(days=LOOKBACK_DAYS)).isoformat()
     return sorted(
         [item for item in items if cutoff <= item["publishedAt"] <= today.date().isoformat()
          and item["sourceUrl"] not in existing_urls
-         and score(item["title"], item["description"]) >= 4],
-        key=lambda item: (item["publishedAt"], score(item["title"], item["description"])), reverse=True,
+         and score(item["title"], item["description"]) >= MIN_SCORE],
+        key=lambda item: (score(item["title"], item["description"]), item["publishedAt"]), reverse=True,
     )
 
 
@@ -228,7 +267,7 @@ def get_source_text(item: dict) -> tuple[str, str] | None:
         if len(text) < 3500:
             return None
         return text, "공개 대본"
-    return (text, "기사 본문") if len(text) >= 1400 else None
+    return (text, "기사 본문" if item["type"] == "article" else "글 본문") if len(text) >= 1400 else None
 
 
 # 본문 세 칸. 칸 이름은 화면에서 자료 형식마다 달라지지만(lib/briefings의 bodyLabels),
@@ -246,6 +285,13 @@ BODY_GUIDE = {
     "interview": (
         "what은 누가 어떤 자격으로 무엇을 말하는지 쓴다. concrete는 가장 뾰족한 대목 하나를 인터뷰이의 발언으로 표시해 쓴다. "
         "open은 이 인터뷰만으로는 확인되지 않는 것을 쓴다. 발언과 검증된 사실의 경계를 댄다."
+    ),
+    # 국내 글은 독자가 원문을 바로 읽는다. 내용 전달보다 "어느 팀이 어떤 문제를 어떻게 풀었나"와
+    # "왜 이 글을 골랐나"가 역할이다. 원문이 한국어이므로 인용 번역은 원문을 그대로 둔다.
+    "domestic": (
+        "what은 어느 팀이 어떤 문제를 어떻게 풀었는지 쓴다. concrete는 글에 나온 선택과 그 이유 하나를 쓴다. "
+        "open은 글이 말하지 않은 것을 쓴다. 실패한 시도, 비용, 운영 뒤의 변화처럼 빠진 정보의 이름을 댄다. "
+        "원문이 한국어이면 quote.ko에는 quote.text를 그대로 넣는다."
     ),
 }
 
@@ -359,24 +405,22 @@ def summarize(item: dict, source_text: str, basis: str, api_key: str, model: str
 
 
 def feed_candidates() -> list[dict]:
-    sources = [
-        (OPENAI_FEED, "article", "OpenAI", ALLOWED_ARTICLE_HOSTS),
-        (DEEPMIND_FEED, "article", "Google DeepMind", ALLOWED_ARTICLE_HOSTS),
-        (INTERVIEW_FEED, "interview", "Latent Space", ALLOWED_INTERVIEW_HOSTS),
-        (DWARKESH_FEED, "interview", "Dwarkesh Podcast", ALLOWED_INTERVIEW_HOSTS),
-    ]
     output = []
-    for url, kind, source, hosts in sources:
+    for url, kind, source, hosts in FEEDS:
         try:
-            output.extend(parse_feed(fetch(url), kind, source, hosts))
+            # 전체 글 본문을 다 싣는 피드(올리브영, 200편에 12MB)가 있어 피드만 상한을 넉넉히 둔다. 원문 페이지는 기본값(2MB)이다.
+            output.extend(parse_feed(fetch(url, max_bytes=16_000_000), kind, source, hosts))
         except (ET.ParseError, HTTPError, URLError, RuntimeError, ValueError) as exc:
             logging.warning("피드를 읽지 못했습니다 (%s): %s", source, exc)
     return output
 
 
 def arxiv_candidates() -> list[dict]:
-    query = '(cat:cs.AI OR cat:cs.CL) AND (ti:agent OR ti:agents OR ti:agentic)'
-    url = f"{ARXIV_API}?{urlencode({'search_query': query, 'sortBy': 'submittedDate', 'sortOrder': 'descending', 'max_results': 30})}"
+    # 코딩 에이전트는 cs.SE, 프롬프트 인젝션 같은 보안 논문은 cs.CR에 올라온다. 제목어도 그만큼 넓힌다.
+    query = ('(cat:cs.AI OR cat:cs.CL OR cat:cs.SE OR cat:cs.CR) AND '
+             '(ti:agent OR ti:agents OR ti:agentic OR ti:"tool use" OR ti:"prompt injection" '
+             'OR ti:"code generation" OR ti:"SWE-bench")')
+    url = f"{ARXIV_API}?{urlencode({'search_query': query, 'sortBy': 'submittedDate', 'sortOrder': 'descending', 'max_results': 60})}"
     try:
         return paper_candidates(fetch(url))
     except (ET.ParseError, HTTPError, URLError, RuntimeError, ValueError) as exc:
@@ -398,6 +442,8 @@ def main() -> None:
     selected: list[dict] = []
     for kind, limit in MAX_PER_RUN.items():
         for item in eligible([candidate for candidate in candidates if candidate["type"] == kind], existing_urls, today):
+            if kind != "paper" and sum(1 for saved in selected if saved["source"] == item["source"]) >= MAX_PER_SOURCE:
+                continue
             source = get_source_text(item)
             if not source:
                 continue

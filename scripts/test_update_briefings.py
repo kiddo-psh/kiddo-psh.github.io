@@ -29,15 +29,44 @@ class BriefingSelectionTest(unittest.TestCase):
         self.assertEqual(len(chosen), 1)
         self.assertEqual(chosen[0]["sourceUrl"], "https://openai.com/index/agent-tool")
 
-    def test_newer_relevant_paper_is_preferred_and_version_is_removed(self):
+    def test_domestic_feed_scores_korean_keywords_and_excludes_recruiting(self):
+        xml = """<rss><channel>
+          <item><title>LLM 에이전트 평가 파이프라인 만들기</title><link>https://toss.tech/article/agent-eval</link>
+            <pubDate>Tue, 15 Sep 2026 12:00:00 GMT</pubDate><description>도구 호출 검증</description></item>
+          <item><title>AI 에이전트 개발자 채용</title><link>https://toss.tech/article/hiring</link>
+            <pubDate>Tue, 15 Sep 2026 12:00:00 GMT</pubDate><description>에이전트 평가</description></item>
+          <item><title>사내 카페 리뉴얼 후기</title><link>https://toss.tech/article/cafe</link>
+            <pubDate>Tue, 15 Sep 2026 12:00:00 GMT</pubDate><description>인테리어</description></item>
+        </channel></rss>"""
+        parsed = briefing.parse_feed(xml, "domestic", "토스 테크", briefing.ALLOWED_DOMESTIC_HOSTS)
+        chosen = briefing.eligible(parsed, set(), datetime(2026, 9, 16, tzinfo=timezone.utc))
+        self.assertEqual([item["sourceUrl"] for item in chosen], ["https://toss.tech/article/agent-eval"])
+
+    def test_more_relevant_item_beats_newer_item(self):
+        strong = {"type": "article", "title": "Evaluating coding agents with tool benchmarks", "source": "A",
+                  "sourceUrl": "https://a.example/strong", "publishedAt": "2026-09-10", "description": ""}
+        weak = {"type": "article", "title": "Agent news", "source": "B",
+                "sourceUrl": "https://b.example/weak", "publishedAt": "2026-09-15", "description": ""}
+        chosen = briefing.eligible([weak, strong], set(), datetime(2026, 9, 16, tzinfo=timezone.utc))
+        self.assertEqual(chosen[0]["sourceUrl"], strong["sourceUrl"])
+
+    def test_every_feed_has_hosts_and_known_kind(self):
+        for url, kind, source, hosts in briefing.FEEDS:
+            self.assertIn(kind, briefing.MAX_PER_RUN, source)
+            self.assertIn(kind, briefing.BODY_GUIDE, source)
+            self.assertTrue(hosts, source)
+            self.assertTrue(url.startswith("https://"), source)
+        self.assertEqual(sum(briefing.MAX_PER_RUN.values()), 7)
+
+    def test_newer_paper_wins_tie_on_relevance_and_version_is_removed(self):
         xml = """<feed xmlns="http://www.w3.org/2005/Atom">
           <entry><title>Agent Memory Benchmark</title><id>http://arxiv.org/abs/2609.12345v2</id>
             <published>2026-09-15T02:00:00Z</published><summary>LLM agent evaluation.</summary></entry>
         </feed>"""
         papers = briefing.paper_candidates(xml)
         self.assertEqual(papers[0]["sourceUrl"], "https://arxiv.org/abs/2609.12345")
-        older = {**papers[0], "sourceUrl": "https://arxiv.org/abs/2609.00001",
-                 "publishedAt": "2026-09-01", "title": "Agent benchmark for coding tools"}
+        # 관련성 점수가 같을 때만 날짜가 순서를 정한다(점수 우선은 test_more_relevant_item_beats_newer_item)
+        older = {**papers[0], "sourceUrl": "https://arxiv.org/abs/2609.00001", "publishedAt": "2026-09-01"}
         chosen = briefing.eligible([older, papers[0]], set(), datetime(2026, 9, 16, tzinfo=timezone.utc))
         self.assertEqual(chosen[0]["sourceUrl"], papers[0]["sourceUrl"])
 

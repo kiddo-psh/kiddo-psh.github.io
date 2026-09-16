@@ -1,6 +1,6 @@
 import rawBriefings from '../data/briefings.json';
 
-export type BriefingType = 'article' | 'interview' | 'paper';
+export type BriefingType = 'article' | 'interview' | 'paper' | 'domestic';
 export type BriefingTag =
   | 'agent-design'
   | 'coding-agent'
@@ -70,6 +70,7 @@ export const briefingLabels: Record<BriefingType, string> = {
   article: '기사',
   interview: '인터뷰',
   paper: '논문',
+  domestic: '국내',
 };
 
 export const briefingTagLabels: Record<BriefingTag, string> = {
@@ -104,6 +105,12 @@ export const bodyLabels: Record<BriefingType, Record<keyof BriefingBody, string>
     what: '누가 · 무엇을 말하나',
     concrete: '가장 뾰족한 대목',
     open: '확인되지 않은 것',
+  },
+  /* 국내 기술블로그. 독자가 원문을 바로 읽으니 "어느 팀이 무엇을 풀었나"와 빠진 것만 짚는다 */
+  domestic: {
+    what: '어느 팀이 · 무엇을 풀었나',
+    concrete: '선택과 이유',
+    open: '글이 말하지 않는 것',
   },
 };
 

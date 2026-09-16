@@ -8,6 +8,7 @@ const counts = {
   article: briefings.filter((item) => item.type === 'article').length,
   interview: briefings.filter((item) => item.type === 'interview').length,
   paper: briefings.filter((item) => item.type === 'paper').length,
+  domestic: briefings.filter((item) => item.type === 'domestic').length,
 };
 
 /*
@@ -36,11 +37,11 @@ const haystack = (item: Briefing) =>
     .toLowerCase();
 ---
 
-<BaseLayout title="AI 브리핑" description="AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문 요약">
+<BaseLayout title="AI 브리핑" description="AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문, 국내 기술블로그 요약">
   <div class="page briefing-page">
     <header>
       <h1 class="page-title">AI 브리핑</h1>
-      <p class="page-lead">AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문을 정리합니다. 읽고 나서 개발에 연결되는 것만 남깁니다.</p>
+      <p class="page-lead">AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문, 국내 기술블로그 글을 정리해요. 읽고 나서 개발에 연결되는 것만 남겨요.</p>
     </header>
 
     {featured && (
@@ -69,6 +70,7 @@ const haystack = (item: Briefing) =>
             <button type="button" class="tab" data-filter="article" aria-pressed="false">기사 <span class="ct">{counts.article}</span></button>
             <button type="button" class="tab" data-filter="interview" aria-pressed="false">인터뷰 <span class="ct">{counts.interview}</span></button>
             <button type="button" class="tab" data-filter="paper" aria-pressed="false">논문 <span class="ct">{counts.paper}</span></button>
+            <button type="button" class="tab" data-filter="domestic" aria-pressed="false">국내 <span class="ct">{counts.domestic}</span></button>
           </div>
           <input id="q" class="q" type="search" placeholder="제목 · 출처 · 주제" aria-label="브리핑 검색" autocomplete="off" />
         </div>
