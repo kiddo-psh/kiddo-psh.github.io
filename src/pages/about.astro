@@ -90,11 +90,27 @@ const timeline = [
   { when: '2018.03 ~ 2024.02', what: '경희대학교 생체의공학과' },
 ];
 
+/*
+ * 수상과 자격을 나눈다.
+ *
+ * 한 목록일 때 "삼성 SW역량테스트 B형"이 상 셋 사이에 끼어 네 번째 상처럼 보였다.
+ * 그건 받은 상이 아니라 통과한 시험이다. 그리고 자격증 넷은 목록 아래 흐린 글씨
+ * 한 줄로만 있어서, 같은 무게의 것이 한쪽은 목록 한쪽은 각주로 갈렸다.
+ * 둘을 같은 모양의 목록 둘로 세운다.
+ */
 const awards = [
   { title: '공통 프로젝트 우수상', note: '주차바로 · SSAFY 2학기', href: '/projects/baro' },
   { title: '관통 프로젝트 최우수상', note: 'yumyum · SSAFY 1학기', href: '/projects/yumyum' },
   { title: '성적 우수상', note: 'SSAFY 1학기', href: null },
-  { title: '삼성 SW역량테스트 B형 (Professional)', note: '2026.03', href: null },
+];
+
+/* 취득일 내림차순. 위의 이력 목록과 같은 규칙이다 */
+const certs = [
+  { title: '정보처리기사', note: '2026.09' },
+  { title: 'SQLD', note: '2026.06' },
+  { title: 'ADsP', note: '2026.06' },
+  { title: '삼성 SW역량테스트 B형', note: 'Professional · 2026.03' },
+  { title: 'OPIc IH', note: '2025.09' },
 ];
 ---
 
@@ -174,8 +190,8 @@ const awards = [
       ))}
     </dl>
 
-    <h2>수상·자격</h2>
-    <ul class="awards">
+    <h2>수상</h2>
+    <ul class="record">
       {awards.map((a) => (
         <li>
           {a.href ? <a href={a.href}>{a.title}</a> : <span>{a.title}</span>}
@@ -183,7 +199,16 @@ const awards = [
         </li>
       ))}
     </ul>
-    <p class="certs">정보처리기사 (2026.09) · SQLD (2026.06) · ADsP (2026.06) · OPIc IH (2025.09)</p>
+
+    <h2>자격</h2>
+    <ul class="record">
+      {certs.map((c) => (
+        <li>
+          <span>{c.title}</span>
+          <small>{c.note}</small>
+        </li>
+      ))}
+    </ul>
 
     <h2>연락</h2>
     <ul class="links">
@@ -220,11 +245,11 @@ const awards = [
   dt.wide { flex: 0 0 150px; }
   dd { margin: 0; }
 
-  .awards { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
-  .awards li { padding: var(--space-1) 0; display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
-  .awards small { font-size: var(--fs-300); color: var(--text-dim); }
+  /* 수상과 자격이 같은 모양을 쓴다 — 나눈 것은 성격이지 무게가 아니다 */
+  .record { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
+  .record li { padding: var(--space-1) 0; display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+  .record small { font-size: var(--fs-300); color: var(--text-dim); }
 
-  .certs { margin: var(--space-3) 0 0; font-size: var(--fs-400); color: var(--text-dim); }
 
   .links { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
   .links li { padding: var(--space-1) 0; }
