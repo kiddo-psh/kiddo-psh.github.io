@@ -20,15 +20,15 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
       {/*
         * 워드마크. 전에는 글자만 있었다 — 레퍼런스 두 곳 모두 고유 마크를 갖는데
         * 여기만 없으면 헤더가 "메뉴 줄"이지 "사이트 머리"가 아니다.
-        * 글·프로젝트 마크와 같은 언어(선 위의 노드)를 쓰고, 가운데 초록 점이
-        * 판정 지점이다. favicon.svg도 같은 그림이다.
+        * 글·프로젝트 마크(Motif)와 같은 언어를 쓴다 — 기하 도형 몇 개를 두 색으로.
+        * 여기서는 그중 "잎" 틀 하나를 고정해 둔다: 사분원 둘을 등지고 맞댄 반원의
+        * 왼쪽은 먹, 오른쏙은 강조색, 위에 작은 점. 22px에서도 색이 갈리는 반원은
+        * 읽힌다. favicon.svg도 같은 그림이다.
         */}
       <svg class="mk" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" focusable="false">
-        <path d="M5 26 H16 V6 H27" fill="none" stroke="currentColor"
-              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="5" cy="26" r="3" fill="currentColor" />
-        <circle cx="27" cy="6" r="3" fill="currentColor" />
-        <circle cx="16" cy="16" r="4.6" class="gate" />
+        <path d="M16 25 V12 A13 13 0 0 0 3 25 Z" fill="currentColor" />
+        <path d="M16 25 V12 A13 13 0 0 1 29 25 Z" class="gate" />
+        <circle cx="16" cy="6" r="3" fill="currentColor" />
       </svg>
       <span>{SITE.title}</span>
     </a>
