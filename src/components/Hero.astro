@@ -1,0 +1,122 @@
+---
+/*
+ * 홈 머리말.
+ *
+ * 전에는 44px 아바타 + 19px 이름 + 17px 한 줄이 전부였다. 홈에서 제일 큰 글자가
+ * 목록 제목(26px)이었으니 페이지에 정점이 없었고, 사이트가 무슨 말을 하려는지는
+ * 소개 페이지까지 들어가야 나왔다.
+ *
+ * 그래서 선언문 한 문장을 32~56px로 세우고, 신원(이름·한 줄 소개·글 수)은 오른쪽
+ * 작은 블록으로 내린다. 얼굴보다 문장이 먼저 오는 순서다.
+ */
+import { SITE } from '../site.config';
+
+interface Props { postCount: number; projectCount: number }
+const { postCount, projectCount } = Astro.props;
+---
+
+<header class="hero">
+  <div class="say">
+    <h1 class="stmt serif">{SITE.statement}</h1>
+    <p class="lead">{SITE.lead}</p>
+  </div>
+
+  <div class="id">
+    <div class="who">
+      <span class="nm">{SITE.author}</span>
+      <span class="tg">{SITE.tagline}</span>
+    </div>
+    <dl class="counts">
+      <div><dt>글</dt><dd>{postCount}</dd></div>
+      <div><dt>프로젝트</dt><dd>{projectCount}</dd></div>
+      <div><dt>소개</dt><dd><a href="/about">읽기 →</a></dd></div>
+    </dl>
+  </div>
+</header>
+
+<style>
+  /*
+   * 선언문과 신원을 한 띠 안에 좌우로 놓고 아래를 실선으로 닫는다.
+   * 3fr/2fr이 아니라 minmax를 쓴 이유는, 신원 블록이 "글 3 · 프로젝트 3"처럼
+   * 내용이 짧아서 비율로 나누면 오른쪽이 텅 비기 때문이다.
+   */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 250px);
+    gap: var(--space-10);
+    /*
+     * 신원 블록을 선언문 첫 줄 옆에 붙인다. end로 두면 선언문이 세 줄일 때
+     * 오른쪽 위가 통째로 비어서 두 덩어리가 한 띠로 읽히지 않는다.
+     * 선언문의 첫 줄 가운데와 눈높이를 맞추려고 조금 내려 둔다.
+     */
+    align-items: start;
+    margin: var(--space-16) 0 var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /*
+   * 선언문은 한 줄에 다 들어가는 문장이 아니다. 두세 줄로 접히는 걸 전제로
+   * 줄 간격을 1.3으로 조이고, 폭을 18자쯤에서 끊어 문단이 아니라 제목으로 읽히게 한다.
+   */
+  .stmt {
+    margin: 0;
+    max-width: 16ch;
+    font-size: var(--fs-display);
+    line-height: 1.32;
+    letter-spacing: var(--ls-tight);
+    /* text-wrap: balance가 있으면 마지막 줄에 한 어절만 남는 걸 막는다 */
+    text-wrap: balance;
+  }
+
+  .lead {
+    margin: var(--space-6) 0 0;
+    max-width: 44ch;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--text-dim);
+  }
+
+  /* 신원 블록. 선언문 아래쪽 기준선에 맞춰 붙는다 */
+  .id { display: flex; flex-direction: column; gap: var(--space-5); padding-top: var(--space-2); }
+  .who { display: flex; flex-direction: column; }
+  .nm { font-size: var(--fs-400); font-weight: 800; letter-spacing: var(--ls-snug); }
+  .tg { margin-top: var(--space-05); font-size: var(--fs-300); line-height: var(--lh-snug); color: var(--text-dim); }
+
+  /*
+   * 라벨과 값을 괘선으로 나눈 작은 표. 전에는 개수를 가로로 늘어놓고 "소개 보기"를
+   * 그 아래 띄웠는데, 오른쪽 칸에 잔글씨 몇 개가 떠 있는 모양이라 선언문과 한 띠로
+   * 묶이지 않았다. 행마다 실선을 그으면 같은 여백이 "빈 곳"이 아니라 "칸"이 된다.
+   */
+  .counts { margin: 0; border-top: 1px solid var(--border); }
+  .counts > div {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+    padding: var(--space-2) 0; border-bottom: 1px solid var(--border);
+  }
+  .counts dt { font-size: var(--fs-300); color: var(--text-dim); }
+  .counts dd {
+    margin: 0; font-size: var(--fs-400); font-weight: 800;
+    letter-spacing: var(--ls-snug); font-variant-numeric: tabular-nums;
+  }
+  .counts dd a { font-weight: 600; }
+
+  /*
+   * 1100 그리드에서 신원 블록을 떼어낼 자리가 없어지는 지점. 선언문 아래로 내리고
+   * 개수는 가로로 눕힌다.
+   */
+  @media (max-width: 760px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+      margin-top: var(--space-10);
+    }
+    .stmt { max-width: none; }
+    .lead { max-width: none; }
+    /*
+     * 한 칸으로 접히면 표가 히어로 폭 전체를 쓰는데, 750px에서 "글 ⋯⋯⋯ 4"처럼
+     * 라벨과 값 사이가 600px 벌어져 한 행으로 읽히지 않는다. 폭을 묶어 둔다.
+     */
+    .id { gap: var(--space-4); }
+    .counts { max-width: 340px; }
+  }
+</style>

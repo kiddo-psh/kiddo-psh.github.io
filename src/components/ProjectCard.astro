@@ -1,48 +1,72 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import Motif from './Motif.astro';
+import { projectTone } from '../lib/motif';
 
 interface Props { project: CollectionEntry<'projects'>; headingLevel?: 2 | 3 }
 const { project, headingLevel = 3 } = Astro.props;
 const d = project.data;
 const Tag = `h${headingLevel}` as 'h2' | 'h3';
 
-/*
- * 틴트는 order로 정한다 — 렌더 순서가 아니라 작성자가 정한 값이라, 홈과 /projects에서
- * 같은 프로젝트가 같은 색을 갖는다. 렌더 인덱스로 하면 두 페이지에서 색이 달라진다.
- */
-const TONES = ['a', 'b', 'c', 'd'] as const;
-const tone = TONES[((d.order - 1) % TONES.length + TONES.length) % TONES.length];
+/* 틴트 규칙은 lib/motif가 갖는다 — 카드·상세가 각자 계산하면 색이 갈린다 */
+const tone = projectTone(d.order);
 ---
 
-<a class:list={['card', `t-${tone}`]} href={`/projects/${project.id}`}>
-  <Tag>{d.title}</Tag>
-  <p class="sum">{d.summary}</p>
+<a class="card" href={`/projects/${project.id}`} data-reveal>
+  {/*
+    카드를 두 칸으로 나눈다 — 색이 깔린 그림 칸과 글자 칸.
+    전에는 카드 전체가 틴트 한 장이었는데, 그러면 색이 "이 프로젝트의 색"이 아니라
+    그냥 카드 배경이 되고 제목·설명이 색면 위에 떠 있는 모양이 된다.
+    그림과 글을 나누면 색은 그림 쪽 일이 되고 글은 종이 위로 돌아온다.
+  */}
+  {/*
+    색면 위에 도판 한 장을 올린다(.art-frame / .art-plate, global.css).
+    선만 띄워 두면 그림이 배경에 붙어 평평해지고, 레퍼런스처럼 기울어진 흰 카드를
+    놓으면 그건 저쪽 고유 장치를 그대로 베끼는 것이다. 이 블로그가 실제로 만드는
+    것(다이어그램)의 모양을 빌려, 종이 한 장 위에 회로를 그린 것처럼 둔다.
+  */}
+  <span class:list={['art-frame', 'thumb', `t-${tone}`]}>
+    <span class="art-plate">
+      <Motif seed={project.id} tone={tone} size={84} plain />
+    </span>
+  </span>
+  <span class="body">
+    <Tag class="ttl serif">{d.title}</Tag>
+    <span class="sum">{d.summary}</span>
+  </span>
 </a>
 
 <style>
-  /*
-   * 카드 전체가 틴트다. 성과 지표와 기술 스택은 상세 페이지에만 두고,
-   * 카드는 제목과 설명만 담는다.
-   */
   .card {
     display: block;
     border: 1px solid var(--border); border-radius: var(--radius-xl);
-    padding: var(--space-8) var(--space-7);
+    /* 그림 칸이 모서리까지 꽉 차야 한다 — 안 자르면 틴트 사각형이 둥근 모서리 밖으로 삐져나온다 */
+    overflow: hidden;
+    background: var(--bg-elev);
     color: var(--text);
-    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+    transition: border-color var(--dur) var(--ease);
   }
-  .card:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+  .card:hover { border-color: var(--accent); text-decoration: none; }
 
-  .t-a { background: var(--pj-a); }
-  .t-b { background: var(--pj-b); }
-  .t-c { background: var(--pj-c); }
-  .t-d { background: var(--pj-d); }
+  /* 액자 높이만 여기서 정한다 — 나머지 모양은 global.css의 .art-frame/.art-plate */
+  .thumb { height: 148px; }
+  .thumb .art-plate { padding: var(--space-2) var(--space-6); }
 
-  h2, h3 {
-    margin: 0 0 var(--space-3); font-size: var(--fs-600); font-weight: 700;
+  /*
+   * 커서를 올리면 도판만 조금 커진다. 카드를 통째로 띄우면(translateY) 목록에서
+   * 카드가 서로 다른 높이로 흔들려 어수선해진다. 레퍼런스도 카드는 가만히 두고
+   * 그림만 확대한다 — 액자가 넘침을 자르고 있어서 확대가 안쪽에 갇힌다.
+   */
+  .card:hover .art-plate { transform: scale(1.04); box-shadow: 0 8px 22px rgb(35 33 29 / .14); }
+  :global(html[data-theme='dark']) .card:hover .art-plate { box-shadow: 0 8px 22px rgb(0 0 0 / .5); }
+
+  .body { display: block; padding: var(--space-6) var(--space-6) var(--space-7); }
+
+  .ttl {
+    margin: 0 0 var(--space-3); font-size: var(--fs-600);
     letter-spacing: var(--ls-snug); line-height: var(--lh-snug);
     transition: color var(--dur) var(--ease);
   }
-  .card:hover h2, .card:hover h3 { color: var(--accent); }
-  .sum { margin: 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-normal); }
+  .card:hover .ttl { color: var(--accent); }
+  .sum { display: block; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
 </style>

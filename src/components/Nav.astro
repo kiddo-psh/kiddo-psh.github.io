@@ -16,7 +16,22 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
 
 <header>
   <nav class="page">
-    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}>{SITE.title}</a>
+    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}>
+      {/*
+        * 워드마크. 전에는 글자만 있었다 — 레퍼런스 두 곳 모두 고유 마크를 갖는데
+        * 여기만 없으면 헤더가 "메뉴 줄"이지 "사이트 머리"가 아니다.
+        * 글·프로젝트 마크와 같은 언어(선 위의 노드)를 쓰고, 가운데 초록 점이
+        * 판정 지점이다. favicon.svg도 같은 그림이다.
+        */}
+      <svg class="mk" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" focusable="false">
+        <path d="M5 26 H16 V6 H27" fill="none" stroke="currentColor"
+              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="5" cy="26" r="3" fill="currentColor" />
+        <circle cx="27" cy="6" r="3" fill="currentColor" />
+        <circle cx="16" cy="16" r="4.6" class="gate" />
+      </svg>
+      <span>{SITE.title}</span>
+    </a>
     {LINKS.map((l) => (
       <a href={l.href} class:list={[{ on: isOn(l.href) }]} aria-current={isOn(l.href) ? 'page' : undefined}>
         {l.label}
@@ -41,7 +56,19 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
 </header>
 
 <style>
-  header { border-bottom: 1px solid var(--border); }
+  /*
+   * 헤더를 화면 위에 붙여 둔다. 글이 길어서(프로젝트 문서는 1만 픽셀이 넘는다)
+   * 읽는 중에 다른 곳으로 가려면 매번 맨 위까지 돌아가야 했다.
+   */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow var(--dur) var(--ease);
+  }
+  /* 내용이 헤더 밑을 지나가는 동안에만 그림자를 준다 — 맨 위에서는 경계선만 */
+  :global(html.scrolled) header { box-shadow: 0 1px 12px rgb(35 33 29 / .06); }
+  :global(html[data-theme='dark'].scrolled) header { box-shadow: 0 1px 12px rgb(0 0 0 / .4); }
 
   /*
    * 링크가 헤더 높이를 통째로 쓰게 해서 누를 곳을 넓힌다. 전에는 글자 높이(25px)만
@@ -56,7 +83,13 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
     transition: color var(--dur) var(--ease);
   }
   nav a:hover { color: var(--text); text-decoration: none; }
-  .brand { color: var(--text); font-weight: 800; margin-right: var(--space-1); }
+  /*
+   * 로고는 절대 줄바꿈하지 않는다. 전역 word-break: keep-all가 걸려 있어도 flex가
+   * 좁아지면 "kiddo-" / "psh"로 쪼개진다 — 하이픈이 어절 경계로 취급되기 때문이다.
+   */
+  .brand { color: var(--text); font-weight: 800; margin-right: var(--space-3); gap: var(--space-2); white-space: nowrap; }
+  .brand .mk { display: block; flex: 0 0 auto; }
+  .brand .gate { fill: var(--accent); }
 
   /*
    * 현재 섹션 표시. 헤더 아래 테두리 위에 액센트 막대를 겹쳐 놓는다 —
@@ -73,10 +106,19 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
   .icon { padding: 0 var(--space-2); }
   .icon svg { display: block; }
 
-  @media (max-width: 420px) {
-    nav { gap: 0; font-size: var(--fs-200); }
+  /*
+   * 좁아지는 순서. 글자를 먼저 줄이고(480), 그래도 모자라면 항목 사이를 붙인다(400).
+   * 한 번에 둘 다 하면 430px쯤에서 "브리핑프로젝트소개"가 한 덩어리로 붙어 보인다.
+   */
+  @media (max-width: 480px) {
+    nav { font-size: var(--fs-200); }
+    nav a { padding: 0 var(--space-2); }
+    .brand { margin-right: var(--space-2); gap: var(--space-2); }
+  }
+  @media (max-width: 400px) {
+    nav { gap: 0; }
     nav a { padding: 0 var(--space-1); }
-    .brand { margin-right: 0; }
+    .brand { margin-right: var(--space-1); gap: var(--space-1); }
     nav a.on:not(.brand)::after { left: var(--space-1); right: var(--space-1); }
   }
 </style>

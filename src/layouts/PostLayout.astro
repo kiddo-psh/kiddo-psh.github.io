@@ -4,6 +4,8 @@ import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import BackLink from '../components/BackLink.astro';
+import Motif from '../components/Motif.astro';
+import { postTone } from '../lib/motif';
 import Comments from '../components/Comments.astro';
 import { getCategory } from '../site.config';
 import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
@@ -31,8 +33,17 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
       <article data-pagefind-body>
         <BackLink href="/posts" label="글" />
         <header>
+          {/*
+            머리그림. 목록에서 본 마크와 같은 규칙으로 그려지고 색도 같은 분류색이라,
+            어느 글을 눌렀는지가 문턱에서 이어진다. 손으로 만드는 자산이 아니라
+            글 id에서 나오므로 새 글을 써도 준비할 것이 없다.
+          */}
+          <span
+            class:list={['art-frame', 'band', `t-${postTone(post.data.category)}`, 'hero-mk']}>
+            <span class="art-plate"><Motif seed={post.id} tone={postTone(post.data.category)} banner plain /></span>
+          </span>
           <p class="cat">{cat.label}</p>
-          <h1>{post.data.title}</h1>
+          <h1 class="serif">{post.data.title}</h1>
           <p class="date">{date} · {minutes}분 읽기</p>
         </header>
 
@@ -50,8 +61,9 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
 <style>
   header { margin-bottom: var(--space-8); }
+  .hero-mk { margin: var(--space-6) 0 var(--space-6); }
   .cat { margin: 0 0 var(--space-3); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); color: var(--accent); }
-  h1 { margin: 0 0 var(--space-4); font-size: var(--fs-900); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+  h1 { margin: 0 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
   .date { margin: 0; padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); font-size: var(--fs-300); color: var(--text-dim); }
 
   .shell.read .prose { line-height: var(--lh-loose); }

@@ -9,8 +9,9 @@ const projects = (await getCollection('projects')).sort(
 ---
 
 <BaseLayout title="프로젝트" description="만든 것들과 그때의 판단">
-  <div class="page w-doc">
+  <div class="page">
     <h1 class="page-title">프로젝트</h1>
+    <p class="page-lead">만든 것과, 그때 무엇을 기준으로 정했는지를 함께 적었습니다.</p>
     <div class="pj-grid">
       {projects.map((project) => <ProjectCard project={project} headingLevel={2} />)}
     </div>

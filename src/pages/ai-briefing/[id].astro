@@ -44,7 +44,7 @@ const others = briefings
         <span>{item.source}</span>
         <time datetime={item.publishedAt}>{item.publishedAt.replaceAll('-', '.')}</time>
       </div>
-      <h1>{item.title}</h1>
+      <h1 class="serif">{item.title}</h1>
       <div class="tags" aria-label="주제 태그">
         {item.tags.map((tag) => <span>{briefingTagLabels[tag]}</span>)}
       </div>
@@ -92,7 +92,7 @@ const others = briefings
   .meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; color: var(--text-dim); font-size: var(--fs-200); }
   .meta span + span::before, .meta time::before { content: '·'; margin-right: var(--space-3); color: var(--border); }
   .meta .type { color: var(--accent); font-weight: 800; }
-  h1 { margin: var(--space-4) 0 var(--space-4); font-size: clamp(var(--fs-700), 5vw, var(--fs-900)); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+  h1 { margin: var(--space-4) 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
   /* 태그는 목록 페이지의 .item-tags와 같은 모양이다 */
   .tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
   .tags span { padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-100); font-weight: 700; }

@@ -2,20 +2,20 @@
   <title id="t">팀 공통 개발 파이프라인</title>
   <desc id="d">Task, Spec, Plan, Implement, Test, Review, Merge 일곱 단계. Spec과 Plan은 구현 전 판정 기준 합의, Test는 공통 검증 기준, Review는 설계 정합성과 규칙 확인을 담당한다. 저장소 루트의 AGENTS.md가 모든 단계에서 에이전트가 읽는 공통 규칙이 된다.</desc>
   <style>
-    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; --warm:#e06b2e; }
+    :root { --bg:#fbfaf7; --bg2:#f4f1ea; --ink:#23211d; --ink2:#57534a; --line:#cec8bb; --accent:#1d6b4f; --accent-soft:#e6efe9; --warm:#b2541c; }
     @media (prefers-color-scheme: dark) {
-      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; --warm:#f08a52; }
+      :root { --bg:#191817; --bg2:#211f1c; --ink:#edeae3; --ink2:#a8a199; --line:#3f3b35; --accent:#4fbe8f; --accent-soft:#1d2a24; --warm:#d98b52; }
     }
     text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
     .bg { fill: var(--bg); }
     .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .card.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .card.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
     .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .pill.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .pill.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
     .name { font-size: 16px; font-weight: 700; }
     .sub { font-size: 13px; fill: var(--ink2); }
     .col { font-size: 12.5px; font-weight: 600; fill: var(--ink2); letter-spacing: .04em; }
-    .tag { font-size: 12.5px; font-weight: 700; fill: var(--blue); }
+    .tag { font-size: 12.5px; font-weight: 700; fill: var(--accent); }
     .step { font-size: 15px; font-weight: 500; }
     .step.hi { font-weight: 700; }
     .who { font-size: 16px; font-weight: 700; }
@@ -23,15 +23,15 @@
     .flow { fill: none; stroke: var(--ink2); stroke-width: 1.6; }
     .arrow { fill: var(--ink2); }
     .lg { font-size: 13px; fill: var(--ink2); }
-    .lgbox { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
+    .lgbox { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
     .tile { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
     .big { font-size: 24px; font-weight: 700; }
     .lbl { font-size: 13px; fill: var(--ink2); }
-    .brk { fill: none; stroke: var(--blue); stroke-width: 1.5; }
+    .brk { fill: none; stroke: var(--accent); stroke-width: 1.5; }
     .why { font-size: 13px; font-weight: 700; }
     .why2 { font-size: 12.5px; fill: var(--ink2); }
-    .band { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 6 4; }
-    .bandh { font-size: 15px; font-weight: 700; fill: var(--blue); }
+    .band { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .bandh { font-size: 15px; font-weight: 700; fill: var(--accent); }
     .bandt { font-size: 13px; fill: var(--ink2); }
   </style>
   <defs>

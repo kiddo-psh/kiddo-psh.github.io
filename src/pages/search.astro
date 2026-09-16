@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
+import RelatedLinks from '../components/RelatedLinks.astro';
 import { getVisiblePosts, readingMinutes } from '../lib/posts';
 import { CATEGORIES, getCategory } from '../site.config';
 
@@ -25,17 +26,19 @@ const recent = (await getVisiblePosts()).slice(0, 5);
         ))}
       </nav>
 
-      <h2 class="section-label">최근 글</h2>
-      <ul class="recent">
-        {recent.map((p) => (
-          <li>
-            <a href={`/posts/${p.id}`}>{p.data.title}</a>
-            <span class="meta">
-              {getCategory(p.data.category).label} · {readingMinutes(p.body)}분
-            </span>
-          </li>
-        ))}
-      </ul>
+      {/*
+        상세 페이지 아래의 "다음에 볼 것"과 같은 컴포넌트를 쓴다. 전에는 여기만
+        손으로 목록을 한 벌 더 만들어 두어, 같은 역할(제목 + 분류·분량)인데
+        간격과 글자 크기가 달랐다.
+      */}
+      <RelatedLinks
+        title="최근 글"
+        links={recent.map((p) => ({
+          href: `/posts/${p.id}`,
+          label: p.data.title,
+          meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
+        }))}
+      />
     </section>
   </div>
 </BaseLayout>
@@ -67,19 +70,5 @@ const recent = (await getVisiblePosts()).slice(0, 5);
   /* 칩은 CategoryTabs와 같은 모양이어야 한다 — .chip 유틸리티를 쓴다 */
   .cats { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 
-  h2 { margin-top: var(--space-8); }
-
-  .recent { list-style: none; margin: 0; padding: 0; }
-  .recent li {
-    display: flex; align-items: baseline; gap: var(--space-3);
-    padding: var(--space-3) 0; border-bottom: 1px solid var(--border);
-  }
-  .recent a { color: var(--text); font-weight: 600; font-size: var(--fs-400); transition: color var(--dur) var(--ease); }
-  .recent a:hover { color: var(--accent); text-decoration: none; }
-  .recent .meta { margin-left: auto; flex: 0 0 auto; font-size: var(--fs-200); color: var(--text-dim); }
-
-  @media (max-width: 560px) {
-    .recent li { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
-    .recent .meta { margin-left: 0; }
-  }
+  /* "최근 글" 목록 모양은 RelatedLinks가 갖는다 — 여기에는 규칙이 없다 */
 </style>

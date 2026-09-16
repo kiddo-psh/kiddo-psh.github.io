@@ -2,18 +2,18 @@
   <title id="t1">시스템 구조</title>
   <desc id="d1">천장 카메라와 입구 센서가 Jetson과 Raspberry Pi로 들어가고, 두 장치가 Spring Backend로 결과를 보내며, Backend가 Mobile App과 Admin Web에 제공한다.</desc>
   <style>
-    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; }
+    :root { --bg:#fbfaf7; --bg2:#f4f1ea; --ink:#23211d; --ink2:#57534a; --line:#cec8bb; --accent:#1d6b4f; --accent-soft:#e6efe9; }
     @media (prefers-color-scheme: dark) {
-      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; }
+      :root { --bg:#191817; --bg2:#211f1c; --ink:#edeae3; --ink2:#a8a199; --line:#3f3b35; --accent:#4fbe8f; --accent-soft:#1d2a24; }
     }
     text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
     .bg { fill: var(--bg); }
     .box { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .box.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .box.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
     .h { font-size: 15px; font-weight: 600; }
     .s { font-size: 12px; fill: var(--ink2); }
     .cap { font-size: 12px; fill: var(--ink2); }
-    .tag { font-size: 12px; font-weight: 600; fill: var(--blue); }
+    .tag { font-size: 12px; font-weight: 600; fill: var(--accent); }
     .flow { fill: none; stroke: var(--ink2); stroke-width: 1.5; }
     .arrow { fill: var(--ink2); }
   </style>

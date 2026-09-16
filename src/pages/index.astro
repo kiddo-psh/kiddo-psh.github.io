@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProfileHeader from '../components/ProfileHeader.astro';
-import CategoryTabs from '../components/CategoryTabs.astro';
+import Hero from '../components/Hero.astro';
 import PostListItem from '../components/PostListItem.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getVisiblePosts } from '../lib/posts';
@@ -9,7 +8,8 @@ import { getCollection } from 'astro:content';
 import { SITE } from '../site.config';
 import { briefings, briefingLabels } from '../lib/briefings';
 
-const posts = (await getVisiblePosts()).slice(0, 6);
+const allPosts = await getVisiblePosts();
+const [lead, ...rest] = allPosts.slice(0, 5);
 const allProjects = await getCollection('projects');
 const featured = allProjects
   .filter((p) => p.data.featured)
@@ -19,73 +19,116 @@ const featured = allProjects
 
 <BaseLayout title={SITE.title}>
   <div class="page">
-    <ProfileHeader projectCount={allProjects.length} />
-    <CategoryTabs active="all" />
-    <div class="post-list">
-      {posts.map((post) => <PostListItem post={post} headingLevel={2} />)}
-    </div>
-    <p class="all"><a href="/posts">글 전체 보기 →</a></p>
-    {briefings.length > 0 && <section class="briefing-preview" aria-labelledby="briefing-title">
-      <div class="briefing-heading">
-        <div>
-          <p class="briefing-kicker">CURATED READING · AI BRIEFING</p>
-          <h2 id="briefing-title" class="sec-h">AI 브리핑</h2>
+    <Hero postCount={allPosts.length} projectCount={allProjects.length} />
+
+    <section aria-labelledby="posts-title">
+      <div class="sec-head">
+        <h2 id="posts-title" class="sec-h">글</h2>
+        <a href="/posts">전체 보기 →</a>
+      </div>
+      {lead && <PostListItem post={lead} variant="feature" headingLevel={3} />}
+      {rest.map((post) => <PostListItem post={post} headingLevel={3} />)}
+    </section>
+  </div>
+
+  {/*
+    * 브리핑만 배경을 바꿔 띠로 깐다. 전에는 홈 전체가 종이색 한 겹이라
+    * 글·브리핑·프로젝트 세 덩어리가 같은 간격으로 늘어선 평평한 목록이었다.
+    * 성격이 다른 것(내가 쓴 글 / 남이 쓴 것을 고른 것) 하나만 바닥을 바꾸면
+    * 스크롤하는 동안 구간이 생긴다. 띠는 화면 끝까지 나가야 "구간"으로 읽힌다.
+    */}
+  {briefings.length > 0 && (
+    <section class="band" aria-labelledby="briefing-title">
+      <div class="page">
+        <div class="sec-head">
+          <div>
+            <p class="kicker">CURATED READING</p>
+            <h2 id="briefing-title" class="sec-h">AI 브리핑</h2>
+          </div>
+          <a href="/ai-briefing">전체 보기 →</a>
         </div>
-        <a href="/ai-briefing">전체 보기 →</a>
+        <p class="band-desc">기사·인터뷰·논문에서 개발에 연결되는 자료만 골라 읽는 공간입니다.</p>
+        <div class="rows">
+          {briefings.slice(0, 3).map((item) => (
+            <a href="/ai-briefing" class="brow" data-reveal>
+              <span class="btype">{briefingLabels[item.type]}</span>
+              <span class="btitle">{item.title}</span>
+              <span class="barrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
       </div>
-      <p class="briefing-desc">기사·인터뷰·논문에서 개발에 연결되는 자료만 골라 읽는 공간입니다.</p>
-      <div class="briefing-rows">
-        {briefings.slice(0, 2).map((item) => (
-          <a href="/ai-briefing" class="briefing-row">
-            <span class="briefing-type">{briefingLabels[item.type]}</span>
-            <span class="briefing-title">{item.title}</span>
-            <span class="briefing-arrow" aria-hidden="true">↗</span>
-          </a>
-        ))}
-      </div>
-    </section>}
-    {featured.length > 0 && (
-      <section class="pj">
-        <h2 class="sec-h">프로젝트</h2>
+    </section>
+  )}
+
+  {featured.length > 0 && (
+    <div class="page">
+      <section class="pj" aria-labelledby="pj-title">
+        <div class="sec-head">
+          <h2 id="pj-title" class="sec-h">프로젝트</h2>
+          <a href="/projects">전체 보기 →</a>
+        </div>
         <div class="pj-grid">
           {featured.map((project) => <ProjectCard project={project} />)}
         </div>
       </section>
-    )}
-  </div>
+    </div>
+  )}
 </BaseLayout>
 
 <style>
-  /* margin-bottom을 명시하지 않으면 브라우저 기본 1em(=17px)이 들어와 그리드를 벗어난다 */
-  .all { margin: var(--space-6) 0 var(--space-8); font-size: var(--fs-400); }
-
   /*
-   * 홈의 두 섹션(브리핑·프로젝트)은 같은 층위다. 전에는 "AI 브리핑"이 24.3px 잉크색,
-   * "프로젝트"가 14.8px 흐린색이라 한 화면 안에서 같은 급으로 읽히지 않았다.
-   * 제목 모양은 하나로 두고, 브리핑에만 키커와 설명을 덧붙인다.
+   * 섹션 머리. 제목과 "전체 보기"를 한 줄에 두고 아래를 실선으로 닫는다.
+   * 세 섹션이 같은 모양을 쓴다 — 전에는 브리핑에만 키커가 있고 프로젝트는
+   * 제목만 있어서 같은 층위인데 다르게 보였다.
    */
+  .sec-head {
+    display: flex; align-items: end; justify-content: space-between; gap: var(--space-4);
+    padding-bottom: var(--space-4); border-bottom: 1px solid var(--border);
+  }
   .sec-h { margin: 0; font-size: var(--fs-600); line-height: var(--lh-snug); letter-spacing: var(--ls-tight); }
-
-  .briefing-preview { margin-top: var(--space-14); }
-  .briefing-heading { display: flex; align-items: end; justify-content: space-between; gap: var(--space-4); }
-  .briefing-kicker {
-    margin: 0 0 var(--space-2); color: var(--accent);
+  .sec-head > a { font-size: var(--fs-300); white-space: nowrap; }
+  .kicker {
+    margin: 0 0 var(--space-1); color: var(--accent);
     font-size: var(--fs-100); font-weight: 800; letter-spacing: var(--ls-label);
   }
-  .briefing-heading > a { font-size: var(--fs-300); white-space: nowrap; }
-  .briefing-desc { margin: var(--space-3) 0 var(--space-5); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); }
-  .briefing-rows { border-top: 1px solid var(--border); }
-  .briefing-row {
+
+  /*
+   * 띠. .page 바깥에 두어 화면 폭을 다 쓰고, 안쪽에 .page를 다시 넣어 글자는
+   * 같은 1100 그리드에 맞춘다. 위아래 실선이 없으면 종이색과의 명도 차이가
+   * 작아서(--bg-elev는 일부러 미세하다) 띠의 경계가 흐려진다.
+   */
+  .band {
+    margin: var(--space-20) 0;
+    padding: var(--space-14) 0;
+    background: var(--code-bg);
+    border-block: 1px solid var(--border);
+  }
+  .band-desc { margin: var(--space-4) 0 var(--space-2); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); }
+
+  .rows { margin-top: var(--space-2); }
+  .brow {
     display: flex; align-items: baseline; gap: var(--space-4);
     padding: var(--space-4) 0; border-bottom: 1px solid var(--border);
-    color: var(--text); font-size: var(--fs-400); line-height: var(--lh-snug);
+    color: var(--text); line-height: var(--lh-snug);
     transition: color var(--dur) var(--ease);
   }
-  .briefing-row:hover { color: var(--accent); text-decoration: none; }
-  .briefing-type { flex: 0 0 55px; color: var(--accent); font-size: var(--fs-200); font-weight: 800; }
-  .briefing-title { flex: 1; font-weight: 700; }
-  .briefing-arrow { color: var(--text-dim); }
+  .brow:last-child { border-bottom: 0; }
+  .brow:hover { color: var(--accent); text-decoration: none; }
+  /*
+   * 글 목록의 메타와 같은 크기·굵기를 쓴다 — 같은 역할의 라벨이기 때문이다.
+   * 다만 자간은 벌리지 않는다. 저쪽은 "DEV"·"RETRO"라 라틴 대문자지만
+   * 이쪽은 "논문"·"인터뷰"라 한글이고, 한글을 벌리면 글자가 흩어진다.
+   */
+  .btype { flex: 0 0 52px; color: var(--accent); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-snug); }
+  .btitle { flex: 1; font-size: var(--fs-400); font-weight: 700; letter-spacing: var(--ls-snug); }
+  .barrow { color: var(--text-dim); }
 
-  .pj { margin-top: var(--space-14); }
-  .pj .sec-h { margin-bottom: var(--space-4); }
+  .pj { margin-bottom: var(--space-20); }
+  .pj .pj-grid { margin-top: var(--space-6); }
+
+  @media (max-width: 640px) {
+    .band { margin: var(--space-14) 0; padding: var(--space-10) 0; }
+    .btype { flex-basis: 44px; }
+  }
 </style>
