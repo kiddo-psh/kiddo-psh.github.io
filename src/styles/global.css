@@ -564,6 +564,16 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
   filter: brightness(.88);
 }
 
+/*
+ * 도해는 종이보다 한 겹 위에 놓인 판이다.
+ *
+ * 전에는 SVG가 제 배경을 직접 칠했다. 그러면 테두리와 모서리는 CSS가, 바탕은 그림이
+ * 갖게 되어 둘이 따로 논다 — 그림이 960 좌표계를 700px에 그릴 때 안쪽 rx=12는 8.7px이
+ * 되는데 바깥 border-radius는 12px 그대로라 모서리가 어긋난다. 그래서 그림에서는
+ * 바탕을 빼고 판을 전부 여기서 준다. 사진과 스크린샷은 불투명하므로 영향이 없다.
+ */
+.prose img[src$='.svg'] { background: var(--bg-elev); }
+
 /* 설명이 붙는 그림. 여러 장을 한 줄에 늘어놓지 않고 한 장씩 본문 폭으로 세운다 */
 .prose figure { margin: var(--space-8) 0; }
 .prose figure img { display: block; margin: 0; }
@@ -581,6 +591,17 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
   margin: var(--space-8) calc(-1 * var(--bleed, 0px));
 }
 .prose figure.wide img { display: block; width: 100%; margin: 0; }
+
+/*
+ * 좁은 화면에서 도해는 통째로 줄어든다. 960 좌표계의 15px 글자는 350px 화면에서
+ * 5.5px가 되어 읽을 수 없다. 페이지 전체를 밀지 않으면서 읽히게 하려면 그림만
+ * 따로 밀 수 있어야 한다. 좁은 화면용 판을 <picture>로 따로 둔 그림은 img가
+ * figure의 직계 자식이 아니라서 여기 걸리지 않는다 — 그쪽은 이미 세로로 세워져 있다.
+ */
+@media (max-width: 620px) {
+  .prose figure.wide { overflow-x: auto; }
+  .prose figure.wide > img { min-width: 600px; }
+}
 
 /* 표·코드블록이 좁은 화면에서 페이지를 밀지 않게 */
 .prose { overflow-wrap: break-word; }

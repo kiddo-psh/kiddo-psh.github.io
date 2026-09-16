@@ -1,82 +1,103 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="450" viewBox="0 0 960 450" role="img" aria-labelledby="t d">
-  <title id="t">7월 30일 타임라인과 코드 양 비교</title>
-  <desc id="d">위: 팀원 A가 10시 37분에 235줄 기능을 커밋하고 점심 무렵까지 자체 리뷰 반영 3건을 했다. 나는 14시 43분부터 15시 20분까지 37분 동안 내 작업을 했고, 16시 6분부터 21시 37분까지 5시간 31분 동안 A의 브랜치를 재작업했다. 아래: A의 기능 커밋 235줄과 내 재작업 1,402줄을 막대로 비교했다. 재작업이 원본의 약 6배다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" role="img" aria-labelledby="t d">
+  <title id="t">기능 하루, 재작업 다섯 시간 반</title>
+  <desc id="d">위는 7월 30일 하루다. 팀원 A가 10시 37분에 235줄짜리 기능을 커밋하고 점심 무렵까지 자체 리뷰 반영 세 건을 했다. 나는 14시 43분부터 15시 20분까지 37분 동안 내 작업을 했고, 16시 6분부터 21시 37분까지 5시간 31분 동안 A의 브랜치를 재작업했다. 아래는 그날 추가된 줄 수다. 기능 커밋 235줄에 재작업 1,402줄로, 재작업이 약 6배다.</desc>
   <style>
-    :root { --bg:#fbfaf7; --bg2:#f4f1ea; --ink:#23211d; --ink2:#57534a; --line:#cec8bb; --accent:#1d6b4f; --accent-soft:#e6efe9; --warm:#b2541c; }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg:#191817; --bg2:#211f1c; --ink:#edeae3; --ink2:#a8a199; --line:#3f3b35; --accent:#4fbe8f; --accent-soft:#1d2a24; --warm:#d98b52; }
+    /*
+     * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
+     *
+     * 색은 "무엇인가"가 아니라 "어떤 역할인가"를 말한다.
+     *   g 초록  코드가 실제로 바뀌는 단계
+     *   v 보라  사람이 기준을 정하거나 확인하는 지점 (문서 · 판정 · 리뷰 · 게이트)
+     *   t 주황  경계 — 들어오고 나가는 지점, 그리고 되돌아간 비용
+     *   q 회색  맥락. 이 그림의 주인공이 아닌 것
+     * 한 칸은 면 · 선 · 글자를 같은 색 한 벌로 쓴다. 색이 역할이므로 강조용 테두리를
+     * 따로 두지 않는다.
+     *
+     * 설명은 칸이 아니라 선과 여백이 한다. 칸 안에는 이름 한 줄만 넣고, 무엇이
+     * 흐르는지는 선 위 이름표로, 그 칸이 무슨 일을 하는지는 칸 아래 작은 글로 쓴다.
+     */
+    :root {
+      --ink:#23211d; --ink2:#57534a; --hair:#cec8bb; --arrow:#a39c91;
+      --g-fill:#e7f0ea; --g-line:#4e8f74; --g-text:#1d6b4f;
+      --v-fill:#ecebf4; --v-line:#7d74ab; --v-text:#544a87;
+      --t-fill:#f7ebe3; --t-line:#c07a4e; --t-text:#9c4a15;
+      --q-fill:#f4f1ea; --q-line:#cec8bb; --q-text:#57534a;
     }
-    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
-    .bg { fill: var(--bg); }
-    .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .card.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
-    .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .pill.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
-    .name { font-size: 16px; font-weight: 700; }
-    .sub { font-size: 13px; fill: var(--ink2); }
-    .col { font-size: 12.5px; font-weight: 600; fill: var(--ink2); letter-spacing: .04em; }
-    .tag { font-size: 12.5px; font-weight: 700; fill: var(--accent); }
-    .step { font-size: 15px; font-weight: 500; }
-    .step.hi { font-weight: 700; }
-    .who { font-size: 16px; font-weight: 700; }
-    .how { font-size: 13px; fill: var(--ink2); }
-    .flow { fill: none; stroke: var(--ink2); stroke-width: 1.6; }
-    .arrow { fill: var(--ink2); }
-    .lg { font-size: 13px; fill: var(--ink2); }
-    .lgbox { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
-    .tile { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
-    .big { font-size: 24px; font-weight: 700; }
-    .lbl { font-size: 13px; fill: var(--ink2); }
-    .grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
-    .axis { stroke: var(--line); stroke-width: 1.5; }
-    .tick { font-size: 13px; fill: var(--ink2); }
-    .dot { fill: var(--ink2); }
-    .mine { fill: var(--accent); }
-    .rework { fill: var(--warm); }
-    .barlbl { font-size: 14px; font-weight: 700; }
-    .num { font-size: 20px; font-weight: 700; }
-    .div { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink:#edeae3; --ink2:#a8a199; --hair:#3f3b35; --arrow:#6f685f;
+        --g-fill:#1d2a24; --g-line:#3f7a5f; --g-text:#4fbe8f;
+        --v-fill:#24222e; --v-line:#6a5f96; --v-text:#a396d8;
+        --t-fill:#2c211a; --t-line:#8f5c38; --t-text:#d98b52;
+        --q-fill:#2a2724; --q-line:#4a453e; --q-text:#a8a199;
+      }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; }
+
+    .n { stroke-width:1.5; }
+    .n.g { fill:var(--g-fill); stroke:var(--g-line); }
+    .n.v { fill:var(--v-fill); stroke:var(--v-line); }
+    .n.t { fill:var(--t-fill); stroke:var(--t-line); }
+    .n.q { fill:var(--q-fill); stroke:var(--q-line); }
+
+    .l { font-size:15px; font-weight:700; }
+    .l.g { fill:var(--g-text); } .l.v { fill:var(--v-text); }
+    .l.t { fill:var(--t-text); } .l.q { fill:var(--q-text); }
+    .l.sm { font-size:13.5px; }
+
+    .e { fill:none; stroke:var(--arrow); stroke-width:1.8; }
+    .e.d { stroke-dasharray:5 4; }
+    .e.t { stroke:var(--t-line); stroke-width:1.4; }
+    .ah { fill:var(--arrow); }
+    .el { font-size:13.5px; fill:var(--ink2); }
+
+    .sub { font-size:13px; fill:var(--ink2); }
+    /* 그림이 가리키는 한 곳을 이름으로 부를 때. 가리키는 칸과 같은 색을 쓴다 */
+    .sub.g { fill:var(--g-text); font-weight:700; }
+    .sub.v { fill:var(--v-text); font-weight:700; }
+    .sub.t { fill:var(--t-text); font-weight:700; }
+    .hd { font-size:16px; font-weight:700; fill:var(--ink); }
+    .grp { fill:none; stroke:var(--hair); stroke-width:1.2; stroke-dasharray:5 4; }
+    .rule { stroke:var(--hair); stroke-width:1; }
+
+    .bar.g { fill:var(--g-text); } .bar.t { fill:var(--t-text); } .bar.q { fill:var(--q-line); }
+    .tick { font-size:12.5px; fill:var(--ink2); }
+    .grid { stroke:var(--hair); stroke-width:1; stroke-dasharray:2 4; }
   </style>
   <defs>
-    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="ah" d="M0 0 L10 5 L0 10 Z"/>
     </marker>
   </defs>
-  <rect class="bg" x="0" y="0" width="960" height="450" rx="12"/>
-  <g class="grid">
-    <line x1="180" y1="50" x2="180" y2="258"/>
-    <line x1="303" y1="50" x2="303" y2="258"/>
-    <line x1="427" y1="50" x2="427" y2="258"/>
-    <line x1="550" y1="50" x2="550" y2="258"/>
-    <line x1="673" y1="50" x2="673" y2="258"/>
-    <line x1="797" y1="50" x2="797" y2="258"/>
-    <line x1="920" y1="50" x2="920" y2="258"/>
-  </g>
-  <line class="axis" x1="180" y1="258" x2="920" y2="258"/>
-  <g class="tick" text-anchor="middle">
-    <text x="180" y="278">10:00</text>
-    <text x="303" y="278">12:00</text>
-    <text x="427" y="278">14:00</text>
-    <text x="550" y="278">16:00</text>
-    <text x="673" y="278">18:00</text>
-    <text x="797" y="278">20:00</text>
-    <text x="920" y="278">22:00</text>
-  </g>
-  <text class="who" x="40" y="108">팀원 A</text>
-  <circle class="dot" cx="218" cy="104" r="9"/>
-  <text class="barlbl" x="234" y="86">기능 커밋 235줄</text>
-  <circle class="dot" cx="345" cy="104" r="5"/><circle class="dot" cx="432" cy="104" r="5"/><circle class="dot" cx="442" cy="104" r="5"/>
-  <text class="who" x="40" y="208">나</text>
-  <rect class="mine" x="471" y="184" width="38" height="44" rx="6"/>
-  <text class="how" x="471" y="246">내 작업 37분</text>
-  <rect class="rework" x="556" y="184" width="341" height="44" rx="6"/>
-  <text class="barlbl" x="556" y="172">A 브랜치 재작업 5시간 31분</text>
-  <line class="div" x1="40" y1="300" x2="920" y2="300"/>
-  <text class="who" x="40" y="340">기능 커밋</text>
-  <rect class="dot" x="180" y="320" width="107" height="36" rx="6"/>
-  <text class="num" x="299" y="346">235줄</text>
-  <text class="who" x="40" y="408">재작업</text>
-  <text class="how" x="40" y="428">약 6배 · 11 commits</text>
-  <rect class="rework" x="180" y="388" width="640" height="36" rx="6"/>
-  <text class="num" x="832" y="414">1,402줄</text>
+  <text class="hd" x="56" y="40" text-anchor="start">7월 30일</text>
+  <text class="tick" x="168" y="64" text-anchor="middle">10:00</text>
+  <path class="grid" d="M168 74 V164"/>
+  <text class="tick" x="290" y="64" text-anchor="middle">12:00</text>
+  <path class="grid" d="M290 74 V164"/>
+  <text class="tick" x="412" y="64" text-anchor="middle">14:00</text>
+  <path class="grid" d="M412 74 V164"/>
+  <text class="tick" x="534" y="64" text-anchor="middle">16:00</text>
+  <path class="grid" d="M534 74 V164"/>
+  <text class="tick" x="656" y="64" text-anchor="middle">18:00</text>
+  <path class="grid" d="M656 74 V164"/>
+  <text class="tick" x="778" y="64" text-anchor="middle">20:00</text>
+  <path class="grid" d="M778 74 V164"/>
+  <text class="tick" x="900" y="64" text-anchor="middle">22:00</text>
+  <path class="grid" d="M900 74 V164"/>
+  <text class="sub" x="156" y="99.5" text-anchor="end">팀원 A</text>
+  <text class="sub" x="156" y="147.5" text-anchor="end">나</text>
+  <rect class="bar q" x="205.617" y="86" width="84.3833" height="18" rx="4"/>
+  <text class="sub" x="304" y="99" text-anchor="start">기능 커밋 235줄 · 이후 자체 리뷰 반영 3건</text>
+  <rect class="bar g" x="455.717" y="134" width="37.6167" height="18" rx="4"/>
+  <rect class="bar t" x="540.1" y="134" width="336.517" height="18" rx="4"/>
+  <text class="sub" x="474.525" y="126" text-anchor="middle">내 작업 37분</text>
+  <text class="sub" x="708.358" y="126" text-anchor="middle">A 브랜치 재작업 5시간 31분</text>
+  <path class="rule" d="M56 196 H904"/>
+  <text class="hd" x="56" y="224" text-anchor="start">그날 추가된 줄</text>
+  <text class="sub" x="156" y="262" text-anchor="end">기능 커밋</text>
+  <rect class="bar q" x="168" y="248" width="80.4565" height="20" rx="4"/>
+  <text class="sub" x="262.456" y="262" text-anchor="start">235줄</text>
+  <text class="sub" x="156" y="306" text-anchor="end">재작업</text>
+  <rect class="bar t" x="168" y="292" width="480" height="20" rx="4"/>
+  <text class="sub" x="662" y="306" text-anchor="start">1,402줄 · 11 커밋 · 약 6배</text>
 </svg>

@@ -33,7 +33,10 @@ relatedPosts:
 
 **감지 → 이동 요청 → 응답 → 이동 재확인**의 네 단계를 자동화했습니다.
 
-![시스템 구조. 카메라와 센서가 Jetson과 Raspberry Pi를 거쳐 Spring Backend로, 다시 앱과 관리자 웹으로 흐른다](/images/projects/baro/01-system-overview.svg)
+<figure>
+  <img src="/images/projects/baro/01-system-overview.svg" alt="천장 광각 카메라와 입구 카메라·ToF가 Jetson과 Raspberry Pi로, 두 장치가 Spring Backend로, 다시 Mobile App과 Admin Web으로 이어진다" />
+  <figcaption>7명 · 4주. 팀원 대부분이 Claude Code 또는 Codex를 쓰며 개발했습니다.</figcaption>
+</figure>
 
 ![주차바로 서비스 전체 아키텍처](/images/projects/baro/architecture.png)
 

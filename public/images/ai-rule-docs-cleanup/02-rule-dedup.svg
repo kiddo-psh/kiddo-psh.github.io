@@ -1,117 +1,109 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="610" viewBox="0 0 960 610" role="img" aria-labelledby="t2 d2">
-  <title id="t2">같은 규칙, 몇 곳에 있었나</title>
-  <desc id="d2">세 문서를 파일 카드로 그렸다. 정리 전에는 시작 전 확인, 보고 양식, 검증 항목이 ai-collaboration.md와 AGENTS.md 두 카드에 함께 있었고, 스토리 포인트 산정 기준이 AGENTS.md와 jira/README.md 두 카드에 함께 있었다. 정리 후에는 정의가 한 카드에만 남고 다른 카드에는 그 정의를 가리키는 참조 칩만 있다. 각 문서의 고유 내용은 그대로다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="t d">
+  <title id="t">정의는 한 곳에만 둔다</title>
+  <desc id="d">정리 전에는 시작 전 확인, 보고 양식, 검증 항목의 정의가 ai-collaboration.md와 AGENTS.md 두 문서에 서로 다른 형태로 들어 있었다. 정리 후에는 세 규칙의 정의가 AGENTS.md 한 곳에만 남고, ai-collaboration.md에는 루트 규칙을 따른다는 참조 한 줄만 남겼다.</desc>
   <style>
-    :root { --bg:#fbfaf7; --bg2:#f4f1ea; --ink:#23211d; --ink2:#57534a; --line:#cec8bb; --accent:#1d6b4f; --accent-soft:#e6efe9; }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg:#191817; --bg2:#211f1c; --ink:#edeae3; --ink2:#a8a199; --line:#3f3b35; --accent:#4fbe8f; --accent-soft:#1d2a24; }
+    /*
+     * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
+     *
+     * 색은 "무엇인가"가 아니라 "어떤 역할인가"를 말한다.
+     *   g 초록  코드가 실제로 바뀌는 단계
+     *   v 보라  사람이 기준을 정하거나 확인하는 지점 (문서 · 판정 · 리뷰 · 게이트)
+     *   t 주황  경계 — 들어오고 나가는 지점, 그리고 되돌아간 비용
+     *   q 회색  맥락. 이 그림의 주인공이 아닌 것
+     * 한 칸은 면 · 선 · 글자를 같은 색 한 벌로 쓴다. 색이 역할이므로 강조용 테두리를
+     * 따로 두지 않는다.
+     *
+     * 설명은 칸이 아니라 선과 여백이 한다. 칸 안에는 이름 한 줄만 넣고, 무엇이
+     * 흐르는지는 선 위 이름표로, 그 칸이 무슨 일을 하는지는 칸 아래 작은 글로 쓴다.
+     */
+    :root {
+      --ink:#23211d; --ink2:#57534a; --hair:#cec8bb; --arrow:#a39c91;
+      --g-fill:#e7f0ea; --g-line:#4e8f74; --g-text:#1d6b4f;
+      --v-fill:#ecebf4; --v-line:#7d74ab; --v-text:#544a87;
+      --t-fill:#f7ebe3; --t-line:#c07a4e; --t-text:#9c4a15;
+      --q-fill:#f4f1ea; --q-line:#cec8bb; --q-text:#57534a;
     }
-    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
-    .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "D2Coding", monospace; }
-    .bg { fill: var(--bg); }
-    .hd { font-size: 16px; font-weight: 700; }
-    .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .sep { stroke: var(--line); stroke-width: 1; }
-    .fn { font-size: 13px; font-weight: 700; }
-    .chip { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
-    .chip.own { fill: var(--bg); stroke: var(--line); }
-    .chip.ref { fill: var(--bg); stroke: var(--accent); stroke-dasharray: 4 3; }
-    .ct { font-size: 13px; font-weight: 600; }
-    .ct.own { font-weight: 500; fill: var(--ink2); }
-    .ct.ref { font-weight: 500; fill: var(--accent); }
-    .dup { fill: none; stroke: var(--accent); stroke-width: 2; }
-    .flow { fill: none; stroke: var(--accent); stroke-width: 1.5; }
-    .arrow { fill: var(--accent); }
-    .lg { font-size: 12px; fill: var(--ink2); }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink:#edeae3; --ink2:#a8a199; --hair:#3f3b35; --arrow:#6f685f;
+        --g-fill:#1d2a24; --g-line:#3f7a5f; --g-text:#4fbe8f;
+        --v-fill:#24222e; --v-line:#6a5f96; --v-text:#a396d8;
+        --t-fill:#2c211a; --t-line:#8f5c38; --t-text:#d98b52;
+        --q-fill:#2a2724; --q-line:#4a453e; --q-text:#a8a199;
+      }
+    }
+    text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; }
+
+    .n { stroke-width:1.5; }
+    .n.g { fill:var(--g-fill); stroke:var(--g-line); }
+    .n.v { fill:var(--v-fill); stroke:var(--v-line); }
+    .n.t { fill:var(--t-fill); stroke:var(--t-line); }
+    .n.q { fill:var(--q-fill); stroke:var(--q-line); }
+
+    .l { font-size:15px; font-weight:700; }
+    .l.g { fill:var(--g-text); } .l.v { fill:var(--v-text); }
+    .l.t { fill:var(--t-text); } .l.q { fill:var(--q-text); }
+    .l.sm { font-size:13.5px; }
+
+    .e { fill:none; stroke:var(--arrow); stroke-width:1.8; }
+    .e.d { stroke-dasharray:5 4; }
+    .e.t { stroke:var(--t-line); stroke-width:1.4; }
+    .ah { fill:var(--arrow); }
+    .el { font-size:13.5px; fill:var(--ink2); }
+
+    .sub { font-size:13px; fill:var(--ink2); }
+    /* 그림이 가리키는 한 곳을 이름으로 부를 때. 가리키는 칸과 같은 색을 쓴다 */
+    .sub.g { fill:var(--g-text); font-weight:700; }
+    .sub.v { fill:var(--v-text); font-weight:700; }
+    .sub.t { fill:var(--t-text); font-weight:700; }
+    .hd { font-size:16px; font-weight:700; fill:var(--ink); }
+    .grp { fill:none; stroke:var(--hair); stroke-width:1.2; stroke-dasharray:5 4; }
+    .rule { stroke:var(--hair); stroke-width:1; }
+
+    .bar.g { fill:var(--g-text); } .bar.t { fill:var(--t-text); } .bar.q { fill:var(--q-line); }
+    .tick { font-size:12.5px; fill:var(--ink2); }
+    .grid { stroke:var(--hair); stroke-width:1; stroke-dasharray:2 4; }
   </style>
   <defs>
-    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path class="arrow" d="M0,0 L10,5 L0,10 z"/>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="ah" d="M0 0 L10 5 L0 10 Z"/>
     </marker>
   </defs>
-  <rect class="bg" x="0" y="0" width="960" height="610" rx="12"/>
-
-  <!-- ===================== Before ===================== -->
-  <text class="hd" x="30" y="36">Before</text>
-
-  <!-- card: ai-collaboration.md -->
-  <rect class="card" x="30" y="52" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="46" y="75">ai-collaboration.md</text>
-  <line class="sep" x1="30" y1="86" x2="310" y2="86"/>
-  <rect class="chip" x="46" y="94" width="248" height="28" rx="14"/><text class="ct" x="170" y="113" text-anchor="middle">시작 전 확인 (7항목)</text>
-  <rect class="chip" x="46" y="130" width="248" height="28" rx="14"/><text class="ct" x="170" y="149" text-anchor="middle">보고 양식 (7필드 · 6필드)</text>
-  <rect class="chip" x="46" y="166" width="248" height="28" rx="14"/><text class="ct" x="170" y="185" text-anchor="middle">검증 6단계</text>
-  <rect class="chip own" x="46" y="202" width="248" height="28" rx="14"/><text class="ct own" x="170" y="221" text-anchor="middle">worktree · 충돌 위험 분류</text>
-  <rect class="chip own" x="46" y="238" width="248" height="28" rx="14"/><text class="ct own" x="170" y="257" text-anchor="middle">합의가 필요한 변경</text>
-
-  <!-- card: AGENTS.md -->
-  <rect class="card" x="340" y="52" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="356" y="75">AGENTS.md</text>
-  <line class="sep" x1="340" y1="86" x2="620" y2="86"/>
-  <rect class="chip" x="356" y="94" width="248" height="28" rx="14"/><text class="ct" x="480" y="113" text-anchor="middle">시작 전 확인 (11항목)</text>
-  <rect class="chip" x="356" y="130" width="248" height="28" rx="14"/><text class="ct" x="480" y="149" text-anchor="middle">수정 전 알림 · 완료 보고</text>
-  <rect class="chip" x="356" y="166" width="248" height="28" rx="14"/><text class="ct" x="480" y="185" text-anchor="middle">검증 항목</text>
-  <rect class="chip" x="356" y="202" width="248" height="28" rx="14"/><text class="ct" x="480" y="221" text-anchor="middle">스토리 포인트 산정 기준</text>
-  <rect class="chip own" x="356" y="238" width="248" height="28" rx="14"/><text class="ct own" x="480" y="257" text-anchor="middle">작업 절차 · 검증 명령</text>
-
-  <!-- card: jira/README.md -->
-  <rect class="card" x="650" y="52" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="666" y="75">docs/jira/README.md</text>
-  <line class="sep" x1="650" y1="86" x2="930" y2="86"/>
-  <rect class="chip own" x="666" y="94" width="248" height="28" rx="14"/><text class="ct own" x="790" y="113" text-anchor="middle">스크립트 사용법</text>
-  <rect class="chip own" x="666" y="130" width="248" height="28" rx="14"/><text class="ct own" x="790" y="149" text-anchor="middle">계획 YAML 형식</text>
-  <rect class="chip" x="666" y="202" width="248" height="28" rx="14"/><text class="ct" x="790" y="221" text-anchor="middle">스토리 포인트 산정 기준 (표)</text>
-
-  <!-- duplicate links -->
-  <path class="dup" d="M296 108 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
-  <path class="dup" d="M296 144 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
-  <path class="dup" d="M296 180 H354" marker-start="url(#ab)" marker-end="url(#ab)"/>
-  <path class="dup" d="M606 216 H664" marker-start="url(#ab)" marker-end="url(#ab)"/>
-
-  <!-- ===================== After ===================== -->
-  <text class="hd" x="30" y="334">After</text>
-
-  <!-- card: ai-collaboration.md -->
-  <rect class="card" x="30" y="350" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="46" y="373">ai-collaboration.md</text>
-  <line class="sep" x1="30" y1="384" x2="310" y2="384"/>
-  <rect class="chip ref" x="46" y="392" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="411" text-anchor="middle">→ AGENTS.md를 따른다</text>
-  <rect class="chip ref" x="46" y="428" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="447" text-anchor="middle">→ AGENTS.md를 따른다</text>
-  <rect class="chip ref" x="46" y="464" width="248" height="28" rx="14"/><text class="ct ref" x="170" y="483" text-anchor="middle">→ AGENTS.md를 따른다</text>
-  <rect class="chip own" x="46" y="500" width="248" height="28" rx="14"/><text class="ct own" x="170" y="519" text-anchor="middle">worktree · 충돌 위험 분류</text>
-  <rect class="chip own" x="46" y="536" width="248" height="28" rx="14"/><text class="ct own" x="170" y="555" text-anchor="middle">합의가 필요한 변경</text>
-
-  <!-- card: AGENTS.md -->
-  <rect class="card" x="340" y="350" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="356" y="373">AGENTS.md</text>
-  <line class="sep" x1="340" y1="384" x2="620" y2="384"/>
-  <rect class="chip" x="356" y="392" width="248" height="28" rx="14"/><text class="ct" x="480" y="411" text-anchor="middle">시작 전 확인 (통합)</text>
-  <rect class="chip" x="356" y="428" width="248" height="28" rx="14"/><text class="ct" x="480" y="447" text-anchor="middle">알림 · 완료 보고 (양식 없음)</text>
-  <rect class="chip" x="356" y="464" width="248" height="28" rx="14"/><text class="ct" x="480" y="483" text-anchor="middle">검증 항목</text>
-  <rect class="chip ref" x="356" y="500" width="248" height="28" rx="14"/><text class="ct ref" x="480" y="519" text-anchor="middle">→ jira/README를 본다</text>
-  <rect class="chip own" x="356" y="536" width="248" height="28" rx="14"/><text class="ct own" x="480" y="555" text-anchor="middle">작업 절차 · 검증 명령</text>
-
-  <!-- card: jira/README.md -->
-  <rect class="card" x="650" y="350" width="280" height="224" rx="10"/>
-  <text class="mono fn" x="666" y="373">docs/jira/README.md</text>
-  <line class="sep" x1="650" y1="384" x2="930" y2="384"/>
-  <rect class="chip own" x="666" y="392" width="248" height="28" rx="14"/><text class="ct own" x="790" y="411" text-anchor="middle">스크립트 사용법</text>
-  <rect class="chip own" x="666" y="428" width="248" height="28" rx="14"/><text class="ct own" x="790" y="447" text-anchor="middle">계획 YAML 형식</text>
-  <rect class="chip" x="666" y="500" width="248" height="28" rx="14"/><text class="ct" x="790" y="519" text-anchor="middle">스토리 포인트 산정 기준 (표)</text>
-
-  <!-- reference arrows: ref chip → definition -->
-  <path class="flow" d="M296 406 H352" marker-end="url(#ab)"/>
-  <path class="flow" d="M296 442 H352" marker-end="url(#ab)"/>
-  <path class="flow" d="M296 478 H352" marker-end="url(#ab)"/>
-  <path class="flow" d="M606 514 H662" marker-end="url(#ab)"/>
-
-  <!-- legend -->
-  <rect class="chip" x="30" y="588" width="14" height="14" rx="4"/>
-  <text class="lg" x="52" y="600">규칙의 정의</text>
-  <path class="dup" d="M140 595 H170" marker-start="url(#ab)" marker-end="url(#ab)"/>
-  <text class="lg" x="180" y="600">같은 규칙이 두 문서에</text>
-  <rect class="chip ref" x="320" y="588" width="14" height="14" rx="4"/>
-  <text class="lg" x="342" y="600">정의 없이 참조만</text>
-  <rect class="chip own" x="460" y="588" width="14" height="14" rx="4"/>
-  <text class="lg" x="482" y="600">그 문서만의 내용 · 변경 없음</text>
+  <text class="hd" x="56" y="46" text-anchor="start">정리 전</text>
+  <text class="sub" x="124" y="46" text-anchor="start">같은 규칙이 두 문서에 서로 다른 형태로</text>
+  <rect class="n v" x="56" y="97.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="122" y="120.7" text-anchor="middle">시작 전 확인</text>
+  <rect class="n v" x="56" y="157.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="122" y="180.7" text-anchor="middle">보고 양식</text>
+  <rect class="n v" x="56" y="217.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="122" y="240.7" text-anchor="middle">검증 항목</text>
+  <rect class="n q" x="300" y="127.0" width="160" height="38" rx="3"/>
+  <text class="l q sm" x="380" y="150.7" text-anchor="middle">ai-collaboration.md</text>
+  <rect class="n q" x="300" y="187.0" width="160" height="38" rx="3"/>
+  <text class="l q sm" x="380" y="210.7" text-anchor="middle">AGENTS.md</text>
+  <path class="e t" d="M188 116 C232 116 252 146 296 146"/>
+  <path class="e t" d="M188 116 C232 116 252 206 296 206"/>
+  <path class="e t" d="M188 176 C232 176 252 146 296 146"/>
+  <path class="e t" d="M188 176 C232 176 252 206 296 206"/>
+  <path class="e t" d="M188 236 C232 236 252 146 296 146"/>
+  <path class="e t" d="M188 236 C232 236 252 206 296 206"/>
+  <path class="rule" d="M492 44 V286"/>
+  <text class="hd" x="524" y="46" text-anchor="start">정리 후</text>
+  <text class="sub" x="592" y="46" text-anchor="start">정의는 한 곳, 나머지는 참조</text>
+  <rect class="n v" x="524" y="97.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="590" y="120.7" text-anchor="middle">시작 전 확인</text>
+  <rect class="n v" x="524" y="157.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="590" y="180.7" text-anchor="middle">보고 양식</text>
+  <rect class="n v" x="524" y="217.0" width="132" height="38" rx="3"/>
+  <text class="l v sm" x="590" y="240.7" text-anchor="middle">검증 항목</text>
+  <rect class="n g" x="744" y="157.0" width="160" height="38" rx="3"/>
+  <text class="l g sm" x="824" y="180.7" text-anchor="middle">AGENTS.md</text>
+  <path class="e" d="M656 116 C700 116 710 176 740 176" marker-end="url(#a)"/>
+  <path class="e" d="M656 176 H740" marker-end="url(#a)"/>
+  <path class="e" d="M656 236 C700 236 710 176 740 176" marker-end="url(#a)"/>
+  <text class="sub" x="824" y="148" text-anchor="middle">규칙의 정의는 여기만</text>
+  <rect class="n q" x="744" y="243" width="160" height="38" rx="3"/>
+  <text class="l q sm" x="824" y="266.7" text-anchor="middle">ai-collaboration.md</text>
+  <path class="e d" d="M824 243 V199" marker-end="url(#a)"/>
+  <text class="sub" x="732" y="268" text-anchor="end">참조 한 줄만 남긴다</text>
 </svg>
