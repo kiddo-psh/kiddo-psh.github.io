@@ -248,11 +248,19 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  */
 :root[data-theme='dark'] .art-plate { background: var(--bg); box-shadow: 0 4px 14px rgb(0 0 0 / .35); }
 
-/* 머리그림. 액자를 가로로 눕히고 도판이 그 안을 거의 채운다 */
-.art-frame.band { height: 176px; padding: var(--space-5); border-radius: var(--radius-lg); }
-.art-frame.band .art-plate { width: 100%; height: 100%; }
+/*
+ * 머리그림. 액자를 가로로 눕힌다. 전에는 안에 흰 도판을 한 겹 더 두었는데, 색판 안에
+ * 흰 판, 그 안에 그림이라 액자 속 액자였다. 지금은 마크(Motif)가 도형을 색판 위에
+ * 바로 놓으므로 도판은 투명하게 두고 액자가 곧 그림의 바탕이 된다.
+ */
+.art-frame.band { height: 176px; padding: 0; border-radius: var(--radius-lg); }
+.art-frame.band .art-plate {
+  width: 100%; height: 100%;
+  background: transparent; border: 0; box-shadow: none; border-radius: 0;
+}
+:root[data-theme='dark'] .art-frame.band .art-plate { background: transparent; box-shadow: none; }
 @media (max-width: 640px) {
-  .art-frame.band { height: 132px; padding: var(--space-3); }
+  .art-frame.band { height: 132px; }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -571,8 +579,25 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 갖게 되어 둘이 따로 논다 — 그림이 960 좌표계를 700px에 그릴 때 안쪽 rx=12는 8.7px이
  * 되는데 바깥 border-radius는 12px 그대로라 모서리가 어긋난다. 그래서 그림에서는
  * 바탕을 빼고 판을 전부 여기서 준다. 사진과 스크린샷은 불투명하므로 영향이 없다.
+ *
+ * 도해(.dg)는 빌드 때 <img>가 아니라 인라인 <svg>로 들어온다(src/lib/inline-svg.mjs).
+ * 그래서 img 규칙이 아니라 이 규칙을 받고, 글꼴과 테마는 페이지 것을 그대로 쓴다.
  */
-.prose img[src$='.svg'] { background: var(--bg-elev); }
+.prose svg.dg {
+  display: block; width: 100%; height: auto; margin: 0;
+  background: var(--bg-elev);
+  border: 1px solid var(--border); border-radius: var(--radius-xl);
+}
+
+/*
+ * 좁은 화면용 판을 따로 둔 그림은 두 장이 다 심겨 있고 여기서 하나만 보인다.
+ * 경계 700px은 마크다운의 <source media>가 쓰던 값 그대로다.
+ */
+.prose svg.dg[data-only='narrow'] { display: none; }
+@media (max-width: 700px) {
+  .prose svg.dg[data-only='wide'] { display: none; }
+  .prose svg.dg[data-only='narrow'] { display: block; }
+}
 
 /* 설명이 붙는 그림. 여러 장을 한 줄에 늘어놓지 않고 한 장씩 본문 폭으로 세운다 */
 .prose figure { margin: var(--space-8) 0; }
@@ -595,12 +620,13 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
 /*
  * 좁은 화면에서 도해는 통째로 줄어든다. 960 좌표계의 15px 글자는 350px 화면에서
  * 5.5px가 되어 읽을 수 없다. 페이지 전체를 밀지 않으면서 읽히게 하려면 그림만
- * 따로 밀 수 있어야 한다. 좁은 화면용 판을 <picture>로 따로 둔 그림은 img가
- * figure의 직계 자식이 아니라서 여기 걸리지 않는다 — 그쪽은 이미 세로로 세워져 있다.
+ * 따로 밀 수 있어야 한다. 좁은 화면용 판을 따로 둔 그림(data-only)은 이미 세로로
+ * 세워져 있으므로 밀지 않는다.
  */
 @media (max-width: 620px) {
   .prose figure.wide { overflow-x: auto; }
-  .prose figure.wide > img { min-width: 600px; }
+  .prose figure.wide > img,
+  .prose figure.wide > svg.dg:not([data-only]) { min-width: 600px; }
 }
 
 /* 표·코드블록이 좁은 화면에서 페이지를 밀지 않게 */

@@ -7,9 +7,16 @@
  * 그래서 사람이 그리지 않아도 되는 그림을 둔다 — 글의 id에서 결정론적으로 뽑으므로
  * 새 글을 써도 자산을 만들 일이 없고, 같은 글은 어느 페이지에서나 같은 마크를 갖는다.
  *
- * 무엇을 그릴지는 이 블로그가 쓰는 것에서 가져왔다. 파이프라인·게이트·라우팅을
- * 쓰는 글이라 격자를 가로지르는 경로를 그리고, 그 위 한 점에서 가지를 하나 띄운다.
- * 채워진 점이 판정 지점이고 가지 끝이 걸러진 쪽이다 — 장식이 아니라 글 내용의 축약이다.
+ * 무엇을 그리는가. 처음에는 격자를 가로지르는 파이프라인 선(점 · 게이트 · 가지)을
+ * 그렸다. 글 내용의 축약이라는 뜻은 좋았지만 굵은 검은 선이 흰 카드 위에 놓이니
+ * 회로도나 노선도로 읽혔고, 색판 안에 흰 카드, 그 안에 선이라 액자 속 액자가 됐다.
+ * 지금은 참고한 Anthropic 도판처럼 단순한 기하 도형 몇 개를 색판 위에 바로 놓는다 —
+ * 원 · 반원 · 사분원 · 막대 · 고리를 두세 색으로 겹친다. 뜻을 담지 않는 대신 어느
+ * 글 옆에 놓여도 그림으로 읽힌다.
+ *
+ * 색은 넷뿐이다. s1 종이(제일 큰 도형), s2 판보다 한 단계 진한 같은 색,
+ * s3 사이트 강조색, s0 먹(작은 점 · 고리). 판이 아니라 흰 면 위에 놓일 때(plain)는
+ * 종이가 보이지 않으므로 s1이 판 색을 대신 맡는다.
  */
 interface Props {
   /** 마크를 뽑을 씨앗. 글·프로젝트의 id를 그대로 넘긴다 */
@@ -19,13 +26,13 @@ interface Props {
   /** 타일 색. 안 주면 씨앗에서 뽑는다 */
   tone?: 'a' | 'b' | 'c' | 'd';
   /**
-   * 가로로 긴 머리그림. 글 상세 위에 깔린다.
-   * 정사각 타일은 목록에서 글을 가리키는 표식이고, 이쪽은 본문 폭을 채우는 그림이라
-   * 칸 수를 늘리고 게이트를 둘 둔다 — 같은 규칙을 그대로 늘리면 선 하나가 밋밋하게 지나간다.
+   * 가로로 긴 머리그림. 글 상세 위에 깔린다. 정사각 타일 한 장이 아니라 도형 묶음
+   * 셋을 늘어놓고 양 끝에 큰 도형을 걸쳐 잘리게 둔다 — 화면 폭에 따라 좌우가
+   * 잘리는 그림(slice)이라, 잘려도 되는 것이 잘리게 배치한다.
    */
   banner?: boolean;
   /**
-   * 타일 배경 없이 선만 그린다. 이미 색이 깔린 면(프로젝트 카드의 썸네일 칸) 위에
+   * 타일 배경 없이 도형만 그린다. 이미 색이 깔린 면(프로젝트 카드의 썸네일 칸) 위에
    * 올릴 때 쓴다 — 거기에 타일까지 그리면 색면 위에 색면이 겹쳐 액자 속 액자가 된다.
    */
   plain?: boolean;
@@ -46,81 +53,120 @@ function hash(s: string): number {
 /* 해시 하나로 여러 선택을 해야 하므로 선형 합동 생성기로 늘려 쓴다 */
 let state = hash(seed);
 const next = () => (state = (Math.imul(state, 1664525) + 1013904223) >>> 0);
+const pick = (n: number) => next() % n;
+/* -j..+j 사이 정수. 같은 틀에서 뽑힌 마크가 서로 조금씩 다르게 앉는다 */
+const jitter = (j: number) => pick(2 * j + 1) - j;
 
 const TONES = ['a', 'b', 'c', 'd'] as const;
-const pickedTone = tone ?? TONES[next() % 4];
+const pickedTone = tone ?? TONES[pick(4)];
 
 /*
- * 4×4 격자를 왼쪽에서 오른쪽으로 가로지르는 경로.
- *
- * 처음에는 5칸에 ±1 흔들림이었는데, 그러면 대부분 거의 평평한 경로가 나와서
- * 마크 네 개를 나란히 놓으면 전부 "점이 꿰인 줄"로 똑같이 보였다. 칸을 줄이고
- * 흔들림을 ±2까지 늘렸는데도 이번엔 대부분 한 방향 계단이 나왔다 — 진폭만 보면
- * 계단도 통과하기 때문이다. 그래서 조건을 둘로 둔다: 위아래로 2칸 이상 움직이고,
- * 중간에 방향이 한 번은 뒤집힐 것. 둘을 다 걸면 남는 모양이 확 갈린다.
+ * 도형 어휘. 좌표는 한 칸(100×100) 기준이고, 바닥선 B 위에 앉는 것과 떠 있는 것이
+ * 있다. arch의 rot은 시계 방향 90° 단위로 0이 평평한 면이 아래.
  */
-const N = banner ? 9 : 4;
-const ROWS = 4;
-const varied = (rs: number[]) => {
-  if (Math.max(...rs) - Math.min(...rs) < 2) return false;
-  const dirs = rs.slice(1).map((r, i) => Math.sign(r - rs[i])).filter(Boolean);
-  return dirs.some((d, i) => i > 0 && d !== dirs[i - 1]);
-};
-let rows: number[] = [];
-for (let tries = 0; tries < 24; tries++) {
-  let r = next() % ROWS;
-  rows = [r];
-  for (let c = 1; c < N; c++) {
-    const d = (next() % 5) - 2;
-    r = Math.min(ROWS - 1, Math.max(0, r + d));
-    rows.push(r);
-  }
-  if (varied(rows)) break;
+type Color = 's0' | 's1' | 's2' | 's3';
+type Shape =
+  | { k: 'disc'; x: number; y: number; r: number; c: Color }
+  | { k: 'ring'; x: number; y: number; r: number; c: Color }
+  | { k: 'arch'; x: number; y: number; r: number; rot: number; c: Color }
+  /* dir 1이면 직각이 왼쏙 아래에 있고 오른쪽으로 부풀고, -1이면 그 거울상 */
+  | { k: 'quarter'; x: number; y: number; r: number; dir: 1 | -1; c: Color }
+  | { k: 'pill'; x: number; y: number; w: number; h: number; c: Color };
+
+const B = 84;
+
+/*
+ * 여섯 틀. 큰 도형 하나(s1)에 중간 도형 하나, 먹으로 찍은 작은 점이나 고리 하나 —
+ * 셋을 넘기지 않는다. 넷부터는 마크가 아니라 그림이 되어 제목과 자리를 다툰다.
+ * 중간 도형의 색(s2/s3)은 씨앗이 고른다.
+ */
+type Template = (m: Color) => Shape[];
+const TEMPLATES: Template[] = [
+  /* 언덕 위의 해 */
+  (m) => [
+    { k: 'arch', x: 50, y: B, r: 32, rot: 0, c: 's1' },
+    { k: 'disc', x: 66 + jitter(4), y: B - 40 - jitter(3), r: 12, c: m },
+    { k: 'disc', x: 36 + jitter(3), y: B - 10, r: 4, c: 's0' },
+  ],
+  /* 두 원이 겹친 자리 */
+  (m) => [
+    { k: 'disc', x: 42, y: 50 + jitter(4), r: 30, c: 's1' },
+    { k: 'disc', x: 64 + jitter(3), y: 58 + jitter(3), r: 20, c: m },
+    { k: 'ring', x: 28, y: 26 + jitter(3), r: 6, c: 's0' },
+  ],
+  /* 잎 — 사분원 둘을 등지고 맞대 반원을 만든다. 위에 작은 열매 */
+  (m) => [
+    { k: 'quarter', x: 50, y: B, r: 34, dir: 1, c: 's1' },
+    { k: 'quarter', x: 50, y: B, r: 34, dir: -1, c: m },
+    { k: 'disc', x: 50 + jitter(2), y: B - 34 - 10, r: 6, c: 's0' },
+  ],
+  /* 기둥과 원 */
+  (m) => [
+    { k: 'pill', x: 34, y: 16 + jitter(3), w: 32, h: B - 16, c: 's1' },
+    { k: 'disc', x: 62 + jitter(3), y: 32 + jitter(4), r: 14, c: m },
+    { k: 'disc', x: 50, y: B - 12, r: 4, c: 's0' },
+  ],
+  /* 계단 — 막대 셋이 어긋나며 내려온다 */
+  (m) => [
+    { k: 'pill', x: 14, y: 20, w: 46, h: 16, c: 's1' },
+    { k: 'pill', x: 30, y: 42, w: 46, h: 16, c: m },
+    { k: 'pill', x: 46, y: 64, w: 40, h: 16, c: 's1' },
+    { k: 'disc', x: 20, y: 72, r: 4, c: 's0' },
+  ],
+  /* 모서리에 큰 사분원, 그 위에 뜬 달 */
+  (m) => [
+    { k: 'quarter', x: 12, y: 90, r: 68, dir: 1, c: 's1' },
+    { k: 'disc', x: 68 + jitter(3), y: 34 + jitter(3), r: 15, c: m },
+    { k: 'ring', x: 38, y: 60, r: 6, c: 's0' },
+  ],
+];
+
+/* 한 칸을 그린다. 절반은 좌우를 뒤집어 같은 틀도 다른 얼굴로 나오게 한다 */
+function cell(t: number): { shapes: Shape[]; flip: boolean } {
+  const mid: Color = pick(2) ? 's2' : 's3';
+  return { shapes: TEMPLATES[t](mid), flip: pick(2) === 1 };
 }
 
-/*
- * 격자 좌표 → viewBox 좌표.
- * 타일은 100×100 안에서 17~83을 쓰고, 배너는 세로를 그대로 두고 가로만 늘린다 —
- * 칸 간격을 같이 늘리면 선이 길게 늘어져 타일과 다른 그림처럼 보인다.
- */
+const N_T = TEMPLATES.length;
 const VW = banner ? 560 : 100;
 const VH = 100;
-const X = banner ? (c: number) => 30 + c * 62.5 : (c: number) => 17 + c * 22;
-const Y = (r: number) => 17 + r * 22;
 
-/*
- * 직교 경로로 잇는다. 대각선으로 이으면 파이프라인이 아니라 꺾은선 그래프로 읽힌다.
- * 두 점 사이 중간 x에서 세로로 갈아탄다.
- */
-let d = `M ${X(0)} ${Y(rows[0])}`;
-for (let c = 1; c < N; c++) {
-  const mid = (X(c - 1) + X(c)) / 2;
-  d += rows[c - 1] === rows[c]
-    ? ` L ${X(c)} ${Y(rows[c])}`
-    : ` L ${mid} ${Y(rows[c - 1])} L ${mid} ${Y(rows[c])} L ${X(c)} ${Y(rows[c])}`;
-}
-
-/*
- * 판정 지점. 양 끝은 들고 나는 자리라 안쪽에서 고른다.
- * 배너는 둘을 뽑되 서로 두 칸 이상 떨어뜨린다 — 붙어 있으면 한 덩어리로 보인다.
- */
-const gates: number[] = [1 + (next() % (N - 2))];
-if (banner) {
-  for (let t = 0; t < 12; t++) {
-    const g = 1 + (next() % (N - 2));
-    if (Math.abs(g - gates[0]) >= 2) { gates.push(g); break; }
+type Placed = { shapes: Shape[]; flip: boolean; dx: number };
+const cells: Placed[] = [];
+if (!banner) {
+  cells.push({ ...cell(pick(N_T)), dx: 0 });
+} else {
+  /*
+   * 머리그림. 판 높이(176px)에 맞춰 세로를 채우면 가로는 화면 폭에 따라 375~560
+   * 단위만 보인다(xMidYMid slice). 그래서 세 묶음을 항상 보이는 가운데 92~468에
+   * 놓고, 양 끝에는 큰 도형 하나씩을 반쯤 걸쳐 잘리게 둔다. 틀은 셋이 서로 다르다.
+   */
+  const order = [...Array(N_T).keys()];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = pick(i + 1);
+    [order[i], order[j]] = [order[j], order[i]];
   }
+  const xs = [118, 232, 346].map((x) => x + jitter(10));
+  xs.forEach((x, i) => cells.push({ ...cell(order[i]), dx: x }));
 }
 
-/*
- * 걸러지는 가지. 게이트에서 세로로 한 칸 뻗는다. 격자 밖으로 나가지 않는 쪽을
- * 고르고, 양쪽 다 되면 씨앗으로 정한다.
- */
-const stubs = gates.map((g) => {
-  const gr = rows[g];
-  const dir = gr === 0 ? 1 : gr === ROWS - 1 ? -1 : next() % 2 ? 1 : -1;
-  return { g, gr, dir, d: `M ${X(g)} ${Y(gr)} L ${X(g)} ${Y(gr + dir)}` };
-});
+/* 끝에 걸치는 큰 도형. 잘려도 되는 것이라 색은 조용한 s2만 쓴다 */
+const edges: Shape[] = banner
+  ? [
+      { k: 'disc', x: 8 + jitter(6), y: 30 + jitter(10), r: 34, c: 's2' },
+      { k: 'arch', x: 546 + jitter(6), y: B, r: 40, rot: 0, c: 's2' },
+    ]
+  : [];
+
+function d(s: Shape): string {
+  if (s.k === 'arch') return `M${s.x - s.r} ${s.y} A${s.r} ${s.r} 0 0 1 ${s.x + s.r} ${s.y} Z`;
+  if (s.k === 'quarter') {
+    /* 직각 모서리에서 위로 올라가 호를 따라 dir 쪽으로 내려온다. 거울상은 호의 방향(sweep)만 뒤집힌다 */
+    return `M${s.x} ${s.y} V${s.y - s.r} A${s.r} ${s.r} 0 0 ${s.dir === 1 ? 1 : 0} ${s.x + s.dir * s.r} ${s.y} Z`;
+  }
+  return '';
+}
+const rotOf = (s: Shape) => ('rot' in s && s.rot ? `rotate(${s.rot * 90} ${s.x} ${s.y})` : undefined);
 ---
 
 <svg
@@ -129,35 +175,34 @@ const stubs = gates.map((g) => {
   height={banner ? undefined : size}
   viewBox={`0 0 ${VW} ${VH}`}
   {/*
-    * 배너는 slice(= object-fit: cover)로 채운다. 처음에는 none으로 늘렸는데,
-    * 가로만 늘어나니 점이 타원이 되고 세로선이 가로선보다 두 배 굵어졌다.
-    * slice는 비율을 지키며 덮으므로 점은 원으로, 선 굵기는 사방이 같게 남는다.
-    * 좁은 본문에서는 좌우가 조금 잘리는데, 선이 화면 밖으로 이어지는 그림이라 문제없다.
+    * 배너는 slice(= object-fit: cover)로 채운다. 비율을 지키며 덮으므로 원이 타원이
+    * 되지 않고, 좁은 본문에서는 좌우가 잘린다 — 잘려도 되는 도형을 끝에 두었다.
     */}
   preserveAspectRatio={banner ? 'xMidYMid slice' : 'xMidYMid meet'}
   role="presentation"
   aria-hidden="true"
   focusable="false"
 >
-  {!plain && <rect width={VW} height={VH} rx={banner ? 12 : 18} class="tile" />}
-  {stubs.map((s) => <path d={s.d} class="wire branch" />)}
-  <path d={d} class="wire" />
-  {/* 걸러진 쪽 끝. 속을 타일색으로 비워 본선의 채워진 점과 구분한다 */}
-  {stubs.map((s) => <circle cx={X(s.g)} cy={Y(s.gr + s.dir)} r="5" class="node open" />)}
-  {rows.map((r, c) => (
-    <circle cx={X(c)} cy={Y(r)} r={gates.includes(c) ? 8 : 5} class:list={['node', { gate: gates.includes(c) }]} />
+  {!plain && <rect width={VW} height={VH} rx={banner ? 0 : 18} class="tile" />}
+  {edges.map((s) => (
+    s.k === 'disc' ? <circle cx={s.x} cy={s.y} r={s.r} class={s.c} /> : <path d={d(s)} class={s.c} />
+  ))}
+  {cells.map((c) => (
+    <g transform={`translate(${c.dx} 0)${c.flip ? ' translate(100 0) scale(-1 1)' : ''}`}>
+      {c.shapes.map((s) =>
+        s.k === 'disc' ? <circle cx={s.x} cy={s.y} r={s.r} class={s.c} />
+        : s.k === 'ring' ? <circle cx={s.x} cy={s.y} r={s.r} class:list={[s.c, 'ring']} />
+        : s.k === 'pill' ? <rect x={s.x} y={s.y} width={s.w} height={s.h} rx={Math.min(s.w, s.h) / 2} class={s.c} />
+        : <path d={d(s)} transform={rotOf(s)} class={s.c} />
+      )}
+    </g>
   ))}
 </svg>
 
 <style>
   .mk { display: block; flex: 0 0 auto; }
-  /*
-   * 배너는 본문 폭을 채운다. preserveAspectRatio="none"이라 가로로 늘어나는데,
-   * 선이 직교라 늘어나도 각이 무너지지 않는다(대각선이었다면 못 쓴다).
-   * 높이를 고정해야 화면 폭에 따라 그림이 세로로도 커지지 않는다.
-   */
-  .banner { width: 100%; height: 132px; }
-  @media (max-width: 640px) { .banner { height: 104px; } }
+  /* 머리그림은 액자(.art-frame.band)를 그대로 채운다. 높이는 액자가 정한다 */
+  .banner { width: 100%; height: 100%; }
   .tile { fill: var(--mk); }
   .t-a { --mk: var(--mk-a); }
   .t-b { --mk: var(--mk-b); }
@@ -165,20 +210,24 @@ const stubs = gates.map((g) => {
   .t-d { --mk: var(--mk-d); }
 
   /*
-   * 선 굵기를 viewBox 기준으로 두면 타일이 작아질 때 같이 얇아진다. 44px 타일에서
-   * 6/100 → 2.6px이라 종이색 위에서 획이 끊기지 않는다.
+   * 네 색. s2는 판 색에 먹을 조금 섞은 것이라 라이트에서는 판보다 진하고 다크에서는
+   * 판보다 밝다 — 어느 쪽이든 판 위에서 한 단계 떠 보인다. 종이(s1)는 다크에서
+   * 판보다 어두워져 구멍처럼 보이므로, 그때는 판 색을 크게 밝힌 값으로 바꾼다.
    */
-  .wire { fill: none; stroke: var(--text); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
-  /* 걸러지는 가지는 본선보다 가늘게 — 같은 굵기면 어느 쪽이 본선인지 알 수 없다 */
-  .branch { stroke-width: 4; opacity: .45; }
-
-  /* 본선의 점은 속을 채운다. 선과 같은 색이라 점과 선이 한 덩어리로 읽힌다 */
-  .node { fill: var(--text); }
-  .open { fill: var(--mk); stroke: var(--text); stroke-width: 4; opacity: .45; }
+  .mk {
+    --s1: var(--bg-elev);
+    --s2: color-mix(in oklab, var(--mk) 62%, var(--text));
+  }
+  :root[data-theme='dark'] .mk { --s1: color-mix(in oklab, var(--mk) 35%, var(--text)); }
+  /* 흰 면 위(plain)에서는 종이가 안 보이므로 제일 큰 도형이 판 색을 맡는다 */
+  .plain { --s1: var(--mk); }
+  .s0 { fill: var(--text); }
+  .s1 { fill: var(--s1); }
+  .s2 { fill: var(--s2); }
+  .s3 { fill: var(--accent); }
   /*
-   * 타일을 안 그리는 경우 열린 점의 속도 채울 배경이 없다. 부모 면의 색을 모르므로
-   * 칠하지 않고 비워 두면 뒤가 비쳐서 그대로 맞는다.
+   * 고리 굵기를 viewBox 기준으로 두면 타일이 작아질 때 같이 얇아진다. 44px 타일에서
+   * 4/100 → 1.8px이라 판 위에서 획이 끊기지 않는다.
    */
-  .plain .open { fill: none; }
-  .gate { fill: var(--accent); }
+  .ring { fill: none; stroke: var(--text); stroke-width: 4; }
 </style>
