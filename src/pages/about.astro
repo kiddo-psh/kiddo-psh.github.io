@@ -3,33 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
 import * as si from 'simple-icons';
 
-const projects = [
-  {
-    name: '주차바로',
-    href: '/projects/baro',
-    period: '2026.07 ~ 2026.08 · 7인 · 6주',
-    role: 'AI 파트(차량 추적·주차 판정 파이프라인), 스크럼 마스터',
-    desc: '천장 카메라와 엣지 AI로 이중주차·전용구역 무단 점유를 감지하고, 개인정보 노출 없이 이동 요청부터 재확인까지 중계하는 서비스.',
-    stack: 'Jetson Orin Nano · YOLOv8 · ByteTrack · TensorRT · FastAPI',
-  },
-  {
-    name: 'yumyum (냠냠코치)',
-    href: '/projects/yumyum',
-    period: '2026.05 ~ 2026.06 · 2인 · 4주',
-    role: '2인 팀에서 백엔드·AI·프론트 전반 — 운동 루틴·프로그램, 주간 코칭, AI 상담(RAG)',
-    desc: '식단·운동 기록 기반 AI 영양 상담과 주간 코칭 서비스. 고정 DAG로 모든 Agent를 돌리던 구조를, 질문과 기록 상태에 따라 필요한 Agent만 고르는 동적 라우팅으로 바꿨습니다.',
-    stack: 'Spring Boot · FastAPI · Vue 3 · Claude API · ChromaDB',
-  },
-  {
-    name: 'feelm',
-    href: '/projects/feelm',
-    period: '2026.08 ~ 진행 중 · 7인',
-    role: '백엔드 계정 도메인·인증 기반',
-    desc: 'MovieLens 32M 평점을 Hadoop/Spark로 처리하는 영화 추천 서비스. 인증은 정상 응답보다 실패·만료·중복·동시 요청을 먼저 명세하고 구현했습니다.',
-    stack: 'Spring Boot · PostgreSQL · Redis · Spark/HDFS',
-  },
-];
-
 const stacks: { group: string; items: { name: string; slug?: string }[] }[] = [
   { group: '언어', items: [
     { name: 'Python', slug: 'python' }, { name: 'Java', slug: 'openjdk' },
@@ -134,23 +107,6 @@ const certs = [
       </p>
     </div>
 
-    <h2>프로젝트</h2>
-    <ul class="pj">
-      {projects.map((p) => (
-        <li>
-          <div class="pj-hd">
-            <span class="pj-nm">
-              {p.href ? <a href={p.href}>{p.name}</a> : p.name}
-            </span>
-            <span class="pj-pd">{p.period}</span>
-          </div>
-          <p class="pj-role">{p.role}</p>
-          <p class="pj-desc">{p.desc}</p>
-          <p class="pj-stack">{p.stack}</p>
-        </li>
-      ))}
-    </ul>
-
     <h2>기술 스택</h2>
     <dl class="stack">
       {stacks.map((s) => (
@@ -223,15 +179,6 @@ const certs = [
   /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
   h2 { font-size: var(--fs-600); margin: var(--space-10) 0 var(--space-3); line-height: var(--lh-snug); }
 
-  .pj { list-style: none; margin: 0; padding: 0; }
-  .pj > li { padding: var(--space-4) 0; border-top: 1px solid var(--border); }
-  .pj > li:last-child { border-bottom: 1px solid var(--border); }
-  .pj-hd { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
-  .pj-nm { font-weight: 800; font-size: var(--fs-500); }
-  .pj-pd { font-size: var(--fs-300); color: var(--text-dim); margin-left: auto; }
-  .pj-role { margin: var(--space-1) 0 0; font-size: var(--fs-300); color: var(--accent); }
-  .pj-desc { margin: var(--space-2) 0 0; font-size: var(--fs-400); line-height: var(--lh-normal); }
-  .pj-stack { margin: var(--space-2) 0 0; font-size: var(--fs-300); color: var(--text-dim); }
 
   .stack { margin: 0; display: grid; gap: var(--space-3); }
   .stack > div { display: flex; gap: var(--space-4); font-size: var(--fs-400); align-items: baseline; }
@@ -255,7 +202,6 @@ const certs = [
   .links li { padding: var(--space-1) 0; }
 
   @media (max-width: 560px) {
-    .pj-pd { margin-left: 0; }
     .stack div { flex-direction: column; gap: var(--space-05); }
     dt, dt.wide { flex: none; }
   }
