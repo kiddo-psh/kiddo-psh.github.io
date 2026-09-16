@@ -2,20 +2,20 @@
   <title id="t">7월 30일 타임라인과 코드 양 비교</title>
   <desc id="d">위: 팀원 A가 10시 37분에 235줄 기능을 커밋하고 점심 무렵까지 자체 리뷰 반영 3건을 했다. 나는 14시 43분부터 15시 20분까지 37분 동안 내 작업을 했고, 16시 6분부터 21시 37분까지 5시간 31분 동안 A의 브랜치를 재작업했다. 아래: A의 기능 커밋 235줄과 내 재작업 1,402줄을 막대로 비교했다. 재작업이 원본의 약 6배다.</desc>
   <style>
-    :root { --bg:#fcfcfb; --bg2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --line:#c9c8c2; --blue:#2a78d6; --blue-soft:#e3eefb; --warm:#e06b2e; }
+    :root { --bg:#fbfaf7; --bg2:#f4f1ea; --ink:#23211d; --ink2:#57534a; --line:#cec8bb; --accent:#1d6b4f; --accent-soft:#e6efe9; --warm:#b2541c; }
     @media (prefers-color-scheme: dark) {
-      :root { --bg:#1a1a19; --bg2:#262625; --ink:#ffffff; --ink2:#c3c2b7; --line:#4a4a47; --blue:#3987e5; --blue-soft:#1f3350; --warm:#f08a52; }
+      :root { --bg:#191817; --bg2:#211f1c; --ink:#edeae3; --ink2:#a8a199; --line:#3f3b35; --accent:#4fbe8f; --accent-soft:#1d2a24; --warm:#d98b52; }
     }
     text { font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; fill: var(--ink); }
     .bg { fill: var(--bg); }
     .card { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .card.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .card.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
     .pill { fill: var(--bg2); stroke: var(--line); stroke-width: 1.5; }
-    .pill.hi { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+    .pill.hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
     .name { font-size: 16px; font-weight: 700; }
     .sub { font-size: 13px; fill: var(--ink2); }
     .col { font-size: 12.5px; font-weight: 600; fill: var(--ink2); letter-spacing: .04em; }
-    .tag { font-size: 12.5px; font-weight: 700; fill: var(--blue); }
+    .tag { font-size: 12.5px; font-weight: 700; fill: var(--accent); }
     .step { font-size: 15px; font-weight: 500; }
     .step.hi { font-weight: 700; }
     .who { font-size: 16px; font-weight: 700; }
@@ -23,7 +23,7 @@
     .flow { fill: none; stroke: var(--ink2); stroke-width: 1.6; }
     .arrow { fill: var(--ink2); }
     .lg { font-size: 13px; fill: var(--ink2); }
-    .lgbox { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.5; }
+    .lgbox { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
     .tile { fill: var(--bg2); stroke: var(--line); stroke-width: 1; }
     .big { font-size: 24px; font-weight: 700; }
     .lbl { font-size: 13px; fill: var(--ink2); }
@@ -31,7 +31,7 @@
     .axis { stroke: var(--line); stroke-width: 1.5; }
     .tick { font-size: 13px; fill: var(--ink2); }
     .dot { fill: var(--ink2); }
-    .mine { fill: var(--blue); }
+    .mine { fill: var(--accent); }
     .rework { fill: var(--warm); }
     .barlbl { font-size: 14px; font-weight: 700; }
     .num { font-size: 20px; font-weight: 700; }

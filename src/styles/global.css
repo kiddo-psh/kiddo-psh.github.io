@@ -549,6 +549,21 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
 
 .prose img { border: 1px solid var(--border); border-radius: var(--radius-lg); margin: var(--space-8) 0; }
 
+/*
+ * 다크모드에서 사진·스크린샷을 한 단계 죽인다.
+ *
+ * 본문 도해는 SVG라 테마를 따라 스스로 뒤집히지만, 스크린샷과 도구에서 내보낸
+ * 그림(architecture.png, meeting-log.png)은 바탕이 흰색으로 박혀 있다. 어두운 페이지
+ * 위에서 그 흰 판이 본문 글자보다 밝아져, 페이지에서 제일 먼저 눈에 들어오는 것이
+ * 읽을 것이 아니라 그림의 여백이 된다.
+ *
+ * 0.88은 흰 바탕을 눈에 덜 띄게 하면서도 어두운 사진(주차장 오버레이 프레임)의
+ * 내용을 뭉개지 않는 선이다. SVG는 이미 제 테마를 갖고 있으므로 건드리지 않는다.
+ */
+:root[data-theme='dark'] .prose img:not([src$='.svg']) {
+  filter: brightness(.88);
+}
+
 /* 설명이 붙는 그림. 여러 장을 한 줄에 늘어놓지 않고 한 장씩 본문 폭으로 세운다 */
 .prose figure { margin: var(--space-8) 0; }
 .prose figure img { display: block; margin: 0; }
