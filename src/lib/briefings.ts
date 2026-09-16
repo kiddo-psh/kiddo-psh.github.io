@@ -18,7 +18,7 @@ export type BriefingTag =
  * 기사는 거의 허락되지 않고, arXiv 논문도 CC-BY 계열이 아니면 안 된다.
  * 반면 짧은 인용은 허용되고, 요약만 있을 때보다 근거를 직접 보여 준다.
  *
- * 그래서 이 필드는 선택이고, 채운 브리핑에서만 상세에 나타난다.
+ * 그래서 모든 브리핑은 이 짧은 인용과 우리말 풀이를 함께 저장한다.
  * 여기 들어가는 문장은 원문에 실제로 있는 문장이어야 한다 — 지어내면
  * 저작권 문제가 아니라 없는 말을 남의 이름으로 싣는 문제가 된다.
  */
@@ -27,8 +27,8 @@ export interface BriefingQuote {
   text: string;
   /** 우리말 옮김 */
   ko: string;
-  /** 어디서 가져왔는지 — 초록, 3.2절, 12분 지점처럼 */
-  where?: string;
+  /** 어디서 가져왔는지 — 논문 요약문, 3.2절, 12분 지점처럼 */
+  where: string;
 }
 
 /*
@@ -63,7 +63,7 @@ export interface Briefing {
   tags: BriefingTag[];
   preview: string;
   body: BriefingBody;
-  quote?: BriefingQuote;
+  quote: BriefingQuote;
 }
 
 export const briefingLabels: Record<BriefingType, string> = {
@@ -93,7 +93,7 @@ export const bodyLabels: Record<BriefingType, Record<keyof BriefingBody, string>
   paper: {
     what: '무엇을 주장하나',
     concrete: '보고된 숫자',
-    open: '초록이 답하지 않는 것',
+    open: '논문 요약문이 답하지 않는 것',
   },
   article: {
     what: '무엇이 바뀌나',

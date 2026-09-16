@@ -7,7 +7,7 @@
     "sourceUrl": "https://arxiv.org/abs/2609.16635",
     "publishedAt": "2026-09-15",
     "generatedAt": "2026-09-16",
-    "basis": "초록",
+    "basis": "논문 요약문",
     "tags": [
       "memory-context",
       "agent-design"
@@ -16,12 +16,12 @@
     "body": {
       "what": "검증된 실행 경로를 좌표나 스크립트만이 아니라 작업 의도, 앱 상태의 선행 조건, 입력 매개변수, GUI 증거, 검증 이력과 함께 저장합니다. 재실행할 때 상태가 모호하거나 맞지 않으면 재사용을 중단하고 새 계획으로 돌아갑니다.",
       "concrete": "실제 컴퓨터 사용 작업 실험에서 중앙값 기준 토큰 비용이 90% 이상, 실행 시간이 약 60% 줄었다고 보고합니다.",
-      "open": "무엇과 비교해 나온 90%인지, 실험이 어느 규모인지는 초록에 없습니다. 재사용을 중단하는 판정이 틀렸을 때 무엇을 잃는지도 본문을 봐야 합니다."
+      "open": "무엇과 비교해 나온 90%인지, 실험이 어느 규모인지는 논문 요약문에 없습니다. 재사용을 중단하는 판정이 틀렸을 때 무엇을 잃는지도 본문을 봐야 합니다."
     },
     "quote": {
       "text": "Validated execution experience can become a controllable callable asset for recurrent work rather than only context for another reasoning pass.",
       "ko": "검증된 실행 경험은 반복 작업에서 다시 추론하기 위한 맥락에 머물지 않고, 통제 가능한 호출형 자산이 될 수 있습니다.",
-      "where": "초록"
+      "where": "논문 요약문"
     }
   },
   {

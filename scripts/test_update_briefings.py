@@ -49,6 +49,7 @@ class BriefingSelectionTest(unittest.TestCase):
     def test_structured_summary_response_is_validated(self):
         summary = {"preview": "한눈에 보기",
                    "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
+                   "quote": {"text": "Source text", "ko": "원문", "where": "도입부"},
                    "tags": ["agent-design", "tools-mcp"]}
         response = {"status": "completed", "output": [{"type": "message", "content": [
             {"type": "output_text", "text": json.dumps(summary)}]}]}
@@ -57,6 +58,7 @@ class BriefingSelectionTest(unittest.TestCase):
             payload = json.loads(request.data)
             self.assertFalse(payload["store"])
             self.assertEqual(payload["text"]["format"]["type"], "json_schema")
+            self.assertIn("quote", payload["text"]["format"]["schema"]["required"])
             return io.BytesIO(json.dumps(response).encode())
 
         with patch.object(briefing, "urlopen", fake_urlopen):
@@ -68,6 +70,7 @@ class BriefingSelectionTest(unittest.TestCase):
     def test_structured_summary_rejects_missing_body_slot(self):
         summary = {"preview": "한눈에 보기",
                    "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나"},
+                   "quote": {"text": "Source text", "ko": "원문", "where": "도입부"},
                    "tags": ["agent-design"]}
         response = {"status": "completed", "output": [{"type": "message", "content": [
             {"type": "output_text", "text": json.dumps(summary)}]}]}
@@ -81,6 +84,7 @@ class BriefingSelectionTest(unittest.TestCase):
     def test_structured_summary_rejects_unknown_tag(self):
         summary = {"preview": "한눈에 보기",
                    "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
+                   "quote": {"text": "Source text", "ko": "원문", "where": "도입부"},
                    "tags": ["unknown-topic"]}
         response = {"status": "completed", "output": [{"type": "message", "content": [
             {"type": "output_text", "text": json.dumps(summary)}]}]}
@@ -90,6 +94,35 @@ class BriefingSelectionTest(unittest.TestCase):
                 briefing.summarize({"type": "article", "title": "Agent tools",
                                      "sourceUrl": "https://openai.com/news/example"},
                                     "Source text", "기사 본문", "test-key", "gpt-5-mini")
+
+    def test_structured_summary_rejects_quote_missing_from_source(self):
+        summary = {"preview": "한눈에 보기",
+                   "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
+                   "quote": {"text": "Invented quotation", "ko": "지어낸 인용", "where": "도입부"},
+                   "tags": ["agent-design"]}
+        response = {"status": "completed", "output": [{"type": "message", "content": [
+            {"type": "output_text", "text": json.dumps(summary)}]}]}
+
+        with patch.object(briefing, "urlopen", lambda request, timeout: io.BytesIO(json.dumps(response).encode())):
+            with self.assertRaisesRegex(RuntimeError, "원문에서 찾을 수 없습니다"):
+                briefing.summarize({"type": "article", "title": "Agent tools",
+                                     "sourceUrl": "https://openai.com/news/example"},
+                                    "Source text", "기사 본문", "test-key", "gpt-5-mini")
+
+    def test_structured_summary_rejects_quote_over_25_words(self):
+        source = " ".join(f"word{i}" for i in range(26))
+        summary = {"preview": "한눈에 보기",
+                   "body": {"what": "무엇이 바뀌나", "concrete": "구체 하나", "open": "기사가 말하지 않은 것"},
+                   "quote": {"text": source, "ko": "긴 인용", "where": "도입부"},
+                   "tags": ["agent-design"]}
+        response = {"status": "completed", "output": [{"type": "message", "content": [
+            {"type": "output_text", "text": json.dumps(summary)}]}]}
+
+        with patch.object(briefing, "urlopen", lambda request, timeout: io.BytesIO(json.dumps(response).encode())):
+            with self.assertRaisesRegex(RuntimeError, "25단어"):
+                briefing.summarize({"type": "article", "title": "Agent tools",
+                                     "sourceUrl": "https://openai.com/news/example"},
+                                    source, "기사 본문", "test-key", "gpt-5-mini")
 
     def test_long_interview_keeps_start_middle_and_end(self):
         source = "A" * 40 + "B" * 40 + "C" * 40

@@ -81,15 +81,13 @@ const others = briefings
       {/*
         * 원문 문장 인용. 본문을 통째로 번역해 싣는 것은 2차적저작물이라 저작권자의
         * 허락이 필요하지만, 한두 문장 인용은 허용되고 요약만 있을 때보다 근거를
-        * 직접 보여 준다. 채운 브리핑에서만 나타난다.
+        * 직접 보여 준다. 앞으로 게시되는 모든 브리핑에 이 근거가 함께 붙는다.
         */}
-      {item.quote && (
-        <figure class="quote">
-          <blockquote>{item.quote.text}</blockquote>
-          <p class="quote-ko">{item.quote.ko}</p>
-          <figcaption>{item.source}{item.quote.where ? ` · ${item.quote.where}` : ''}</figcaption>
-        </figure>
-      )}
+      <figure class="quote">
+        <blockquote>{item.quote.text}</blockquote>
+        <p class="quote-ko">{item.quote.ko}</p>
+        <figcaption>{item.source} · {item.quote.where}</figcaption>
+      </figure>
     </section>
 
     <section class="open" aria-label={label.open}>

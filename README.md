@@ -18,7 +18,7 @@ npm run build   # dist/ 에 정적 사이트 생성
 
 초기 자료는 `src/data/briefings.json`에 들어 있다. 자동 갱신을 켜려면 GitHub 저장소의 **Settings → Secrets and variables → Actions**에서 저장소 Secret `OPENAI_API_KEY`를 등록한다. 이 키는 GitHub Actions에서만 사용되며 정적 사이트나 방문자 브라우저로 전달되지 않는다. 필요하면 저장소 Variable `OPENAI_MODEL`로 요약 모델을 지정할 수 있다. 비워두면 `gpt-5-mini`를 사용한다.
 
-배포 워크플로는 매주 월요일 오전 9:17(KST)에 브리핑을 갱신하고, Actions에서 수동 실행해 바로 갱신할 수도 있다. 한 번에 기사·인터뷰·논문을 각 1편까지만 추가하며 최신 18편을 보관한다. 현재 수집처는 OpenAI News, Google DeepMind Blog, Latent Space, Dwarkesh Podcast, arXiv `cs.AI`·`cs.CL`이다. 인터뷰는 공개 대본이 없으면 건너뛴다. 논문 본문을 읽지 못한 경우 초록 기반 요약으로 표시한다. 키가 없으면 자동 갱신은 건너뛰고 기존 브리핑을 배포한다.
+배포 워크플로는 매주 월요일 오전 9:17(KST)에 브리핑을 갱신하고, Actions에서 수동 실행해 바로 갱신할 수도 있다. 한 번에 기사·인터뷰·논문을 각 1편까지만 추가하며 최신 18편을 보관한다. 현재 수집처는 OpenAI News, Google DeepMind Blog, Latent Space, Dwarkesh Podcast, arXiv `cs.AI`·`cs.CL`이다. 인터뷰는 공개 대본이 없으면 건너뛴다. 논문 본문을 읽지 못한 경우 논문 요약문(abstract) 기반으로 표시한다. 모든 새 브리핑에는 원문에서 확인된 25단어 이하의 인용, 한국어 풀이, 인용 위치가 함께 저장된다. 키가 없으면 자동 갱신은 건너뛰고 기존 브리핑을 배포한다.
 
 수집 규칙은 오프라인에서 `python -m unittest scripts/test_update_briefings.py`로 확인할 수 있다. 로컬 갱신은 `OPENAI_API_KEY` 환경 변수를 설정한 뒤 `python scripts/update_briefings.py`로 실행한다. API 요청에는 비용이 발생할 수 있다.
 
