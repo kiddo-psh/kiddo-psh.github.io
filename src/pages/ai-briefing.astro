@@ -16,9 +16,9 @@ const usedTags = Object.keys(briefingTagLabels).filter((tag) => tagCounts[tag] >
 
 <BaseLayout title="AI 브리핑" description="AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문 요약">
   <div class="page briefing-page">
-    <header class="intro">
+    <header>
       <h1 class="page-title">AI 브리핑</h1>
-      <p>AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문을 정리합니다.</p>
+      <p class="page-lead">AI 개발과 에이전트 활용에 관한 기사, 인터뷰, 논문을 정리합니다. 읽고 나서 개발에 연결되는 것만 남깁니다.</p>
     </header>
 
     <div class="content-grid">
@@ -88,12 +88,8 @@ const usedTags = Object.keys(briefingTagLabels).filter((tag) => tagCounts[tag] >
 
 <style>
   .briefing-page { padding-bottom: var(--space-20); }
-  .intro { margin: var(--space-8) 0 0; }
-  /* 제목은 .page-title이 담당한다. 설명이 바로 붙으므로 아래 여백만 줄인다 */
-  .intro h1 { margin: 0 0 var(--space-2); }
-  .intro p { margin: 0; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); }
-
-  .content-grid { padding-top: var(--space-8); }
+  /* 제목과 설명은 .page-title / .page-lead가 담당한다 */
+  .content-grid { padding-top: 0; }
   .feed-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); }
   .feed-head h2 { margin: 0; font-size: var(--fs-600); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
   .feed-head h2 span { margin-left: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); font-weight: 600; letter-spacing: 0; vertical-align: .2em; }

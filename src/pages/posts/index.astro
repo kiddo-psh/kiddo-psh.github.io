@@ -10,6 +10,7 @@ const posts = await getVisiblePosts();
 <BaseLayout title="글" description="기술, AI 개발, 회고, 생각">
   <div class="page">
     <h1 class="page-title">글</h1>
+    <p class="page-lead">기술, AI 개발, 회고, 생각. 무엇을 만들었는지보다 무엇을 어떤 근거로 판단했는지를 씁니다.</p>
     <CategoryTabs active="all" />
     <div id="list" class="post-list">
       {posts.map((post) => (

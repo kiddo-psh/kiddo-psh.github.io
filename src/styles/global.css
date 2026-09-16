@@ -5,10 +5,48 @@
  * 스타일시트 요청이 하나로 끝나고, woff2는 해시 파일명으로 나가 캐시가 영구히 걸린다.
  */
 @import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+/*
+ * 표시용 세리프는 fontsource의 구간 분할본을 그대로 쓰지 않는다.
+ *
+ * 그쪽은 한글을 93개 구간으로 쪼개 두어 본문 폰트에는 좋지만, 세리프는 히어로·제목·
+ * 인용에만 쓰는데도 그 몇십 자가 구간 8개에 흩어져 홈에서만 175KB를 받았고
+ * @font-face 규칙 94개가 렌더를 막는 CSS를 16KB(gzip) 불렸다.
+ *
+ * 그래서 빌드할 때 실제 쓰는 글자만 잘라낸다. 아래 파일은 자동 생성이고
+ * 규칙이 둘(한글·라틴)뿐이다. 무엇을 모으는지는 scripts/subset-serif.mjs 참고.
+ */
+@import './serif.css';
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
 html { color-scheme: light dark; }
+
+/*
+ * 페이지 사이 전환.
+ *
+ * 링크를 누르면 흰 화면이 한 번 깜빡이고 다음 페이지가 툭 나타나는 것이 기본 동작이다.
+ * 글 목록 → 글처럼 같은 사이트 안을 오갈 때 그 깜빡임이 "다른 곳으로 갔다"는 인상을
+ * 만든다. 문서 간 뷰 트랜지션을 켜면 브라우저가 이전·다음 화면을 교차 전환해 준다.
+ *
+ * 자바스크립트가 아니라 CSS 한 줄이고, 지원하지 않는 브라우저는 그냥 예전처럼 동작한다.
+ * 기본 전환은 0.25초 크로스페이드로 짧게 잡았다 — 길면 느린 사이트로 느껴진다.
+ *
+ * 한 번 더 욕심내서 목록의 마크와 상세의 머리그림에 같은 view-transition-name을 주고
+ * 둘을 이어 움직이게 해 봤는데, 개발 환경에서는 pageswap 이벤트의 viewTransition이
+ * 계속 null이라 전환 자체가 발동하지 않아 결과를 눈으로 확인할 수 없었다.
+ * 44px 정사각 타일과 176px 가로 액자처럼 비율이 크게 다른 둘을 잇는 연출은 잘못
+ * 움직이면 화면이 늘어나 보이므로, 확인 못 한 채로 두지 않고 이름은 걷어냈다.
+ * 루트 크로스페이드는 잘못 보일 여지가 없어서 남긴다.
+ */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .25s; }
+
+/*
+ * 헤더는 전환에서 빼서 제자리에 고정한다. 같이 페이드하면 모든 이동에서 로고와 메뉴가
+ * 한 번씩 깜빡여, 페이지가 아니라 브라우저가 바뀐 것처럼 보인다.
+ */
+header { view-transition-name: site-header; }
 :root[data-theme='light'] { color-scheme: light; }
 :root[data-theme='dark'] { color-scheme: dark; }
 
@@ -28,6 +66,14 @@ body {
   font-size: var(--fs-500);
   line-height: var(--lh-relaxed);
   -webkit-font-smoothing: antialiased;
+  /*
+   * 한국어 줄바꿈을 어절 단위로 끊는다. 기본값은 글자 단위라 "만드는 일보/다"처럼
+   * 한 단어 중간에서 줄이 넘어간다 — 영문에서는 절대 허용하지 않을 일이고, 큰
+   * 글씨일수록 눈에 띈다. keep-all만 두면 긴 영문·URL이 컨테이너를 밀어내므로
+   * overflow-wrap으로 그 경우에만 강제로 끊게 한다.
+   */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 main { flex: 1 0 auto; }
 
@@ -48,6 +94,46 @@ a:hover { text-decoration: underline; }
 .chip:focus-visible { border-radius: var(--radius-pill); }
 
 img { max-width: 100%; height: auto; }
+
+/*
+ * 스크롤하면서 항목이 떠오르는 연출.
+ *
+ * 규칙 하나: 자바스크립트가 실제로 켜졌을 때만 숨긴다. .js-reveal은 아래 스크립트가
+ * 스스로 붙이므로, 스크립트가 안 돌면(구형 브라우저, 차단, 오류) 아무것도 숨겨지지
+ * 않고 그냥 보인다. "연출을 넣었더니 글이 안 보이는" 사고를 막는 유일한 방법이다.
+ *
+ * 움직임은 6px과 0.45초로 아주 작게 잡았다. 목록을 훑는 페이지라 크게 움직이면
+ * 읽으려는 줄이 계속 도망간다.
+ */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .45s ease, transform .45s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js-reveal [data-reveal].shown { opacity: 1; transform: none; }
+
+/*
+ * 모션을 줄이라고 설정했으면 연출 자체를 없앤다. --dur만 0으로 만들면 이 전환은
+ * 자기 시간을 갖고 있어서 그대로 움직인다.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal] { opacity: 1; transform: none; transition: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+/*
+ * 표시용 세리프를 붙이는 유일한 자리. 명조는 같은 픽셀 크기에서 고딕보다 작아
+ * 보이고 자간이 벌어져 보이므로, 크기를 키우는 대신 자간을 조이고 굵기를 700으로
+ * 올려 옆에 놓인 고딕과 무게가 맞게 한다.
+ */
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: var(--ls-snug);
+  /* 명조는 괄호·따옴표 주변이 헐거워서 커닝을 켠다 */
+  font-kerning: normal;
+}
 
 .page { max-width: var(--w-page); margin: 0 auto; padding: 0 20px; }
 .page-wide { max-width: var(--w-page-wide); margin: 0 auto; padding: 0 20px; }
@@ -74,11 +160,25 @@ img { max-width: 100%; height: auto; }
  * "AI 브리핑"(24.3px 잉크색)과 "프로젝트"(14.8px 흐린색)가 같은 층위인데
  * 다르게 보였다. 두 역할을 여기서 한 번만 정의하고 각 페이지는 클래스만 붙인다.
  */
+/*
+ * 페이지 제목. 30px 고딕이었는데, 그러면 "글" 페이지의 제목(30px)과 그 아래
+ * 글 제목(26px)이 4px 차이라 어느 쪽이 페이지고 어느 쪽이 항목인지 알 수 없었다.
+ * 40px 명조로 올려 홈의 선언문과 같은 층(표시용 서체)에 둔다 — 어느 페이지에
+ * 들어가도 제일 큰 글자가 "여기가 어디인지"를 먼저 말한다.
+ */
 .page-title {
-  margin: var(--space-8) 0 var(--space-5);
-  font-size: var(--fs-800); line-height: var(--lh-tight);
+  margin: var(--space-14) 0 var(--space-4);
+  font-family: var(--font-serif);
+  font-size: var(--fs-title); line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight); font-weight: 700;
 }
+/* 제목 아래 한 줄 설명. 제목만 있는 페이지와 설명이 있는 페이지의 간격을 맞춘다 */
+.page-lead {
+  margin: 0 0 var(--space-10); max-width: 52ch;
+  font-size: var(--fs-400); line-height: var(--lh-relaxed); color: var(--text-dim);
+}
+/* 설명이 없으면 제목 아래 간격을 .page-lead가 갖던 만큼 제목이 갖는다 */
+.page-title:not(:has(+ .page-lead)) { margin-bottom: var(--space-8); }
 /*
  * 칩. 한때 분류 탭(radius 20px)·브리핑 필터(100px)·기술 스택(999px)·검색 분류가
  * 각자 다른 radius·크기·padding으로 네 벌 있었다. 모양은 여기서만 정한다.
@@ -103,11 +203,56 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
 /* 칩 안의 개수 */
 .chip .count { margin-left: var(--space-1); opacity: .65; font-size: var(--fs-100); }
 
+/*
+ * 섹션 라벨("같은 분류의 다른 글", "최근 글"). 한글이라 자간을 벌리지 않는다 —
+ * --ls-label은 "DEV"·"CURATED READING" 같은 라틴 대문자용이다.
+ */
 .section-label {
   margin: 0 0 var(--space-3);
-  font-size: var(--fs-200); font-weight: 800;
-  letter-spacing: var(--ls-label); line-height: var(--lh-normal);
+  font-size: var(--fs-300); font-weight: 800;
+  letter-spacing: var(--ls-snug); line-height: var(--lh-normal);
   color: var(--text-dim);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   그림 액자.
+
+   색이 깔린 면 위에 도판 한 장을 올리는 틀이다. 프로젝트 카드의 썸네일 칸과
+   글·프로젝트 상세의 머리그림이 같은 것을 쓴다 — 전에는 카드는 도판, 상세는
+   맨 그림이라 같은 사이트 안에서 그림이 두 종류로 보였다.
+
+   틴트(액자 바탕)가 "이 글/프로젝트의 색"이고, 그 위 도판이 그림이다.
+   ───────────────────────────────────────────────────────────── */
+.art-frame {
+  display: grid; place-items: center;
+  background: var(--pj);
+  /* 도판 확대가 액자 밖으로 나가지 않게 자른다 */
+  overflow: hidden;
+}
+.art-frame.t-a { --pj: var(--pj-a); }
+.art-frame.t-b { --pj: var(--pj-b); }
+.art-frame.t-c { --pj: var(--pj-c); }
+.art-frame.t-d { --pj: var(--pj-d); }
+
+.art-plate {
+  display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--bg-elev);
+  /* 그림자는 종이색 위가 아니라 틴트 위에 떨어지므로 아주 옅어도 보인다 */
+  box-shadow: 0 4px 14px rgb(35 33 29 / .10);
+  transition: transform calc(var(--dur) * 2) var(--ease), box-shadow calc(var(--dur) * 2) var(--ease);
+}
+/*
+ * 다크에서는 --bg-elev(#211f1c)가 틴트와 명도가 거의 같아 도판이 배경에 묻힌다.
+ * 라이트에서 도판이 틴트보다 밝듯 다크에서는 더 어두운 쪽으로 간다.
+ */
+:root[data-theme='dark'] .art-plate { background: var(--bg); box-shadow: 0 4px 14px rgb(0 0 0 / .35); }
+
+/* 머리그림. 액자를 가로로 눕히고 도판이 그 안을 거의 채운다 */
+.art-frame.band { height: 176px; padding: var(--space-5); border-radius: var(--radius-lg); }
+.art-frame.band .art-plate { width: 100%; height: 100%; }
+@media (max-width: 640px) {
+  .art-frame.band { height: 132px; padding: var(--space-3); }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -178,16 +323,20 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
 .post-list { margin-top: var(--space-4); border-top: 1px solid var(--border); }
 
 /*
- * 프로젝트는 최대 2열. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
+ * 프로젝트 카드 그리드. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
  * 카드 내용이 제목과 설명뿐이라 전체 폭으로 늘리면 가로로 긴 띠가 된다.
+ *
+ * 최소 폭을 360에서 280으로 내렸다. 360이면 1100 그리드에서 2열이 되는데
+ * 프로젝트가 3개라 마지막 줄에 칸 하나가 빈 채로 남았다 — 카드 세 장 옆의
+ * 빈 사각형은 "아직 안 채운 자리"로 읽힌다. 280이면 3열이 되어 한 줄로 떨어진다.
  */
 .pj-grid {
   display: grid; gap: var(--space-4);
   /*
-   * min()이 없으면 컨테이너가 360보다 좁아도 트랙이 360으로 잡혀 페이지가
-   * 가로로 밀린다(390px 폰에서 10px, 360px 폰에서 40px 넘침).
+   * min()이 없으면 컨테이너가 280보다 좁아도 트랙이 280으로 잡혀 페이지가
+   * 가로로 밀린다.
    */
-  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -197,13 +346,17 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
    ───────────────────────────────────────────────────────────── */
 .prose > :first-child { margin-top: 0; }
 
+/*
+ * scroll-margin-top은 헤더 높이(54px)보다 커야 한다. 헤더를 화면에 고정한 뒤로는
+ * 목차 링크를 눌렀을 때 제목이 정확히 헤더 밑에 숨어서, 어디로 왔는지 보이지 않았다.
+ */
 .prose h2 {
   margin: var(--space-20) 0 var(--space-6); font-size: var(--fs-800); line-height: var(--lh-tight);
-  font-weight: 800; letter-spacing: var(--ls-tight); scroll-margin-top: var(--space-8);
+  font-weight: 800; letter-spacing: var(--ls-tight); scroll-margin-top: calc(54px + var(--space-6));
 }
 .prose h3 {
   margin: var(--space-12) 0 var(--space-3); font-size: var(--fs-600); line-height: var(--lh-snug);
-  font-weight: 700; letter-spacing: var(--ls-snug); scroll-margin-top: var(--space-8);
+  font-weight: 700; letter-spacing: var(--ls-snug); scroll-margin-top: calc(54px + var(--space-6));
 }
 /* h2 바로 뒤에 h3가 오면 사이를 좁힌다 */
 .prose h2 + h3 { margin-top: var(--space-7); }
@@ -226,12 +379,20 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 박스로 감싸지 않고 액센트 세로선 하나와 들여쓰기만 둔다. 본문 흐름에서 떼어내되
  * 카드처럼 튀지 않게, 글자는 본문보다 살짝 크고 줄 간격을 넉넉히 준다.
  */
+/*
+ * 여기에 세리프를 쓴다. 강조 블록은 본문에서 떼어낸 한두 문장이라 길지 않고,
+ * 본문과 다른 목소리로 읽혀야 하는 자리다 — 크기나 색으로 구분하면 "큰 본문"이
+ * 되지만 서체를 바꾸면 인용이 된다. 명조는 같은 크기에서 고딕보다 작아 보이므로
+ * 한 칸 키운다.
+ */
 .prose blockquote {
   margin: var(--space-10) 0; padding: var(--space-05) 0 var(--space-05) var(--space-6);
   border-left: 3px solid var(--accent);
   color: var(--text);
-  font-size: var(--fs-500);
-  line-height: var(--lh-loose);
+  font-family: var(--font-serif);
+  font-size: var(--fs-600);
+  line-height: var(--lh-relaxed);
+  letter-spacing: var(--ls-snug);
 }
 .prose blockquote > :first-child { margin-top: 0; }
 .prose blockquote > :last-child { margin-bottom: 0; }
@@ -317,6 +478,69 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
   display: block; margin-top: var(--space-1);
   font-size: var(--fs-300); line-height: var(--lh-snug); color: var(--text-dim);
 }
+
+/*
+ * 단계 흐름도.
+ *
+ * 전에는 ```text 코드블록 안에 화살표(↓)를 그린 아스키 그림이었다. 코드가 아닌
+ * 것이 코드블록에 들어가 있어 등폭 글꼴에 회색 박스로 렌더됐고, 화면 폭이 좁으면
+ * 가로 스크롤이 생겼으며, 글자 크기를 키우면 화살표 정렬이 무너졌다.
+ *
+ * 마크로 쓴 것과 같은 언어(선 위의 노드)로 그린다. 목록이므로 글자는 그대로
+ * 선택·검색되고 스크린리더도 순서대로 읽는다.
+ */
+.prose .flow {
+  list-style: none; margin: var(--space-8) 0; padding: 0;
+  font-size: var(--fs-400); line-height: var(--lh-snug);
+}
+.prose .flow li {
+  position: relative; margin: 0;
+  padding: 0 0 var(--space-6) var(--space-7);
+}
+.prose .flow li:last-child { padding-bottom: 0; }
+/* 노드 */
+.prose .flow li::before {
+  content: ''; position: absolute; left: 0; top: .5em;
+  width: 9px; height: 9px; border-radius: var(--radius-full);
+  background: var(--bg); border: 2px solid var(--accent);
+}
+/*
+ * 다음 노드로 잇는 선. 마지막 단계에는 없다.
+ * --border(종이색 대비 1.25:1)로 그으면 단계 사이가 끊겨 보인다 — 여기 선은
+ * 장식이 아니라 "이 다음에 저것"이라는 뜻이라, 잉크색을 옅게 써서 확실히 잇는다.
+ */
+.prose .flow li::after {
+  content: ''; position: absolute; left: 6px; top: calc(.5em + 13px); bottom: -1px;
+  width: 1px; background: var(--text); opacity: .22;
+}
+.prose .flow li:last-child::after { content: none; }
+/* 마지막 단계는 도착점이라 속을 채운다 */
+.prose .flow li:last-child::before { background: var(--accent); }
+
+/*
+ * 두 흐름을 나란히 두는 배치. "당시 방식 / 개선하고 싶은 방식"처럼 비교가
+ * 목적인 그림을 세로로 쌓으면 둘을 동시에 볼 수 없어서 비교가 안 된다.
+ */
+.prose .flow-pair {
+  display: grid; gap: var(--space-8) var(--space-10); margin: var(--space-8) 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+.prose .flow-pair .flow { margin: 0; }
+.prose .flow-cap {
+  margin: 0 0 var(--space-4); padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+  /*
+   * 자간을 벌리지 않는다. --ls-label은 "DEV"·"CURATED READING"처럼 대문자
+   * 라틴 라벨을 위한 값이고, 한글에 그대로 쓰면 글자가 흩어져 읽는 속도가 떨어진다.
+   */
+  font-size: var(--fs-300); font-weight: 800; letter-spacing: var(--ls-snug);
+  color: var(--text-dim);
+}
+/*
+ * 비교에서 "이쪽으로 가고 싶다"는 편. 캡션만 액센트로 두고 노드는 그대로 둔다 —
+ * 노드까지 색을 바꾸면 두 그림이 다른 종류의 그림으로 보인다.
+ */
+.prose .flow-pair .pick .flow-cap { color: var(--accent); border-bottom-color: var(--accent); }
 
 .prose hr {
   border: 0; height: 1px; background: var(--border);

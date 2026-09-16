@@ -57,5 +57,52 @@ const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
       <slot />
     </main>
     <Footer />
+
+    <script is:inline>
+      /*
+       * 스크롤 등장 연출과 헤더 스크롤 상태.
+       *
+       * 인라인으로 두는 이유: 이 스크립트가 도는 순간에만 [data-reveal]이 숨겨지므로
+       * (html.js-reveal을 스스로 붙인다) 파일로 빼서 로드가 늦어지면 그 사이에 글이
+       * 보였다가 사라진다. 두 줄짜리라 요청 하나를 아낄 이유도 된다.
+       */
+      (function () {
+        var root = document.documentElement;
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var items = document.querySelectorAll('[data-reveal]');
+
+        if (!reduce && items.length && 'IntersectionObserver' in window) {
+          root.classList.add('js-reveal');
+
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              e.target.classList.add('shown');
+              io.unobserve(e.target);
+            });
+          }, { rootMargin: '0px 0px -8% 0px' });
+
+          items.forEach(function (el) {
+            /*
+             * 같은 묶음 안에서 차례로 뜨게 한다. 한 줄에 셋씩 놓인 카드가 동시에 뜨면
+             * 블록 하나가 통째로 나타나는 것으로 보여 움직임이 뚝뚝 끊긴다.
+             * 넷째부터는 지연을 더 늘리지 않는다 — 아래쪽 항목이 눈에 띄게 늦어진다.
+             */
+            var i = 0, p = el.previousElementSibling;
+            while (p && i < 3) { if (p.hasAttribute('data-reveal')) i++; p = p.previousElementSibling; }
+            el.style.setProperty('--reveal-delay', i * 60 + 'ms');
+            io.observe(el);
+          });
+        }
+
+        /*
+         * 내용이 헤더 밑으로 지나가기 시작하면 헤더에 그림자를 준다. 헤더가 종이색
+         * 한 겹이라 경계선만으로는 스크롤 중에 본문과 붙어 보인다.
+         */
+        var onScroll = function () { root.classList.toggle('scrolled', scrollY > 8); };
+        addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
+    </script>
   </body>
 </html>

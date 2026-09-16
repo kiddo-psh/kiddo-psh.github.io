@@ -5,6 +5,8 @@ import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import BackLink from '../components/BackLink.astro';
+import Motif from '../components/Motif.astro';
+import { projectTone } from '../lib/motif';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import { getVisiblePosts, readingMinutes } from '../lib/posts';
 import { getCategory } from '../site.config';
@@ -33,6 +35,16 @@ const related = (d.relatedPosts ?? [])
     <div class:list={['shell', 'doc', { toc: showToc }]}>
       <article data-pagefind-body>
         <BackLink href="/projects" label="프로젝트" />
+        {/*
+          목록 카드에 있던 마크를 상세에도 둔다. 카드에서 마크를 보고 들어왔는데
+          상세에 없으면 같은 프로젝트라는 신호가 문턱에서 끊긴다.
+          글 상세와 같은 머리그림을 쓴다 — 상세 페이지는 둘 다 같은 자리에 같은 모양이어야 한다.
+          틴트는 카드와 같은 규칙(order)으로 정한다.
+        */}
+        <span
+          class:list={['art-frame', 'band', `t-${projectTone(d.order)}`, 'mk']}>
+          <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>
+        </span>
         <h1 class="page-title">{d.title}</h1>
 
         <dl class="facts">
@@ -65,6 +77,10 @@ const related = (d.relatedPosts ?? [])
 </BaseLayout>
 
 <style>
+  /* 제목 위 머리그림. .page-title의 위 여백을 그림이 대신 갖는다 */
+  .mk { margin: var(--space-6) 0 var(--space-7); }
+  .mk + .page-title { margin-top: 0; }
+
   /* 제목 위 여백은 BackLink가 만든다 */
   .page-title { margin-top: 0; }
 
