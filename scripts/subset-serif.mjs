@@ -104,7 +104,17 @@ async function collectChars() {
 
   try {
     const briefings = JSON.parse((await readFile(SRC(COLLECT.briefings), 'utf8')).replace(/^﻿/, ''));
-    for (const b of briefings) parts.push(b.title ?? '');
+    for (const b of briefings) {
+      parts.push(b.title ?? '');
+      /*
+       * 원문 인용은 상세에서 <blockquote>로 나온다. 세리프가 걸리는 자리는
+       * .prose 안의 인용뿐이라 여기는 고딕으로 그려지지만, 아래 검증기는
+       * HTML만 보고 <blockquote>를 전부 세리프로 친다. 영어 인용이면 라틴이
+       * ALWAYS에 이미 있어 문제가 없지만, 한국어 자료를 인용하는 날
+       * 빌드가 서는 것을 막으려고 글자를 미리 걷어 둔다.
+       */
+      if (b.quote) parts.push(b.quote.text ?? '', b.quote.ko ?? '');
+    }
   } catch {
     /* 브리핑 데이터가 없을 수도 있다 — 없으면 건너뛴다 */
   }

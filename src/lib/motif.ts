@@ -20,3 +20,10 @@ const BY_CATEGORY: Record<string, Tone> = { dev: 'a', ai: 'b', retro: 'c', essay
 export function postTone(category: string): Tone {
   return BY_CATEGORY[category] ?? 'a';
 }
+
+/* 브리핑: 자료 형식마다 고정색. 목록 머리그림과 상세가 같은 색을 갖는다 */
+const BY_BRIEFING_TYPE: Record<string, Tone> = { article: 'b', interview: 'c', paper: 'd' };
+
+export function briefingTone(type: string): Tone {
+  return BY_BRIEFING_TYPE[type] ?? 'a';
+}
