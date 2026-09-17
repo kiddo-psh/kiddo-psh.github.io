@@ -27,7 +27,7 @@ const tone = projectTone(d.order);
   */}
   <span class:list={['art-frame', 'thumb', `t-${tone}`]}>
     <span class="art-plate">
-      <Motif seed={project.id} tone={tone} size={84} plain />
+      <Motif seed={project.id} tone={tone} size={76} plain />
     </span>
   </span>
   <span class="body">
@@ -49,7 +49,7 @@ const tone = projectTone(d.order);
   .card:hover { border-color: var(--accent); text-decoration: none; }
 
   /* 액자 높이만 여기서 정한다 — 나머지 모양은 global.css의 .art-frame/.art-plate */
-  .thumb { height: 148px; }
+  .thumb { height: 133px; }
   .thumb .art-plate { padding: var(--space-2) var(--space-6); }
 
   /*

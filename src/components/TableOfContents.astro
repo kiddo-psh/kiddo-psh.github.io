@@ -21,8 +21,8 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 <style>
   /* 상단 내비게이션이 고정되어 있지 않으므로 sticky 여백은 작게 둔다 */
-  /* 고정 헤더(54px) 밑에서 멈춰야 한다 — 32px로 두면 목차 윗줄이 헤더에 가린다 */
-  .toc { position: sticky; top: calc(54px + var(--space-6)); font-size: var(--fs-200); line-height: var(--lh-snug); }
+  /* 고정 헤더 밑에서 멈춰야 한다 — 헤더 높이 토큰에 여백을 더한다 */
+  .toc { position: sticky; top: calc(var(--nav-h) + var(--space-6)); font-size: var(--fs-200); line-height: var(--lh-snug); }
   /* "목차"는 한글이라 --ls-label(대문자 라틴용)을 쓰지 않는다 — 벌리면 흩어져 보인다 */
   .ttl { margin: 0 0 var(--space-2); font-weight: 800; font-size: var(--fs-200); color: var(--text-dim); letter-spacing: var(--ls-snug); }
   ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }

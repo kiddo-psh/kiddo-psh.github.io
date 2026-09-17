@@ -19,7 +19,8 @@
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
-html { color-scheme: light dark; }
+/* 사용자가 브라우저 줌 90%에서 고른 밀도를 사이트 기본값으로 삼는다. */
+html { color-scheme: light dark; font-size: 90%; }
 
 /*
  * 페이지 사이 전환.
@@ -34,7 +35,7 @@ html { color-scheme: light dark; }
  * 한 번 더 욕심내서 목록의 마크와 상세의 머리그림에 같은 view-transition-name을 주고
  * 둘을 이어 움직이게 해 봤는데, 개발 환경에서는 pageswap 이벤트의 viewTransition이
  * 계속 null이라 전환 자체가 발동하지 않아 결과를 눈으로 확인할 수 없었다.
- * 44px 정사각 타일과 176px 가로 액자처럼 비율이 크게 다른 둘을 잇는 연출은 잘못
+ * 40px 정사각 타일과 158px 가로 액자처럼 비율이 크게 다른 둘을 잇는 연출은 잘못
  * 움직이면 화면이 늘어나 보이므로, 확인 못 한 채로 두지 않고 이름은 걷어냈다.
  * 루트 크로스페이드는 잘못 보일 여지가 없어서 남긴다.
  */
@@ -135,8 +136,8 @@ img { max-width: 100%; height: auto; }
   font-kerning: normal;
 }
 
-.page { max-width: var(--w-page); margin: 0 auto; padding: 0 20px; }
-.page-wide { max-width: var(--w-page-wide); margin: 0 auto; padding: 0 20px; }
+.page { max-width: var(--w-page); margin: 0 auto; padding: 0 18px; }
+.page-wide { max-width: var(--w-page-wide); margin: 0 auto; padding: 0 18px; }
 .w-doc  { max-width: var(--w-doc); }
 .w-read { max-width: var(--w-read); }
 
@@ -253,14 +254,14 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 흰 판, 그 안에 그림이라 액자 속 액자였다. 지금은 마크(Motif)가 도형을 색판 위에
  * 바로 놓으므로 도판은 투명하게 두고 액자가 곧 그림의 바탕이 된다.
  */
-.art-frame.band { height: 176px; padding: 0; border-radius: var(--radius-lg); }
+.art-frame.band { height: 158px; padding: 0; border-radius: var(--radius-lg); }
 .art-frame.band .art-plate {
   width: 100%; height: 100%;
   background: transparent; border: 0; box-shadow: none; border-radius: 0;
 }
 :root[data-theme='dark'] .art-frame.band .art-plate { background: transparent; box-shadow: none; }
 @media (max-width: 640px) {
-  .art-frame.band { height: 132px; }
+  .art-frame.band { height: 119px; }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -278,8 +279,8 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 목차가 없는 글은 본문이 가운데 있으므로 좌우 여백의 전부까지 나갈 수 있다.
  */
 .shell.doc {
-  --toc-w: 150px;
-  --bleed: clamp(48px, calc((100vw - 40px - var(--w-doc)) / 2), 180px);
+  --toc-w: 135px;
+  --bleed: clamp(43px, calc((100vw - 36px - var(--w-doc)) / 2), 162px);
   grid-template-columns: minmax(0, var(--w-doc));
   justify-content: center;
 }
@@ -288,23 +289,23 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 사라지고 오른쪽만 비어서 레퍼런스와 반대가 된다.
  *
  * 본문과 목차 사이 간격은 --bleed + 24px다(24px는 빠져나온 그림과 목차 사이의 숨 쉴 공간).
- * 그러면 좌우 여백 = (100vw - 40 - 본문 - bleed - 24 - 목차) / 2 이고, 이 값이 bleed 이상이어야
- * 왼쪽으로 빠져나온 그림이 화면을 넘지 않는다. 그 조건을 풀면 bleed ≤ (100vw - 64 - 본문 - 목차) / 3.
+ * 그러면 좌우 여백 = (100vw - 36 - 본문 - bleed - 22 - 목차) / 2 이고, 이 값이 bleed 이상이어야
+ * 왼쪽으로 빠져나온 그림이 화면을 넘지 않는다. 그 조건을 풀면 bleed ≤ (100vw - 58 - 본문 - 목차) / 3.
  * 창이 넓어질수록 간격·여백·그림이 함께 커지고 목차는 그만큼 오른쪽으로 밀린다.
  * 좁아지면 간격이 먼저 줄고, 1120px에서 목차를 접는다.
  */
 .shell.doc.toc {
-  --bleed: clamp(48px, calc((100vw - 64px - var(--w-doc) - var(--toc-w)) / 3), 180px);
+  --bleed: clamp(43px, calc((100vw - 58px - var(--w-doc) - var(--toc-w)) / 3), 162px);
   grid-template-columns: minmax(0, var(--w-doc)) var(--toc-w);
-  column-gap: calc(var(--bleed) + 24px);
+  column-gap: calc(var(--bleed) + 22px);
   justify-content: center;
 }
 /*
- * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 150px씩 나간다.
- * 660 + 300 = 960이라 넓은 화면에서는 다이어그램 원본 크기로 보이고, 700px 아래에서는 0이 된다.
+ * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 135px씩 나간다.
+ * 594 + 270 = 864라 넓은 화면에서는 다이어그램을 충분히 크게 보이고, 좁은 화면에서는 확장을 접는다.
  */
 .shell.read {
-  --bleed: clamp(0px, calc((100vw - 40px - var(--w-read)) / 2), 150px);
+  --bleed: clamp(0px, calc((100vw - 36px - var(--w-read)) / 2), 135px);
   grid-template-columns: minmax(0, var(--w-read));
   justify-content: center;
 }
@@ -334,37 +335,37 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  * 프로젝트 카드 그리드. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
  * 카드 내용이 제목과 설명뿐이라 전체 폭으로 늘리면 가로로 긴 띠가 된다.
  *
- * 최소 폭을 360에서 280으로 내렸다. 360이면 1100 그리드에서 2열이 되는데
- * 프로젝트가 3개라 마지막 줄에 칸 하나가 빈 채로 남았다 — 카드 세 장 옆의
- * 빈 사각형은 "아직 안 채운 자리"로 읽힌다. 280이면 3열이 되어 한 줄로 떨어진다.
+ * 최소 폭을 252px로 두면 990px 그리드에서 프로젝트 세 장이 한 줄로 떨어진다.
+ * 프로젝트가 3개라 마지막 줄에 칸 하나가 빈 채로 남으면 그 빈 사각형은
+ * "아직 안 채운 자리"로 읽힌다.
  */
 .pj-grid {
   display: grid; gap: var(--space-4);
   /*
-   * min()이 없으면 컨테이너가 280보다 좁아도 트랙이 280으로 잡혀 페이지가
+   * min()이 없으면 컨테이너가 252보다 좁아도 트랙이 252로 잡혀 페이지가
    * 가로로 밀린다.
    */
-  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(252px, 100%), 1fr));
 }
 
 /* ─────────────────────────────────────────────────────────────
-   마크다운 본문. 크기는 body(19px)를 상속한다.
+   마크다운 본문. 크기는 body의 100% 기준 19px, 실제 90% 기준 17.1px를 상속한다.
    대단락(h2) 사이를 넉넉히 벌려 긴 글에서 구조가 먼저 읽히게 하고,
    인용문은 "인용"이 아니라 강조 박스로 쓴다(작성 관례는 README 참고).
    ───────────────────────────────────────────────────────────── */
 .prose > :first-child { margin-top: 0; }
 
 /*
- * scroll-margin-top은 헤더 높이(54px)보다 커야 한다. 헤더를 화면에 고정한 뒤로는
+ * scroll-margin-top은 헤더 높이 토큰보다 커야 한다. 헤더를 화면에 고정한 뒤로는
  * 목차 링크를 눌렀을 때 제목이 정확히 헤더 밑에 숨어서, 어디로 왔는지 보이지 않았다.
  */
 .prose h2 {
   margin: var(--space-20) 0 var(--space-6); font-size: var(--fs-800); line-height: var(--lh-tight);
-  font-weight: 800; letter-spacing: var(--ls-tight); scroll-margin-top: calc(54px + var(--space-6));
+  font-weight: 800; letter-spacing: var(--ls-tight); scroll-margin-top: calc(var(--nav-h) + var(--space-6));
 }
 .prose h3 {
   margin: var(--space-12) 0 var(--space-3); font-size: var(--fs-600); line-height: var(--lh-snug);
-  font-weight: 700; letter-spacing: var(--ls-snug); scroll-margin-top: calc(54px + var(--space-6));
+  font-weight: 700; letter-spacing: var(--ls-snug); scroll-margin-top: calc(var(--nav-h) + var(--space-6));
 }
 /* h2 바로 뒤에 h3가 오면 사이를 좁힌다 */
 .prose h2 + h3 { margin-top: var(--space-7); }
@@ -455,7 +456,7 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  */
 .prose .table-scroll { overflow-x: auto; margin: var(--space-8) 0; }
 .prose .table-scroll table {
-  width: auto; min-width: min(100%, 400px); margin: 0; white-space: nowrap;
+  width: auto; min-width: min(100%, 360px); margin: 0; white-space: nowrap;
 }
 .prose .table-scroll th:not(:first-child),
 .prose .table-scroll td:not(:first-child) { text-align: right; padding-left: var(--space-8); }
@@ -467,7 +468,7 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  */
 .prose .stats {
   display: grid; gap: var(--space-3); margin: var(--space-8) 0;
-  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(189px, 100%), 1fr));
 }
 .prose .stats > div {
   border: 1px solid var(--border); border-radius: var(--radius-lg);
@@ -531,7 +532,7 @@ a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decora
  */
 .prose .flow-pair {
   display: grid; gap: var(--space-8) var(--space-10); margin: var(--space-8) 0;
-  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(216px, 100%), 1fr));
 }
 .prose .flow-pair .flow { margin: 0; }
 .prose .flow-cap {
