@@ -22,10 +22,10 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
         * 여기만 없으면 헤더가 "메뉴 줄"이지 "사이트 머리"가 아니다.
         * 글·프로젝트 마크(Motif)와 같은 언어를 쓴다 — 기하 도형 몇 개를 두 색으로.
         * 여기서는 그중 "잎" 틀 하나를 고정해 둔다: 사분원 둘을 등지고 맞댄 반원의
-        * 왼쪽은 먹, 오른쏙은 강조색, 위에 작은 점. 22px에서도 색이 갈리는 반원은
+        * 왼쪽은 먹, 오른쏙은 강조색, 위에 작은 점. 20px에서도 색이 갈리는 반원은
         * 읽힌다. favicon.svg도 같은 그림이다.
         */}
-      <svg class="mk" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" focusable="false">
+      <svg class="mk" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
         <path d="M16 25 V12 A13 13 0 0 0 3 25 Z" fill="currentColor" />
         <path d="M16 25 V12 A13 13 0 0 1 29 25 Z" class="gate" />
         <circle cx="16" cy="6" r="3" fill="currentColor" />
@@ -44,7 +44,7 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
         title="검색 (Ctrl/⌘ K)"
         class:list={['icon', { on: isOn('/search') }]}
       >
-        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
           <circle cx="11" cy="11" r="7"></circle>
           <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
@@ -75,7 +75,7 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
    * 차지해서 "검색"이 8x25px이었다 — WCAG 2.5.8의 24x24를 못 넘긴다.
    * min-width는 "글"처럼 두 글자보다 짧은 라벨을 위한 것이다.
    */
-  nav { display: flex; align-items: stretch; gap: var(--space-05); height: 54px; font-size: var(--fs-300); }
+  nav { display: flex; align-items: stretch; gap: var(--space-05); height: var(--nav-h); font-size: var(--fs-300); }
   nav a {
     display: inline-flex; align-items: center; justify-content: center;
     min-width: 24px; padding: 0 var(--space-2);

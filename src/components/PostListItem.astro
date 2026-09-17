@@ -37,7 +37,7 @@ const tone = postTone(post.data.category);
 ---
 
 <article class:list={['row', variant]} data-reveal>
-  <Motif seed={post.id} tone={tone} size={isFeature ? 140 : 44} class="mark" />
+  <Motif seed={post.id} tone={tone} size={isFeature ? 126 : 40} class="mark" />
 
   <div class="body">
     <p class="meta">
@@ -68,7 +68,7 @@ const tone = postTone(post.data.category);
 
   .body { min-width: 0; }
   /*
-   * 머리기사의 글자 폭을 묶는다. 1100 그리드에서 마크를 빼도 880px가 남는데,
+   * 머리기사의 글자 폭을 묶는다. 990 그리드에서 마크를 빼도 넉넉한 폭이 남는데,
    * 그대로 두면 30px 제목이 한 줄로 쭉 뻗고 요약문도 한 줄에 45자가 넘어간다 —
    * 읽는 폭이 아니라 남는 폭에 맞춰진 문단이 된다.
    */
@@ -96,7 +96,7 @@ const tone = postTone(post.data.category);
   .meta {
     margin: 0 0 var(--space-2);
     /*
-     * 줄바꿈을 허용한다. 320px 화면에서 머리기사는 마크(64px)가 폭을 가져가는데
+     * 줄바꿈을 허용한다. 320px 화면에서 머리기사는 마크(58px)가 폭을 가져가는데
      * "DEV 2026.09.07 12분"이 한 줄에 묶여 있으면 21px이 화면 밖으로 나갔다.
      */
     display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline;
@@ -135,15 +135,15 @@ const tone = postTone(post.data.category);
   }
 
   /*
-   * 마크가 글자 폭을 가져가는 지점에서 두 번 줄인다. 140px는 1100 그리드에서
+   * 마크가 글자 폭을 가져가는 지점에서 두 번 줄인다. 126px는 990 그리드에서
    * "이 글부터 읽어라"를 만드는 크기지만, 600px 화면에서는 제목 폭의 4분의 1이다.
    */
   @media (max-width: 900px) {
-    .feature .mark { width: 96px; height: 96px; }
+    .feature .mark { width: 86px; height: 86px; }
   }
   @media (max-width: 640px) {
     .row { gap: var(--space-4); }
     .feature .title { font-size: var(--fs-700); }
-    .feature .mark { width: 64px; height: 64px; }
+    .feature .mark { width: 58px; height: 58px; }
   }
 </style>
