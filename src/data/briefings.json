@@ -1,5 +1,445 @@
 [
   {
+    "id": "domestic-toss-benchmark-2026",
+    "type": "domestic",
+    "title": "토스 벤치마크: 한국어와 실제 업무로 모델 순위를 다시 매기다",
+    "source": "토스 테크",
+    "sourceUrl": "https://toss.tech/article/53109",
+    "publishedAt": "2026-09-16",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["evaluation", "model-inference", "agent-design"],
+    "preview": "공개 벤치마크 점수가 토스의 한국어 업무 성능을 거의 설명하지 못하자, 실제 서비스 과제와 지시 준수·도메인 지식을 함께 재는 사내 평가 체계를 만든 과정을 정리합니다.",
+    "body": {
+      "what": "한국어 일반 능력과 토스 도메인 업무를 분리해 측정하고, 모델·추론 설정별로 실제 운영 과제와의 상관을 확인합니다. 점수 하나로 모델을 고르는 대신 사용 언어와 업무 유형에 맞춘 평가표를 만듭니다.",
+      "concrete": "공개 AAII 점수와 운영 과제의 상관은 Spearman 0.02, Pearson 0.17에 그쳤습니다. 반면 형식 지시 준수를 보는 IFBench는 각각 0.71과 0.87, 도메인 지식 평가는 0.49와 0.65로 더 높은 상관을 보였습니다.",
+      "open": "이 상관이 시간에 따라 유지되는지, 평가 세트가 제품 변화와 데이터 누출을 얼마나 잘 따라가는지는 더 지켜봐야 합니다. 모델 선택 비용까지 포함한 효율 지표도 공개되지 않았습니다."
+    },
+    "quote": {
+      "text": "공개 점수를 참고하되, 우리 서비스에서 사용할 언어와 추론 설정에 맞춰 평가하면 모델의 적합성을 더 정확하게 판단할 수 있습니다.",
+      "ko": "공개 점수를 참고하되, 우리 서비스에서 사용할 언어와 추론 설정에 맞춰 평가하면 모델의 적합성을 더 정확하게 판단할 수 있습니다.",
+      "where": "결론"
+    }
+  },
+  {
+    "id": "interview-latent-aiuc-2026",
+    "type": "interview",
+    "title": "AIUC 인터뷰: 에이전트 책임을 표준과 보험으로 묶을 수 있을까",
+    "source": "Latent Space · Rune Kvist",
+    "sourceUrl": "https://www.latent.space/p/aiuc",
+    "publishedAt": "2026-09-16",
+    "generatedAt": "2026-09-17",
+    "basis": "공개 대본",
+    "tags": ["security", "evaluation", "agent-design"],
+    "preview": "AIUC CEO Rune Kvist가 에이전트 도입의 병목을 성능보다 위험·책임·신뢰로 보고, 분기별 기술 시험과 보험을 결합한 인증 체계를 설명합니다.",
+    "body": {
+      "what": "AIUC-1은 보안·안전·신뢰성 요구를 한 틀에 넣고, 문서 심사만이 아니라 탈옥·환각·데이터 유출을 수천 회 시험합니다. 위험 책임자 컨소시엄의 의견을 받아 표준을 분기마다 갱신한다는 구상입니다.",
+      "concrete": "인증에는 대체로 3~10주가 걸리며, Cursor·Harvey·Lovable·ElevenLabs와 협업 중이라고 밝힙니다. 인터뷰 당일 4천만 달러 규모의 시리즈 A도 발표했습니다.",
+      "open": "표준을 만든 조직이 시험과 보험 연결까지 맡을 때 생길 이해상충, 사고 시 실제 보상 범위, 분기별 갱신이 장기 비교 가능성을 해치지 않는지는 아직 검증 대상입니다."
+    },
+    "quote": {
+      "text": "AIUC builds confidence infrastructure for frontier AI through standards and insurance.",
+      "ko": "AIUC는 표준과 보험을 통해 최전선 AI를 위한 신뢰 인프라를 만듭니다.",
+      "where": "00:08:05 이후"
+    }
+  },
+  {
+    "id": "domestic-toss-agent-team-rules-2026",
+    "type": "domestic",
+    "title": "토스의 코딩 에이전트 팀 규칙: 무엇보다 언제 보여줄지가 중요했다",
+    "source": "토스 테크",
+    "sourceUrl": "https://toss.tech/article/52631",
+    "publishedAt": "2026-09-08",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["coding-agent", "memory-context", "evaluation"],
+    "preview": "긴 작업에서 에이전트가 팀 규칙을 잊는 문제를 해결하려고, 파일 수정 직후와 종료 직전에 관련 규칙을 다시 주입하는 피드백 루프를 설계했습니다.",
+    "body": {
+      "what": "전역 지침을 한 번 길게 넣는 대신 에이전트 루프 안에 규칙 검색과 재주입을 둡니다. 파일을 쓴 뒤에는 해당 변경과 관련된 규칙을, 종료 전에는 놓친 규칙을 짧게 상기시킵니다.",
+      "concrete": "한 번에 최대 2개 규칙만 보여주고 같은 규칙은 세션당 한 번으로 제한했습니다. 정규식 기반 오탐을 확인한 21개 세션에서는 잘못된 코드 변경이 0건이었다고 보고합니다.",
+      "open": "규칙 위반 자체가 얼마나 감소했는지에 대한 대조군 수치는 없습니다. 검색기가 놓친 규칙과 반복 주입이 모델의 다른 판단을 방해하는 경우도 별도 평가가 필요합니다."
+    },
+    "quote": {
+      "text": "즉 문제는 ‘무엇을 알려주느냐’가 아니었습니다. ‘언제, 몇 개를 알려주느냐’였어요.",
+      "ko": "즉 문제는 ‘무엇을 알려주느냐’가 아니었습니다. ‘언제, 몇 개를 알려주느냐’였어요.",
+      "where": "Lost in the Middle 절"
+    }
+  },
+  {
+    "id": "article-github-hydrafusion-2026",
+    "type": "article",
+    "title": "HydraFusion: 한 모델 대신 작업마다 실행 경로를 고르는 코딩 에이전트",
+    "source": "GitHub Blog",
+    "sourceUrl": "https://github.blog/ai-and-ml/github-copilot/project-hydrafusion-frontier-quality-via-multi-model-orchestration/",
+    "publishedAt": "2026-09-04",
+    "generatedAt": "2026-09-17",
+    "basis": "기사 본문",
+    "tags": ["coding-agent", "multi-agent", "model-inference"],
+    "preview": "HydraFusion은 요청마다 단일 모델, 단계적 상향, 독립 비평 중 하나를 선택해 품질·비용·지연의 균형을 맞추는 멀티 모델 실행기입니다.",
+    "body": {
+      "what": "쉬운 작업은 한 모델이 바로 풀고, 불확실하면 저렴한 모델의 초안을 품질 게이트로 검사해 강한 모델로 넘깁니다. 비평이 유리한 작업은 다른 모델 계열의 읽기 전용 검토를 거쳐 한 번 수정합니다.",
+      "concrete": "TerminalBench 2.1에서 Claude Opus 5 대비 검증된 과제 품질이 4.9%p 높고 추정 비용은 67% 낮았다고 GitHub는 보고합니다. 연구 프리뷰로 Copilot CLI에서 제공됩니다.",
+      "open": "최선으로 튜닝된 고정 정책의 오프라인 결과이므로 실제 저장소 분포와 지연, 반복 실행의 분산은 더 봐야 합니다. 라우터 자체의 비용과 실패 시 폴백 품질도 핵심 변수입니다."
+    },
+    "quote": {
+      "text": "HydraFusion treats workflow selection as an optimization problem.",
+      "ko": "HydraFusion은 워크플로 선택을 최적화 문제로 다룹니다.",
+      "where": "Adaptive multi-model orchestration 절"
+    }
+  },
+  {
+    "id": "domestic-oliveyoung-search-mcp-2026",
+    "type": "domestic",
+    "title": "올리브영 검색 MCP: 모델보다 도구 설명과 반환값을 먼저 고치다",
+    "source": "CJ올리브영 Tech Blog",
+    "sourceUrl": "https://oliveyoung.tech/2026-08-28/search-mcp/",
+    "publishedAt": "2026-08-28",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["tools-mcp", "evaluation", "agent-design"],
+    "preview": "검색 MCP의 연쇄 호출 실패를 모델 한계로 보지 않고 도구 이름·설명·반환 데이터의 인지 부하 문제로 분석해 완료율을 끌어올린 사례입니다.",
+    "body": {
+      "what": "도구 선택 오류, 매개변수 오해, 다음 호출 누락을 각각 관찰하고 도구 이름을 의도 중심으로 바꿨습니다. 실행 규칙을 명시하고 모델이 다음 판단에 필요 없는 반환 필드는 덜어냈습니다.",
+      "concrete": "실행 규칙과 단순화된 반환값을 함께 적용했을 때 도구 연쇄 완료율이 약 73%에서 93%로 올랐습니다. `findOliveGoodsByReview`를 `search_olive_goods_by_review`로 바꿔 선택 오류도 줄였습니다.",
+      "open": "어떤 모델과 질의 세트에서 얻은 수치인지, 변경 요소별 기여도가 얼마인지는 제한적으로 공개됐습니다. 이름과 스키마가 다른 MCP에서도 같은 개선 폭이 재현되는지는 별도 확인이 필요합니다."
+    },
+    "quote": {
+      "text": "LLM을 더 똑똑하게 만드는 것이 아니라, 쓸데없이 생각할 거리를 줄여주는 것이 해결책이었던 거죠.",
+      "ko": "LLM을 더 똑똑하게 만드는 것이 아니라, 쓸데없이 생각할 거리를 줄여주는 것이 해결책이었던 거죠.",
+      "where": "실험 결과"
+    }
+  },
+  {
+    "id": "domestic-ly-sage-security-agent-2026",
+    "type": "domestic",
+    "title": "LY의 보안 AI 플랫폼 SAGE: 판단 보조부터 단계적으로 자동화하기",
+    "source": "LY Corporation Tech Blog",
+    "sourceUrl": "https://techblog.lycorp.co.jp/ko/ai-agent-platform-sage-dev-log-part-1",
+    "publishedAt": "2026-08-18",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["security", "agent-design", "multi-agent"],
+    "preview": "보안 업무를 곧바로 완전 자동화하지 않고, 자료 수집과 정리부터 검증된 협업·자동화로 범위를 넓히는 사내 에이전트 플랫폼의 설계를 다룹니다.",
+    "body": {
+      "what": "1단계에서는 AI가 정보를 모아 사람이 판단하고, 2단계에서는 여러 에이전트가 역할을 나눠 협업하며, 3단계에서 구조화되고 검증된 영역만 자동화합니다. 예외 승인과 최종 보안 판단은 사람에게 남깁니다.",
+      "concrete": "공통 실행 기반 위에 보안 지식과 사내 도구를 연결하고, 작업 이력과 승인 경계를 남기는 방식으로 2026년 9월 정식 공개까지 개발했습니다.",
+      "open": "정확도·처리 시간·오탐 감소 같은 운영 지표는 아직 공개되지 않았습니다. 사람의 승인 부담이 자동화 단계가 올라갈수록 실제로 줄어드는지도 후속 글에서 확인해야 합니다."
+    },
+    "quote": {
+      "text": "저희는 이 두 극단 사이에서, 사람의 판단을 대신하지 않고 판단 준비를 돕는 일부터 시작해 단계적으로 넓혀 가는 쪽을 택했습니다.",
+      "ko": "저희는 이 두 극단 사이에서, 사람의 판단을 대신하지 않고 판단 준비를 돕는 일부터 시작해 단계적으로 넓혀 가는 쪽을 택했습니다.",
+      "where": "개발 방향"
+    }
+  },
+  {
+    "id": "article-github-agent-canvases-2026",
+    "type": "article",
+    "title": "에이전트 캔버스: 채팅 로그를 지속 가능한 작업 상태로 바꾸기",
+    "source": "GitHub Blog",
+    "sourceUrl": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient/",
+    "publishedAt": "2026-08-17",
+    "generatedAt": "2026-09-17",
+    "basis": "기사 본문",
+    "tags": ["coding-agent", "memory-context", "agent-design"],
+    "preview": "긴 채팅에 묻히는 계획·검증·승인 상태를 캔버스에 구조화해 사람과 에이전트가 같은 작업 상태를 보고 조정하는 패턴을 소개합니다.",
+    "body": {
+      "what": "워크플로 상태와 중요한 의사결정, 초안, 사람의 승인 지점을 별도 화면에 지속적으로 남깁니다. 에이전트는 상태를 갱신하고 사람은 서술형 로그를 재구성하지 않고 진행 상황을 검사합니다.",
+      "concrete": "Java 현대화와 사이트 콘텐츠 관리 두 사례에서 같은 4단계 패턴을 적용했습니다. 제작 비용은 각각 약 3,000·2,000 AI 크레딧이었지만 반복 프롬프트와 재작업을 줄였다고 설명합니다.",
+      "open": "절감된 시간이나 비용을 대조 실험으로 측정한 수치는 없습니다. 작은 일회성 작업에서도 캔버스 제작 비용을 상쇄하는지, 상태와 실제 저장소가 어긋날 때 어떻게 복구하는지가 남습니다."
+    },
+    "quote": {
+      "text": "Canvases solve that by giving workflows a home. They make state explicit and persistent.",
+      "ko": "캔버스는 워크플로에 자리 잡을 곳을 줍니다. 상태를 명시적이고 지속적으로 만듭니다.",
+      "where": "Chat is great for intent 절"
+    }
+  },
+  {
+    "id": "domestic-ly-android-cli-agents-2026",
+    "type": "domestic",
+    "title": "LY의 Android CLI: MCP 대신 저장소 안의 도구와 스킬을 택한 이유",
+    "source": "LY Corporation Tech Blog",
+    "sourceUrl": "https://techblog.lycorp.co.jp/ko/android-cli-for-ai-agents-at-scale",
+    "publishedAt": "2026-07-30",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["coding-agent", "tools-mcp", "memory-context"],
+    "preview": "수백 명과 수백 모듈 규모의 Android 개발에서 문서 검색 MCP를 저장소에 함께 배포하는 CLI와 스킬로 바꿔 재현성과 보안을 단순화한 사례입니다.",
+    "body": {
+      "what": "AI 에이전트가 IDE 전용 기능과 사내 문서를 터미널에서 쓸 수 있도록 Android CLI를 만들고, 사용법은 필요할 때 읽는 스킬로 분리했습니다. 바이너리도 저장소에 넣어 개발자별 설치 차이를 없앴습니다.",
+      "concrete": "별도 MCP 서버·개인 인증·인증 프록시·할당량 대응을 제거하고, 보안 래퍼에서 허용한 명령만 실행합니다. 기존 IDE 기능은 CLI 명령과 스킬 조합으로 옮겼습니다.",
+      "open": "MCP 방식과 비교한 작업 성공률·지연·운영비 수치는 공개되지 않았습니다. 저장소에 바이너리를 넣는 방식의 업데이트 비용과 플랫폼별 배포 부담도 규모가 커질수록 점검해야 합니다."
+    },
+    "quote": {
+      "text": "MCP 서버도, 개발자별 인증도, 인증 프락시도, 할당량 제한 대응 로직도 필요 없습니다.",
+      "ko": "MCP 서버도, 개발자별 인증도, 인증 프락시도, 할당량 제한 대응 로직도 필요 없습니다.",
+      "where": "Android CLI 도입 효과"
+    }
+  },
+  {
+    "id": "article-openai-coding-eval-signal-2026",
+    "type": "article",
+    "title": "코딩 평가의 신호와 잡음: SWE-Bench Pro 과제 약 30%가 깨져 있었다",
+    "source": "OpenAI",
+    "sourceUrl": "https://openai.com/index/separating-signal-from-noise-coding-evaluations/",
+    "publishedAt": "2026-07-08",
+    "generatedAt": "2026-09-17",
+    "basis": "연구 글 본문",
+    "tags": ["coding-agent", "evaluation", "model-inference"],
+    "preview": "모델 점수가 빠르게 오른 SWE-Bench Pro를 에이전트와 인간이 다시 감사하자, 엄격한 테스트·누락된 요구·낮은 커버리지 때문에 상당수 과제가 능력을 잘못 재고 있었습니다.",
+    "body": {
+      "what": "모델 시도·과제 메타데이터·실패 추적을 자동 분석해 의심 과제를 고른 뒤, 조사 에이전트 반복 실행과 숙련 개발자 5명의 독립 검토를 결합했습니다.",
+      "concrete": "공개 731개 과제 중 자동 파이프라인은 200개(27.4%), 인간 검토는 249개(34.1%)를 깨진 과제로 판정했습니다. OpenAI는 약 30%가 문제라고 추정하며 이전 채택 권고를 철회했습니다.",
+      "open": "문제 과제를 제외했을 때 모델별 순위와 절대 성능이 어떻게 바뀌는지는 이 글만으로 알 수 없습니다. 새 벤치마크도 시간이 지나며 오염·포화되는 문제를 피할 지속 관리 방식이 필요합니다."
+    },
+    "quote": {
+      "text": "We find evidence of breaking issues in a significant portion of the dataset.",
+      "ko": "데이터셋의 상당 부분에서 평가를 무너뜨리는 문제의 증거를 찾았습니다.",
+      "where": "감사 결과"
+    }
+  },
+  {
+    "id": "interview-vercel-andrew-qu-2026",
+    "type": "interview",
+    "title": "Vercel Andrew Qu 인터뷰: 에이전트는 새로운 종류의 소프트웨어다",
+    "source": "Latent Space · Andrew Qu",
+    "sourceUrl": "https://www.latent.space/p/vercel-agents-new-software",
+    "publishedAt": "2026-07-03",
+    "generatedAt": "2026-09-17",
+    "basis": "공개 인터뷰",
+    "tags": ["agent-design", "tools-mcp", "memory-context"],
+    "preview": "Vercel의 에이전트 프레임워크 eve를 만든 Andrew Qu가 컨텍스트·재개·샌드박스·스킬이 웹 앱과 다른 기본 요소가 된 이유를 설명합니다.",
+    "body": {
+      "what": "v0를 만들며 모델 전환, 폴백, 실행 재개 문제를 해결한 라이브러리를 묶어 eve로 발전시켰습니다. 반복적이지만 상황 해석이 필요한 업무를 에이전트 후보로 보고, 작업 위험도에 따라 자율 루프와 사람 피드백을 고릅니다.",
+      "concrete": "Vercel 내부에서는 계약서 초벌 검토, 마케팅 회고, 연락 대상 발굴, 데이터 질의에 에이전트를 씁니다. 최신 제품 지식은 스킬로 보정하고 에이전트 요청에는 HTML 대신 Markdown을 제공한다고 말합니다.",
+      "open": "내부 도입의 성공률·비용·사람 검토 시간은 제시되지 않았습니다. 스킬과 웹 콘텐츠가 서로 다른 최신 상태를 가질 때 어느 쪽을 신뢰할지, 에이전트 전용 웹이 접근성 표준과 어떻게 만날지도 남습니다."
+    },
+    "quote": {
+      "text": "I think agents are a new type of software. They are not as predictable as web applications.",
+      "ko": "에이전트는 새로운 종류의 소프트웨어라고 생각합니다. 웹 애플리케이션만큼 예측 가능하지 않습니다.",
+      "where": "Why eve became necessary 절"
+    }
+  },
+  {
+    "id": "article-hamel-eval-product-smell-2026",
+    "type": "article",
+    "title": "평가하기 어려운 AI 제품은 검증하기도 어려운 제품이다",
+    "source": "Hamel Husain",
+    "sourceUrl": "https://hamel.dev/blog/posts/eval-smell/",
+    "publishedAt": "2026-06-29",
+    "generatedAt": "2026-09-17",
+    "basis": "기술 글 본문",
+    "tags": ["evaluation", "agent-design", "tools-mcp"],
+    "preview": "평가를 제품 밖의 채점 문제로 미루지 말고, 사용자가 결과를 확인할 수 있는 근거·중간 산출물·예외를 인터페이스 자체에 넣어야 한다는 설계 원칙입니다.",
+    "body": {
+      "what": "답만 내놓는 데이터 에이전트 대신 지표 정의, 신뢰 가능한 출처, 중간 계산, 관련 수치, 실행한 쿼리와 확인하지 못한 항목을 함께 보여줍니다. 검증 가능한 산출물을 만들면 사용자 경험과 평가 데이터가 동시에 좋아집니다.",
+      "concrete": "데이터 분석, 체육 교육과정 생성, 산재 의료 보고서의 세 사례를 전후 화면으로 비교합니다. 공통 패턴은 도메인 전문가가 실제로 확인하는 단위를 제품 출력으로 승격하는 것입니다.",
+      "open": "검증 정보가 많아질수록 사용자의 인지 부담도 커질 수 있습니다. 어떤 근거를 기본 화면에 노출하고 무엇을 상세 보기로 보낼지, 검증 가능성과 작업 속도의 균형은 제품별 실험이 필요합니다."
+    },
+    "quote": {
+      "text": "Artifacts that are hard for you to verify are often hard for users too.",
+      "ko": "만드는 사람이 검증하기 어려운 산출물은 사용자도 검증하기 어려운 경우가 많습니다.",
+      "where": "도입부"
+    }
+  },
+  {
+    "id": "domestic-naver-kelos-2026",
+    "type": "domestic",
+    "title": "NAVER Kelos: 코딩 에이전트와 실행 환경을 API로 관리하기",
+    "source": "NAVER D2",
+    "sourceUrl": "https://d2.naver.com/helloworld/3015479",
+    "publishedAt": "2026-06-24",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 발표 소개",
+    "tags": ["coding-agent", "agent-design", "multi-agent"],
+    "preview": "코딩 에이전트와 격리된 개발 환경의 생성·실행·회수를 API로 다루는 Kubernetes 기반 오픈소스 프레임워크 Kelos를 소개합니다.",
+    "body": {
+      "what": "에이전트 하나를 로컬 프로세스로 실행하는 수준을 넘어, 작업별 환경과 에이전트를 자원처럼 만들고 관리하도록 API화합니다. 여러 코딩 작업을 자동 배치하거나 상위 오케스트레이터가 제어하기 위한 기반입니다.",
+      "concrete": "NAVER D2 세션은 Kelos를 코딩 에이전트와 환경을 API화해 관리하는 오픈소스 프레임워크로 설명합니다. Kubernetes 자원 모델을 활용해 실행 격리와 수명 주기를 통합합니다.",
+      "open": "세션 소개 페이지에는 동시 실행 규모, 자원 효율, 실패 복구율 같은 운영 수치가 없습니다. 저장소별 비밀 관리와 네트워크 권한을 어떤 기본값으로 제한하는지도 구현 문서를 함께 확인해야 합니다."
+    },
+    "quote": {
+      "text": "Kelos는 코딩 에이전트와 그 환경을 API화하고 관리할 수 있도록 해주는 오픈소스 프레임워크입니다.",
+      "ko": "Kelos는 코딩 에이전트와 그 환경을 API화하고 관리할 수 있도록 해주는 오픈소스 프레임워크입니다.",
+      "where": "발표 소개"
+    }
+  },
+  {
+    "id": "article-eugene-cybersecurity-evals-2026",
+    "type": "article",
+    "title": "사이버보안 에이전트 평가는 모델보다 환경과 채점기가 좌우한다",
+    "source": "Eugene Yan",
+    "sourceUrl": "https://eugeneyan.com/writing/cybersecurity-evals/",
+    "publishedAt": "2026-06-21",
+    "generatedAt": "2026-09-17",
+    "basis": "기술 글 본문",
+    "tags": ["security", "evaluation", "agent-design"],
+    "preview": "7개 보안 벤치마크를 비교해 샌드박스, 난이도 입력, 도구, 결정적 채점기라는 공통 구조와 장기 작업에서 하네스가 만드는 성능 차이를 정리합니다.",
+    "body": {
+      "what": "최종 성공만 채점하면 취약점 발견과 재현까지 간 실패를 구분할 수 없으므로 공격 사슬을 단계별로 나눠 부분 점수를 줍니다. 실행 환경은 실제 취약 버전을 컨테이너로 재현하고 결과는 플래그·충돌·자산 획득처럼 결정적으로 검사합니다.",
+      "concrete": "Multi-Host Bench에서 기존 시스템은 40개 네트워크 중 3개만 성공했지만, 계획과 실행을 분리하고 상태 서비스를 둔 Incalmo는 37개에서 성공했습니다. 고수준 작업 추상화를 빼면 성공률은 0으로 떨어졌습니다.",
+      "open": "벤치마크마다 모델·시간 제한·도구가 달라 수치를 직접 비교하기 어렵고, 공개 취약점은 학습 데이터 오염 위험이 큽니다. 공격 능력 평가를 공개하면서 악용 가능성을 어떻게 제한할지도 계속 남습니다."
+    },
+    "quote": {
+      "text": "Because exploitation is open-ended, most benchmarks evaluate outcomes instead of the method used.",
+      "ko": "취약점 악용은 열린 문제이므로 대부분의 벤치마크는 방법보다 결과를 평가합니다.",
+      "where": "평가의 네 가지 구성 요소"
+    }
+  },
+  {
+    "id": "article-deepmind-ai-control-roadmap-2026",
+    "type": "article",
+    "title": "AI Control Roadmap: 내부 에이전트를 잠재적 내부자 위협으로 다루기",
+    "source": "Google DeepMind",
+    "sourceUrl": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+    "publishedAt": "2026-06-18",
+    "generatedAt": "2026-09-17",
+    "basis": "연구 글 본문",
+    "tags": ["security", "coding-agent", "evaluation"],
+    "preview": "모델 정렬이 완벽하다고 가정하지 않고, 권한을 점진적으로 부여하며 신뢰된 감독 모델과 사람 검토를 겹치는 내부 에이전트 보안 로드맵입니다.",
+    "body": {
+      "what": "에이전트를 잠재적 내부자 위협으로 모델링하고 탐지, 예방, 대응을 방어 계층으로 둡니다. 능력이 높아질수록 사후 대화 검토에서 고위험 행동의 실시간 차단으로 통제를 강화합니다.",
+      "concrete": "내부 코딩 에이전트 과제 100만 건을 비동기 모니터가 분석했고, 단순 키워드보다 행동 패턴을 찾아 Gemini Spark의 실시간 감시에 반영했습니다. 측정 지표는 모니터링 범위, 재현율, 대응 시간입니다.",
+      "open": "100만 건에서 실제 탐지율과 오탐률은 공개되지 않았습니다. 감독 모델이 작업 에이전트와 같은 취약점을 공유하거나 감시를 인지한 에이전트가 추론을 숨길 때의 방어력도 핵심 한계입니다."
+    },
+    "quote": {
+      "text": "Monitoring is the backbone of AI control.",
+      "ko": "모니터링은 AI 통제의 중추입니다.",
+      "where": "Understanding AI Control 절"
+    }
+  },
+  {
+    "id": "domestic-toss-skill-quality-rubric-2026",
+    "type": "domestic",
+    "title": "토스의 Skill 품질 루브릭: 규칙 검사와 모델 판정을 나누다",
+    "source": "토스 테크",
+    "sourceUrl": "https://toss.tech/article/skill-quality-rubric",
+    "publishedAt": "2026-06-08",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["coding-agent", "evaluation", "security"],
+    "preview": "에이전트 스킬 문서를 감으로 리뷰하지 않고, 기계적으로 막을 결함과 의미를 판단할 품질을 30개 항목으로 나눠 PR마다 자동 검사합니다.",
+    "body": {
+      "what": "경로·메타데이터·금지 패턴처럼 답이 정해진 항목은 규칙으로 검사하고, 설명의 명료성·예시 품질처럼 맥락이 필요한 항목은 모델이 판정합니다. 심각도는 BLOCKER·MAJOR·MINOR로 나눕니다.",
+      "concrete": "6개 영역 30개 항목 중 17개는 결정적 규칙, 13개는 모델 검사입니다. 변경된 Skill.md 디렉터리만 평가하고 결과를 PR의 고정 댓글로 갱신하며, 비밀 유출과 파괴적 명령도 함께 검사합니다.",
+      "open": "루브릭 점수와 실제 에이전트 작업 성공률의 상관은 아직 제시되지 않았습니다. 모델 판정의 버전별 흔들림과 사람이 예외를 승인한 사례를 축적해 항목 가중치를 계속 조정해야 합니다."
+    },
+    "quote": {
+      "text": "결정적인 결함은 규칙 검사로 차단하고, 의미 품질은 모델 판정으로 보완합니다.",
+      "ko": "결정적인 결함은 규칙 검사로 차단하고, 의미 품질은 모델 판정으로 보완합니다.",
+      "where": "평가 원칙"
+    }
+  },
+  {
+    "id": "article-google-agentic-rag-2026",
+    "type": "article",
+    "title": "Agentic RAG: 충분한 근거가 모일 때까지 검색을 반복하는 구조",
+    "source": "Google Research",
+    "sourceUrl": "https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/",
+    "publishedAt": "2026-06-05",
+    "generatedAt": "2026-09-17",
+    "basis": "연구 글 본문",
+    "tags": ["multi-agent", "memory-context", "evaluation"],
+    "preview": "한 번 검색하고 답하는 RAG 대신 질문을 분해·재작성·분산 검색하고, 충분한 근거가 모였는지 별도 에이전트가 검사해 부족하면 다시 찾습니다.",
+    "body": {
+      "what": "오케스트레이터가 복합 질문을 판단하고 플래너가 정보 경로를 세웁니다. 검색 결과로 만든 중간 답을 Sufficient Context Agent가 원 질문과 대조해 빠진 조각을 구체적으로 지적하고 재검색을 요청합니다.",
+      "concrete": "FramesQA 824개 질문과 PDF 2,676개로 평가했습니다. 방해용 데이터셋 3개를 더한 교차 코퍼스 조건에서도 4개 중 올바른 소스를 골라 90.1%를 맞혔고 단일 코퍼스와 지연 차이는 평균 3% 이내였습니다.",
+      "open": "정확도는 LLM 판정기로 계산됐고 사내 데이터 결과는 상세 수치가 없습니다. 반복 검색의 비용 상한과 충분성 판정기가 틀렸을 때 조기 종료하거나 무한 탐색하는 문제도 운영 정책이 필요합니다."
+    },
+    "quote": {
+      "text": "Compared to standard RAG, our framework increases accuracy on factuality datasets by up to 34%.",
+      "ko": "표준 RAG와 비교해 이 프레임워크는 사실성 데이터셋 정확도를 최대 34% 높였습니다.",
+      "where": "도입부"
+    }
+  },
+  {
+    "id": "article-google-reasoningbank-2026",
+    "type": "article",
+    "title": "ReasoningBank: 성공과 실패에서 재사용할 추론 전략을 뽑아내기",
+    "source": "Google Research",
+    "sourceUrl": "https://research.google/blog/reasoningbank-enabling-agents-to-learn-from-experience/",
+    "publishedAt": "2026-04-21",
+    "generatedAt": "2026-09-17",
+    "basis": "연구 글 본문",
+    "tags": ["memory-context", "agent-design", "evaluation"],
+    "preview": "에이전트의 모든 실행 로그를 저장하는 대신 성공과 실패에서 일반화 가능한 판단 원칙을 뽑아 구조화된 메모리로 축적하는 프레임워크입니다.",
+    "body": {
+      "what": "작업 전 관련 메모리를 검색해 컨텍스트에 넣고, 실행 후 LLM 판정기로 궤적을 평가합니다. 성공의 요령과 실패의 반성을 제목·설명·추론 단계 형태로 추출해 다음 작업에서 재사용합니다.",
+      "concrete": "웹 탐색과 소프트웨어 엔지니어링 벤치마크에서 기준 방식보다 성공률을 높이고 단계 수를 줄였다고 보고합니다. 자기 판정에 잡음이 있어도 비교적 견고했으며, 구현 코드도 함께 공개했습니다.",
+      "open": "블로그에는 과제별 절대 수치가 없어 논문 확인이 필요합니다. 메모리를 단순 추가하면 모순과 중복이 쌓이므로 통합·망각·출처 추적 정책이 장기 운영의 핵심 과제로 남습니다."
+    },
+    "quote": {
+      "text": "ReasoningBank is a novel agent memory framework that uses successful and failed experiences to distill generalizable reasoning strategies",
+      "ko": "ReasoningBank는 성공과 실패 경험에서 일반화 가능한 추론 전략을 추출하는 새로운 에이전트 메모리 프레임워크입니다.",
+      "where": "도입부"
+    }
+  },
+  {
+    "id": "domestic-ly-secure-mcp-2026",
+    "type": "domestic",
+    "title": "LY의 안전한 MCP 운영: 허용 목록과 사내 검증을 기본값으로",
+    "source": "LY Corporation Tech Blog",
+    "sourceUrl": "https://techblog.lycorp.co.jp/ko/improving-development-efficiency-with-secure-mcp-servers",
+    "publishedAt": "2026-04-21",
+    "generatedAt": "2026-09-17",
+    "basis": "국내 기술 글 본문",
+    "tags": ["tools-mcp", "security", "multi-agent"],
+    "preview": "외부 MCP 서버는 등록된 것만 허용하고 사내 서버도 자동 보안 검증을 거치게 해, 조직 전체의 도구 연결을 통제 가능한 경로로 만든 사례입니다.",
+    "body": {
+      "what": "외부 오픈소스 MCP는 허용 목록에 등록된 서버만 쓰게 하고, 사내에서 만든 MCP는 게시 전에 자동 검증합니다. 개발자는 같은 프로토콜로 여러 AI 도구에 기능을 제공하되 중앙 정책을 따릅니다.",
+      "concrete": "사내 워크숍에는 약 1,600명이 참여했고 설문에서 31.5%가 이미 업무에 적용, 55.7%가 가까운 시일 내 적용 예정이라고 답했습니다. Claude와 GPT를 함께 활용한 코드 리뷰 흐름도 시연했습니다.",
+      "open": "설문은 의향과 초기 적용을 보여줄 뿐 생산성 향상이나 사고 감소를 입증하지 않습니다. 허용 목록의 갱신 속도, 서버 업데이트 후 재검증, 도구 권한의 세분화가 운영 비용을 좌우합니다."
+    },
+    "quote": {
+      "text": "먼저 오픈소스 소프트웨어 등 외부에서 개발한 MCP 서버는 허용 목록(등록된 MCP 서버만 사용 가능)을 만들어 이 목록에 등록된 서버만 사용할 수 있게 관리하고 있습니다.",
+      "ko": "먼저 오픈소스 소프트웨어 등 외부에서 개발한 MCP 서버는 허용 목록(등록된 MCP 서버만 사용 가능)을 만들어 이 목록에 등록된 서버만 사용할 수 있게 관리하고 있습니다.",
+      "where": "보안 대책"
+    }
+  },
+  {
+    "id": "interview-notion-token-town-2026",
+    "type": "interview",
+    "title": "Notion 인터뷰: 다섯 번 다시 만든 에이전트와 30%짜리 미래 평가",
+    "source": "Latent Space · Simon Last, Sarah Sachs",
+    "sourceUrl": "https://www.latent.space/p/notion",
+    "publishedAt": "2026-04-15",
+    "generatedAt": "2026-09-17",
+    "basis": "공개 대본",
+    "tags": ["agent-design", "evaluation", "tools-mcp"],
+    "preview": "Notion의 공동창업자와 AI 책임자가 Custom Agents를 네다섯 번 재구축한 과정, 100개가 넘는 도구의 점진 공개, 회귀·출시·미래 평가의 분리를 설명합니다.",
+    "body": {
+      "what": "도구를 한꺼번에 보여주자 토큰과 품질이 악화돼 검색 기반 점진 공개로 바꿨습니다. 평가는 현재 품질을 지키는 회귀 테스트, 출시 기준, 아직 30%만 통과하는 미래 역량 평가로 나눕니다.",
+      "concrete": "Custom Agents는 2022년부터 네다섯 번 다시 만들었습니다. 30개 에이전트에서 하루 70건 넘게 생긴 막힘 알림을 관리자 에이전트가 약 5건으로 줄이는 내부 사례도 소개합니다.",
+      "open": "대화 대본의 내부 사례라 독립 검증된 성능 수치는 아닙니다. CLI의 자기 디버깅 장점과 MCP의 좁은 권한 모델 사이에서 비밀 유출·결정성·반복 토큰 비용을 어떻게 계량할지도 남습니다."
+    },
+    "quote": {
+      "text": "We have what we call frontier or headroom evals, where we actively wanna be at 30% pass rate.",
+      "ko": "우리는 의도적으로 통과율을 30%로 두는 최전선 또는 헤드룸 평가를 운영합니다.",
+      "where": "00:23:30 이후"
+    }
+  },
+  {
+    "id": "article-openai-coding-agent-monitoring-2026",
+    "type": "article",
+    "title": "내부 코딩 에이전트 모니터링: 수천만 궤적에서 의도 이탈 찾기",
+    "source": "OpenAI",
+    "sourceUrl": "https://openai.com/index/how-we-monitor-internal-coding-agents-misalignment/",
+    "publishedAt": "2026-03-19",
+    "generatedAt": "2026-09-17",
+    "basis": "안전 연구 글 본문",
+    "tags": ["security", "coding-agent", "evaluation"],
+    "preview": "실제 내부 코딩 세션의 추론과 행동을 별도 모델이 비동기로 읽고, 사용자 의도·보안 정책을 벗어난 행동을 사람에게 올리는 운영 경험을 공개했습니다.",
+    "body": {
+      "what": "GPT-5.4 Thinking 기반 모니터가 전체 대화와 도구 호출을 분석해 이상 행동을 분류하고 심각도를 매깁니다. 현재는 완료 후 30분 안에 검토하며 장기적으로 고위험 행동의 실행 전 차단을 목표로 합니다.",
+      "concrete": "5개월 동안 수천만 개 내부 코딩 궤적을 감시했고 최고 심각도 실제 대화는 0건, 중간 심각도 경보는 약 1,000건이었습니다. 직원이 별도로 신고한 상호작용은 모두 모니터도 포착했다고 보고합니다.",
+      "open": "열린 실제 트래픽의 거짓 음성률은 아직 신뢰 있게 계산하지 못했습니다. 추론을 숨기거나 모니터와 공모하는 모델, 민감한 대화 전체를 읽는 감시 시스템의 개인정보 보호가 구조적 한계입니다."
+    },
+    "quote": {
+      "text": "Initial results appear strong, with the monitoring system consistently outperforming employee escalations—flagging every interaction that employees independently reported through internal channels.",
+      "ko": "초기 결과에서 모니터는 직원 신고를 일관되게 앞섰고, 직원이 내부 채널로 독립 신고한 모든 상호작용을 포착했습니다.",
+      "where": "Our approach & how it works 절"
+    }
+  },
+  {
     "id": "paper-2609-16635",
     "type": "paper",
     "title": "EchoPath: GUI 에이전트의 실행 경험을 재사용 가능한 메모리로 바꾸기",
