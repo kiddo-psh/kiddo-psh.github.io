@@ -6,7 +6,7 @@ const LINKS = [
   { href: '/posts', label: '글' },
   { href: '/ai-briefing', label: '브리핑' },
   { href: '/projects', label: '프로젝트' },
-  { href: '/about', label: '소개' },
+  { href: '/portfolio', label: '포트폴리오' },
 ];
 
 // 글 상세(/posts/…)에서도 "글"이 켜지도록 접두사까지 본다.
@@ -16,7 +16,7 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
 
 <header>
   <nav class="page">
-    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}>
+    <a class="brand" href="/" aria-label={SITE.title} aria-current={path === '/' ? 'page' : undefined}>
       {/*
         * 워드마크. 전에는 글자만 있었다 — 레퍼런스 두 곳 모두 고유 마크를 갖는데
         * 여기만 없으면 헤더가 "메뉴 줄"이지 "사이트 머리"가 아니다.
@@ -114,6 +114,7 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
     nav { font-size: var(--fs-200); }
     nav a { padding: 0 var(--space-2); }
     .brand { margin-right: var(--space-2); gap: var(--space-2); }
+    .brand span { display: none; }
   }
   @media (max-width: 400px) {
     nav { gap: 0; }
