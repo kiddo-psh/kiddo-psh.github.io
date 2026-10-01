@@ -2,149 +2,364 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
 
-const projects = [
+/*
+ * 포트폴리오 한 장. 프로젝트마다 읽는 순서를 같게 둔다:
+ * 무엇(머리) → 한 일(헤드라인) → 문제·측정·발견 세 줄 → 근거(표·그림, 필요할 때만) → 결과 숫자.
+ * 위 세 줄과 숫자만 읽고 넘어가도 프로젝트가 전달되게 하는 것이 목표다.
+ *
+ * 그림은 글로 대신할 수 없는 것만 넣는다. 지금은 주차 감지 화면 하나이고,
+ * 넣었으면 텍스트 칼럼을 넘어 페이지 폭을 다 쓴다. 단계별 시간·라우팅 규칙·작업 흐름은
+ * 표와 목록이 그림보다 읽기 쉬워서 그림으로 그리지 않는다.
+ */
+
+interface Brief { k: string; v: string }
+interface Metric { label: string; value: string; note?: string }
+interface Finding { value: string; label: string; title: string; text: string }
+interface Table { head: string[]; rows: string[][]; numeric?: boolean }
+interface Project {
+  id: string;
+  title: string;
+  stack: string;
+  highlight: string;
+  headline: string;
+  brief: Brief[];
+  figure?: { src: string; alt: string; caption: string };
+  table?: Table;
+  steps?: { name: string; text?: string }[];
+  findings?: Finding[];
+  metrics?: Metric[];
+  conclusion?: string;
+  notes?: string[];
+  more?: { href: string; label: string };
+}
+
+const projects: Project[] = [
   {
-    number: '01',
-    title: 'feelm',
-    subtitle: '영화 추천 서비스의 계정과 인증',
-    context: '7인 팀 · Java / Spring Boot / Redis / React',
-    role: '계정·인증 백엔드, 프론트 세션 연동, 테스트 환경 개선',
-    work: [
+    id: 'vision',
+    title: '사진 식단 분석',
+    stack: 'Claude Vision',
+    highlight: '과검출 49 → 7건',
+    headline: '측정된 적 없는 설계 근거를 실험으로 검증했습니다',
+    brief: [
+      { k: '가설', v: '“Vision 직접 추정과 식약처 DB 조회는 정확도 차이가 미미하다.” 사진 분석 방식을 정한 근거였지만, 한 번도 잰 적이 없었습니다.' },
+      { k: '실험', v: '포장 영양표시로만 정답을 매긴 평가셋 31장을 직접 만들고, 두 방식이 같은 그램 추정을 쓰게 해 영양 계수 차이만 비교했습니다.' },
+      { k: '도구', v: '채점 도구부터 검증해 결함 4건을 고쳤고, 그중 1건은 판정을 뒤집었습니다.' },
+    ],
+    findings: [
       {
-        label: '동시 로그인',
-        detail: '실패 4회 뒤 동시 요청이 모두 비밀번호 검사로 들어가던 잠금 경합을 원자적 시도 집계로 수정했습니다.',
-        proof: '동시 요청 4건 중 1건만 검사(401), 3건 차단(429)을 계약 테스트로 확인',
+        value: '37.5%', label: 'DB 음식명 조회 실패율',
+        title: 'DB 방식의 우위는 현실에서 사라졌습니다',
+        text: '계수는 정확했지만 음식명 조회가 37.5% 실패했습니다. 매칭을 느슨하게 하면 오차가 2.2배로 커졌습니다.',
       },
       {
-        label: '세션 복구',
-        detail: '재발급 5xx에서도 로그아웃시키던 제 코드를 고쳐 401에서만 세션을 종료했습니다. 동시 만료 요청은 재발급 한 번을 공유합니다.',
-        proof: '500·502·503·504 세션 유지, 동시 요청 3건의 재발급 1회 테스트',
+        value: '+20%', label: '합계 칼로리 편향',
+        title: '질문 밖에서 계통 오차를 찾았습니다',
+        text: '합계 칼로리가 과대 추정 쪽으로 쏠렸습니다. 분해로 오진했다가, 요리와 재료의 중복 출력임을 확인했습니다. 예: 카츠동 680 · 계란 90 · 홍생강 3 · 파 3 → 가츠동 680.',
       },
       {
-        label: '테스트 신뢰성',
-        detail: 'Spring 테스트 설정 차이를 수집·대조하는 스크립트를 만들어 불필요한 context 분리를 정리했습니다.',
-        proof: 'context 생성 42→30회, 캐시 재생성 0회, 전체 테스트 2,197개 통과',
+        value: '49 → 7', label: '과검출 건수',
+        title: '한 줄만 다른 대조 프롬프트로 고쳤습니다',
+        text: '과검출이 49건에서 7건으로, 음식명 F1이 0.38에서 0.77로 바뀌었습니다. 나빠진 지표는 없었습니다.',
       },
+    ],
+    conclusion: '결정은 유지하고 근거를 바꿨습니다. “Vision 방식에는 프롬프트라는 개선 수단이 있고, DB 방식에는 없다.” 설계 문서에 정정 기록을 남기고, 기존 프롬프트는 대조군으로 보존한 채 서비스에 반영했습니다.',
+    notes: [
+      '짝지은 비교 표본이 8개라 방향만 신뢰할 수 있어서, 반복 측정으로 실행 간 분산을 분리할 계획입니다.',
     ],
   },
   {
-    number: '02',
-    title: '주차바로',
-    subtitle: '실시간 주차 위반 판정',
-    context: '7인 팀 · Python / OpenCV / YOLOv8 / Jetson',
-    role: '영상 판정 흐름과 리플레이 검증 도구',
-    work: [
-      {
-        label: '판정 재현',
-        detail: '녹화 영상을 영상 시간 기준으로 다시 흘리는 도구를 만들어 변경 전후 판정을 비교했습니다.',
-        proof: '같은 영상 재실행 시 판정 JSONL이 바이트 단위로 일치',
-      },
-      {
-        label: '오판정 수정',
-        detail: '화면에서 사라진 차량을 출차로 처리하던 조건을 출차 구역 통과 관측으로 바꾸고, 트랙 보관 설정의 프레임·초 단위 오류를 수정했습니다.',
-        proof: '각 실패 경로를 재현 테스트로 고정 · SSAFY 공통 프로젝트 우수상',
-      },
+    id: 'edge',
+    title: '엣지 비전 주차 감지',
+    stack: 'YOLOv8 · TensorRT · Jetson',
+    highlight: '6.5 → 15 FPS',
+    headline: '병목을 추측하지 않고 7단계로 재서 찾았습니다',
+    brief: [
+      { k: '문제', v: 'Jetson에서 6.5 FPS에 그쳐 차량 추적이 끊겼습니다.' },
+      { k: '측정', v: '처리 과정을 7단계로 나눠 재는 도구를 만들었습니다.' },
+      { k: '발견', v: '병목은 모델 추론 35%와 광각 렌즈 보정 21%였습니다.' },
     ],
+    figure: {
+      src: '/images/projects/baro/zone-overlay-045s-ev.jpg',
+      alt: '주차장 축소 모형 위에 일반·장애인·전기차 충전·통로·출입구 구역이 색으로 나뉘어 있고, 전기차 충전 구역의 차량 한 대가 신뢰도 0.89로 감지된 화면',
+      caption: '구역 폴리곤 위에서 차량을 감지하고 어느 구역에 있는지 판정하는 화면',
+    },
+    table: {
+      head: ['프레임당 처리', '개선 전', '개선 후'],
+      rows: [
+        ['모델 추론', '54ms', '32ms'],
+        ['광각 렌즈 보정', '33ms', '3ms'],
+        ['그 외', '67ms', '32ms'],
+        ['합계', '154ms', '67ms'],
+      ],
+      numeric: true,
+    },
+    metrics: [
+      { label: '프레임당 처리', value: '154 → 67ms', note: '−57%' },
+      { label: '처리 속도', value: '6.5 → 15 FPS', note: '약 2.3배' },
+      { label: '수상', value: '우수상', note: 'SSAFY 공통 프로젝트' },
+    ],
+    notes: ['계측 도구와 병목 분석은 제가 했습니다. TensorRT 변환과 보정의 GPU 전환은 팀이 적용했습니다.'],
+    more: { href: '/projects/baro', label: '주차바로 프로젝트 자세히 보기' },
   },
   {
-    number: '03',
-    title: 'yumyum',
-    subtitle: '식단·운동 기록 기반 코칭 서비스',
-    context: '2인 팀 · Java / Spring Boot / Python / FastAPI',
-    role: '서비스 백엔드와 AI 코칭 호출 흐름',
-    work: [
-      {
-        label: '호출 기준',
-        detail: '기록이 없어도 Agent 네 개를 모두 실행하던 흐름을 기록별 선택 방식으로 바꿨습니다. 기록이 없으면 모델을 호출하지 않습니다.',
-        proof: '고정 입력 8개에서 평균 실행 Agent 4.0→2.5개',
-      },
-      {
-        label: '외부 호출 경계',
-        detail: '식품 검색에 관련성 기준을 두고, 홈 코멘트의 FastAPI 응답을 기다리는 동안 DB 트랜잭션을 붙잡지 않게 분리했습니다.',
-        proof: '호출·실패 규칙을 테스트로 고정 · SSAFY 관통 프로젝트 최우수상',
-      },
+    id: 'agents',
+    title: '멀티에이전트 코칭',
+    stack: 'Claude API',
+    highlight: '호출 4.0 → 2.5개',
+    headline: '기록이 있는 에이전트만 부르도록 바꿨습니다',
+    brief: [
+      { k: '문제', v: '기록이 없어도 에이전트 4개를 매번 불렀습니다.' },
+      { k: '가설', v: '필요한 에이전트만 부르면 품질 저하 없이 호출이 줄어듭니다.' },
+      { k: '실험', v: '8개 시나리오를 실제 API로 3회씩 비교했습니다.' },
     ],
-    note: 'Agent 수는 동일 비중의 평가 입력 기준이며 실제 사용자 트래픽 평균은 아닙니다.',
+    table: {
+      head: ['기록 조건', '켜는 에이전트'],
+      rows: [
+        ['영양 기록 1일 이상', '영양 Agent'],
+        ['운동 기록 1건 이상', '운동 Agent'],
+        ['체중 추세 있음', '목표 Agent'],
+        ['기록 없음', 'LLM 호출 없이 안내'],
+      ],
+    },
+    metrics: [
+      { label: '에이전트 호출', value: '4.0 → 2.5개', note: '−37.5%' },
+      { label: 'LLM 호출', value: '3.0 → 2.5회', note: '−16.7%' },
+      { label: '평균 응답', value: '11.1 → 8.7초', note: '−21.9%, 정상 응답률 100% 유지' },
+    ],
+    notes: [
+      '고정 DAG는 요청마다 네 Agent를 늘 실행했습니다. 동적 라우팅은 기록을 먼저 읽고, 영양과 운동이 둘 다 켜지면 목표도 함께 켜며, 켜진 Agent가 없으면 종합도 부르지 않습니다.',
+      'Agent 수는 동일 비중의 평가 입력 기준이며 실제 사용자 트래픽 평균은 아닙니다. p90 응답은 0.4%만 줄어서, 에이전트가 모두 필요한 경우의 호출 구조를 다음에 측정합니다.',
+    ],
+    more: { href: '/projects/yumyum', label: 'yumyum 프로젝트 자세히 보기' },
+  },
+  {
+    id: 'rules',
+    title: 'AI 코딩 팀 규칙',
+    stack: 'Claude Code',
+    highlight: '테스트 없는 MR 0건',
+    headline: 'AI 에이전트의 팀 규칙을 데이터로 고쳤습니다',
+    brief: [
+      { k: '문제', v: '37분에 만든 기능이 기준 차이로 5시간 30분 재작업됐습니다.' },
+      { k: '해결', v: 'AI가 따르는 규칙 문서를 설계해 구현 전에 인수 테스트를 확정했습니다.' },
+      { k: '검증', v: '실제 업무 5건에 적용하며 비용과 누락 결함을 쟀습니다.' },
+    ],
+    steps: [
+      { name: '플랜', text: '인수 테스트 확정' },
+      { name: '구현' },
+      { name: '리뷰 A · B 동시 실행', text: 'A는 계약과 실패 경로 확인, B는 전제를 깨는 공격. Claude Code 서브에이전트로 병렬 실행' },
+      { name: '사람이 대조' },
+      { name: '반영' },
+    ],
+    metrics: [
+      { label: '테스트 없는 MR', value: '0 / 17건', note: '규칙 적용 후 백엔드' },
+      { label: '리뷰 발견 결함', value: '6 → 8건', note: '단일 리뷰가 놓친 결함 포함' },
+      { label: '틀린 가설', value: '1개 삭제', note: '실측과 달라 근거에서 제외' },
+    ],
+    notes: ['“세션을 나누면 비용이 는다”는 가설은 실측과 달랐습니다. 규칙에서 그 근거를 뺐습니다.'],
+    more: { href: '/posts/ai-agent-rules', label: 'AI 에이전트 규칙 글 읽기' },
   },
 ];
+
+const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <BaseLayout
-  title="박시현 · SW Engineer 포트폴리오"
-  description="박시현의 SW Engineer 포트폴리오. 인증 동시성, 세션 복구, 실시간 판정 재현과 AI 호출 경계를 실제 프로젝트 결과로 소개합니다."
+  title="박시현 · 포트폴리오"
+  description="박시현의 Backend & AI 포트폴리오. 가설을 세우고, 실험으로 재고, 근거와 함께 반영한 네 가지 작업을 소개합니다."
 >
   <div class="page portfolio">
-    <section class="hero" aria-labelledby="portfolio-title">
-      <p class="eyebrow">SOFTWARE ENGINEER / PORTFOLIO</p>
-      <h1 id="portfolio-title">실패까지 설계하고,<br /><span>테스트로 확인합니다.</span></h1>
-      <p class="intro">박시현입니다. 인증, 실시간 판정, AI 연동 서비스를 만들며 동시 요청과 장애 상황에서 무엇이 일어나는지 확인해 왔습니다.</p>
-      <a class="jump" href="#projects">프로젝트 보기 <span aria-hidden="true">↓</span></a>
+    <section class="hero col" aria-labelledby="portfolio-title">
+      <p class="eyebrow">PORTFOLIO</p>
+      <h1 id="portfolio-title">AI의 답을<br />측정으로 증명합니다</h1>
+      <p class="intro">가설을 세우고, 실험으로 재고, 근거와 함께 반영했습니다.</p>
+      <p class="who"><strong>박시현</strong> Backend &amp; AI Developer</p>
     </section>
 
-    <section id="projects" aria-labelledby="projects-title">
-      <div class="section-title"><p class="eyebrow">SELECTED WORK</p><h2 id="projects-title">대표 경험</h2></div>
-      {projects.map((project) => (
-        <article class="project">
-          <div class="project-head">
-            <span class="number">{project.number}</span>
-            <div>
-              <h3>{project.title}</h3>
-              <p class="subtitle">{project.subtitle}</p>
-              <p class="context">{project.context}</p>
-            </div>
-          </div>
-          <p class="role"><strong>담당</strong> {project.role}</p>
-          <div class="work-list">
-            {project.work.map((item) => (
-              <div class="work-item">
-                <h4>{item.label}</h4>
-                <div><p>{item.detail}</p><p class="proof"><strong>확인</strong> {item.proof}</p></div>
-              </div>
-            ))}
-          </div>
-          {project.note && <p class="note">{project.note}</p>}
-        </article>
+    <!-- 목차 겸 요약. 이 네 줄만 읽어도 무엇을 했고 무엇이 바뀌었는지 보인다 -->
+    <ol class="index col" aria-label="프로젝트 요약">
+      {projects.map((p, i) => (
+        <li>
+          <a href={`#${p.id}`}>
+            <span class="n">{num(i)}</span>
+            <span class="t"><strong>{p.title}</strong><span>{p.stack}</span></span>
+            <span class="hl">{p.highlight}</span>
+          </a>
+        </li>
       ))}
-    </section>
+    </ol>
 
-    <footer class="contact">
+    {projects.map((p, i) => (
+      <article class="project" id={p.id} aria-labelledby={`${p.id}-h`}>
+        <div class="col">
+          <p class="tag"><span class="badge">{num(i)}</span>{p.title}<span class="stack">{p.stack}</span></p>
+          <h2 id={`${p.id}-h`}>{p.headline}</h2>
+
+          <dl class="brief">
+            {p.brief.map((b) => <div><dt>{b.k}</dt><dd>{b.v}</dd></div>)}
+          </dl>
+        </div>
+
+        {p.figure && (
+          <figure class="fig">
+            <img src={p.figure.src} alt={p.figure.alt} width="1920" height="1080" loading="lazy" decoding="async" />
+            <figcaption>{p.figure.caption}</figcaption>
+          </figure>
+        )}
+
+        <div class="col">
+          {p.table && (
+            <table class:list={['tbl', { num: p.table.numeric }]}>
+              <thead><tr>{p.table.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+              <tbody>
+                {p.table.rows.map((r) => (
+                  <tr>{r.map((c, ci) => (ci === 0 ? <th scope="row">{c}</th> : <td>{c}</td>))}</tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {p.steps && (
+            <ol class="steps">
+              {p.steps.map((s) => <li><strong>{s.name}</strong>{s.text && <span>{s.text}</span>}</li>)}
+            </ol>
+          )}
+
+          {p.findings && (
+            <div class="findings">
+              {p.findings.map((f) => (
+                <div class="finding">
+                  <div class="fv"><b>{f.value}</b><span>{f.label}</span></div>
+                  <div><h3>{f.title}</h3><p>{f.text}</p></div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {p.metrics && (
+            <dl class="metrics">
+              {p.metrics.map((m) => (
+                <div>
+                  <dt>{m.label}</dt>
+                  <dd class="mv">{m.value}</dd>
+                  {m.note && <dd class="mn">{m.note}</dd>}
+                </div>
+              ))}
+            </dl>
+          )}
+
+          {p.conclusion && <p class="conclusion"><strong>결론</strong>{p.conclusion}</p>}
+
+          {p.notes?.map((n) => <p class="note">{n}</p>)}
+
+          {p.more && <p class="more"><a href={p.more.href}>{p.more.label} →</a></p>}
+        </div>
+      </article>
+    ))}
+
+    <footer class="contact col">
       <p>더 자세한 구현과 협업 경험이 궁금하시면 연락 주세요.</p>
       <a href={`mailto:${SITE.links.email}`}>이메일 <span aria-hidden="true">↗</span></a>
-      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">{SITE.links.github.replace('https://', '')} <span aria-hidden="true">↗</span></a>
     </footer>
   </div>
 </BaseLayout>
 
 <style>
   .portfolio { padding-bottom: var(--space-16); }
-  .eyebrow { margin: 0 0 var(--space-4); color: var(--accent); font-family: var(--font-mono); font-size: var(--fs-200); font-weight: 700; letter-spacing: .08em; }
-  h1, h2, h3, h4, p { margin-top: 0; }
-  .hero { padding: var(--space-16) 0 var(--space-14); }
-  h1 { margin-bottom: var(--space-6); font-family: var(--font-serif); font-size: clamp(2.2rem, 1.45rem + 3vw, 3.8rem); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-  h1 span { color: var(--accent); }
-  .intro { max-width: 650px; margin-bottom: var(--space-6); color: var(--text-dim); font-size: var(--fs-lead); line-height: var(--lh-normal); }
-  .jump { font-size: var(--fs-300); font-weight: 700; }
-  .section-title { display: flex; align-items: baseline; gap: var(--space-5); padding: var(--space-8) 0 var(--space-4); border-top: 1px solid var(--border); }
-  .section-title .eyebrow { margin: 0; }
-  .section-title h2 { margin: 0; font-size: var(--fs-700); }
-  .project { padding: var(--space-8) 0 var(--space-10); border-bottom: 1px solid var(--border); }
-  .project-head { display: flex; gap: var(--space-5); align-items: baseline; margin-bottom: var(--space-4); }
-  .number { min-width: 2.5rem; color: var(--accent); font-family: var(--font-mono); font-size: var(--fs-300); font-weight: 700; }
-  h3 { margin: 0; font-size: var(--fs-700); line-height: var(--lh-tight); }
-  .subtitle { margin: var(--space-1) 0 0; font-size: var(--fs-400); font-weight: 600; }
-  .context { margin: var(--space-2) 0 0; color: var(--text-dim); font-size: var(--fs-300); }
-  .role { margin: 0 0 var(--space-4) 3.75rem; font-size: var(--fs-300); }
-  .role strong { margin-right: var(--space-2); color: var(--accent); }
-  .work-list { margin-left: 3.75rem; border-top: 1px solid var(--border); }
-  .work-item { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px solid var(--border); }
-  .work-item:last-child { border-bottom: 0; }
-  h4 { margin: 0; font-size: var(--fs-400); line-height: var(--lh-normal); }
-  .work-item p { margin: 0; font-size: var(--fs-400); line-height: var(--lh-normal); }
-  .work-item .proof { margin-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-300); }
-  .proof strong { margin-right: var(--space-2); color: var(--accent); }
-  .note { margin: var(--space-3) 0 0 3.75rem; color: var(--text-dim); font-size: var(--fs-200); }
-  .contact { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3) var(--space-6); padding-top: var(--space-10); }
+  /* 글은 읽기 좋은 폭에 묶고, 그림만 페이지 폭을 다 쓴다 */
+  .col { max-width: var(--w-doc); }
+  h1, h2, h3, p { margin-top: 0; }
+
+  .eyebrow { margin: 0 0 var(--space-4); color: var(--accent); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); }
+  .hero { padding: var(--space-16) 0 var(--space-10); }
+  h1 { margin-bottom: var(--space-5); font-size: var(--fs-title); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+  .intro { margin-bottom: var(--space-6); color: var(--text-dim); font-size: var(--fs-lead); line-height: var(--lh-normal); }
+  .who { margin: 0; font-size: var(--fs-300); color: var(--text-dim); }
+  .who strong { margin-right: var(--space-2); color: var(--text); font-size: var(--fs-500); }
+
+  .index { list-style: none; margin: 0 0 var(--space-8); padding: 0; border-top: 2px solid var(--text); }
+  .index li { border-bottom: 1px solid var(--border); }
+  .index a { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: var(--space-4); align-items: center; padding: var(--space-4) 0; color: var(--text); }
+  .index a:hover { text-decoration: none; }
+  .index a:hover strong { color: var(--accent); }
+  .n { color: var(--accent); font-size: var(--fs-300); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .t { display: flex; flex-direction: column; min-width: 0; }
+  .t strong { font-size: var(--fs-500); line-height: var(--lh-snug); transition: color var(--dur) var(--ease); }
+  .t span { font-size: var(--fs-200); color: var(--text-dim); }
+  .hl { color: var(--accent); font-size: var(--fs-500); font-weight: 800; letter-spacing: var(--ls-snug); text-align: right; white-space: nowrap; }
+
+  .project { padding: var(--space-16) 0 var(--space-6); border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + var(--space-4)); }
+  .tag { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); margin-bottom: var(--space-4); color: var(--accent); font-size: var(--fs-300); font-weight: 800; }
+  .badge { padding: var(--space-05) var(--space-2); border-radius: var(--radius-md); background: var(--accent); color: var(--bg); font-variant-numeric: tabular-nums; }
+  .stack { color: var(--text-dim); font-weight: 500; }
+  h2 { margin-bottom: var(--space-8); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); word-break: keep-all; }
+
+  /* 문제·측정·발견. 라벨 폭을 고정해 세 줄이 표처럼 세로로 맞는다 */
+  .brief { display: grid; gap: var(--space-4); margin: 0 0 var(--space-10); }
+  .brief div { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--space-4); }
+  .brief dt { color: var(--accent); font-size: var(--fs-400); font-weight: 800; line-height: var(--lh-relaxed); }
+  .brief dd { margin: 0; font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all; }
+
+  .fig { margin: 0 0 var(--space-10); }
+  .fig img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius-xl); }
+  .fig figcaption { margin-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-200); }
+
+  /* 표는 가로줄만. 마지막 행(합계·결론)은 굵게 두지 않고 윗줄로만 구분한다 */
+  .tbl { width: 100%; margin: 0 0 var(--space-10); border-collapse: collapse; font-size: var(--fs-400); line-height: var(--lh-normal); }
+  .tbl thead th { padding: 0 var(--space-3) var(--space-2) 0; border-bottom: 2px solid var(--text); color: var(--text-dim); font-size: var(--fs-300); font-weight: 700; text-align: left; }
+  .tbl tbody th, .tbl td { padding: var(--space-3) var(--space-3) var(--space-3) 0; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  .tbl tbody th { font-weight: 600; }
+  .tbl.num td, .tbl.num thead th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+  .tbl.num tbody tr:last-child > * { border-top: 2px solid var(--text); border-bottom: 0; font-weight: 800; }
+
+  .steps { margin: 0 0 var(--space-10); padding: 0; list-style: none; counter-reset: s; border-left: 2px solid var(--border); }
+  .steps li { counter-increment: s; position: relative; padding: 0 0 var(--space-4) var(--space-6); font-size: var(--fs-500); line-height: var(--lh-normal); }
+  .steps li:last-child { padding-bottom: 0; }
+  .steps li::before {
+    content: counter(s); position: absolute; left: -0.8rem; top: .1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: var(--radius-full);
+    background: var(--bg); border: 2px solid var(--accent); color: var(--accent);
+    font-size: var(--fs-100); font-weight: 800; line-height: 1.25rem; text-align: center;
+  }
+  .steps strong { display: block; }
+  .steps span { display: block; color: var(--text-dim); font-size: var(--fs-400); word-break: keep-all; }
+
+  .findings { margin: 0 0 var(--space-10); border-top: 1px solid var(--border); }
+  .finding { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: var(--space-6); padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
+  .fv b { display: block; color: var(--accent); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); white-space: nowrap; }
+  .fv span { display: block; margin-top: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); }
+  .finding h3 { margin-bottom: var(--space-2); font-size: var(--fs-500); line-height: var(--lh-snug); word-break: keep-all; }
+  .finding p { margin: 0; font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: var(--space-6); margin: 0 0 var(--space-8); }
+  .metrics > div { padding-top: var(--space-3); border-top: 2px solid var(--text); }
+  .metrics dt { color: var(--text-dim); font-size: var(--fs-300); }
+  .metrics dd { margin: 0; }
+  .mv { margin-top: var(--space-1); color: var(--accent); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); font-variant-numeric: tabular-nums; }
+  .mn { margin-top: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); }
+
+  .conclusion {
+    margin: 0 0 var(--space-6); padding: var(--space-4) var(--space-5);
+    border-left: 3px solid var(--accent); border-radius: var(--radius-lg); background: var(--accent-soft);
+    font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all;
+  }
+  .conclusion strong { display: block; margin-bottom: var(--space-1); color: var(--accent); font-size: var(--fs-300); }
+  .note { margin-bottom: var(--space-4); font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
+  .more { margin: var(--space-6) 0 var(--space-4); font-size: var(--fs-300); font-weight: 700; }
+
+  .contact { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-6); padding-top: var(--space-12); }
   .contact p { flex-basis: 100%; margin: 0; font-size: var(--fs-400); font-weight: 600; }
   .contact a { font-size: var(--fs-300); font-weight: 700; }
-  @media (max-width: 600px) { .hero { padding: var(--space-12) 0; } .section-title { display: block; } .section-title h2 { margin-top: var(--space-2); } .role, .work-list, .note { margin-left: 0; } .work-item { grid-template-columns: 1fr; gap: var(--space-1); } .work-item h4 { color: var(--accent); } }
+
+  @media (max-width: 600px) {
+    .hero { padding: var(--space-12) 0 var(--space-8); }
+    .index a { grid-template-columns: 2rem 1fr; gap: var(--space-1) var(--space-3); }
+    .n { grid-row: 1 / span 2; align-self: start; padding-top: var(--space-05); }
+    .t { grid-column: 2; }
+    .hl { grid-column: 2; text-align: left; }
+    .project { padding-top: var(--space-12); }
+    .brief div { grid-template-columns: 1fr; gap: var(--space-05); }
+    .finding { grid-template-columns: 1fr; gap: var(--space-2); }
+    .tbl { font-size: var(--fs-300); }
+  }
 </style>
