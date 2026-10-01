@@ -160,6 +160,31 @@ const projects: Project[] = [
   },
 ];
 
+/*
+ * 협업 경험. 프로젝트 섹션이 "혼자 재고 고친 것"이라면 여기는 "팀에서 생긴 문제를
+ * 어떻게 읽었는가"다. 내용은 회고 글에 있으니 여기는 문제와 바꾼 것 두 줄만 두고 글로 보낸다.
+ */
+interface Retro { href: string; title: string; context: string; figure: string; problem: string; change: string; link?: { href: string; label: string } }
+const retros: Retro[] = [
+  {
+    href: '/posts/claude-code-retrospective',
+    title: '같은 Claude Code를 썼는데 왜 코드는 달랐을까',
+    context: '주차바로 · 7인 팀',
+    figure: '235줄 기능에 1,400줄 재작업',
+    problem: 'Git 이력을 다시 읽어, 팀원마다 에이전트에게 맡기는 방식이 계획 문서·규칙 파일·테스트 비율(0~65%)에서 갈린 것을 찾았습니다. 리뷰 반영 커밋 25개 중 22개가 한 쌍에서 나왔습니다.',
+    change: '계획·규칙·테스트를 개인 기본값에 맡기지 않고, 팀 공통 개발 파이프라인으로 묶기로 했습니다.',
+    link: { href: '#rules', label: '04 AI 코딩 팀 규칙으로 이어집니다' },
+  },
+  {
+    href: '/posts/seven-person-team-retrospective',
+    title: '7명이 모이면 더 좋은 결정을 할 수 있을까',
+    context: '주차바로 · 7인 팀',
+    figure: '주제 선정에 약 2주',
+    problem: '모두가 만족하는 주제를 찾느라 제안 → 평가 → 폐기가 반복됐고, 규칙 문서 하나에도 7명이 문장 단위로 합의했습니다.',
+    change: '아이디어를 고르는 회의와 발전시키는 회의를 나누고, 문서는 담당자 초안 → 1~2명 리뷰 → 전체 공유 순서로 정했습니다.',
+  },
+];
+
 const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
@@ -256,6 +281,29 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
       </article>
     ))}
 
+    <section class="collab col" aria-labelledby="collab-title">
+      <p class="eyebrow">COLLABORATION</p>
+      <h2 id="collab-title">협업 경험</h2>
+      <p class="collab-lead">7인 팀 프로젝트에서 팀 단위로 겪은 문제를 회고로 남겼습니다.</p>
+      <ul class="retros">
+        {retros.map((r) => (
+          <li>
+            <p class="r-meta">회고 · {r.context}</p>
+            <h3><a href={r.href}>{r.title}</a></h3>
+            <p class="r-fig">{r.figure}</p>
+            <dl class="brief">
+              <div><dt>문제</dt><dd>{r.problem}</dd></div>
+              <div><dt>바꾼 것</dt><dd>{r.change}</dd></div>
+            </dl>
+            <p class="r-links">
+              <a href={r.href}>회고 읽기 →</a>
+              {r.link && <a href={r.link.href}>{r.link.label} ↑</a>}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
     <footer class="contact col">
       <p>더 자세한 구현과 협업 경험이 궁금하시면 연락 주세요.</p>
       <a href={`mailto:${SITE.links.email}`}>이메일 <span aria-hidden="true">↗</span></a>
@@ -347,6 +395,22 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
   .note { margin-bottom: var(--space-4); font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
   .more { margin: var(--space-6) 0 var(--space-4); font-size: var(--fs-300); font-weight: 700; }
 
+  .collab { padding: var(--space-16) 0 var(--space-6); border-bottom: 1px solid var(--border); }
+  .collab h2 { margin-bottom: var(--space-3); }
+  .collab-lead { margin-bottom: var(--space-8); color: var(--text-dim); font-size: var(--fs-400); }
+  .retros { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--text); }
+  .retros li { padding: var(--space-8) 0; border-bottom: 1px solid var(--border); }
+  .retros li:last-child { border-bottom: 0; }
+  .r-meta { margin-bottom: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); }
+  .retros h3 { margin-bottom: var(--space-2); font-size: var(--fs-600); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); word-break: keep-all; }
+  .retros h3 a { color: var(--text); }
+  .retros h3 a:hover { color: var(--accent); text-decoration: none; }
+  .r-fig { margin-bottom: var(--space-5); color: var(--accent); font-size: var(--fs-500); font-weight: 800; }
+  .retros .brief { margin-bottom: var(--space-5); }
+  .retros .brief div { grid-template-columns: 4.5rem minmax(0, 1fr); }
+  .retros .brief dd { font-size: var(--fs-400); }
+  .r-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: 0; font-size: var(--fs-300); font-weight: 700; }
+
   .contact { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-6); padding-top: var(--space-12); }
   .contact p { flex-basis: 100%; margin: 0; font-size: var(--fs-400); font-weight: 600; }
   .contact a { font-size: var(--fs-300); font-weight: 700; }
@@ -358,7 +422,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     .t { grid-column: 2; }
     .hl { grid-column: 2; text-align: left; }
     .project { padding-top: var(--space-12); }
-    .brief div { grid-template-columns: 1fr; gap: var(--space-05); }
+    .brief div, .retros .brief div { grid-template-columns: 1fr; gap: var(--space-05); }
     .finding { grid-template-columns: 1fr; gap: var(--space-2); }
     .tbl { font-size: var(--fs-300); }
   }
