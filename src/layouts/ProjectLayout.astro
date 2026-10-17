@@ -64,6 +64,7 @@ const related = (d.relatedPosts ?? [])
         </dl>
 
         <MetricsTable metrics={d.metrics} />
+        {d.metricNote && <p class="metric-note">{d.metricNote}</p>}
 
         <div class="prose"><slot /></div>
 
@@ -92,4 +93,5 @@ const related = (d.relatedPosts ?? [])
   .facts div { display: flex; gap: var(--space-3); font-size: var(--fs-400); }
   dt { flex: 0 0 47px; color: var(--text-dim); }
   dd { margin: 0; }
+  .metric-note { margin: calc(var(--space-5) * -1) 0 var(--space-8); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
 </style>

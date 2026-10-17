@@ -36,6 +36,7 @@ const projects = defineCollection({
     metrics: z
       .array(z.object({ label: z.string(), before: z.string(), after: z.string() }))
       .default([]),
+    metricNote: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(99),
     /*
