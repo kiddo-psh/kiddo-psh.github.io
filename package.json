@@ -18,6 +18,7 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/nanum-myeongjo": "^5.3.0",
+    "@lucide/astro": "1.49.0",
     "astro": "^7.2.1",
     "astro-og-canvas": "^0.13.0",
     "astro-pagefind": "^2.0.1",
