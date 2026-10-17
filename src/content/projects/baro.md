@@ -55,7 +55,6 @@ AI 파트에서 실내 카메라 기반 차량 추적과 주차 판정 로직을
   <div><dt>학습 데이터</dt><dd><b>1,605장</b><small>학습 1,410 / 검증 195 · 차량 박스 2,113개 · CVAT 태스크 12개</small></dd></div>
   <div><dt>카메라 보정</dt><dd><b>재투영 1.08 px</b><small>체커보드 25장 전부 사용</small></dd></div>
   <div><dt>검증 영상</dt><dd><b>23,713 프레임</b><small>파일럿 3편 약 13분 · 차량 검출 42,309건</small></dd></div>
-  <div><dt>테스트</dt><dd><b>1,974개</b><small>Jetson 파이프라인 1,774 · ai 베이스라인 200</small></dd></div>
   <div><dt>커밋</dt><dd><b>207개</b><small>프로젝트 전체 928개</small></dd></div>
 </dl>
 
