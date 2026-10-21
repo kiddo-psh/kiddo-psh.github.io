@@ -2,7 +2,7 @@
 title: "AI 코딩 에이전트에게 규칙을 많이 주면 더 잘할까?"
 description: "Claude Code의 프롬프트 축소 사례를 바탕으로 AI 에이전트 규칙과 AGENTS.md를 실험적으로 설계하는 방법을 정리한다."
 pubDate: 2026-09-05
-category: dev
+category: ai
 ---
 > Claude Code 제작자는 왜 시스템 프롬프트의 80%를 지웠을까?
 
