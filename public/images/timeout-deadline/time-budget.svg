@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" viewBox="0 0 960 400" role="img" aria-labelledby="t d">
+  <title id="t">전체 5초 중 재시도에 남은 시간은 얼마일까?</title>
+  <desc id="d">전처리 1초, 첫 호출 2초, 재시도 전 대기 1초로 이미 4초를 사용했습니다. 남은 1초에서 응답 반환 여유 0.2초를 빼면 다음 호출에 배정할 수 있는 시간은 최대 0.8초입니다. 아래 확대 막대는 마지막 1초를 보여주며, 위 막대와 축척이 다릅니다.</desc>
+  <style>
+    .dg { --ink:#38362f; --muted:#57534a; --q:#57534a; --g:#1d6b4f; --v:#544a87; --t:#9c4a15; --line:#cec8bb; font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif; }
+    :root[data-theme='dark'] .dg { --ink:#ece8df; --muted:#c3bdb1; --q:#c3bdb1; --g:#91c9ad; --v:#bfb5e8; --t:#edb58e; --line:#645f55; }
+    .dg .hd { fill:var(--ink); font-size:19px; font-weight:650; }
+    .dg .sub { fill:var(--muted); font-size:14px; }
+    .dg .tick { fill:var(--ink); font-size:15px; }
+    .dg .bar { stroke:none; }
+    .dg .bar.q { fill:var(--q); }
+    .dg .bar.v { fill:var(--v); }
+    .dg .bar.g { fill:var(--g); }
+    .dg .bar.t { fill:var(--t); }
+    .dg .grid { fill:none; stroke:var(--line); stroke-width:1; }
+    .dg .rule { fill:none; stroke:var(--t); stroke-width:2; }
+  </style>
+  <text class="hd" x="80" y="49">전체 시간 예산 5초</text>
+  <text class="sub" x="880" y="49" text-anchor="end">다음 호출을 시작해도 마감은 그대로</text>
+
+  <path class="grid" d="M80 82v12 M240 82v12 M400 82v12 M560 82v12 M720 82v12 M880 82v12"/>
+  <g class="tick" text-anchor="middle">
+    <text x="80" y="77">0초</text><text x="240" y="77">1초</text>
+    <text x="400" y="77">2초</text><text x="560" y="77">3초</text>
+    <text x="720" y="77">4초</text><text x="880" y="77">5초</text>
+  </g>
+  <rect class="bar q" x="80" y="100" width="158" height="22" rx="3"/>
+  <rect class="bar q" x="242" y="100" width="316" height="22" rx="3"/>
+  <rect class="bar v" x="562" y="100" width="156" height="22" rx="3"/>
+  <rect class="bar g" x="722" y="100" width="124" height="22" rx="3"/>
+  <rect class="bar t" x="850" y="100" width="30" height="22" rx="3"/>
+  <path class="rule" d="M880 92v76"/>
+  <g class="tick" text-anchor="middle">
+    <text x="160" y="151">전처리 1초</text>
+    <text x="400" y="151">첫 호출 2초</text>
+    <text x="640" y="151">재시도 대기 1초</text>
+    <text x="800" y="151">남은 1초</text>
+  </g>
+  <text class="sub" x="400" y="173" text-anchor="middle">응답 없이 타임아웃</text>
+  <text class="sub" x="880" y="190" text-anchor="end">데드라인</text>
+
+  <path class="grid" d="M722 200 C722 218 280 210 280 232 M880 200 C880 216 880 216 880 232" stroke-dasharray="4 5"/>
+  <text class="hd" x="80" y="254">마지막 1초 확대</text>
+  <text class="sub" x="80" y="276">위 막대와 축척이 다릅니다</text>
+  <text class="tick" x="280" y="254">4초</text>
+  <text class="tick" x="880" y="254" text-anchor="end">5초</text>
+  <rect class="bar g" x="280" y="266" width="478" height="24" rx="3"/>
+  <rect class="bar t" x="762" y="266" width="118" height="24" rx="3"/>
+  <text class="tick" x="520" y="316" text-anchor="middle">다음 호출 최대 0.8초</text>
+  <text class="tick" x="820" y="316" text-anchor="middle">반환 여유 0.2초</text>
+  <text class="sub" x="880" y="368" text-anchor="end">예시: 5초 − 이미 사용한 4초 − 반환 여유 0.2초 = 호출 예산 0.8초</text>
+</svg>
