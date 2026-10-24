@@ -33,6 +33,7 @@ const projects = defineCollection({
     headline: z.string().min(1),
     projectType: z.string().min(1),
     cardRole: z.string().min(1),
+    cardHighlights: z.array(z.string().min(1)).default([]),
     validation: z.string().min(1),
     contributions: z.array(z.string().min(1)).min(1),
     collaboration: z.string().min(1),

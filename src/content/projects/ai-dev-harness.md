@@ -1,8 +1,8 @@
 ---
 title: "ai-dev-harness"
-summary: "팀 공통 개발 규칙에서 출발해 Claude Code·Codex의 사용량과 작업 검증 근거를 연결하는 AgentOps 키트로 확장했습니다. 꾸기에 수집·관측 기능을 적용하며 도구별 집계와 작업 귀속 문제를 다루고 있습니다."
+summary: "Claude Code·Codex의 사용량과 검증 근거를 작업에 연결하는 AgentOps 프로젝트입니다. 규칙 설치에서 출발해 중복 수집 방지, 실패 재전송, 작업 귀속과 관측으로 확장했습니다."
 period: "2026.09 ~ 진행 중 (개인 프로젝트)"
-role: "설계·구현·리허설 전반"
+role: "AgentOps 설계·구현, 개발 규칙 자동화와 적용 검증"
 stack:
   - Python
   - Claude Code hooks
@@ -16,16 +16,20 @@ stack:
   - Loki
   - Grafana
 repo: "https://github.com/kiddo-psh/ai-dev-harness"
-featured: false
+featured: true
 order: 4
 relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates
 cover: "/images/projects/ai-dev-harness/cover.png"
-headline: "AI가 무엇을 만들고 검증했는지 팀에서 확인할 수 있게"
-projectType: "개인 프로젝트 · 팀에서 사용한 개발 절차를 키트로 일반화"
-cardRole: "개발 가드레일·공통 텔레메트리·실행 근거 수집 설계 및 구현"
-validation: "꾸기 적용 · 사용량 집계와 작업별 검증 근거 수집 확장"
+headline: "AI 사용량과 검증 결과를 작업에 연결하는 AgentOps"
+projectType: "개인 프로젝트 · AI 실행의 가시성과 신뢰성"
+cardRole: "사용량 정규화·작업 귀속·수집 복구·실행 근거 구현"
+cardHighlights:
+  - "Claude Code·Codex 사용량 정규화, 세션과 작업·PR 연결"
+  - "중복 수집 방지·실패 재전송, 테스트 실행과 코드 상태 연결"
+  - "OpenTelemetry·Prometheus·Loki·Grafana 관측, 꾸기 적용 이력"
+validation: "꾸기 적용 이력 · 기본 키트 main 0.4.0 / 확장은 별도 개발 브랜치"
 contributions:
   - "공통 규칙 설치·드리프트 검사와 위험 단계별 hooks·CI 검사 설계·구현"
   - "Claude Code·Codex의 사용량을 같은 사건·단가·날짜 기준으로 정규화하는 v2 구현"

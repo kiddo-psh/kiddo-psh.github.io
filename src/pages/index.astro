@@ -6,14 +6,19 @@ import { getVisiblePosts } from '../lib/posts';
 import { getCollection } from 'astro:content';
 import { SITE } from '../site.config';
 import { briefings, briefingLabels } from '../lib/briefings';
+import { portfolioCases } from '../data/portfolio';
 
 const allPosts = await getVisiblePosts();
 const [lead, ...rest] = allPosts.slice(0, 5);
 const allProjects = await getCollection('projects');
 const featured = allProjects
   .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 3);
+  .sort((a, b) => {
+    const rank = (id: string) => portfolioCases.findIndex(p => p.id === id);
+    const ar=rank(a.id),br=rank(b.id);
+    return (ar<0?Number.MAX_SAFE_INTEGER:ar)-(br<0?Number.MAX_SAFE_INTEGER:br) || a.data.order-b.data.order;
+  })
+  .slice(0, 4);
 ---
 
 <BaseLayout title={SITE.title}>
@@ -126,8 +131,10 @@ const featured = allProjects
 
   .pj { margin-bottom: var(--space-20); }
   .pj .pj-grid { margin-top: var(--space-6); }
+  .pj-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 
   @media (max-width: 640px) {
+    .pj-grid { grid-template-columns:1fr; }
     .band { margin: var(--space-14) 0; padding: var(--space-10) 0; }
     .btype { flex-basis: 40px; }
   }

@@ -1,208 +1,109 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
-import * as si from 'simple-icons';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 
-const stacks: { group: string; items: { name: string; slug?: string }[] }[] = [
-  { group: '언어', items: [
-    { name: 'Python', slug: 'python' }, { name: 'Java', slug: 'openjdk' },
-    { name: 'TypeScript', slug: 'typescript' }, { name: 'SQL' } ] },
-  { group: 'AI·비전', items: [
-    { name: 'YOLOv8' }, { name: 'ByteTrack' }, { name: 'TensorRT', slug: 'nvidia' },
-    { name: 'OpenCV', slug: 'opencv' }, { name: 'Jetson', slug: 'nvidia' } ] },
-  { group: 'LLM', items: [
-    { name: 'Claude API', slug: 'claude' }, { name: 'RAG' }, { name: 'ChromaDB' } ] },
-  { group: '백엔드', items: [
-    { name: 'Spring Boot', slug: 'springboot' }, { name: 'JPA' },
-    { name: 'FastAPI', slug: 'fastapi' } ] },
-  { group: '프론트엔드', items: [
-    { name: 'Vue 3', slug: 'vuedotjs' }, { name: 'React', slug: 'react' } ] },
-  { group: '데이터', items: [
-    { name: 'MySQL', slug: 'mysql' }, { name: 'PostgreSQL', slug: 'postgresql' },
-    { name: 'Redis', slug: 'redis' } ] },
-  { group: '인프라', items: [
-    { name: 'Docker', slug: 'docker' }, { name: 'GitHub Actions', slug: 'githubactions' } ] },
+const experience = [
+  {title:'AI가 판단하고 실행할 조건을 정했습니다',text:'주차바로에서는 차량 검출을 점유·출차 판정으로 연결했습니다. 냠냠코치에서는 기록 상태에 따라 실행할 분석과 검색을 선택하도록 바꿨습니다.',links:[{label:'주차바로',href:'/projects/baro/'},{label:'냠냠코치',href:'/projects/yumyum/'}]},
+  {title:'서버와 화면 사이의 불일치를 다뤘습니다',text:'feelm의 계정·인증을 구현하고 주요 화면을 실제 API에 연결했습니다. 비밀번호 변경 뒤 토큰의 상태, 화면에 표시할 수 있는 값처럼 시스템 경계에서 생기는 문제를 정리했습니다.',links:[{label:'feelm',href:'/projects/feelm/'}]},
+  {title:'AI 실행을 추적하고 검증할 도구를 만들었습니다',text:'영상 리플레이와 AI 실행 경로 평가를 만들고, 공통 개발 규칙은 AgentOps로 확장했습니다. 도구별 사용량을 정규화하고 중복 수집·실패 재전송·작업 귀속과 검증 근거를 다룹니다.',links:[{label:'AI-Dev-Harness · AgentOps',href:'/projects/ai-dev-harness/'}]},
 ];
-
-// simple-icons는 siPython 형태로 내보낸다. 로고가 없는 항목은 글자만 렌더한다.
-const icon = (slug?: string) => {
-  if (!slug) return null;
-  const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1);
-  return (si as Record<string, any>)[key] ?? null;
-};
-
-/*
- * 브랜드 원색은 테마 한쪽에서 묻힌다. Java(#000000)는 다크 배경에서 대비 1.31,
- * React(#61DAFB)는 흰 칩 위에서 1.63이다. 칩 배경(--bg-elev)과의 대비가 2.2 미만인
- * 로고만 그 테마에서 본문 색으로 떨어뜨린다. 나머지는 원색 그대로 간다.
- */
-const luminance = (hex: string) => {
-  const c = [0, 2, 4]
-    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
-    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-};
-const contrast = (a: number, b: number) =>
-  (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-const BG_LIGHT = luminance('ffffff'); // --bg-elev (light)
-const BG_DARK = luminance('211f1c');  // --bg-elev (dark)
-const MIN_CONTRAST = 2.2;
-
-const themeClass = (hex: string) => {
-  const l = luminance(hex);
-  return [
-    contrast(l, BG_LIGHT) < MIN_CONTRAST ? 'no-light' : '',
-    contrast(l, BG_DARK) < MIN_CONTRAST ? 'no-dark' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-};
-
-const timeline = [
-  { when: '2026.01 ~', what: '삼성 청년 SW·AI 아카데미 15기' },
-  { when: '2018.03 ~ 2024.02', what: '경희대학교 생체의공학과' },
+const skills = [
+  {name:'AI 처리·평가',tools:'Python · OpenCV · YOLOv8 · ByteTrack · Claude API · ChromaDB',use:'차량 추적·구역 판정, LLM 실행 선택과 조건부 검색, 녹화 영상 리플레이와 호출 계측',href:'/projects/baro/'},
+  {name:'백엔드·데이터',tools:'Java · Spring Boot · FastAPI · PostgreSQL · MySQL · Redis',use:'계정·인증과 업무 API, 기록 조회, 외부 AI 연동과 트랜잭션 범위 정리',href:'/projects/feelm/'},
+  {name:'사용자 화면',tools:'Vue 3 · React',use:'운동·코칭 기능 화면 구현, 공통 HTTP 클라이언트와 인증 세션, 실제 API 응답에 맞춘 화면 연동',href:'/projects/yumyum/'},
+  {name:'개발 절차·관측',tools:'Python · Claude Code / Codex · CI · OpenTelemetry · Loki · Grafana',use:'규칙 설치·변경 검사, 사용량 집계와 작업별 검증 근거 수집',href:'/projects/ai-dev-harness/'},
 ];
-
-/*
- * 수상과 자격을 나눈다.
- *
- * 한 목록일 때 "삼성 SW역량테스트 B형"이 상 셋 사이에 끼어 네 번째 상처럼 보였다.
- * 그건 받은 상이 아니라 통과한 시험이다. 그리고 자격증 넷은 목록 아래 흐린 글씨
- * 한 줄로만 있어서, 같은 무게의 것이 한쪽은 목록 한쪽은 각주로 갈렸다.
- * 둘을 같은 모양의 목록 둘로 세운다.
- */
+const education = [
+  {date:'2026.01 ~',title:'삼성 청년 SW·AI 아카데미 15기',note:'팀 프로젝트에서 AI 파이프라인·백엔드·화면 연동을 구현했습니다.'},
+  {date:'2018.03 ~ 2024.02',title:'경희대학교 생체의공학과',note:null},
+];
 const awards = [
-  { title: '공통 프로젝트 우수상', note: '주차바로 · SSAFY 2학기', href: '/projects/baro' },
-  { title: '관통 프로젝트 최우수상', note: 'yumyum · SSAFY 1학기', href: '/projects/yumyum' },
-  { title: '성적 우수상', note: 'SSAFY 1학기', href: null },
+  {title:'특화 프로젝트 1등',note:'feelm · SSAFY 2학기 · 팀 성과',href:'/projects/feelm/'},
+  {title:'공통 프로젝트 우수상',note:'주차바로 · SSAFY 2학기 · 팀 수상',href:'/projects/baro/'},
+  {title:'관통 프로젝트 최우수상',note:'냠냠코치 · SSAFY 1학기 · 팀 수상',href:'/projects/yumyum/'},
+  {title:'성적 우수상',note:'SSAFY 1학기',href:null},
 ];
-
-/* 취득일 내림차순. 위의 이력 목록과 같은 규칙이다 */
-const certs = [
-  { title: '정보처리기사', note: '2026.09' },
-  { title: 'SQLD', note: '2026.06' },
-  { title: 'ADsP', note: '2026.06' },
-  { title: '삼성 SW역량테스트 B형', note: 'Professional · 2026.03' },
-  { title: 'OPIc IH', note: '2025.09' },
+const qualifications = [
+  {title:'정보처리기사',date:'2026.09'},
+  {title:'SQLD',date:'2026.06'},
+  {title:'ADsP',date:'2026.06'},
+  {title:'삼성 SW역량테스트 B형',date:'Professional · 2026.03'},
+  {title:'OPIc IH',date:'2025.09'},
 ];
 ---
+<BaseLayout title="소개 · 박시현" description="개발자 박시현의 소개. AI 파이프라인, 백엔드와 화면 연동에서 직접 맡은 경험과 사용 기술, 학력·교육·수상·자격을 정리했습니다.">
+  <div class="page about-page">
+    <section class="about-intro" aria-labelledby="about-title">
+      <p class="eyebrow">소개</p>
+      <h1 id="about-title">박시현</h1>
+      <p class="intro-lead">문제를 데이터와 코드로<br />구체화하는 개발자입니다.</p>
+      <p class="intro-copy">카메라 영상에서 주차 사건을 만들고, 식단·운동 기록에 맞춰 AI 분석을 선택하고, 계정의 상태 변화를 실제 화면에 연결해 왔습니다. 구현이 필요한 부분을 직접 만들고, 결과를 다시 확인할 방법도 함께 남기려 합니다.</p>
+      <div class="intro-links"><a href="/portfolio/">포트폴리오<ArrowRight size={16} /></a><a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}</a></div>
+    </section>
 
-<BaseLayout title="소개" description={SITE.description}>
-  <div class="page w-read">
-    <h1 class="page-title">소개</h1>
+    <section class="about-section" aria-labelledby="experience-title">
+      <h2 id="experience-title">이런 일을 맡아왔습니다</h2>
+      <div class="experience-list">{experience.map((e,i)=><article><span class="number">0{i+1}</span><div><h3>{e.title}</h3><p>{e.text}</p><div class="proof-links">{e.links.map(l=><a href={l.href}>{l.label}<ArrowRight size={14} /></a>)}</div></div></article>)}</div>
+    </section>
 
-    <div class="prose">
-      <p>
-        만드는 것보다 <strong>기준을 정하는 게</strong> 더 어렵다고 생각해요. 뭘 위반으로 볼지,
-        어떤 근거를 믿을지, 언제 모델을 부르지 말아야 할지 같은 것들이요. 경계를 미리 정해두지
-        않으면 코드는 늘 그럴듯한 답을 내놓거든요.
-      </p>
-      <p>
-        그래서 세 가지를 지키려고 해요. 추측은 재 보고 나서 말하기. 근거가 없으면 답을
-        지어내지 않기. 수치를 말할 때는 그 수치가 나온 조건도 같이 적기.
-      </p>
-      <p>
-        기능이 돌아가는 것보다, 안 돌아갈 때 무슨 일이 생기는지를 먼저 정해요. 이 블로그에는
-        뭘 만들었는지보다 <strong>왜 그렇게 판단했는지</strong>를 써요.
-      </p>
-    </div>
+    <section class="about-section" aria-labelledby="skills-title">
+      <h2 id="skills-title">기술은 이렇게 사용했습니다</h2>
+      <div class="skills-list">{skills.map(s=><article><h3>{s.name}</h3><div><p class="tools">{s.tools}</p><p class="usage">{s.use}</p><a href={s.href}>구현 사례<ArrowRight size={14} /></a></div></article>)}</div>
+    </section>
 
-    <h2>기술 스택</h2>
-    <dl class="stack">
-      {stacks.map((s) => (
-        <div>
-          <dt>{s.group}</dt>
-          <dd class="chips">
-            {s.items.map((it) => {
-              const ic = icon(it.slug);
-              return (
-                <span class="chip stack-chip">
-                  {ic && (
-                    <svg
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                      class={themeClass(ic.hex)}
-                      style={`--brand:#${ic.hex}`}
-                    >
-                      <path d={ic.path} />
-                    </svg>
-                  )}
-                  {it.name}
-                </span>
-              );
-            })}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <section class="about-section" aria-labelledby="writing-title">
+      <h2 id="writing-title">이 블로그에 남기는 기록</h2>
+      <p class="section-copy">프로젝트 글에는 어떤 문제를 맡았고 왜 그 방법을 골랐는지 씁니다. 기술 글에는 HTTP, 멱등성, 재시도와 시간 제한처럼 구현 중 만나는 개념을 정리합니다. 수치를 적을 때는 측정 조건을 함께 남기고, 팀의 결과와 직접 기여를 구분합니다.</p>
+      <div class="proof-links"><a href="/projects/">프로젝트 기록<ArrowRight size={15} /></a><a href="/posts/">기술 글과 회고<ArrowRight size={15} /></a></div>
+    </section>
 
-    <h2>이력</h2>
-    <dl class="stack">
-      {timeline.map((t) => (
-        <div>
-          <dt class="wide">{t.when}</dt>
-          <dd>{t.what}</dd>
-        </div>
-      ))}
-    </dl>
+    <section class="about-section" aria-labelledby="education-title"><h2 id="education-title">학력·교육</h2><dl class="education">{education.map(e=><div><dt>{e.date}</dt><dd><strong>{e.title}</strong>{e.note&&<p>{e.note}</p>}</dd></div>)}</dl></section>
 
-    <h2>수상</h2>
-    <ul class="record">
-      {awards.map((a) => (
-        <li>
-          {a.href ? <a href={a.href}>{a.title}</a> : <span>{a.title}</span>}
-          <small>{a.note}</small>
-        </li>
-      ))}
-    </ul>
+    <section class="about-section" aria-labelledby="awards-title"><h2 id="awards-title">수상·프로젝트 성과</h2><ul class="records">{awards.map(a=><li><div>{a.href?<a href={a.href}>{a.title}<ArrowUpRight size={14} /></a>:<strong>{a.title}</strong>}<p>{a.note}</p></div></li>)}</ul></section>
 
-    <h2>자격</h2>
-    <ul class="record">
-      {certs.map((c) => (
-        <li>
-          <span>{c.title}</span>
-          <small>{c.note}</small>
-        </li>
-      ))}
-    </ul>
+    <section class="about-section" aria-labelledby="qualifications-title"><h2 id="qualifications-title">자격·언어</h2><ul class="records qualifications">{qualifications.map(q=><li><strong>{q.title}</strong><span>{q.date}</span></li>)}</ul></section>
 
-    <h2>연락</h2>
-    <ul class="links">
-      <li><a href={SITE.links.github}>GitHub</a></li>
-      <li><a href="https://solved.ac/asded3563">solved.ac</a></li>
-      <li><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}</a></li>
-    </ul>
+    <section class="about-section contact" aria-labelledby="about-contact-title"><h2 id="about-contact-title">연락</h2><a class="email" href={`mailto:${SITE.links.email}`}>{SITE.links.email}<ArrowUpRight size={20} /></a><div class="proof-links"><a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={14} /></a><a href="https://solved.ac/asded3563" target="_blank" rel="noopener noreferrer">solved.ac<ArrowUpRight size={14} /></a></div></section>
   </div>
 </BaseLayout>
-
 <style>
-  /* 폭은 global.css의 .w-read 유틸리티가 담당한다 (Task 6에서 통합) */
-  h2 { font-size: var(--fs-600); margin: var(--space-10) 0 var(--space-3); line-height: var(--lh-snug); }
-
-
-  .stack { margin: 0; display: grid; gap: var(--space-3); }
-  .stack > div { display: flex; gap: var(--space-4); font-size: var(--fs-400); align-items: baseline; }
-  .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  /* 기하는 global.css의 .chip이 정한다. 여기서는 로고 자리와 배경만 더한다 */
-  .stack-chip { gap: var(--space-2); background: var(--bg-elev); color: var(--text); }
-  .stack-chip svg { width: 12px; height: 12px; flex: 0 0 auto; fill: var(--brand, currentColor); }
-  :root[data-theme='light'] .stack-chip svg.no-light { fill: currentColor; }
-  :root[data-theme='dark'] .stack-chip svg.no-dark { fill: currentColor; }
-  dt { flex: 0 0 79px; color: var(--text-dim); white-space: nowrap; }
-  dt.wide { flex: 0 0 135px; }
-  dd { margin: 0; }
-
-  /* 수상과 자격이 같은 모양을 쓴다 — 나눈 것은 성격이지 무게가 아니다 */
-  .record { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
-  .record li { padding: var(--space-1) 0; display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
-  .record small { font-size: var(--fs-300); color: var(--text-dim); }
-
-
-  .links { list-style: none; margin: 0; padding: 0; font-size: var(--fs-400); }
-  .links li { padding: var(--space-1) 0; }
-
-  @media (max-width: 560px) {
-    .stack div { flex-direction: column; gap: var(--space-05); }
-    dt, dt.wide { flex: none; }
+  .about-page { max-width:900px; padding-bottom:24px; }
+  .about-page h1,.about-page h2,.about-page h3,.about-page p { margin-top:0; }
+  .about-page a { display:inline-flex; align-items:center; gap:7px; }
+  .about-intro { padding:56px 0 40px; }
+  .eyebrow { margin:0 0 16px; font-size:13px; color:var(--accent); font-weight:650; }
+  h1 { font-size:40px; line-height:1.3; letter-spacing:-.04em; margin-bottom:22px; font-weight:750; }
+  .intro-lead { font-size:26px; line-height:1.5; letter-spacing:-.035em; font-weight:650; margin-bottom:22px; }
+  .intro-copy { max-width:680px; font-size:16px; line-height:1.9; color:var(--text-dim); margin-bottom:24px; }
+  .intro-links { display:flex; align-items:center; flex-wrap:wrap; gap:12px 24px; font-size:13px; }
+  .intro-links > a:first-child { font-weight:650; }.intro-links > a:last-child { color:var(--text-dim); overflow-wrap:anywhere; }
+  .about-section { padding:32px 0; border-top:1px solid var(--border); }
+  h2 { margin:0 0 24px; font-size:24px; line-height:1.5; letter-spacing:-.035em; font-weight:700; }
+  h3 { margin:0 0 10px; font-size:17px; line-height:1.6; font-weight:650; letter-spacing:-.02em; }
+  .experience-list { display:grid; gap:28px; }.experience-list article { display:grid; grid-template-columns:24px minmax(0,1fr); gap:16px; }
+  .number { font-size:12px; font-variant-numeric:tabular-nums; color:var(--accent); padding-top:4px; }
+  .experience-list p,.section-copy { color:var(--text-dim); font-size:15px; line-height:1.9; margin-bottom:12px; }
+  .proof-links { display:flex; flex-wrap:wrap; gap:12px 24px; font-size:13px; }
+  .skills-list article { display:grid; grid-template-columns:145px minmax(0,1fr); gap:24px; padding:22px 0; border-top:1px solid var(--border); }
+  .skills-list article:first-child { padding-top:0; border-top:0; }.skills-list article:last-child { padding-bottom:0; }
+  .skills-list h3 { font-size:15px; }.tools { margin-bottom:8px; font-size:14px; line-height:1.8; }
+  .usage { color:var(--text-dim); font-size:14px; line-height:1.8; margin-bottom:10px; }.skills-list a { font-size:12px; }
+  .section-copy { max-width:710px; margin-bottom:18px; }
+  .education { margin:0; }.education > div { display:grid; grid-template-columns:145px minmax(0,1fr); gap:24px; padding:12px 0; }
+  .education dt { color:var(--text-dim); font-size:13px; line-height:1.8; }.education dd { margin:0; font-size:15px; line-height:1.8; }
+  .education strong { font-weight:600; }.education p { margin:8px 0 0; color:var(--text-dim); font-size:13px; }
+  .records { list-style:none; margin:0; padding:0; display:grid; gap:18px; }
+  .records li { font-size:15px; line-height:1.7; }.records li > div > a { color:var(--text); font-weight:600; }
+  .records strong { font-weight:600; }.records p { margin:5px 0 0; color:var(--text-dim); font-size:13px; }
+  .qualifications { gap:14px; }.qualifications li { display:flex; gap:12px 24px; justify-content:space-between; flex-wrap:wrap; }
+  .qualifications span { color:var(--text-dim); font-size:13px; }
+  .email { font-size:22px; font-weight:650; letter-spacing:-.02em; overflow-wrap:anywhere; }.contact .proof-links { margin-top:22px; }
+  @media(max-width:650px) {
+    .about-intro { padding:36px 0 32px; }h1 { font-size:34px; }.intro-lead { font-size:23px; }.intro-copy { font-size:15px; }
+    .about-section { padding:28px 0; }h2 { font-size:22px; }.experience-list article { gap:12px; }
+    .skills-list article,.education > div { grid-template-columns:1fr; gap:8px; }.skills-list h3 { margin-bottom:4px; }
+    .education > div + div { margin-top:14px; }.email { font-size:20px; }
   }
 </style>

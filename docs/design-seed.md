@@ -16,6 +16,8 @@ The public page source uses white, neutral gray text and surfaces, category navi
 - Content page maximum width 1080px including padding. At 700px, the featured article stacks; regular rows retain a compact thumbnail.
 - All nine current posts have individual vector illustrations exported as 1200×750 PNGs and attached through frontmatter. The same PNG appears in lists, article headers, and social sharing. Source SVGs and the generator are retained for editing. Future posts without a cover have a CSS fallback. No reference images, logos, or source components are reused.
 - Preserve category URLs, search, RSS, theme toggle, diagrams, and comments. Article and project pages have no table of contents: center the body column in the viewport, keep text left-aligned, and let wide diagrams expand symmetrically.
+- Project index: image-and-text rows, ordered consistently with the portfolio; show the problem, personal scope and validation before the detail link. Keep the home project cards compact.
+- About: name, a concrete introduction, experience linked to cases, technologies explained through actual use, education, awards, qualifications and contact. Avoid decorative skill logos and unsupported proficiency ratings. Contact details always use `SITE.links`.
 - Dark mode uses neutral charcoal surfaces and brighter green accents. Reduced-motion users receive no thumbnail movement.
 - Article components share gray panels and 14px corners: code blocks, inline code, tables, quotes, and diagrams. Code syntax retains meaningful string/type/error colors. All 15 body SVGs receive the shared light/dark palette at build time. The timeout diagram has a dedicated mobile layout.
 

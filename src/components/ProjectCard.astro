@@ -30,13 +30,14 @@ const tone = projectTone(d.order);
       <Motif seed={project.id} tone={tone} size={76} plain />
     </span>}
   </span>
-  <span class="body">
+  <div class="body">
     <Tag class="ttl serif">{d.title}</Tag>
     <span class="sum">{d.summary}</span>
+    {d.cardHighlights.length > 0 && <ul class="highlights">{d.cardHighlights.map(item => <li>{item}</li>)}</ul>}
     <span class="card-fact"><b>담당</b><span>{d.cardRole}</span></span>
     <span class="card-fact"><b>검증</b><span>{d.validation}</span></span>
     <span class="project-type">{d.projectType}</span>
-  </span>
+  </div>
 </a>
 
 <style>
@@ -75,6 +76,8 @@ const tone = projectTone(d.order);
   .card:hover .ttl { color: var(--accent); }
   .sum { display: block; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
   .sum { margin-bottom: 18px; }
+  .highlights { margin:0 0 20px; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); }
+  .highlights li + li { margin-top:6px; }.highlights li::marker { color:var(--accent); }
   .card-fact { display: flex; gap: 12px; margin-top: 8px; font-size: 14px; line-height: 1.6; }
   .card-fact b { flex: 0 0 28px; font-weight: 600; }
   .card-fact > span { color: var(--text-dim); }

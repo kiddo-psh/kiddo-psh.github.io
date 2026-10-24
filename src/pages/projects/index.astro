@@ -1,21 +1,36 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectListItem from '../../components/ProjectListItem.astro';
+import { portfolioCases } from '../../data/portfolio';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
 
-const projects = (await getCollection('projects')).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const entries = await getCollection('projects');
+const rank = (id: string) => portfolioCases.findIndex(p => p.id === id);
+const projects = entries.sort((a,b) => {
+  const ar=rank(a.id),br=rank(b.id);
+  return (ar<0?Number.MAX_SAFE_INTEGER:ar)-(br<0?Number.MAX_SAFE_INTEGER:br) || a.data.order-b.data.order;
+});
 ---
 
-<BaseLayout title="프로젝트" description="만든 것들과 그때의 판단">
-  <div class="page">
-    <h1 class="page-title">프로젝트</h1>
-    <p class="page-lead">해결한 문제와 직접 책임진 일, 선택의 근거와 검증 결과를 기록했습니다.</p>
-    <div class="pj-grid">
-      {projects.map((project) => <ProjectCard project={project} headingLevel={2} />)}
+<BaseLayout title="프로젝트" description="현장 영상 처리, AI 코칭, 개발 도구와 인증·연동. 직접 맡은 문제와 설계 선택, 검증 결과를 프로젝트별로 기록합니다.">
+  <div class="page projects-page">
+    <section class="page-intro" aria-labelledby="projects-title">
+      <div><h1 id="projects-title">프로젝트</h1><p>어떤 문제를 맡았고, 무엇을 바꿨는지 기록했습니다.</p></div>
+      <a href="/portfolio/">핵심 사례 한눈에 보기<ArrowRight size={16} /></a>
+    </section>
+    <div class="project-list">
+      {projects.map((project,i) => <ProjectListItem project={project} number={String(i+1).padStart(2,'0')} focus={portfolioCases.find(p=>p.id===project.id)?.focus ?? '구현과 검증 기록'} />)}
     </div>
+    <p class="collection-note">팀 프로젝트는 직접 맡은 범위와 팀 성과를 구분하고, 측정 결과에는 확인한 조건을 함께 남깁니다.</p>
   </div>
 </BaseLayout>
-
-
+<style>
+  .projects-page { padding-bottom:24px; }
+  .page-intro { padding:56px 0 32px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px; align-items:end; }
+  h1 { margin:0 0 16px; font-size:36px; font-weight:750; line-height:1.3; letter-spacing:-.04em; }
+  .page-intro p { margin:0; font-size:16px; line-height:1.8; color:var(--text-dim); }
+  .page-intro > a { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:650; padding-bottom:4px; }
+  .collection-note { padding-top:24px; margin:0; border-top:1px solid var(--border); font-size:13px; color:var(--text-dim); line-height:1.85; }
+  @media(max-width:700px) { .page-intro { padding:36px 0 28px; gap:16px; }h1 { font-size:30px; }.page-intro p { font-size:15px; } }
+</style>
