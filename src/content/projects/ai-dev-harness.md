@@ -1,5 +1,5 @@
 ---
-title: "ai-dev-harness"
+title: "AI Dev Harness"
 summary: "Claude Code·Codex의 사용량과 검증 근거를 작업에 연결하는 AgentOps 프로젝트입니다. 규칙 설치에서 출발해 중복 수집 방지, 실패 재전송, 작업 귀속과 관측으로 확장했습니다."
 period: "2026.09 ~ 진행 중 (개인 프로젝트)"
 role: "AgentOps 설계·구현, 개발 규칙 자동화와 적용 검증"
@@ -22,7 +22,7 @@ relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates
 cover: "/images/projects/ai-dev-harness/cover.png"
-headline: "AI 사용량과 검증 결과를 작업에 연결하는 AgentOps"
+headline: "AI 사용량과 테스트 근거를 작업에 연결하다"
 projectType: "개인 프로젝트 · AI 실행의 가시성과 신뢰성"
 cardRole: "사용량 정규화·작업 귀속·수집 복구·실행 근거 구현"
 cardHighlights:

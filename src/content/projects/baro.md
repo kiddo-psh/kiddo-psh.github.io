@@ -20,7 +20,7 @@ relatedPosts:
   - seven-person-team-retrospective
   - claude-code-retrospective
 cover: "/images/projects/baro/cover.png"
-headline: "차량을 찾는 모델에서, 주차 민원을 처리하는 시스템으로"
+headline: "주차 위반 감지에서 이동 완료 재확인까지 연결하다"
 projectType: "7인 팀 · SSAFY 공통 프로젝트 · AIoT"
 cardRole: "차량 추적·주차 판정 / 스크럼 마스터"
 validation: "파일럿 모형에서 감지부터 이동 재확인까지 시연"

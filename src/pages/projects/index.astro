@@ -20,7 +20,7 @@ const projects = entries.sort((a,b) => {
       <a href="/portfolio/">핵심 사례 한눈에 보기<ArrowRight size={16} /></a>
     </section>
     <div class="project-list">
-      {projects.map((project,i) => <ProjectListItem project={project} number={String(i+1).padStart(2,'0')} focus={portfolioCases.find(p=>p.id===project.id)?.focus ?? '구현과 검증 기록'} />)}
+      {projects.map((project,i) => <ProjectListItem project={project} number={String(i+1).padStart(2,'0')} />)}
     </div>
     <p class="collection-note">팀 프로젝트는 직접 맡은 범위와 팀 성과를 구분하고, 측정 결과에는 확인한 조건을 함께 남깁니다.</p>
   </div>

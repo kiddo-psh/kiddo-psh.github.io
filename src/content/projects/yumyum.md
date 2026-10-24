@@ -16,7 +16,7 @@ stack:
 featured: true
 order: 2
 cover: "/images/projects/yumyum/cover.png"
-headline: "기록이 없는 분야까지 분석하던 AI 코칭을 바꾸기"
+headline: "기록이 없는 항목까지 분석하던 AI 호출을 줄이다"
 projectType: "2인 팀 · SSAFY 1학기 관통 프로젝트"
 cardRole: "주간 코칭 라우팅·조건부 RAG·호출 계측"
 validation: "고정 입력 8개에서 평균 실행 Agent 4.0 → 2.5개"

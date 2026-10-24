@@ -19,7 +19,7 @@ relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates
 cover: "/images/projects/feelm/cover.png"
-headline: "로그인부터 추천 화면까지, 실제로 쓸 수 있는 흐름 만들기"
+headline: "인증 실패를 다루고 추천 목업을 실제 API에 연결하다"
 projectType: "7인 팀 · SSAFY 2학기 특화 프로젝트"
 cardRole: "계정·인증 백엔드 / 프론트엔드 API 연동"
 validation: "인증 계약·동시성 테스트와 실제 화면 연동"
