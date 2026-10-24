@@ -46,3 +46,7 @@ Code uses forest green for keywords/functions, teal for strings, and leaf green 
 `src/styles/article-content.css`: article components. `src/styles/diagram-theme.css`: canonical light/dark diagram tokens, synchronized automatically during build. `src/lib/code-themes.mjs`: syntax highlighting. `docs/diagrams.md`: diagram conventions.
 
 Local mockups and generated review PNGs are ignored by Git; the design source and generators are versioned.
+
+## Project covers (2026-10-24)
+
+The four project covers use original vector illustrations in the same white/gray/forest-green palette. `scripts/generate-project-covers.mjs` writes editable SVGs and 1200×750 PNGs under `public/images/projects/<id>/`. Project frontmatter `cover` supplies the same image to cards and detail headers. These are conceptual illustrations; existing screenshots, awards, and experiment images remain the evidence. Regenerate with `node scripts/generate-project-covers.mjs`.

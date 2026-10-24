@@ -26,13 +26,16 @@ const tone = projectTone(d.order);
     것(다이어그램)의 모양을 빌려, 종이 한 장 위에 회로를 그린 것처럼 둔다.
   */}
   <span class:list={['art-frame', 'thumb', `t-${tone}`]}>
-    <span class="art-plate">
+    {d.cover ? <img src={d.cover} alt="" loading="lazy" width="1200" height="750" class="project-cover" /> : <span class="art-plate">
       <Motif seed={project.id} tone={tone} size={76} plain />
-    </span>
+    </span>}
   </span>
   <span class="body">
     <Tag class="ttl serif">{d.title}</Tag>
     <span class="sum">{d.summary}</span>
+    <span class="card-fact"><b>담당</b><span>{d.cardRole}</span></span>
+    <span class="card-fact"><b>검증</b><span>{d.validation}</span></span>
+    <span class="project-type">{d.projectType}</span>
   </span>
 </a>
 
@@ -50,6 +53,8 @@ const tone = projectTone(d.order);
 
   /* 액자 높이만 여기서 정한다 — 나머지 모양은 global.css의 .art-frame/.art-plate */
   .thumb { height: 133px; }
+  .thumb:has(.project-cover) { height: auto; aspect-ratio: 1.6; }
+  .project-cover { width: 100%; height: 100%; object-fit: cover; }
   .thumb .art-plate { padding: var(--space-2) var(--space-6); }
 
   /*
@@ -69,4 +74,9 @@ const tone = projectTone(d.order);
   }
   .card:hover .ttl { color: var(--accent); }
   .sum { display: block; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
+  .sum { margin-bottom: 18px; }
+  .card-fact { display: flex; gap: 12px; margin-top: 8px; font-size: 14px; line-height: 1.6; }
+  .card-fact b { flex: 0 0 28px; font-weight: 600; }
+  .card-fact > span { color: var(--text-dim); }
+  .project-type { display: block; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 13px; }
 </style>

@@ -39,14 +39,17 @@ const related = (d.relatedPosts ?? [])
         */}
         <span
           class:list={['art-frame', 'band', `t-${projectTone(d.order)}`, 'mk']}>
-          <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>
+          {d.cover ? <img class="project-cover" src={d.cover} alt="" width="1200" height="750" /> : <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>}
         </span>
         <h1 class="page-title">{d.title}</h1>
+        <p class="project-headline">{d.headline}</p>
+        <p class="project-summary">{d.summary}</p>
 
         <dl class="facts">
+          <div><dt>구성</dt><dd>{d.projectType}</dd></div>
           <div><dt>기간</dt><dd>{d.period}</dd></div>
           <div><dt>역할</dt><dd>{d.role}</dd></div>
-          <div><dt>기술</dt><dd>{d.stack.join(', ')}</dd></div>
+          <div><dt>주요 기술</dt><dd>{d.stack.join(', ')}</dd></div>
           {(d.repo || d.demo) && (
             <div>
               <dt>링크</dt>
@@ -58,6 +61,13 @@ const related = (d.relatedPosts ?? [])
             </div>
           )}
         </dl>
+
+        <section class="contribution" aria-label="역할과 기여 범위">
+          <h2>직접 책임진 일</h2>
+          <ul>{d.contributions.map((item) => <li>{item}</li>)}</ul>
+          <p class="collaboration"><strong>협업 범위</strong> {d.collaboration}</p>
+          <div class="outcome"><h2>확인한 결과</h2><p>{d.outcome}</p></div>
+        </section>
 
         <MetricsTable metrics={d.metrics} />
         {d.metricNote && <p class="metric-note">{d.metricNote}</p>}
@@ -74,10 +84,22 @@ const related = (d.relatedPosts ?? [])
 <style>
   /* 제목 위 머리그림. .page-title의 위 여백을 그림이 대신 갖는다 */
   .mk { margin: var(--space-6) 0 var(--space-7); }
+  .mk:has(.project-cover) { height: auto; aspect-ratio: 1.6; }
+  .project-cover { display: block; width: 100%; height: 100%; object-fit: cover; }
   .mk + .page-title { margin-top: 0; }
 
   /* 제목 위 여백은 BackLink가 만든다 */
   .page-title { margin-top: 0; }
+  .project-headline { margin: 0 0 16px; font-size: clamp(22px, 4vw, 30px); font-weight: 700; line-height: 1.4; letter-spacing: -.03em; }
+  .project-summary { margin: 0 0 28px; color: var(--text-dim); font-size: 18px; line-height: 1.8; }
+  .contribution { margin: 24px 0 40px; padding: 24px; border-radius: 14px; background: var(--code-bg); line-height: 1.8; }
+  .contribution h2 { margin: 0 0 12px; font-size: 17px; }
+  .contribution ul { padding-left: 22px; margin: 0 0 20px; }
+  .contribution li + li { margin-top: 6px; }
+  .collaboration { margin: 0; color: var(--text-dim); }
+  .collaboration strong { display: block; color: var(--text); }
+  .outcome { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .outcome p { margin: 0; }
 
   .facts {
     margin: 0 0 var(--space-1); padding: var(--space-4) 0;
@@ -85,7 +107,7 @@ const related = (d.relatedPosts ?? [])
     display: grid; gap: var(--space-2);
   }
   .facts div { display: flex; gap: var(--space-3); font-size: var(--fs-400); }
-  dt { flex: 0 0 47px; color: var(--text-dim); }
-  dd { margin: 0; }
+  dt { flex: 0 0 64px; color: var(--text-dim); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   .metric-note { margin: calc(var(--space-5) * -1) 0 var(--space-8); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
 </style>
