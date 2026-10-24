@@ -19,7 +19,7 @@ export const SITE = {
   lead: '뭘 만들었는지보다, 왜 그렇게 판단했는지를 써요.',
   links: {
     github: 'https://github.com/kiddo-psh',
-    email: 'asded5655@naver.com',
+    email: 'kiddo5655@gmail.com',
   },
   // Task 10에서 giscus 발급 후 채운다. 비어 있으면 댓글이 렌더되지 않는다.
   giscus: {

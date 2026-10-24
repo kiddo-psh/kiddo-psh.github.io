@@ -1,586 +1,244 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
-import Search from '@lucide/astro/icons/search';
-import Network from '@lucide/astro/icons/network';
-import Cable from '@lucide/astro/icons/cable';
-import ChartNoAxesColumn from '@lucide/astro/icons/chart-no-axes-column';
-import ArrowRight from '@lucide/astro/icons/arrow-right';
+import { portfolioCases } from '../data/portfolio';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
 import Mail from '@lucide/astro/icons/mail';
+import Printer from '@lucide/astro/icons/printer';
 
-/*
- * 포트폴리오 한 장. 프로젝트마다 읽는 순서를 같게 둔다:
- * 무엇(머리) → 한 일(헤드라인) → 누구의 어떤 문제였나 → 자동화한 흐름(서비스만)
- * → 제가 한 일 세 줄 → 근거(표·그림, 필요할 때만) → 결과 숫자 → 검증 범위.
- * 기술 설명보다 "왜 만들었고 무엇이 달라졌나"가 먼저 읽히게 한다. 기술 근거는 지우지 않고 그 아래에 둔다.
- *
- * 앞의 둘(service)은 끝까지 만든 서비스, 뒤의 둘(practice)은 검증과 개발 도구 사례다.
- *
- * 아이콘은 Lucide 하나로 통일하고 기능에만 쓴다(일하는 방식 네 칸, 링크 화살표, 메일).
- * 프로젝트 정체성은 Motif 마크가 맡으므로 프로젝트별 아이콘은 두지 않는다.
- *
- * 그림은 글로 대신할 수 없는 것만 넣는다. 지금은 주차 감지 화면 하나이고,
- * 넣었으면 텍스트 칼럼을 넘어 페이지 폭을 다 쓴다. 단계별 시간·라우팅 규칙·작업 흐름은
- * 표와 목록이 그림보다 읽기 쉬워서 그림으로 그리지 않는다.
- */
-
-interface Brief { k: string; v: string }
-interface Metric { label: string; value: string; note?: string }
-interface Finding { value: string; label: string; title: string; text: string }
-interface Table { head: string[]; rows: string[][]; numeric?: boolean }
-interface Project {
-  id: string;
-  group: 'service' | 'practice';
-  title: string;
-  stack: string;
-  highlight: string;
-  headline: string;
-  /** 팀 규모와 맡은 범위 */
-  role?: string;
-  /** 사용자 쪽에서 본 문제. 기술 문제가 아니라 누가 무엇을 겪었는지 */
-  problem?: string;
-  /** 자동화한 흐름. mine은 제가 맡은 단계 */
-  flow?: { name: string; text: string; mine?: boolean }[];
-  brief: Brief[];
-  /** 무엇까지 확인했고 어디부터는 확인하지 못했는지 */
-  scope?: string;
-  figure?: { src: string; alt: string; caption: string };
-  table?: Table;
-  steps?: { name: string; text?: string }[];
-  findings?: Finding[];
-  metrics?: Metric[];
-  conclusion?: string;
-  notes?: string[];
-  more?: { href: string; label: string };
-}
-
-const projects: Project[] = [
-  {
-    id: 'edge',
-    group: 'service',
-    title: '주차바로',
-    stack: 'YOLOv8 · Jetson · Spring Boot',
-    highlight: '6.5 → 15 FPS',
-    headline: '주차 위반의 발견부터 이동 확인까지 사람 손이 빠지게 만들었습니다',
-    role: '7인 팀 · AI 파트(차량 추적·주차 판정), 스크럼 마스터',
-    problem: '이중주차를 알리려면 서로의 전화번호를 드러내거나, 관리자가 현장에 나가 차량을 확인하고 세대를 찾아 연락해야 했습니다. 차를 뺐는지도 다시 가서 봐야 했습니다.',
-    flow: [
-      { name: '감지', text: '천장 카메라 영상을 Jetson이 추적해 이중주차·전용구역 위반을 판정', mine: true },
-      { name: '이동 요청', text: '백엔드가 차주 앱에 푸시. 요청자와 차주는 서로의 번호를 모름' },
-      { name: '응답', text: '차주가 “10분 뒤 이동”처럼 예상 시간으로 응답' },
-      { name: '재확인', text: '시간이 지나면 Jetson이 그 차가 아직 있는지 카메라로 확인' },
-    ],
-    brief: [
-      { k: '정의', v: '바운딩박스 겹침으로 정한 이중주차 기준을 리뷰에서 뒤집고, 다른 차의 주차 칸을 얼마나 덮었는지로 다시 정의했습니다.' },
-      { k: '측정', v: '6.5 FPS에 그쳐 추적이 끊기자, 처리 과정을 7단계로 나눠 재는 도구를 만들어 병목이 모델 추론 35%와 광각 렌즈 보정 21%임을 찾았습니다.' },
-      { k: '검증', v: '녹화 영상 리플레이로 같은 입력에 같은 판정이 나오게 했고, 진입 확인 시간은 오탐 0건이 되는 1.0초로 실측해 정했습니다.' },
-    ],
-    scope: '파일럿 주차 모형과 녹화 영상에서 감지부터 재확인까지 시연했습니다. 실제 아파트의 장기 운영이나 관리자 업무시간 절감 효과는 검증하지 않았습니다.',
-    figure: {
-      src: '/images/projects/baro/zone-overlay-045s-ev.jpg',
-      alt: '주차장 축소 모형 위에 일반·장애인·전기차 충전·통로·출입구 구역이 색으로 나뉘어 있고, 전기차 충전 구역의 차량 한 대가 신뢰도 0.89로 감지된 화면',
-      caption: '구역 폴리곤 위에서 차량을 감지하고 어느 구역에 있는지 판정하는 화면',
-    },
-    table: {
-      head: ['프레임당 처리', '개선 전', '개선 후'],
-      rows: [
-        ['모델 추론', '54ms', '32ms'],
-        ['광각 렌즈 보정', '33ms', '3ms'],
-        ['그 외', '67ms', '32ms'],
-        ['합계', '154ms', '67ms'],
-      ],
-      numeric: true,
-    },
-    metrics: [
-      { label: '프레임당 처리', value: '154 → 67ms', note: '−57%' },
-      { label: '처리 속도', value: '6.5 → 15 FPS', note: '약 2.3배, 팀 최적화 결과' },
-      { label: '수상', value: '우수상', note: 'SSAFY 공통 프로젝트' },
-    ],
-    notes: ['계측 도구와 병목 분석은 제가 했습니다. TensorRT 변환과 보정의 GPU 전환은 팀이 적용했습니다.'],
-    more: { href: '/projects/baro', label: '주차바로 프로젝트 자세히 보기' },
-  },
-  {
-    id: 'agents',
-    group: 'service',
-    title: '냠냠코치',
-    stack: 'Claude API · Spring Boot · FastAPI',
-    highlight: '호출 4.0 → 2.5개',
-    headline: '기록이 있는 분석만 돌려, 빈 코칭과 기다림을 줄였습니다',
-    role: '2인 팀 · 백엔드·AI·프론트 전반',
-    problem: '이번 주에 운동만 기록한 사용자에게도 영양·목표 분석이 돌아, 코칭에 “기록이 없어 분석할 수 없습니다” 같은 문장이 섞였습니다. 사용자는 그만큼 더 기다렸고 비용도 더 나갔습니다.',
-    flow: [
-      { name: '기록 확인', text: 'Spring Boot에서 식단·운동·체중 기록을 읽어 코칭 입력을 구성', mine: true },
-      { name: 'Agent 선택', text: 'FastAPI가 기록 상태에 따라 필요한 분석 Agent만 실행', mine: true },
-      { name: '코칭 전달', text: '분석 결과를 종합해 사용자에게 주간 코칭을 제공', mine: true },
-    ],
-    brief: [
-      { k: '원인', v: '고정 DAG라서 기록이 없어도 에이전트 4개를 매번 불렀습니다.' },
-      { k: '설계', v: '어떤 에이전트를 부를지 LLM에게 묻지 않고 기록 상태를 읽는 규칙으로 정했습니다. 호출을 줄이려 호출을 하나 더 하지 않고, 판단을 테스트로 고정할 수 있습니다.' },
-      { k: '실험', v: '8개 시나리오를 실제 API로 3회씩 비교했습니다.' },
-    ],
-    table: {
-      head: ['기록 조건', '켜는 에이전트'],
-      rows: [
-        ['영양 기록 1일 이상', '영양 Agent'],
-        ['운동 기록 1건 이상', '운동 Agent'],
-        ['체중 추세 있음', '목표 Agent'],
-        ['기록 없음', 'LLM 호출 없이 안내'],
-      ],
-    },
-    metrics: [
-      { label: '에이전트 호출', value: '4.0 → 2.5개', note: '−37.5%' },
-      { label: 'LLM 호출', value: '3.0 → 2.5회', note: '−16.7%' },
-      { label: '평균 응답', value: '11.1 → 8.7초', note: '−21.9%, 정상 응답률 100% 유지' },
-    ],
-    notes: [
-      '고정 DAG는 요청마다 네 Agent를 늘 실행했습니다. 동적 라우팅은 기록을 먼저 읽고, 영양과 운동이 둘 다 켜지면 목표도 함께 켜며, 켜진 Agent가 없으면 종합도 부르지 않습니다.',
-      'Agent 수는 동일 비중의 평가 입력 8개 기준이며 실제 사용자 트래픽 평균은 아닙니다. 평균 응답시간은 각 입력 3회씩 잰 탐색값이고, 비교 당시 기준선 프롬프트가 축약되고 RAG가 fallback으로 동작했습니다. p90 응답은 0.4%만 줄었습니다.',
-    ],
-    more: { href: '/projects/yumyum', label: '냠냠코치 프로젝트 자세히 보기' },
-  },
-  {
-    id: 'vision',
-    group: 'practice',
-    title: '사진 식단 분석',
-    stack: 'Claude Vision',
-    highlight: '과검출 49 → 7건',
-    headline: '측정된 적 없는 설계 근거를 실험으로 검증했습니다',
-    brief: [
-      { k: '가설', v: '“Vision 직접 추정과 식약처 DB 조회는 정확도 차이가 미미하다.” 사진 분석 방식을 정한 근거였지만, 한 번도 잰 적이 없었습니다.' },
-      { k: '실험', v: '포장 영양표시로만 정답을 매긴 평가셋 31장을 직접 만들고, 두 방식이 같은 그램 추정을 쓰게 해 영양 계수 차이만 비교했습니다.' },
-      { k: '도구', v: '채점 도구부터 검증해 결함 4건을 고쳤고, 그중 1건은 판정을 뒤집었습니다.' },
-    ],
-    findings: [
-      {
-        value: '37.5%', label: 'DB 음식명 조회 실패율',
-        title: 'DB 방식의 우위는 현실에서 사라졌습니다',
-        text: '계수는 정확했지만 음식명 조회가 37.5% 실패했습니다. 매칭을 느슨하게 하면 오차가 2.2배로 커졌습니다.',
-      },
-      {
-        value: '+20%', label: '합계 칼로리 편향',
-        title: '질문 밖에서 계통 오차를 찾았습니다',
-        text: '합계 칼로리가 과대 추정 쪽으로 쏠렸습니다. 분해로 오진했다가, 요리와 재료의 중복 출력임을 확인했습니다. 예: 카츠동 680 · 계란 90 · 홍생강 3 · 파 3 → 가츠동 680.',
-      },
-      {
-        value: '49 → 7', label: '과검출 건수',
-        title: '한 줄만 다른 대조 프롬프트로 고쳤습니다',
-        text: '과검출이 49건에서 7건으로, 음식명 F1이 0.38에서 0.77로 바뀌었습니다. 나빠진 지표는 없었습니다.',
-      },
-    ],
-    conclusion: '결정은 유지하고 근거를 바꿨습니다. “Vision 방식에는 프롬프트라는 개선 수단이 있고, DB 방식에는 없다.” 설계 문서에 정정 기록을 남기고, 기존 프롬프트는 대조군으로 보존한 채 서비스에 반영했습니다.',
-    notes: [
-      '짝지은 비교 표본이 8개라 방향만 신뢰할 수 있어서, 반복 측정으로 실행 간 분산을 분리할 계획입니다.',
-    ],
-  },
-  {
-    id: 'harness',
-    group: 'practice',
-    title: 'ai-dev-harness',
-    stack: 'Python · Claude Code · CI',
-    highlight: '초기화 → 검사 → 측정',
-    headline: 'AI 개발 규칙을 새 저장소에 적용하는 키트로 만들었습니다',
-    role: '개인 프로젝트 · 설계·구현·검증',
-    problem: '팀 프로젝트에서 AI 작업 규칙이 문서에만 있으면 저장소마다 다시 옮기고, 실제로 지켰는지 확인하기 어려웠습니다.',
-    brief: [
-      { k: '설계', v: 'feelm에서 사용한 절차를 템플릿으로 옮기고, 변경 범위에 따라 경량·표준·엄격 단계로 나눴습니다.' },
-      { k: '구현', v: 'init/check 명령으로 규칙 파일을 생성·검사하고, hooks와 CI가 보호 경로·MR 본문·보안 검사를 수행하게 했습니다.' },
-      { k: '검증', v: '빈 저장소 리허설에서 엄격 단계 작업과 hooks·보안 검사의 차단 사례를 확인했습니다.' },
-    ],
-    steps: [
-      { name: '초기화', text: '플랫폼과 업무 추적 도구에 맞춰 규칙·절차·양식 생성' },
-      { name: '작업 판정', text: '변경 파일과 위험 트리거로 필요한 플랜·리뷰 수준 결정' },
-      { name: '자동 검사', text: 'hooks·CI로 이탈을 확인하고 주간 지표 수집' },
-    ],
-    metrics: [
-      { label: '리허설', value: '64분', note: '빈 저장소부터 엄격 단계 작업까지' },
-      { label: '스택 프로필', value: '3개', note: 'Spring · React · Android' },
-      { label: '보안 검사', value: '4종', note: 'Secret · 의존성 · SAST · 이미지' },
-    ],
-    scope: '키트 자체 적용과 빈 저장소 리허설까지 확인했습니다. 실제 팀 프로젝트 전 기간 적용 전후의 효과 비교 수치는 아직 확보하지 못했습니다.',
-    more: { href: '/projects/ai-dev-harness', label: 'ai-dev-harness 프로젝트 자세히 보기' },
-  },
+const entries = await getCollection('projects');
+const cases = portfolioCases.map(item => {
+  const project = entries.find(p => p.id === item.id);
+  if (!project) throw new Error(`Portfolio project not found: ${item.id}`);
+  return {...item, project:project.data};
+});
+const capabilities = [
+  {title:'문제를 실행 조건으로 정의',text:'차량의 겹침을 출차 방해 관계로, 사용자 기록을 AI 실행 조건으로 구체화했습니다.',href:'#baro',link:'현장 판정 사례'},
+  {title:'서비스 안에서 AI와 서버 연결',text:'AI 호출·검색·인증·화면의 계약을 맞추고, 실패와 근거 없음의 상태를 분리했습니다.',href:'#yumyum',link:'실행 선택 사례'},
+  {title:'검증을 재현하고 팀에 남기기',text:'녹화 영상 리플레이, 고정 입력 평가, 공통 검사와 실행 근거 수집을 구현했습니다.',href:'#ai-dev-harness',link:'도구화 사례'},
 ];
-
-/*
- * 협업 경험. 프로젝트 섹션이 "혼자 재고 고친 것"이라면 여기는 "팀에서 생긴 문제를
- * 어떻게 읽었는가"다. 내용은 회고 글에 있으니 여기는 문제와 바꾼 것 두 줄만 두고 글로 보낸다.
- */
-interface Retro { href: string; title: string; story: string; lesson: string; next?: { href: string; label: string } }
-const retros: Retro[] = [
-  {
-    href: '/posts/claude-code-retrospective',
-    title: '같은 Claude Code를 썼는데 왜 코드는 달랐을까',
-    story: '같은 AI 도구를 써도 팀원마다 쓰는 방식이 달랐습니다. 판정 기준을 합의하지 않은 채 만든 235줄짜리 기능을 고치는 데 1,400줄, 5시간 반이 들었습니다.',
-    lesson: '코드 스타일보다 에이전트에게 일을 맡기는 과정을 먼저 맞춰야 했습니다. 그래서 계획, 규칙, 테스트를 팀 공통 절차로 묶었습니다.',
-    next: { href: '#harness', label: '04 ai-dev-harness로 이어졌습니다' },
-  },
-  {
-    href: '/posts/seven-person-team-retrospective',
-    title: '7명이 모이면 더 좋은 결정을 할 수 있을까',
-    story: '모두가 만족하는 주제를 찾느라, 아이디어를 내고 평가하고 버리는 일을 약 2주 동안 반복했습니다.',
-    lesson: '모두가 모든 결정에 참여할 필요는 없었습니다. 아이디어는 하나를 빨리 고른 뒤 함께 다듬고, 문서는 담당자가 초안을 쓰고 한두 명만 리뷰하기로 했습니다.',
-  },
-];
-
-/*
- * 일하는 방식. 흔한 네 단계 도식이 되지 않게, 칸마다 그 단계를 실제로 한 사례 하나를 붙이고
- * 그 사례가 있는 곳으로 보낸다. 사례가 없는 단계는 칸을 만들지 않는다.
- */
-const ways = [
-  { icon: Search, name: '정의', text: '이중주차를 차량 겹침이 아니라 구역 침범으로 다시 정의했습니다.', href: '#edge' },
-  { icon: Network, name: '설계', text: '에이전트 선택을 LLM 대신 테스트로 고정할 수 있는 규칙으로 정했습니다.', href: '#agents' },
-  { icon: Cable, name: '연결', text: '화면과 API가 어긋나면 계약 문서를 먼저 고친 뒤 양쪽을 맞췄습니다.', href: '#feelm' },
-  { icon: ChartNoAxesColumn, name: '검증', text: '채점 도구부터 검증한 뒤 설계 근거를 실험으로 다시 쟀습니다.', href: '#vision' },
-];
-
-/*
- * AI가 아닌 프로젝트. 위 네 개가 모두 AI 이야기라 그 아래의 인증·장애·연동을 다룬 근거로 둔다.
- * 대표 프로젝트와 결이 달라 프로젝트 칸으로 올리지 않고 짧게 둔다.
- * 테스트 수는 팀 단위와 섞이기 쉬워 넣지 않는다.
- */
-const foundation = {
-  id: 'feelm',
-  title: 'feelm',
-  subtitle: '영화 추천 서비스의 계정과 인증',
-  award: '특화 프로젝트 1등',
-  role: '7인 팀 · 계정·인증 백엔드, 프론트 API 연동',
-  points: [
-    { k: '실패 먼저', v: '정상 흐름보다 실패 쪽을 먼저 정했습니다. 주소를 바꿔 보내는 메일 폭탄을 IP·전역 제한으로 막고, 비밀번호가 바뀌면 예전 재설정 링크를 끊고, 교착이 생기던 탈퇴를 세 단계로 나눴습니다.' },
-    { k: '계약 기준 연동', v: '목업 화면을 실제 API에 이으며 계약과 어긋나는 곳이 나오면, 화면에서 우회하지 않고 계약 문서를 먼저 고친 뒤 양쪽을 맞췄습니다.' },
-  ],
-  more: { href: '/projects/feelm', label: 'feelm 프로젝트 자세히 보기' },
-};
-
-const groups = { service: '끝까지 만든 서비스', practice: '검증과 개발 도구' } as const;
-
-const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
-
-<BaseLayout
-  title="박시현 · 포트폴리오"
-  description="박시현의 AI Application Engineer 포트폴리오. 현장의 문제를 요구사항으로 정의하고 AI·백엔드를 연결해 서비스를 구현하고 검증한 작업을 소개합니다."
->
-  <div class="page portfolio">
-    <section class="hero col" aria-labelledby="portfolio-title">
-      <p class="eyebrow">PORTFOLIO</p>
-      <h1 id="portfolio-title">현장의 문제를<br />AI 시스템으로 구현합니다</h1>
-      <p class="intro">문제를 실행 가능한 요구사항으로 정의하고, AI·백엔드·현장 장비를 연결해 작동하는 서비스를 만듭니다. 결과는 측정으로 확인합니다.</p>
-      <p class="who"><strong>박시현</strong> AI Application Engineer</p>
-      <p class="proof">AI의 답을 측정으로 증명합니다.</p>
-    </section>
-
-    <!-- 목차 겸 요약. 이 네 줄만 읽어도 무엇을 했고 무엇이 바뀌었는지 보인다 -->
-    <ol class="index col" aria-label="프로젝트 요약">
-      {projects.map((p, i) => (
-        <>
-          {(i === 0 || projects[i - 1].group !== p.group) && <li class="group" aria-hidden="true">{groups[p.group]}</li>}
-          <li>
-            <a href={`#${p.id}`}>
-              <span class="n">{num(i)}</span>
-              <span class="t"><strong>{p.title}</strong><span>{p.stack}</span></span>
-              <span class="hl">{p.highlight}</span>
-            </a>
-          </li>
-        </>
-      ))}
-    </ol>
-
-    <section class="ways col" aria-labelledby="ways-title">
-      <h2 id="ways-title" class="ways-title">일하는 방식</h2>
-      <ol>
-        {ways.map((w) => (
-          <li>
-            <a href={w.href}>
-              <w.icon size={22} class="w-icon" />
-              <strong>{w.name}</strong>
-              <span>{w.text}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    {projects.map((p, i) => (
-      <article class="project" id={p.id} aria-labelledby={`${p.id}-h`}>
-        <div class="col">
-          <p class="tag"><span class="badge">{num(i)}</span>{p.title}<span class="stack">{p.stack}</span></p>
-          <h2 id={`${p.id}-h`}>{p.headline}</h2>
-          {p.role && <p class="role">{p.role}</p>}
-
-          {p.problem && <p class="problem"><strong>문제</strong>{p.problem}</p>}
-
-          {p.flow && (
-            <ol class="flow" aria-label="자동화한 흐름">
-              {p.flow.map((f) => (
-                <li class:list={{ mine: f.mine }}>
-                  <strong>{f.name}{f.mine && <em>제 담당</em>}</strong>
-                  <span>{f.text}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-
-          {(p.problem || p.flow) && <p class="sub">제가 한 일</p>}
-          <dl class="brief">
-            {p.brief.map((b) => <div><dt>{b.k}</dt><dd>{b.v}</dd></div>)}
-          </dl>
-        </div>
-
-        {p.figure && (
-          <figure class="fig">
-            <img src={p.figure.src} alt={p.figure.alt} width="1920" height="1080" loading="lazy" decoding="async" />
-            <figcaption>{p.figure.caption}</figcaption>
-          </figure>
-        )}
-
-        <div class="col">
-          {p.table && (
-            <table class:list={['tbl', { num: p.table.numeric }]}>
-              <thead><tr>{p.table.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
-              <tbody>
-                {p.table.rows.map((r) => (
-                  <tr>{r.map((c, ci) => (ci === 0 ? <th scope="row">{c}</th> : <td>{c}</td>))}</tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {p.steps && (
-            <ol class="steps">
-              {p.steps.map((s) => <li><strong>{s.name}</strong>{s.text && <span>{s.text}</span>}</li>)}
-            </ol>
-          )}
-
-          {p.findings && (
-            <div class="findings">
-              {p.findings.map((f) => (
-                <div class="finding">
-                  <div class="fv"><b>{f.value}</b><span>{f.label}</span></div>
-                  <div><h3>{f.title}</h3><p>{f.text}</p></div>
-                </div>
-              ))}
+<BaseLayout title="박시현 · FDE 포트폴리오" description="업무의 문제를 데이터와 실행 조건으로 구체화하는 개발자 박시현. 현장 영상 판정, LLM 실행 선택, AI 개발 도구와 인증·연동의 구현 및 검증 사례를 소개합니다.">
+  <div class="page pf">
+    <section class="pf-intro" aria-labelledby="portfolio-title">
+      <div class="identity">
+        <p class="eyebrow">박시현 <span>FDE · AI APPLICATION ENGINEERING</span></p>
+        <div class="intro-grid">
+          <div>
+            <h1 id="portfolio-title">업무의 문제를 정의하고,<br />AI가 동작할 기준까지 만듭니다.</h1>
+            <p class="intro-copy">현장 요구를 사건·데이터·실행 조건으로 구체화하고, AI와 백엔드를 연결합니다. 직접 구현한 범위와 검증한 결과로 제 경험을 설명합니다.</p>
+            <div class="contact-links">
+              <a class="contact-primary" href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
+              <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
+              <button type="button" id="portfolio-print"><Printer size={15} />인쇄 / PDF 저장</button>
             </div>
-          )}
-
-          {p.metrics && (
-            <dl class="metrics">
-              {p.metrics.map((m) => (
-                <div>
-                  <dt>{m.label}</dt>
-                  <dd class="mv">{m.value}</dd>
-                  {m.note && <dd class="mn">{m.note}</dd>}
-                </div>
-              ))}
-            </dl>
-          )}
-
-          {p.conclusion && <p class="conclusion"><strong>결론</strong>{p.conclusion}</p>}
-
-          {p.notes?.map((n) => <p class="note">{n}</p>)}
-
-          {p.scope && <p class="scope"><strong>검증 범위</strong>{p.scope}</p>}
-
-          {p.more && <p class="more"><a href={p.more.href}>{p.more.label}<ArrowRight size={16} /></a></p>}
+          </div>
+          <div class="intro-evidence" aria-label="대표 구현 경험">
+            <p class="small-label">이 포트폴리오에서 확인할 경험</p>
+            {cases.slice(0,3).map(p => (
+              <a href={`#${p.id}`}>
+                <span class="evidence-index">{p.number}</span>
+                <span><strong>{p.project.title}</strong><small>{p.focus}</small></span>
+                <ArrowRight size={17} />
+              </a>
+            ))}
+          </div>
         </div>
-      </article>
-    ))}
-
-    <section class="foundation col" id={foundation.id} aria-labelledby="foundation-title">
-      <p class="eyebrow">FOUNDATION</p>
-      <h2 id="foundation-title">AI 밖의 기반</h2>
-      <p class="tag">{foundation.title}<span class="stack">{foundation.subtitle}</span><span class="award">{foundation.award}</span></p>
-      <p class="role">{foundation.role}</p>
-      <dl class="brief">
-        {foundation.points.map((b) => <div><dt>{b.k}</dt><dd>{b.v}</dd></div>)}
-      </dl>
-      <p class="more"><a href={foundation.more.href}>{foundation.more.label}<ArrowRight size={16} /></a></p>
+        <p class="profile-line">Python · Java <span>AI 파이프라인 / 백엔드 / 화면 연동</span><span>SSAFY 15기 · 경희대학교 생체의공학과</span></p>
+      </div>
     </section>
 
-    <section class="collab col" aria-labelledby="collab-title">
-      <p class="eyebrow">COLLABORATION</p>
-      <h2 id="collab-title">협업 경험</h2>
-      <p class="collab-lead">7인 팀 프로젝트 주차바로에서 겪은 문제를 회고로 남겼습니다.</p>
-      <ul class="retros">
-        {retros.map((r) => (
-          <li>
-            <h3><a href={r.href}>{r.title}</a></h3>
-            <p class="r-story">{r.story}</p>
-            <p class="r-lesson"><strong>배운 점</strong>{r.lesson}</p>
-            <p class="r-links">
-              <a href={r.href}>회고 읽기<ArrowRight size={16} /></a>
-              {r.next && <a class="r-next" href={r.next.href}>{r.next.label}</a>}
-            </p>
-          </li>
-        ))}
-      </ul>
+    <section class="capabilities" aria-labelledby="capability-title">
+      <div class="section-heading"><p class="eyebrow">HOW I WORK</p><h2 id="capability-title">문제에서 검증까지, 직접 연결한 경험</h2></div>
+      <div class="capability-grid">
+        {capabilities.map((c,i) => <article><span class="cap-number">0{i+1}</span><h3>{c.title}</h3><p>{c.text}</p><a href={c.href}>{c.link}<ArrowRight size={15} /></a></article>)}
+      </div>
     </section>
 
-    <footer class="contact col">
-      <p>더 자세한 구현과 협업 경험이 궁금하시면 연락 주세요.</p>
-      <a href={`mailto:${SITE.links.email}`}><Mail size={16} />이메일</a>
-      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">{SITE.links.github.replace('https://', '')}<ArrowUpRight size={16} /></a>
-    </footer>
+    <section class="selected-work" aria-labelledby="selected-title">
+      <div class="section-heading"><p class="eyebrow">SELECTED WORK</p><h2 id="selected-title">무엇을 바꿨고, 어디까지 확인했는가</h2><p>현장 영상 처리, AI 실행 제어, 개발 도구, 서비스 연동의 네 가지 사례입니다.</p></div>
+      {cases.map(p => (
+        <article class="case" id={p.id} aria-labelledby={`${p.id}-title`}>
+          <div class="case-heading">
+            <p class="case-kicker"><span>{p.number}</span>{p.focus}</p>
+            <h3 id={`${p.id}-title`}>{p.heading}</h3>
+            <p class="case-meta"><strong>{p.project.title}</strong><span>{p.project.projectType}</span><span>{p.project.period}</span></p>
+          </div>
+          <div class="case-grid">
+            <div class="case-story">
+              <div class="story-block"><h4>풀어야 했던 문제</h4><p>{p.context}</p></div>
+              <div class="ownership"><h4>직접 맡은 범위</h4><p>{p.ownership}</p></div>
+              <ol class="decisions" aria-label="구현하며 내린 선택">
+                {p.decisions.map((d,i) => <li><span class="decision-index">{i+1}</span><div><h4>{d.title}</h4><p>{d.text}</p></div></li>)}
+              </ol>
+            </div>
+            <div class="case-evidence">
+              {p.evidence.type === 'image' ? (
+                <figure><a href={p.evidence.src} aria-label={`${p.project.title} 근거 이미지 원본 보기`}><img src={p.evidence.src} alt={p.evidence.alt} loading="lazy" decoding="async" /></a><figcaption>{p.evidence.caption}</figcaption></figure>
+              ) : (
+                <figure class="routing-figure" aria-label="평가 입력당 평균 실행 단계 비교">
+                  <div class="routing-chart">
+                    <p>필요한 분석만 실행하도록</p>
+                    <div class="chart-row"><span>전체 실행</span><div class="chart-track"><i style="width:100%"></i></div><b>4.0</b></div>
+                    <div class="chart-row selected"><span>기록별 선택</span><div class="chart-track"><i style="width:62.5%"></i></div><b>2.5</b></div>
+                    <small>평가 입력 8개 · 평균 실행 Agent 수</small>
+                  </div>
+                  <figcaption>{p.evidence.caption}</figcaption>
+                </figure>
+              )}
+              <div class="evidence-result"><p>{p.evidence.label}</p><strong>{p.evidence.value}</strong><span>{p.evidence.note}</span></div>
+              <div class="verification"><h4>확인한 결과</h4><p>{p.result}</p><h4>측정 조건과 남은 검증</h4><p>{p.boundary}</p></div>
+            </div>
+          </div>
+          <div class="case-bottom"><p>{p.skills}</p><div><a href={`/projects/${p.id}`}>설계와 검증 기록<ArrowRight size={16} /></a>{p.project.repo && <a href={p.project.repo} target="_blank" rel="noopener noreferrer">소스 코드<ArrowUpRight size={16} /></a>}</div></div>
+        </article>
+      ))}
+    </section>
+
+    <section class="collaboration" aria-labelledby="collaboration-title">
+      <div class="section-heading"><p class="eyebrow">WORKING WITH A TEAM</p><h2 id="collaboration-title">개인의 시행착오를 팀의 절차로 옮겼습니다</h2></div>
+      <div class="collaboration-grid">
+        <article><h3>구현 전에 같은 기준을 공유하기</h3><p>주차바로에서 팀원마다 AI에 전달한 요구가 달라 재작업이 생겼습니다. feelm에서는 요구사항·계약의 우선순위와 위험에 따른 계획·리뷰·검증을 공통 규칙으로 정리했습니다.</p><a href="/posts/claude-code-retrospective">문제가 생긴 과정과 회고<ArrowRight size={15} /></a></article>
+        <article><h3>공통 규칙을 실제 작업에서 확인하기</h3><p>문서를 복사하는 것으로 끝내지 않고 설치·변경 검사·hooks·CI로 연결했습니다. 적용 과정에서 얻은 경험을 개인 키트로 일반화하고, 꾸기에서는 수집과 관측 기능을 적용했습니다.</p><a href="/projects/ai-dev-harness">재사용 도구로 옮긴 과정<ArrowRight size={15} /></a></article>
+      </div>
+    </section>
+
+    <section class="background" aria-labelledby="background-title">
+      <div><p class="eyebrow">BACKGROUND</p><h2 id="background-title">배경과 개발 기반</h2><p>Python으로 AI 처리·평가·계측을 만들고, Java와 Spring Boot로 인증·업무 API를 구현했습니다. 화면 연동까지 맡으며 시스템 경계에서 생기는 불일치를 다뤘습니다.</p><a href="/about">전체 이력과 자격<ArrowRight size={15} /></a></div>
+      <dl><div><dt>교육</dt><dd>SSAFY 15기 <small>2026.01 ~</small><br />경희대학교 생체의공학과 <small>2018.03 ~ 2024.02</small></dd></div><div><dt>기반</dt><dd>Python · Java · SQL<br />Spring Boot · FastAPI · PostgreSQL · Redis</dd></div><div><dt>자격·언어</dt><dd>정보처리기사 · SQLD · ADsP<br />삼성 SW역량테스트 B형 · OPIc IH</dd></div></dl>
+    </section>
+
+    <section class="portfolio-contact" aria-labelledby="contact-title"><p class="eyebrow">CONTACT</p><h2 id="contact-title">문제와 제약을 듣고,<br />구현과 검증으로 답하겠습니다.</h2><p>AI 기능을 업무 흐름에 연결하는 FDE·AI Application Engineering 기회를 찾고 있습니다.</p><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}<ArrowUpRight size={20} /></a><span>박시현 · <a href={SITE.links.github}>GitHub</a></span></section>
   </div>
 </BaseLayout>
 
+<script>
+  document.getElementById('portfolio-print')?.addEventListener('click', () => window.print());
+</script>
+
 <style>
-  .portfolio { padding-bottom: var(--space-16); }
-  /* 글은 읽기 좋은 폭에 묶고, 그림만 페이지 폭을 다 쓴다 */
-  .col { max-width: var(--w-doc); }
-  h1, h2, h3, p { margin-top: 0; }
-
-  .eyebrow { margin: 0 0 var(--space-4); color: var(--accent); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); }
-  .hero { padding: var(--space-16) 0 var(--space-10); }
-  h1 { margin-bottom: var(--space-5); font-size: var(--fs-title); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-  .intro { margin-bottom: var(--space-6); color: var(--text-dim); font-size: var(--fs-lead); line-height: var(--lh-normal); }
-  .who { margin: 0; font-size: var(--fs-300); color: var(--text-dim); }
-  .who strong { margin-right: var(--space-2); color: var(--text); font-size: var(--fs-500); }
-  .proof { margin: var(--space-4) 0 0; color: var(--accent); font-size: var(--fs-300); font-weight: 700; }
-
-  .index { list-style: none; margin: 0 0 var(--space-8); padding: 0; border-top: 2px solid var(--text); }
-  .index li { border-bottom: 1px solid var(--border); }
-  .index li.group { padding: var(--space-5) 0 var(--space-2); color: var(--text-dim); font-size: var(--fs-200); font-weight: 700; }
-
-  /* 일하는 방식. 칸마다 실제 사례로 보내는 링크라 카드 전체를 누를 수 있게 둔다 */
-  .ways { margin: 0 0 var(--space-8); }
-  .ways-title { margin-bottom: var(--space-4); font-size: var(--fs-300); font-weight: 800; color: var(--text-dim); letter-spacing: 0; }
-  .ways ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
-  .ways a { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); height: 100%; padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); color: var(--text); transition: border-color var(--dur) var(--ease); }
-  .ways a:hover { border-color: var(--accent); text-decoration: none; }
-  .ways :global(.w-icon) { grid-row: 1 / span 2; color: var(--accent); }
-  .ways strong { font-size: var(--fs-400); }
-  .ways span { color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); word-break: keep-all; }
-  .index a { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: var(--space-4); align-items: center; padding: var(--space-4) 0; color: var(--text); }
-  .index a:hover { text-decoration: none; }
-  .index a:hover strong { color: var(--accent); }
-  .n { color: var(--accent); font-size: var(--fs-300); font-weight: 800; font-variant-numeric: tabular-nums; }
-  .t { display: flex; flex-direction: column; min-width: 0; }
-  .t strong { font-size: var(--fs-500); line-height: var(--lh-snug); transition: color var(--dur) var(--ease); }
-  .t span { font-size: var(--fs-200); color: var(--text-dim); }
-  .hl { color: var(--accent); font-size: var(--fs-500); font-weight: 800; letter-spacing: var(--ls-snug); text-align: right; white-space: nowrap; }
-
-  .project { padding: var(--space-16) 0 var(--space-6); border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + var(--space-4)); }
-  .tag { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); margin-bottom: var(--space-4); color: var(--accent); font-size: var(--fs-300); font-weight: 800; }
-  .badge { padding: var(--space-05) var(--space-2); border-radius: var(--radius-md); background: var(--accent); color: var(--bg); font-variant-numeric: tabular-nums; }
-  .stack { color: var(--text-dim); font-weight: 500; }
-  h2 { margin-bottom: var(--space-8); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); word-break: keep-all; }
-
-  .role { margin: calc(var(--space-6) * -1) 0 var(--space-8); color: var(--text-dim); font-size: var(--fs-300); }
-  .problem {
-    margin: 0 0 var(--space-6); padding: var(--space-4) var(--space-5);
-    border-radius: var(--radius-lg); background: var(--bg-elev);
-    font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all;
+  .pf { padding-bottom:40px; }
+  .pf h1,.pf h2,.pf h3,.pf h4,.pf p { margin-top:0; }
+  .pf a { display:inline-flex; align-items:center; gap:8px; }
+  .eyebrow { margin-bottom:18px; color:var(--accent); font-size:12px; font-weight:750; letter-spacing:.12em; }
+  .pf-intro { padding:64px 0 0; }
+  .identity > .eyebrow { font-size:17px; color:var(--text); letter-spacing:-.02em; display:flex; align-items:center; flex-wrap:wrap; gap:18px; margin-bottom:30px; }
+  .identity > .eyebrow span { font-size:11px; letter-spacing:.09em; color:var(--accent); }
+  .intro-grid { display:grid; grid-template-columns:1.45fr 1fr; gap:50px; align-items:center; }
+  h1 { font-size:clamp(29px,3.2vw,42px); line-height:1.35; font-weight:750; letter-spacing:-.045em; margin-bottom:24px; text-wrap:balance; }
+  .intro-copy { margin-bottom:26px; max-width:540px; font-size:17px; line-height:1.85; color:var(--text-dim); }
+  .contact-links { display:flex; gap:14px 20px; flex-wrap:wrap; align-items:center; font-size:13px; }
+  .contact-links a { color:var(--text-dim); }
+  .contact-links .contact-primary { color:var(--accent); font-weight:650; }
+  #portfolio-print { display:inline-flex; align-items:center; gap:7px; border:0; background:none; padding:4px 0; color:var(--text-dim); font:inherit; cursor:pointer; }
+  #portfolio-print:hover { color:var(--accent); }
+  .intro-evidence { padding-left:28px; border-left:1px solid var(--border); }
+  .small-label { color:var(--text-dim); font-size:12px; margin-bottom:12px; }
+  .intro-evidence > a { display:flex; gap:14px; color:var(--text); padding:17px 0; border-bottom:1px solid var(--border); }
+  .intro-evidence > a:last-child { border:0; }
+  .intro-evidence > a:hover { color:var(--accent); text-decoration:none; }
+  .evidence-index { color:var(--accent); font-size:12px; font-variant-numeric:tabular-nums; }
+  .intro-evidence strong { display:block; font-size:15px; font-weight:650; }
+  .intro-evidence small { display:block; color:var(--text-dim); font-size:12px; margin-top:6px; }
+  .intro-evidence :global(svg) { margin-left:auto; flex:0 0 auto; }
+  .profile-line { display:flex; flex-wrap:wrap; gap:10px 24px; padding:25px 0; margin:36px 0 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-dim); }
+  .section-heading { margin-bottom:30px; }
+  .section-heading .eyebrow { margin-bottom:12px; }
+  .section-heading h2 { font-size:28px; line-height:1.45; letter-spacing:-.035em; font-weight:700; margin-bottom:12px; }
+  .section-heading > p:last-child:not(.eyebrow) { color:var(--text-dim); font-size:15px; margin-bottom:0; }
+  .capabilities { padding:56px 0; }
+  .capability-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
+  .capability-grid article { border-top:2px solid var(--border); padding-top:20px; }
+  .cap-number { color:var(--accent); font-size:12px; }
+  .capability-grid h3 { font-size:17px; font-weight:650; margin:12px 0; line-height:1.5; letter-spacing:-.02em; }
+  .capability-grid p { font-size:14px; line-height:1.8; color:var(--text-dim); margin-bottom:16px; }
+  .capability-grid a { font-size:12px; font-weight:650; }
+  .selected-work { padding-top:24px; }
+  .case { padding:40px 0 44px; border-top:1px solid var(--border); scroll-margin-top:90px; }
+  .case-kicker { display:flex; align-items:center; gap:12px; color:var(--accent); font-size:13px; font-weight:600; margin-bottom:14px; }
+  .case-kicker > span { font-variant-numeric:tabular-nums; font-weight:750; }
+  .case-heading h3 { font-size:clamp(24px,2.8vw,31px); line-height:1.45; font-weight:700; letter-spacing:-.035em; margin-bottom:16px; }
+  .case-meta { display:flex; flex-wrap:wrap; gap:8px 18px; color:var(--text-dim); font-size:12px; line-height:1.7; margin-bottom:32px; }
+  .case-meta strong { color:var(--text); font-weight:650; }
+  .case-grid { display:grid; grid-template-columns:1.15fr 1fr; gap:48px; align-items:start; }
+  .case h4 { font-size:14px; font-weight:700; letter-spacing:-.01em; margin:0 0 9px; line-height:1.6; }
+  .case-story p { color:var(--text-dim); font-size:15px; line-height:1.85; margin-bottom:0; }
+  .story-block { margin-bottom:22px; }
+  .ownership { border-left:3px solid var(--accent); padding-left:17px; margin-bottom:28px; }
+  .decisions { padding:0; margin:0; list-style:none; }
+  .decisions li { display:grid; grid-template-columns:20px minmax(0,1fr); gap:12px; margin-top:22px; }
+  .decision-index { font-size:12px; line-height:22px; color:var(--accent); font-variant-numeric:tabular-nums; }
+  .case-evidence { min-width:0; }
+  .case-evidence figure { margin:0 0 24px; }
+  .case-evidence figure > a { display:block; }
+  .case-evidence img { display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--border); }
+  .case-evidence figcaption { color:var(--text-dim); font-size:12px; line-height:1.65; margin-top:10px; }
+  .evidence-result { padding:24px; border-radius:14px; background:var(--code-bg); }
+  .evidence-result > p { color:var(--text-dim); font-size:12px; margin-bottom:12px; }
+  .evidence-result strong { display:block; font-size:30px; line-height:1.3; letter-spacing:-.04em; color:var(--accent); font-weight:750; margin-bottom:12px; }
+  .evidence-result > span { display:block; color:var(--text-dim); font-size:12px; line-height:1.75; }
+  .verification { margin-top:24px; }
+  .verification h4 { margin-bottom:8px; }
+  .verification p { font-size:13px; line-height:1.85; color:var(--text-dim); margin-bottom:20px; }
+  .verification p:last-child { margin-bottom:0; }
+  .case-bottom { border-top:1px solid var(--border); margin-top:30px; padding-top:18px; display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; }
+  .case-bottom p { font-size:12px; color:var(--text-dim); margin-bottom:0; }
+  .case-bottom > div { display:flex; flex-wrap:wrap; gap:20px; }
+  .case-bottom a { font-size:13px; font-weight:650; }
+  .routing-chart { padding:30px 24px; background:var(--code-bg); border-radius:14px; }
+  .routing-chart > p { margin-bottom:26px; font-size:16px; font-weight:650; }
+  .chart-row { display:grid; grid-template-columns:72px minmax(0,1fr) 28px; align-items:center; gap:12px; margin:20px 0; font-size:12px; }
+  .chart-track { min-width:0; height:20px; }
+  .chart-track i { display:block; height:100%; background:var(--text-dim); opacity:.5; border-radius:3px; }
+  .selected .chart-track i { background:var(--accent); opacity:1; }
+  .chart-row b { font-variant-numeric:tabular-nums; font-size:14px; }
+  .routing-chart > small { color:var(--text-dim); font-size:11px; }
+  .collaboration { border-top:1px solid var(--border); padding:48px 0; }
+  .collaboration-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:42px; }
+  .collaboration-grid h3 { font-size:18px; line-height:1.5; margin-bottom:12px; letter-spacing:-.025em; }
+  .collaboration-grid p { color:var(--text-dim); font-size:14px; line-height:1.85; }
+  .collaboration-grid a { font-size:13px; }
+  .background { border-top:1px solid var(--border); display:grid; grid-template-columns:1fr 1fr; gap:56px; padding:44px 0; }
+  .background h2 { font-size:25px; letter-spacing:-.03em; margin-bottom:16px; }
+  .background p:not(.eyebrow) { color:var(--text-dim); font-size:14px; line-height:1.85; }
+  .background a { font-size:13px; }
+  .background dl { margin:0; }
+  .background dl > div { display:grid; grid-template-columns:66px minmax(0,1fr); gap:12px; padding-bottom:18px; font-size:13px; line-height:1.8; }
+  .background dt { color:var(--text-dim); }
+  .background dd { margin:0; }.background dd small { display:block; font-size:11px; color:var(--text-dim); }
+  .portfolio-contact { padding:46px 0 0; border-top:1px solid var(--border); }
+  .portfolio-contact h2 { font-size:32px; line-height:1.4; letter-spacing:-.035em; font-weight:700; margin-bottom:18px; }
+  .portfolio-contact p:not(.eyebrow) { color:var(--text-dim); font-size:15px; line-height:1.85; }
+  .portfolio-contact > a { font-size:20px; font-weight:650; overflow-wrap:anywhere; }
+  .portfolio-contact > span { display:block; font-size:13px; color:var(--text-dim); margin-top:18px; }
+  @media(max-width:850px) {
+    .intro-grid { grid-template-columns:1fr; gap:32px; }.intro-evidence { padding-left:0; border-left:0; }.intro-evidence > a { padding-block:14px; }
+    .case-grid { gap:28px; }.case-meta { gap:6px 14px; }
+    .profile-line { margin-top:26px; }
   }
-  .problem strong, .scope strong { display: block; margin-bottom: var(--space-1); color: var(--accent); font-size: var(--fs-300); }
-
-  /* 자동화한 흐름. 가로로 이어지는 단계, 제가 맡은 단계만 강조색 테두리 */
-  .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: var(--space-2); margin: 0 0 var(--space-10); padding: 0; list-style: none; counter-reset: f; }
-  .flow li { counter-increment: f; padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-  .flow li.mine { border-color: var(--accent); }
-  .flow strong { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); font-size: var(--fs-400); }
-  .flow strong::before { content: counter(f); color: var(--accent); font-variant-numeric: tabular-nums; }
-  .flow em { color: var(--accent); font-size: var(--fs-100); font-style: normal; font-weight: 700; }
-  .flow span { display: block; margin-top: var(--space-1); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-normal); word-break: keep-all; }
-  .sub { margin-bottom: var(--space-4); color: var(--text-dim); font-size: var(--fs-300); font-weight: 800; }
-
-  /* 문제·측정·발견. 라벨 폭을 고정해 세 줄이 표처럼 세로로 맞는다 */
-  .brief { display: grid; gap: var(--space-4); margin: 0 0 var(--space-10); }
-  .brief div { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--space-4); }
-  .brief dt { color: var(--accent); font-size: var(--fs-400); font-weight: 800; line-height: var(--lh-relaxed); }
-  .brief dd { margin: 0; font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all; }
-
-  .fig { margin: 0 0 var(--space-10); }
-  .fig img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius-xl); }
-  .fig figcaption { margin-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-200); }
-
-  /* 표는 가로줄만. 마지막 행(합계·결론)은 굵게 두지 않고 윗줄로만 구분한다 */
-  .tbl { width: 100%; margin: 0 0 var(--space-10); border-collapse: collapse; font-size: var(--fs-400); line-height: var(--lh-normal); }
-  .tbl thead th { padding: 0 var(--space-3) var(--space-2) 0; border-bottom: 2px solid var(--text); color: var(--text-dim); font-size: var(--fs-300); font-weight: 700; text-align: left; }
-  .tbl tbody th, .tbl td { padding: var(--space-3) var(--space-3) var(--space-3) 0; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
-  .tbl tbody th { font-weight: 600; }
-  .tbl.num td, .tbl.num thead th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
-  .tbl.num tbody tr:last-child > * { border-top: 2px solid var(--text); border-bottom: 0; font-weight: 800; }
-
-  .steps { margin: 0 0 var(--space-10); padding: 0; list-style: none; counter-reset: s; border-left: 2px solid var(--border); }
-  .steps li { counter-increment: s; position: relative; padding: 0 0 var(--space-4) var(--space-6); font-size: var(--fs-500); line-height: var(--lh-normal); }
-  .steps li:last-child { padding-bottom: 0; }
-  .steps li::before {
-    content: counter(s); position: absolute; left: -0.8rem; top: .1rem;
-    width: 1.5rem; height: 1.5rem; border-radius: var(--radius-full);
-    background: var(--bg); border: 2px solid var(--accent); color: var(--accent);
-    font-size: var(--fs-100); font-weight: 800; line-height: 1.25rem; text-align: center;
+  @media(max-width:650px) {
+    .pf-intro { padding-top:36px; }h1 { font-size:30px; }.intro-copy { font-size:16px; }
+    .intro-grid { gap:28px; }.contact-links { font-size:12px; }.identity > .eyebrow { margin-bottom:24px; gap:10px; }
+    .capabilities { padding:36px 0; }.capability-grid { grid-template-columns:1fr; gap:24px; }.capability-grid h3 { margin:8px 0; }
+    .section-heading h2 { font-size:24px; }.section-heading > p:last-child:not(.eyebrow) { line-height:1.8; }
+    .case { padding:32px 0; }.case-heading h3 { font-size:25px; }.case-grid { grid-template-columns:1fr; gap:28px; }
+    .case-evidence { padding-top:6px; }.case-evidence img { max-height:360px; object-fit:contain; background:var(--code-bg); }
+    .case-meta { margin-bottom:24px; }.case-story p { font-size:15px; }.evidence-result strong { font-size:28px; }
+    .collaboration { padding:36px 0; }.collaboration-grid,.background { grid-template-columns:1fr; gap:28px; }
+    .background { padding:36px 0; }.portfolio-contact h2 { font-size:27px; }.portfolio-contact > a { font-size:18px; }
   }
-  .steps strong { display: block; }
-  .steps span { display: block; color: var(--text-dim); font-size: var(--fs-400); word-break: keep-all; }
-
-  .findings { margin: 0 0 var(--space-10); border-top: 1px solid var(--border); }
-  .finding { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: var(--space-6); padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
-  .fv b { display: block; color: var(--accent); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); white-space: nowrap; }
-  .fv span { display: block; margin-top: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); }
-  .finding h3 { margin-bottom: var(--space-2); font-size: var(--fs-500); line-height: var(--lh-snug); word-break: keep-all; }
-  .finding p { margin: 0; font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
-
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: var(--space-6); margin: 0 0 var(--space-8); }
-  .metrics > div { padding-top: var(--space-3); border-top: 2px solid var(--text); }
-  .metrics dt { color: var(--text-dim); font-size: var(--fs-300); }
-  .metrics dd { margin: 0; }
-  .mv { margin-top: var(--space-1); color: var(--accent); font-size: var(--fs-800); font-weight: 800; line-height: var(--lh-tight); letter-spacing: var(--ls-tight); font-variant-numeric: tabular-nums; }
-  .mn { margin-top: var(--space-1); color: var(--text-dim); font-size: var(--fs-200); }
-
-  .conclusion {
-    margin: 0 0 var(--space-6); padding: var(--space-4) var(--space-5);
-    border-left: 3px solid var(--accent); border-radius: var(--radius-lg); background: var(--accent-soft);
-    font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all;
-  }
-  .conclusion strong { display: block; margin-bottom: var(--space-1); color: var(--accent); font-size: var(--fs-300); }
-  .note { margin-bottom: var(--space-4); font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
-  .scope { margin-bottom: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-400); line-height: var(--lh-relaxed); word-break: keep-all; }
-  .more { margin: var(--space-6) 0 var(--space-4); font-size: var(--fs-300); font-weight: 700; }
-  /* Lucide 아이콘은 글자 옆에 붙는 기능 표시라 글자 높이에 맞춘다 */
-  .more a, .r-links a, .contact a { display: inline-flex; align-items: center; gap: var(--space-1); }
-
-  .foundation { padding: var(--space-16) 0 var(--space-6); border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + var(--space-4)); }
-  .foundation h2 { margin-bottom: var(--space-6); }
-  .foundation .tag { margin-bottom: var(--space-2); }
-  .foundation .role { margin: 0 0 var(--space-6); }
-  .award { padding: var(--space-05) var(--space-2); border-radius: var(--radius-md); background: var(--accent-soft); color: var(--accent); font-size: var(--fs-200); }
-  .foundation .brief div { grid-template-columns: 6.5rem minmax(0, 1fr); }
-
-  .collab { padding: var(--space-16) 0 var(--space-6); border-bottom: 1px solid var(--border); }
-  .collab h2 { margin-bottom: var(--space-3); }
-  .collab-lead { margin-bottom: var(--space-8); color: var(--text-dim); font-size: var(--fs-400); }
-  .retros { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--text); }
-  .retros li { padding: var(--space-10) 0; border-bottom: 1px solid var(--border); }
-  .retros li:last-child { border-bottom: 0; }
-  .retros h3 { margin-bottom: var(--space-4); font-size: var(--fs-600); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); word-break: keep-all; }
-  .retros h3 a { color: var(--text); }
-  .retros h3 a:hover { color: var(--accent); text-decoration: none; }
-  .r-story { margin-bottom: var(--space-5); font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all; }
-  /* 결론만 색 박스로 떼어낸다. 훑어 읽는 사람은 제목과 이 박스만 읽어도 된다 */
-  .r-lesson {
-    margin-bottom: var(--space-5); padding: var(--space-4) var(--space-5);
-    border-left: 3px solid var(--accent); border-radius: var(--radius-lg); background: var(--accent-soft);
-    font-size: var(--fs-500); line-height: var(--lh-relaxed); word-break: keep-all;
-  }
-  .r-lesson strong { display: block; margin-bottom: var(--space-1); color: var(--accent); font-size: var(--fs-300); }
-  .r-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: 0; font-size: var(--fs-300); font-weight: 700; }
-  .r-next { color: var(--text-dim); font-weight: 600; }
-
-  .contact { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-6); padding-top: var(--space-12); }
-  .contact p { flex-basis: 100%; margin: 0; font-size: var(--fs-400); font-weight: 600; }
-  .contact a { font-size: var(--fs-300); font-weight: 700; }
-
-  @media (max-width: 600px) {
-    .hero { padding: var(--space-12) 0 var(--space-8); }
-    .index a { grid-template-columns: 2rem 1fr; gap: var(--space-1) var(--space-3); }
-    .n { grid-row: 1 / span 2; align-self: start; padding-top: var(--space-05); }
-    .t { grid-column: 2; }
-    .hl { grid-column: 2; text-align: left; }
-    .project { padding-top: var(--space-12); }
-    .brief div, .foundation .brief div { grid-template-columns: 1fr; gap: var(--space-05); }
-    .ways ol { grid-template-columns: 1fr; }
-    .finding { grid-template-columns: 1fr; gap: var(--space-2); }
-    .tbl { font-size: var(--fs-300); }
+  @media print {
+    :global(body > header),:global(body > footer),#portfolio-print { display:none; }
+    :global(html) { font-size:10pt; color-scheme:light; }
+    .pf { --bg:#fff; --text:#222; --text-dim:#555; --border:#ddd; --accent:#246b50; --code-bg:#f2f4f6; max-width:none; padding:0; }
+    .pf-intro { padding-top:0; }.intro-grid { grid-template-columns:1.5fr 1fr; gap:24px; }h1 { font-size:25pt; }
+    .capabilities { padding:24px 0; }.capability-grid { grid-template-columns:repeat(3,1fr); gap:18px; }
+    .case { break-before:page; padding:0; border:0; }.case-grid { grid-template-columns:1.15fr 1fr; gap:22px; }.case-heading h3 { font-size:21pt; }
+    .case-story p { font-size:10pt; line-height:1.65; }.decisions li { margin-top:14px; }.case-meta { margin-bottom:20px; }
+    .case-evidence img { max-height:65mm; object-fit:contain; }.verification p { font-size:9pt; }.evidence-result { padding:16px; }
+    .collaboration { break-before:page; }.portfolio-contact { padding-top:24px; }.contact-links a { font-size:10pt; }
+    a { text-decoration:none; }h2,h3,h4 { break-after:avoid; }figure,.ownership,.decisions li { break-inside:avoid; }
   }
 </style>
