@@ -3,12 +3,12 @@
   <desc id="d">평가에 쓴 fixture 여덟 개마다 어떤 Agent가 실행되는지 보여준다. 기록이 없는 요청은 Agent가 하나도 실행되지 않고, 영양만 기록한 요청은 영양과 종합 둘, 영양과 운동을 모두 기록한 요청은 넷이 실행된다. 영양 Agent가 켜진 네 요청에서만 RAG 검색이 붙는다. 여덟 요청의 평균은 2.5개이고, 고정 DAG는 어떤 요청에도 4.0개를 실행했다.</desc>
   <style>
     /*
-     * 공통 도해 문법 — docs/diagrams.md 참조. 9장이 같은 규칙을 쓴다.
+     * 공통 도해 문법 — docs/diagrams.md 참조. 모든 본문 도식이 같은 규칙을 쓴다.
      *
      * 색은 "무엇인가"가 아니라 "어떤 역할인가"를 말한다.
      *   g 초록  코드가 실제로 바뀌는 단계
-     *   v 보라  사람이 기준을 정하거나 확인하는 지점 (문서 · 판정 · 리뷰 · 게이트)
-     *   t 주황  경계 — 들어오고 나가는 지점, 그리고 되돌아간 비용
+     *   v 청록  사람이 기준을 정하거나 확인하는 지점 (문서 · 판정 · 리뷰 · 게이트)
+     *   t 연초록  경계 — 들어오고 나가는 지점, 그리고 되돌아간 비용
      *   q 회색  맥락. 이 그림의 주인공이 아닌 것
      * 한 칸은 면 · 선 · 글자를 같은 색 한 벌로 쓴다. 색이 역할이므로 강조용 테두리를
      * 따로 두지 않는다.
@@ -21,20 +21,28 @@
      * OS 설정이 아니라 사이트의 테마 토글(html[data-theme])을 따른다. 파일을 직접
      * 열면 라이트 값만 보인다.
      */
-    .dg {
-      --ink:#23211d; --ink2:#57534a; --hair:#cec8bb; --arrow:#a39c91;
-      --g-fill:#e7f0ea; --g-line:#4e8f74; --g-text:#1d6b4f;
-      --v-fill:#ecebf4; --v-line:#7d74ab; --v-text:#544a87;
-      --t-fill:#f7ebe3; --t-line:#c07a4e; --t-text:#9c4a15;
-      --q-fill:#f4f1ea; --q-line:#cec8bb; --q-text:#57534a;
-    }
-    :root[data-theme='dark'] .dg {
-      --ink:#edeae3; --ink2:#a8a199; --hair:#3f3b35; --arrow:#6f685f;
-      --g-fill:#1d2a24; --g-line:#3f7a5f; --g-text:#4fbe8f;
-      --v-fill:#24222e; --v-line:#6a5f96; --v-text:#a396d8;
-      --t-fill:#2c211a; --t-line:#8f5c38; --t-text:#d98b52;
-      --q-fill:#2a2724; --q-line:#4a453e; --q-text:#a8a199;
-    }
+    /* diagram-theme:start */
+/* Source of truth. Embedded into body SVGs by sync-diagram-theme.mjs. */
+.dg {
+  --ink:#333d4b; --ink2:#6b7684; --hair:#d1d6db; --arrow:#8b95a1;
+  --g-fill:#eaf4ee; --g-line:#7da58e; --g-text:#246b50;
+  --v-fill:#e7f2f2; --v-line:#65a0a1; --v-text:#21696d;
+  --t-fill:#eef3df; --t-line:#98aa65; --t-text:#566b29;
+  --q-fill:#f2f4f6; --q-line:#d1d6db; --q-text:#6b7684;
+  --g-bar:#246b50; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#a6afb9;
+  --muted:var(--ink2); --q:var(--q-text); --g:var(--g-text);
+  --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme='dark'] .dg {
+  --ink:#e5e8eb; --ink2:#b0b8c1; --hair:#4e5968; --arrow:#8b95a1;
+  --g-fill:#1e332a; --g-line:#5a9c79; --g-text:#80cfa7;
+  --v-fill:#203638; --v-line:#5c9c9e; --v-text:#83cdd0;
+  --t-fill:#303923; --t-line:#8fa75d; --t-text:#c0d58b;
+  --q-fill:#262b32; --q-line:#4e5968; --q-text:#b0b8c1;
+  --g-bar:#80cfa7; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#77838f;
+}
+/* diagram-theme:end */
     /* 인라인이면 페이지의 Pretendard를 그대로 받는다. 직접 열었을 때만 시스템 고딕으로 떨어진다 */
     .dg text { font-family: 'Pretendard Variable', Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; }
 
@@ -69,8 +77,8 @@
      * 값이므로 테두리 없이 진한 면 하나로 칠한다. 색 뜻은 칸과 같다 — t는 되돌아간 비용.
      */
     .dg .bar { stroke:none; }
-    .dg .bar.g { fill:var(--g-text); } .dg .bar.v { fill:var(--v-text); }
-    .dg .bar.t { fill:var(--t-text); } .dg .bar.q { fill:var(--q-text); }
+    .dg .bar.g { fill:var(--g-bar); } .dg .bar.v { fill:var(--v-bar); }
+    .dg .bar.t { fill:var(--t-bar); } .dg .bar.q { fill:var(--q-bar); }
     .dg .tick { font-size:13px; fill:var(--ink2); }
     .dg .grid { fill:none; stroke:var(--hair); stroke-width:1; }
     /* 판 안을 가르는 실선. 선분이므로 fill:none을 반드시 준다 */

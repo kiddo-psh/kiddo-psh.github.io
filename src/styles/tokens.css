@@ -1,13 +1,13 @@
 :root {
-  --bg: #fbfaf7;
+  --bg: #ffffff;
   --bg-elev: #ffffff;
-  --text: #23211d;
-  --text-dim: #57534a;
-  --border: #e6e1d6;
-  --accent: #1d6b4f;
+  --text: #333d4b;
+  --text-dim: #6b7684;
+  --border: #e5e8eb;
+  --accent: #246b50;
   /* 표에서 결론에 해당하는 행을 칠하는 색. 종이색 위에서 글씨 대비를 깎지 않을 만큼만 진하다 */
-  --accent-soft: #e6efe9;
-  --code-bg: #f4f1ea;
+  --accent-soft: #eaf4ee;
+  --code-bg: #f2f4f6;
 
   /*
    * 프로젝트 카드 틴트. 일러스트를 그리지 않는 대신 색으로 각 프로젝트를 구분한다.
@@ -17,7 +17,7 @@
    */
   --pj-a: #dde7e0;
   --pj-b: #dae2e9;
-  --pj-c: #ede0d4;
+  --pj-c: #e5eee8;
   --pj-d: #e3dde8;
 
   /*
@@ -27,7 +27,7 @@
    */
   --mk-a: #bcd2c4;
   --mk-b: #b9c9d6;
-  --mk-c: #e0cbb2;
+  --mk-c: #afc8b9;
   --mk-d: #cbc2d8;
 
   --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
@@ -123,29 +123,29 @@
    * 없어서 넓은 화면에서도 여백이 12%에 머문다.
    */
   --w-page-wide: 1440px;
-  --nav-h: 49px;
+  --nav-h: 64px;
 }
 
 :root[data-theme='dark'] {
-  --bg: #191817;
-  --bg-elev: #211f1c;
-  --text: #edeae3;
-  --text-dim: #a8a199;
-  --border: #2e2b27;
+  --bg: #17191c;
+  --bg-elev: #202329;
+  --text: #e5e8eb;
+  --text-dim: #b0b8c1;
+  --border: #333d4b;
   --accent: #4fbe8f;
-  --accent-soft: #1d2a24;
-  --code-bg: #211f1c;
+  --accent-soft: #1e332a;
+  --code-bg: #202329;
 
   /* 프로젝트 카드 틴트를 어두운 쪽으로 뒤집는다. 글씨는 var(--text)라 자동으로 밝아진다 */
   --pj-a: #1f2b25;
   --pj-b: #1e2831;
-  --pj-c: #2e251d;
+  --pj-c: #243b2e;
   --pj-d: #272231;
 
   /* 마크 타일도 같이 뒤집는다. 라이트에서 틴트보다 진했듯, 다크에서는 틴트보다 밝다 */
   --mk-a: #31463a;
   --mk-b: #2e4050;
-  --mk-c: #4a3a2b;
+  --mk-c: #355440;
   --mk-d: #3e3650;
 }
 

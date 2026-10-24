@@ -1,149 +1,42 @@
 ---
-import type { Post } from '../lib/posts';
-import { readingMinutes } from '../lib/posts';
+import { readingMinutes, type Post } from '../lib/posts';
 import { getCategory } from '../site.config';
-import Motif from './Motif.astro';
-import { postTone } from '../lib/motif';
-
-/*
- * 글 목록의 한 항목. 변형은 둘뿐이다.
- *
- *   feature — 목록 맨 위 한 개. 큰 마크 + 세리프 제목 + 요약문.
- *   row     — 나머지 전부. 작은 마크 + 제목 + 메타.
- *
- * 전에는 홈 글 목록, /posts, 홈 브리핑, /ai-briefing이 각자 다른 밀도로 네 벌
- * 있었다. 같은 "항목"인데 어디서 보느냐에 따라 제목 크기와 담는 정보가 달라지면
- * 사이트가 한 사람 손에서 나온 것으로 읽히지 않는다. 모양은 여기서만 정하고,
- * 페이지는 어느 변형을 쓸지만 고른다.
- *
- * 요약문(description)은 feature에만 붙인다. 모든 행에 붙이면 훑는 속도가 반으로
- * 줄고, 어느 글을 먼저 읽어야 하는지에 대한 답이 사라진다.
- */
-interface Props {
-  post: Post;
-  variant?: 'feature' | 'row';
-  headingLevel?: 2 | 3;
-}
+import ArticleCover from './ArticleCover.astro';
+interface Props { post: Post; variant?: 'feature' | 'row'; headingLevel?: 2 | 3; }
 const { post, variant = 'row', headingLevel = 3 } = Astro.props;
-
 const cat = getCategory(post.data.category);
 const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
-const minutes = readingMinutes(post.body);
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
-const isFeature = variant === 'feature';
-
-/* 타일 색 규칙은 lib/motif가 갖는다 */
-const tone = postTone(post.data.category);
 ---
-
-<article class:list={['row', variant]} data-reveal>
-  <Motif seed={post.id} tone={tone} size={isFeature ? 126 : 40} class="mark" />
-
+<article class:list={['post-entry', variant]}>
+  <div class="cover">{post.data.cover ? <img src={post.data.cover} alt="" width="1200" height="750" loading={variant === 'feature' ? 'eager' : 'lazy'} /> : <ArticleCover id={post.id} />}</div>
   <div class="body">
-    <p class="meta">
-      <span class="cat">{cat.label}</span>
-      <span>{date}</span>
-      <span>{minutes}분</span>
-    </p>
-    <Heading class:list={['title', { serif: isFeature }]}>
-      <a href={`/posts/${post.id}`}>{post.data.title}</a>
-    </Heading>
-    {isFeature && <p class="sum">{post.data.description}</p>}
+    <p class="category">{cat.name}</p>
+    <Heading class="title"><a href={`/posts/${post.id}`}>{post.data.title}</a></Heading>
+    <p class="summary">{post.data.description}</p>
+    <p class="meta">{date}<span>·</span>{readingMinutes(post.body)}분 읽기</p>
   </div>
 </article>
-
 <style>
-  /*
-   * 마크를 왼쪽에 두고 글자를 오른쪽에 둔다. 마크가 세로 가운데가 아니라 위쪽
-   * 기준선에 붙는 이유는, 제목이 두 줄로 감기면 가운데 정렬이 메타 줄과 어긋나기
-   * 때문이다.
-   */
-  .row {
-    position: relative;
-    display: flex; gap: var(--space-5); align-items: start;
-    padding: var(--space-6) 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .mark { margin-top: var(--space-1); }
-
-  .body { min-width: 0; }
-  /*
-   * 머리기사의 글자 폭을 묶는다. 990 그리드에서 마크를 빼도 넉넉한 폭이 남는데,
-   * 그대로 두면 30px 제목이 한 줄로 쭉 뻗고 요약문도 한 줄에 45자가 넘어간다 —
-   * 읽는 폭이 아니라 남는 폭에 맞춰진 문단이 된다.
-   */
-  .feature .body { max-width: 62ch; }
-
-  /*
-   * 행 전체를 누를 수 있게 제목 링크를 덮개로 늘린다. 제목 글자만 링크로 두면
-   * 날짜·분량·행 여백을 눌러도 아무 일이 없다 — 목록에서 제일 흔한 헛클릭이다.
-   * 접근성 이름은 제목 그대로 유지된다(덮개는 ::after라 읽히지 않는다).
-   */
-  .title a::after { content: ''; position: absolute; inset: 0; }
-
-  /*
-   * 덮개 때문에 포커스 링이 제목 글자에만 걸린다. 실제로 눌리는 건 행 전체이므로
-   * 링도 행에 두어 키보드 사용자가 누를 범위를 제대로 보게 한다.
-   */
-  .row:has(.title a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-sm); }
-  .row .title a:focus-visible { outline: none; }
-
-  /*
-   * 메타를 제목 위로 올렸다. 전에는 아래에 있었는데, 그러면 분류가 제목을 읽고 난
-   * 뒤에야 나와서 훑는 동안 아무 역할을 못 한다. 위에 두면 목록이
-   * "분류 · 날짜 / 제목"으로 읽혀서 레퍼런스의 뉴스 목록과 같은 순서가 된다.
-   */
-  .meta {
-    margin: 0 0 var(--space-2);
-    /*
-     * 줄바꿈을 허용한다. 320px 화면에서 머리기사는 마크(58px)가 폭을 가져가는데
-     * "DEV 2026.09.07 12분"이 한 줄에 묶여 있으면 21px이 화면 밖으로 나갔다.
-     */
-    display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline;
-    font-size: var(--fs-200); color: var(--text-dim); line-height: var(--lh-normal);
-  }
-  .cat { color: var(--accent); font-weight: 800; letter-spacing: var(--ls-label); }
-
-  .title { margin: 0; letter-spacing: var(--ls-tight); }
-  .title a { color: var(--text); text-decoration: none; transition: color var(--dur) var(--ease); }
-  /* 덮개 위에서는 커서가 제목 밖에 있어도 hover다 — 행 전체가 반응하게 맞춘다 */
-  .row:hover .title a { color: var(--accent); }
-
-  /* ── 변형 ────────────────────────────────────────────────── */
-
-  /*
-   * 일반 행. 제목을 19px로 낮췄다. 전에는 26px이라 네 개가 세로로 늘어서면
-   * 전부 같은 무게의 큰 제목이라 어디부터 읽어야 할지 알려주는 것이 없었다.
-   * 위에 세리프 제목이 하나 서 있으므로 나머지는 목록으로 물러나는 게 맞다.
-   *
-   * :not(.feature)로 거른다. 전에는 특이도를 올리려고 .row.row로 썼는데,
-   * 머리기사도 .row를 달고 있어서 아래 .feature 규칙(30px)을 이기고 19px로
-   * 눌러버렸다 — 머리기사를 만들어 놓고 크기는 목록과 같았다.
-   */
-  .row:not(.feature) .title { font-size: var(--fs-500); line-height: var(--lh-snug); font-weight: 700; }
-
-  /*
-   * 맨 위 한 개. 여기만 세리프와 요약문을 쓴다. 아래 실선을 굵게 해서
-   * "여기까지가 머리기사"라는 경계를 만든다.
-   */
-  .feature { padding: var(--space-8) 0; border-bottom-width: 2px; }
-  .feature .title { font-size: var(--fs-800); line-height: var(--lh-tight); }
-  .feature .meta { margin-bottom: var(--space-3); font-size: var(--fs-300); }
-  .sum {
-    margin: var(--space-4) 0 0; max-width: 58ch;
-    font-size: var(--fs-400); line-height: var(--lh-relaxed); color: var(--text-dim);
-  }
-
-  /*
-   * 마크가 글자 폭을 가져가는 지점에서 두 번 줄인다. 126px는 990 그리드에서
-   * "이 글부터 읽어라"를 만드는 크기지만, 600px 화면에서는 제목 폭의 4분의 1이다.
-   */
-  @media (max-width: 900px) {
-    .feature .mark { width: 86px; height: 86px; }
-  }
-  @media (max-width: 640px) {
-    .row { gap: var(--space-4); }
-    .feature .title { font-size: var(--fs-700); }
-    .feature .mark { width: 58px; height: 58px; }
-  }
+.post-entry { position:relative; display:grid; grid-template-columns:240px minmax(0,1fr); align-items:center; gap:32px; padding:30px 0; }
+.cover { min-width:0; transition:transform var(--dur) var(--ease); }.cover img { display:block; width:100%; height:auto; aspect-ratio:1.6; object-fit:cover; border-radius:18px; }
+.category { margin:0 0 10px; color:var(--accent); font-size:14px; font-weight:650; }
+.title { margin:0; font-size:24px; font-weight:700; line-height:1.45; letter-spacing:-.035em; }.title a { color:var(--text); text-decoration:none; }.title a::after { content:''; position:absolute; inset:0; }
+.post-entry:hover .title a { color:var(--accent); }.post-entry:hover .cover { transform:translateY(-3px); }
+.post-entry:has(a:focus-visible) { outline:2px solid var(--accent); outline-offset:6px; border-radius:12px; }
+.summary { margin:12px 0 0; color:var(--text-dim); font-size:16px; line-height:1.7; }.meta { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 0; font-size:13px; color:var(--text-dim); }
+.feature { grid-template-columns:1.1fr 1fr; gap:48px; padding:0 0 48px; }.feature .title { font-size:32px; line-height:1.4; }.feature .summary { font-size:17px; }
+.post-entry:not(.feature) .cover :global(.cover-label),.post-entry:not(.feature) .cover :global(.cover-footer) { display:none; }
+.post-entry:not(.feature) .cover :global(.clock) { width:90px; height:90px; border-width:8px; }
+.post-entry:not(.feature) .cover :global(.clock > span) { font-size:38px; }
+.post-entry:not(.feature) .cover :global(.clock small) { font-size:20px; }
+.post-entry:not(.feature) .cover :global(.retry-art) { transform:scale(.75); }
+@media(max-width:700px) {
+ .post-entry { grid-template-columns:120px minmax(0,1fr); gap:18px; padding:24px 0; }.title { font-size:19px; }.summary { display:none; }.category { font-size:12px; margin-bottom:6px; }.meta { margin-top:12px; font-size:12px; }
+ .feature { grid-template-columns:1fr; gap:24px; padding:0 0 32px; }.feature .title { font-size:27px; }.feature .summary { display:block; font-size:16px; }
+ .post-entry:not(.feature) .cover :global(.cover-label),.post-entry:not(.feature) .cover :global(.cover-footer) { display:none; }
+ .post-entry:not(.feature) .cover :global(.clock) { width:64px; height:64px; border-width:6px; }.post-entry:not(.feature) .cover :global(.clock > span) { font-size:28px; }.post-entry:not(.feature) .cover :global(.clock small) { font-size:16px; }
+ .post-entry:not(.feature) .cover :global(.retry-art),.post-entry:not(.feature) .cover :global(.flow-art) { transform:scale(.45); }
+}
+@media(prefers-reduced-motion:reduce) { .post-entry:hover .cover { transform:none; } }
 </style>

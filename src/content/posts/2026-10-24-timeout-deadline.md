@@ -3,6 +3,7 @@ title: "타임아웃과 데드라인 — 여러 서버를 거쳐도 전체 5초�
 description: "개별 호출의 타임아웃과 전체 요청의 데드라인을 구분하고, 재시도와 대기를 포함한 시간 예산을 어떻게 관리할지 살펴봅니다."
 pubDate: 2026-10-24
 category: dev
+cover: "/images/covers/timeout-deadline.png"
 draft: false
 ---
 
@@ -58,7 +59,10 @@ draft: false
 | 재시도 전 백오프 대기 | 1초 | 4초 |
 
 <figure class="wide">
+  <picture>
+  <source media="(max-width: 700px)" srcset="/images/timeout-deadline/time-budget-mobile.svg" />
   <img src="/images/timeout-deadline/time-budget.svg" alt="전처리 1초, 첫 호출 2초, 재시도 전 대기 1초로 이미 4초를 사용했습니다. 남은 1초에서 응답 반환 여유 0.2초를 빼면 다음 호출에 배정할 수 있는 시간은 최대 0.8초입니다. 아래 확대 막대는 마지막 1초를 보여주며, 위 막대와 축척이 다릅니다." />
+  </picture>
   <figcaption>재시도에도 같은 시간 예산을 사용합니다. 반환 여유 0.2초는 설명을 위한 예시입니다.</figcaption>
 </figure>
 

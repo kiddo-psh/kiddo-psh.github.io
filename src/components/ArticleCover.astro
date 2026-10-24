@@ -1,0 +1,22 @@
+---
+interface Props { id: string; }
+const { id } = Astro.props;
+const deadline = id.includes('deadline');
+const backoff = id.includes('backoff');
+const label = deadline ? 'TIME BUDGET' : backoff ? 'RETRY STRATEGY' : id.includes('idempotency') ? 'IDEMPOTENCY' : 'ENGINEERING NOTES';
+---
+<div class:list={['article-cover', { deadline, backoff }]} aria-hidden="true">
+  <span class="cover-label">{label}</span>
+  {deadline ? <div class="clock"><span>5<small>s</small></span></div> : backoff ? <div class="retry-art"><i></i><i></i><i></i><i></i></div> : <div class="flow-art"><span>request</span><b>→</b><span>{id.includes('idempotency') ? 'once' : 'result'}</span></div>}
+  <span class="cover-footer">kiddo-psh / {deadline ? '전체 시간 예산' : backoff ? '다음 시도를 설계하는 법' : '문제를 이해하는 기록'}</span>
+</div>
+<style>
+.article-cover { position:relative; display:flex; align-items:center; justify-content:center; width:100%; aspect-ratio:1.6; overflow:hidden; border-radius:18px; background:var(--code-bg); color:var(--text); }
+.article-cover.deadline { background:var(--accent-soft); }
+.cover-label,.cover-footer { position:absolute; left:24px; font-size:11px; font-weight:650; letter-spacing:.12em; }
+.cover-label { top:23px; color:var(--accent); }.cover-footer { bottom:20px; color:var(--text-dim); letter-spacing:0; }
+.clock { width:142px; height:142px; border:12px solid color-mix(in srgb,var(--accent) 16%,transparent); border-top-color:var(--accent); border-right-color:var(--accent); border-radius:50%; display:grid; place-items:center; transform:rotate(-24deg); }
+.clock > span { font-size:62px; line-height:1; font-weight:750; letter-spacing:-.06em; transform:rotate(24deg); }.clock small { font-size:28px; margin-left:4px; }
+.retry-art { display:flex; gap:18px; align-items:end; }.retry-art i { display:block; width:30px; height:28px; background:var(--accent); border-radius:8px; opacity:.35; }.retry-art i:nth-child(2) { height:50px; opacity:.5; }.retry-art i:nth-child(3) { height:78px; opacity:.75; }.retry-art i:nth-child(4) { height:110px; opacity:1; }
+.flow-art { display:flex; align-items:center; gap:14px; font:17px var(--font-mono); }.flow-art span { padding:18px; border-radius:12px; background:var(--bg); }.flow-art b { color:var(--accent); }
+</style>

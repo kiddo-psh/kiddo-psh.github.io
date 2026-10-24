@@ -3,6 +3,7 @@ title: "에이전트에게 자율성을 주려면, 가드레일부터 다시 읽
 description: "AI 에이전트에게 방법을 맡기라는 조언을 듣고, 우리 팀 규칙 문서가 가드레일 노릇을 제대로 하고 있는지 점검했다. 지운 것보다 배운 것이 많았다."
 pubDate: 2026-09-07
 category: ai
+cover: "/images/covers/ai-rule-docs-cleanup.png"
 ---
 
 > **You want to describe the task, you want to describe the guardrails, you want to describe the exit criteria, and then just go with the model.**

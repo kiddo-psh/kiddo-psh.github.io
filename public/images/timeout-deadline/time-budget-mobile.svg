@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" viewBox="0 0 360 520" role="img" aria-labelledby="t d">
+  <title id="t">전체 5초를 나누는 시간 예산</title>
+  <desc id="d">전처리 1초, 첫 호출 2초, 재시도 대기 1초가 지나면 1초가 남습니다. 다음 호출에는 최대 0.8초를 배정하고, 응답 반환에 0.2초의 여유를 둡니다. 세로 막대의 길이는 각 단계의 시간에 비례합니다.</desc>
+  <style>
+    /* diagram-theme:start */
+/* Source of truth. Embedded into body SVGs by sync-diagram-theme.mjs. */
+.dg {
+  --ink:#333d4b; --ink2:#6b7684; --hair:#d1d6db; --arrow:#8b95a1;
+  --g-fill:#eaf4ee; --g-line:#7da58e; --g-text:#246b50;
+  --v-fill:#e7f2f2; --v-line:#65a0a1; --v-text:#21696d;
+  --t-fill:#eef3df; --t-line:#98aa65; --t-text:#566b29;
+  --q-fill:#f2f4f6; --q-line:#d1d6db; --q-text:#6b7684;
+  --g-bar:#246b50; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#a6afb9;
+  --muted:var(--ink2); --q:var(--q-text); --g:var(--g-text);
+  --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme='dark'] .dg {
+  --ink:#e5e8eb; --ink2:#b0b8c1; --hair:#4e5968; --arrow:#8b95a1;
+  --g-fill:#1e332a; --g-line:#5a9c79; --g-text:#80cfa7;
+  --v-fill:#203638; --v-line:#5c9c9e; --v-text:#83cdd0;
+  --t-fill:#303923; --t-line:#8fa75d; --t-text:#c0d58b;
+  --q-fill:#262b32; --q-line:#4e5968; --q-text:#b0b8c1;
+  --g-bar:#80cfa7; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#77838f;
+}
+/* diagram-theme:end */
+    .dg .hd { fill:var(--ink); font-size:18px; font-weight:700; }
+    .dg .l { fill:var(--ink); font-size:15px; font-weight:650; }
+    .dg .sub { fill:var(--ink2); font-size:13px; }
+    .dg .tick { fill:var(--ink2); font-size:12px; }
+    .dg .bar { stroke:none; }
+    .dg .bar.q { fill:var(--q-bar); }
+    .dg .bar.v { fill:var(--v-bar); }
+    .dg .bar.g { fill:var(--g-bar); }
+    .dg .bar.t { fill:var(--t-bar); }
+    .dg .grid { fill:none; stroke:var(--hair); stroke-width:1; }
+    .dg .rule { fill:none; stroke:var(--t-text); stroke-width:1.5; }
+  </style>
+  <text class="hd" x="28" y="40">전체 시간 예산 5초</text>
+  <text class="sub" x="28" y="65">이미 4초 사용 → 남은 시간 1초</text>
+  <path class="grid" d="M42 100 V400 M36 100 H48 M36 160 H48 M36 220 H48 M36 280 H48 M36 340 H48 M36 400 H48"/>
+  <g class="tick" text-anchor="end">
+    <text x="31" y="104">0</text><text x="31" y="164">1</text>
+    <text x="31" y="224">2</text><text x="31" y="284">3</text>
+    <text x="31" y="344">4</text><text x="31" y="404">5</text>
+  </g>
+  <rect class="bar q" x="60" y="100" width="30" height="58" rx="3"/>
+  <rect class="bar q" x="60" y="162" width="30" height="116" rx="3"/>
+  <rect class="bar v" x="60" y="282" width="30" height="56" rx="3"/>
+  <rect class="bar g" x="60" y="342" width="30" height="44" rx="3"/>
+  <rect class="bar t" x="60" y="390" width="30" height="10" rx="2"/>
+  <text class="l" x="114" y="135">전처리 1초</text>
+  <text class="l" x="114" y="216">첫 호출 2초</text>
+  <text class="sub" x="114" y="239">응답 없이 타임아웃</text>
+  <text class="l" x="114" y="315">재시도 대기 1초</text>
+  <text class="l" x="114" y="369">다음 호출 최대 0.8초</text>
+  <path class="rule" d="M60 410 H90 M96 395 C111 395 104 435 119 435 H135"/>
+  <text class="sub" x="114" y="410">5초에 마감</text>
+  <text class="l" x="146" y="440">반환 여유 0.2초</text>
+  <text class="sub" x="28" y="485">5 − 4 − 0.2 = 호출 예산 0.8초</text>
+</svg>

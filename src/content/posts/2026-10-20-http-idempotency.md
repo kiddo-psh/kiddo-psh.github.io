@@ -3,6 +3,7 @@ title: "멱등성 — 타임아웃된 요청을 안전하게 재시도하려면"
 description: "멱등성의 기준과 멱등성 키의 역할을 정리합니다. 고객 ID, DB 유일성 제약, 트랜잭션으로 같은 작업의 중복 등록을 막는 설계를 살펴봅니다."
 pubDate: 2026-10-20
 category: dev
+cover: "/images/covers/http-idempotency.png"
 ---
 
 [앞 글](/posts/http-request-response)에서는 타임아웃만으로 서버 작업이 실패했다고 단정할 수 없다는 점을 정리했어요. 서버는 작업을 완료했지만 성공 응답만 유실됐을 수 있기 때문입니다. 이 상태에서 같은 요청을 다시 보내면 작업이 두 번 생성될 수 있어요.

@@ -1,9 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
-import TableOfContents from '../components/TableOfContents.astro';
 import BackLink from '../components/BackLink.astro';
 import Motif from '../components/Motif.astro';
 import { projectTone } from '../lib/motif';
@@ -11,12 +9,10 @@ import RelatedLinks from '../components/RelatedLinks.astro';
 import { getVisiblePosts, readingMinutes } from '../lib/posts';
 import { getCategory } from '../site.config';
 
-interface Props { project: CollectionEntry<'projects'>; headings: MarkdownHeading[] }
-const { project, headings } = Astro.props;
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
 const d = project.data;
 
-const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const showToc = tocItems.length > 0;
 
 // frontmatter의 relatedPosts를 실제 글로 바꾼다. 없는 slug는 조용히 버린다.
 const all = await getVisiblePosts();
@@ -32,7 +28,7 @@ const related = (d.relatedPosts ?? [])
 
 <BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
   <div class="page-wide">
-    <div class:list={['shell', 'doc', { toc: showToc }]}>
+    <div class="shell doc">
       <article data-pagefind-body>
         <BackLink href="/projects" label="프로젝트" />
         {/*
@@ -71,8 +67,6 @@ const related = (d.relatedPosts ?? [])
         <RelatedLinks title="관련 회고" links={related} />
       </article>
 
-      {/* 목차를 본문 뒤에 둔다 — 키보드·스크린리더 사용자가 목차 링크를 먼저 지나지 않는다 */}
-      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
     </div>
   </div>
 </BaseLayout>

@@ -1,22 +1,17 @@
 ---
-import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
-import TableOfContents from '../components/TableOfContents.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import BackLink from '../components/BackLink.astro';
-import Motif from '../components/Motif.astro';
-import { postTone } from '../lib/motif';
+import ArticleCover from '../components/ArticleCover.astro';
 import Comments from '../components/Comments.astro';
 import { getCategory } from '../site.config';
 import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
 
-interface Props { post: Post; headings: MarkdownHeading[] }
-const { post, headings } = Astro.props;
+interface Props { post: Post }
+const { post } = Astro.props;
 
 const cat = getCategory(post.data.category);
-const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const isDoc = cat.layout === 'doc';           // controls width and lead font
-const showToc = isDoc && tocItems.length > 0; // controls the aside and the grid columns
+const isDoc = cat.layout === 'doc';
 const related = (await getRelatedPosts(post)).map((p) => ({
   href: `/posts/${p.id}`,
   label: p.data.title,
@@ -29,19 +24,14 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 
 <BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
   <div class="page-wide">
-    <div class:list={['shell', isDoc ? 'doc' : 'read', { toc: showToc }]}>
+    <div class:list={['shell', isDoc ? 'doc' : 'read']}>
       <article data-pagefind-body>
         <BackLink href="/posts" label="글" />
         <header>
-          {/*
-            머리그림. 목록에서 본 마크와 같은 규칙으로 그려지고 색도 같은 분류색이라,
-            어느 글을 눌렀는지가 문턱에서 이어진다. 손으로 만드는 자산이 아니라
-            글 id에서 나오므로 새 글을 써도 준비할 것이 없다.
-          */}
-          <span
-            class:list={['art-frame', 'band', `t-${postTone(post.data.category)}`, 'hero-mk']}>
-            <span class="art-plate"><Motif seed={post.id} tone={postTone(post.data.category)} banner plain /></span>
-          </span>
+          {/* 목록과 상세에서 같은 주제별 커버를 사용한다. */}
+          <div class="article-hero">
+            {post.data.cover ? <img src={post.data.cover} alt="" width="1200" height="750" /> : <ArticleCover id={post.id} />}
+          </div>
           <p class="cat">{cat.label}</p>
           <h1 class="serif">{post.data.title}</h1>
           <p class="date">{date} · {minutes}분 읽기</p>
@@ -53,15 +43,14 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
         <Comments slug={post.id} />
       </article>
 
-      {/* 목차를 본문 뒤에 둔다 — 키보드·스크린리더 사용자가 목차 링크를 먼저 지나지 않는다 */}
-      {showToc && <aside class="side"><TableOfContents headings={headings} /></aside>}
     </div>
   </div>
 </BaseLayout>
 
 <style>
   header { margin-bottom: var(--space-8); }
-  .hero-mk { margin: var(--space-6) 0 var(--space-6); }
+  .article-hero { margin:28px 0 36px; }
+  .article-hero img { display:block; width:100%; height:auto; border-radius:18px; }
   .cat { margin: 0 0 var(--space-3); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); color: var(--accent); }
   h1 { margin: 0 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
   .date { margin: 0; padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); font-size: var(--fs-300); color: var(--text-dim); }

@@ -2,16 +2,36 @@
   <title id="t">전체 5초 중 재시도에 남은 시간은 얼마일까?</title>
   <desc id="d">전처리 1초, 첫 호출 2초, 재시도 전 대기 1초로 이미 4초를 사용했습니다. 남은 1초에서 응답 반환 여유 0.2초를 빼면 다음 호출에 배정할 수 있는 시간은 최대 0.8초입니다. 아래 확대 막대는 마지막 1초를 보여주며, 위 막대와 축척이 다릅니다.</desc>
   <style>
-    .dg { --ink:#38362f; --muted:#57534a; --q:#57534a; --g:#1d6b4f; --v:#544a87; --t:#9c4a15; --line:#cec8bb; font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif; }
-    :root[data-theme='dark'] .dg { --ink:#ece8df; --muted:#c3bdb1; --q:#c3bdb1; --g:#91c9ad; --v:#bfb5e8; --t:#edb58e; --line:#645f55; }
+    /* diagram-theme:start */
+/* Source of truth. Embedded into body SVGs by sync-diagram-theme.mjs. */
+.dg {
+  --ink:#333d4b; --ink2:#6b7684; --hair:#d1d6db; --arrow:#8b95a1;
+  --g-fill:#eaf4ee; --g-line:#7da58e; --g-text:#246b50;
+  --v-fill:#e7f2f2; --v-line:#65a0a1; --v-text:#21696d;
+  --t-fill:#eef3df; --t-line:#98aa65; --t-text:#566b29;
+  --q-fill:#f2f4f6; --q-line:#d1d6db; --q-text:#6b7684;
+  --g-bar:#246b50; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#a6afb9;
+  --muted:var(--ink2); --q:var(--q-text); --g:var(--g-text);
+  --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme='dark'] .dg {
+  --ink:#e5e8eb; --ink2:#b0b8c1; --hair:#4e5968; --arrow:#8b95a1;
+  --g-fill:#1e332a; --g-line:#5a9c79; --g-text:#80cfa7;
+  --v-fill:#203638; --v-line:#5c9c9e; --v-text:#83cdd0;
+  --t-fill:#303923; --t-line:#8fa75d; --t-text:#c0d58b;
+  --q-fill:#262b32; --q-line:#4e5968; --q-text:#b0b8c1;
+  --g-bar:#80cfa7; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#77838f;
+}
+/* diagram-theme:end */
     .dg .hd { fill:var(--ink); font-size:19px; font-weight:650; }
     .dg .sub { fill:var(--muted); font-size:14px; }
     .dg .tick { fill:var(--ink); font-size:15px; }
     .dg .bar { stroke:none; }
-    .dg .bar.q { fill:var(--q); }
-    .dg .bar.v { fill:var(--v); }
-    .dg .bar.g { fill:var(--g); }
-    .dg .bar.t { fill:var(--t); }
+    .dg .bar.q { fill:var(--q-bar); }
+    .dg .bar.v { fill:var(--v-bar); }
+    .dg .bar.g { fill:var(--g-bar); }
+    .dg .bar.t { fill:var(--t-bar); }
     .dg .grid { fill:none; stroke:var(--line); stroke-width:1; }
     .dg .rule { fill:none; stroke:var(--t); stroke-width:2; }
   </style>
