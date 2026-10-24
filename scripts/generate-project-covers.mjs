@@ -24,6 +24,10 @@ const designs = {
     title: 'AI DEV HARNESS / RULES INTO EVIDENCE',
     art: `${box(155,270,225,260)}${[0,1,2,3].map(i=>line(`M195 ${320+i*50} H340`,i===1?teal:gray)).join('')}${line('M380 400 H500')}${box(500,310,200,180)}${line('M545 400 l30 30 80 -85')}${line('M700 400 H820')}${box(820,250,230,290)}${[0,1,2].map(i=>`<rect x="${855+i*55}" y="${460-i*55}" width="32" height="${40+i*55}" rx="8" fill="${i===1?teal:green}"/>`).join('')}${label(180,610,'INSTALL     /     CHECK     /     OBSERVE')}`,
   },
+  kkugi: {
+    title: 'KKUGI / CORRECTIONS BECOME DATA',
+    art: `${box(160,250,170,250)}${dot(245,345,38,gray)}${dot(245,345,18)}${line('M330 375 H440')}${[0,1,2].map(i=>box(440,215+i*110,260,85,i===1?green:gray)).join('')}${[0,1,2].map(i=>line(`M475 ${257+i*110} H${i===1?600:580}`,i===1?green:gray)).join('')}${dot(650,367,22,teal)}${line('M639 367 l8 8 14 -16','#fff')}${line('M700 367 H820')}${box(820,295,200,145,teal)}${[0,1,2].map(i=>`<rect x="${865+i*45}" y="${395-i*30}" width="26" height="${20+i*30}" rx="6" fill="${i===2?green:teal}"/>`).join('')}${line('M920 440 V530 H245 V500',teal)}${label(220,610,'SUGGEST     /     CONFIRM     /     RETRAIN')}`,
+  },
 };
 const previews = [];
 for (const [id, design] of Object.entries(designs)) {

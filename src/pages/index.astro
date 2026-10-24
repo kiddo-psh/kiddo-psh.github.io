@@ -17,8 +17,7 @@ const featured = allProjects
     const rank = (id: string) => portfolioCases.findIndex(p => p.id === id);
     const ar=rank(a.id),br=rank(b.id);
     return (ar<0?Number.MAX_SAFE_INTEGER:ar)-(br<0?Number.MAX_SAFE_INTEGER:br) || a.data.order-b.data.order;
-  })
-  .slice(0, 4);
+  });
 ---
 
 <BaseLayout title={SITE.title}>
