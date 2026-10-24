@@ -41,7 +41,7 @@ This is the accepted design baseline. Reuse it for new articles, diagrams, and c
 
 Graph labels use separate darker text tokens, not light bar fills. Preserve category labels and values so meaning never depends on color alone. Text warnings and syntax errors may retain red. Details and semantic mappings live in `docs/diagrams.md`.
 
-Code uses forest green for keywords/functions, teal for strings, and leaf green for numbers/types. Panels use 14px corners; inline code and table headers use their smaller component radii. Article column widths are 684px for technical/project writing and 594px for essays, with responsive side padding.
+Code uses forest green for keywords/functions, teal for strings, and leaf green for numbers/types. Panels use 14px corners; inline code and table headers use their smaller component radii. Article column widths are 684px for technical/project writing and 594px for retrospectives, with responsive side padding.
 
 ## Files
 

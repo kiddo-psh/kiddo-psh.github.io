@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" viewBox="0 0 960 392" role="img" aria-labelledby="t d">
+  <title id="t">재시도 증폭률과 최종 성공률</title>
+  <desc id="d">정책 네 가지의 재시도 증폭률과 최종 성공률을 나란히 그린 막대그래프입니다. 시드 5개 평균입니다. 증폭률은 재시도 없음 1.00배, 고정 2초 6.00배, 지수 백오프 5.82배, Full Jitter 5.77배로 재시도를 하는 세 정책이 거의 같습니다. 최종 성공률은 0%, 17.4%, 36.1%, 85.3%로 크게 다릅니다. 가는 선은 시드 5개의 최솟값과 최댓값입니다.</desc>
+  <style>
+    /* diagram-theme:start */
+/* Source of truth. Embedded into body SVGs by sync-diagram-theme.mjs. */
+.dg {
+  --ink:#333d4b; --ink2:#6b7684; --hair:#d1d6db; --arrow:#8b95a1;
+  --g-fill:#eaf4ee; --g-line:#7da58e; --g-text:#246b50;
+  --v-fill:#e7f2f2; --v-line:#65a0a1; --v-text:#21696d;
+  --t-fill:#eef3df; --t-line:#98aa65; --t-text:#566b29;
+  --q-fill:#f2f4f6; --q-line:#d1d6db; --q-text:#6b7684;
+  --g-bar:#246b50; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#a6afb9;
+  --muted:var(--ink2); --q:var(--q-text); --g:var(--g-text);
+  --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme='dark'] .dg {
+  --ink:#e5e8eb; --ink2:#b0b8c1; --hair:#4e5968; --arrow:#8b95a1;
+  --g-fill:#1e332a; --g-line:#5a9c79; --g-text:#80cfa7;
+  --v-fill:#203638; --v-line:#5c9c9e; --v-text:#83cdd0;
+  --t-fill:#303923; --t-line:#8fa75d; --t-text:#c0d58b;
+  --q-fill:#262b32; --q-line:#4e5968; --q-text:#b0b8c1;
+  --g-bar:#80cfa7; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#77838f;
+}
+/* diagram-theme:end */
+    .dg .hd { fill:var(--ink); font-size:19px; font-weight:650; }
+    .dg .ph { fill:var(--ink); font-size:16px; font-weight:650; }
+    .dg .sub { fill:var(--muted); font-size:14px; }
+    .dg .tick { fill:var(--ink); font-size:15px; }
+    .dg .ax { fill:var(--muted); font-size:13px; }
+    .dg .val { fill:var(--ink); font-size:14px; font-weight:600; }
+    .dg .lab { fill:var(--g); font-size:13.5px; }
+    .dg .labv { fill:var(--v); font-size:13px; }
+    .dg .labt { fill:var(--t); font-size:13px; }
+    .dg .bar { stroke:none; }
+    .dg .bar.q { fill:var(--q-bar); }
+    .dg .bar.v { fill:var(--v-bar); }
+    .dg .bar.g { fill:var(--g-bar); }
+    .dg .bar.t { fill:var(--t-bar); }
+    .dg .grid { fill:none; stroke:var(--line); stroke-width:1; }
+    .dg .rule { fill:none; stroke:var(--t); stroke-width:2; }
+    .dg .cap { fill:none; stroke:var(--v-bar); stroke-width:2; stroke-dasharray:6 4; }
+    .dg .whisk { fill:none; stroke:var(--ink); stroke-width:1.5; }
+    .dg .brk { fill:none; stroke:var(--ink2); stroke-width:1.5; }
+  </style>
+  <text class="hd" x="80" y="56">보낸 양은 같고, 결과는 다르다</text>
+  <text class="sub" x="880" y="56" text-anchor="end">시드 5개 평균 · 가는 선은 최소–최대</text>
+  <text class="ph" x="220" y="94">재시도 증폭률</text>
+  <text class="ax" x="470" y="94" text-anchor="end">시도 수 ÷ 클라이언트 수</text>
+  <text class="ph" x="560" y="94">최종 성공률</text>
+  <path class="grid" d="M434.3 112V304 M720.0 112V304 M880 112V304" stroke-dasharray="3 4"/>
+  <text class="tick" x="80" y="141">재시도 없음</text>
+  <rect class="bar q" x="220" y="125" width="35.7" height="22" rx="4"/>
+  <text class="val" x="263.7" y="141">1.00배</text>
+  <text class="val" x="570.0" y="141">0.0%</text>
+  <text class="tick" x="80" y="187">고정 2초</text>
+  <rect class="bar q" x="220" y="171" width="214.3" height="22" rx="4"/>
+  <text class="val" x="442.3" y="187">6.00배</text>
+  <rect class="bar q" x="560" y="171" width="55.6" height="22" rx="4"/>
+  <path class="whisk" d="M613.4 182H619.8 M613.4 176v12 M619.8 176v12"/>
+  <text class="val" x="629.8" y="187">17.4%</text>
+  <text class="tick" x="80" y="233">지수 백오프</text>
+  <rect class="bar q" x="220" y="217" width="207.7" height="22" rx="4"/>
+  <text class="val" x="435.7" y="233">5.82배</text>
+  <rect class="bar q" x="560" y="217" width="115.6" height="22" rx="4"/>
+  <path class="whisk" d="M668.8 228H681.6 M668.8 222v12 M681.6 222v12"/>
+  <text class="val" x="691.6" y="233">36.1%</text>
+  <text class="tick" x="80" y="279" font-weight="650">Full Jitter</text>
+  <rect class="bar g" x="220" y="263" width="206.0" height="22" rx="4"/>
+  <text class="val" x="434.0" y="279">5.77배</text>
+  <rect class="bar g" x="560" y="263" width="272.8" height="22" rx="4"/>
+  <path class="whisk" d="M826.6 274H839.4 M826.6 268v12 M839.4 268v12"/>
+  <text class="val" x="849.4" y="279">85.3%</text>
+  <path class="grid" d="M220 112V304 M560 112V304"/>
+  <g class="ax" text-anchor="middle"><text x="220" y="324">0</text><text x="434.3" y="324">6배</text><text x="560" y="324">0%</text><text x="720.0" y="324">50%</text><text x="880" y="324">100%</text></g>
+  <text class="sub" x="80" y="360">재시도하는 세 정책은 서버에 거의 같은 양(5.77–6.00배)을 보냈다. 달라진 것은 보낸 시점뿐이다.</text>
+</svg>

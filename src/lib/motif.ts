@@ -15,7 +15,7 @@ export function projectTone(order: number): Tone {
 }
 
 /** 글: 분류마다 고정색. 색이 DEV/RETRO를 한 번 더 말해 준다 */
-const BY_CATEGORY: Record<string, Tone> = { dev: 'a', ai: 'b', retro: 'c', essay: 'd' };
+const BY_CATEGORY: Record<string, Tone> = { dev: 'a', ai: 'b', retro: 'c' };
 
 export function postTone(category: string): Tone {
   return BY_CATEGORY[category] ?? 'a';

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="dg" viewBox="0 0 360 354" role="img" aria-labelledby="t d">
+  <title id="t">backend 재생성 중 502가 이어진 시간</title>
+  <desc id="d">실제 앱 서버에서 backend 컨테이너를 다시 만드는 동안 외부에서 0.2초 간격으로 API를 호출한 결과입니다. A는 재생성 직후 nginx reload를 했고, B는 하지 않았습니다. A는 명령 1.1초 뒤부터 37.7초까지 36.6초 동안 502가 173번, B는 0.9초부터 36.6초까지 35.6초 동안 502가 164번 돌아왔습니다. reload 유무와 관계없이 장애 길이가 거의 같습니다.</desc>
+  <style>
+    /* diagram-theme:start */
+/* Source of truth. Embedded into body SVGs by sync-diagram-theme.mjs. */
+.dg {
+  --ink:#333d4b; --ink2:#6b7684; --hair:#d1d6db; --arrow:#8b95a1;
+  --g-fill:#eaf4ee; --g-line:#7da58e; --g-text:#246b50;
+  --v-fill:#e7f2f2; --v-line:#65a0a1; --v-text:#21696d;
+  --t-fill:#eef3df; --t-line:#98aa65; --t-text:#566b29;
+  --q-fill:#f2f4f6; --q-line:#d1d6db; --q-text:#6b7684;
+  --g-bar:#246b50; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#a6afb9;
+  --muted:var(--ink2); --q:var(--q-text); --g:var(--g-text);
+  --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+}
+:root[data-theme='dark'] .dg {
+  --ink:#e5e8eb; --ink2:#b0b8c1; --hair:#4e5968; --arrow:#8b95a1;
+  --g-fill:#1e332a; --g-line:#5a9c79; --g-text:#80cfa7;
+  --v-fill:#203638; --v-line:#5c9c9e; --v-text:#83cdd0;
+  --t-fill:#303923; --t-line:#8fa75d; --t-text:#c0d58b;
+  --q-fill:#262b32; --q-line:#4e5968; --q-text:#b0b8c1;
+  --g-bar:#80cfa7; --v-bar:#4f9699; --t-bar:#b2c77d; --q-bar:#77838f;
+}
+/* diagram-theme:end */
+    .dg .hd { fill:var(--ink); font-size:16.34px; font-weight:650; }
+    .dg .ph { fill:var(--ink); font-size:13.76px; font-weight:650; }
+    .dg .sub { fill:var(--muted); font-size:12.04px; }
+    .dg .tick { fill:var(--ink); font-size:12.9px; }
+    .dg .ax { fill:var(--muted); font-size:11.18px; }
+    .dg .val { fill:var(--ink); font-size:12.04px; font-weight:600; }
+    .dg .lab { fill:var(--g); font-size:11.61px; }
+    .dg .labv { fill:var(--v); font-size:11.18px; }
+    .dg .labt { fill:var(--t); font-size:11.18px; }
+    .dg .bar { stroke:none; }
+    .dg .bar.q { fill:var(--q-bar); }
+    .dg .bar.v { fill:var(--v-bar); }
+    .dg .bar.g { fill:var(--g-bar); }
+    .dg .bar.t { fill:var(--t-bar); }
+    .dg .grid { fill:none; stroke:var(--line); stroke-width:1; }
+    .dg .rule { fill:none; stroke:var(--t); stroke-width:2; }
+    .dg .cap { fill:none; stroke:var(--v-bar); stroke-width:2; stroke-dasharray:6 4; }
+    .dg .whisk { fill:none; stroke:var(--ink); stroke-width:1.5; }
+    .dg .brk { fill:none; stroke:var(--ink2); stroke-width:1.5; }
+  </style>
+  <text class="hd" x="24" y="48">배포 한 번에 API가 멈춘 시간</text>
+  <text class="sub" x="24" y="68">0.2초 간격 외부 호출 · 정상 응답은 401</text>
+  <path class="rule" d="M76.0 112V144 M76.0 208V240 M76.0 240V270"/>
+  <text class="ph" x="24" y="104">A. 재생성 직후 nginx reload</text>
+  <rect class="bar q" x="24" y="118" width="55.9" height="20" rx="4"/>
+  <rect class="bar g" x="81.9" y="118" width="190.2" height="20" rx="4"/>
+  <rect class="bar q" x="274.1" y="118" width="61.9" height="20" rx="4"/>
+  <text class="val" x="81.9" y="158" text-anchor="start">장애 36.6초 · 502 173번</text>
+  <text class="ph" x="24" y="200">B. reload 없음</text>
+  <rect class="bar q" x="24" y="214" width="54.9" height="20" rx="4"/>
+  <rect class="bar g" x="80.9" y="214" width="185.2" height="20" rx="4"/>
+  <rect class="bar q" x="268.1" y="214" width="67.9" height="20" rx="4"/>
+  <text class="val" x="80.9" y="254" text-anchor="start">장애 35.6초 · 502 164번</text>
+  <path class="grid" d="M76.0 270v5 M180.0 270v5 M284.0 270v5"/>
+  <g class="ax" text-anchor="middle"><text x="76.0" y="292">명령</text><text x="180.0" y="292">+20초</text><text x="284.0" y="292">+40초</text></g>
+  <text class="sub" x="24" y="322">회색: 401(정상) · 초록: 502(장애)</text>
+</svg>

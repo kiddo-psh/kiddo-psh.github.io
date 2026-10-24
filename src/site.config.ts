@@ -32,13 +32,12 @@ export const SITE = {
 
 /**
  * layout: 'doc'  → 넓은 본문 + 좌측 목차 (기술글)
- * layout: 'read' → 좁은 본문 + 목차 없음 + 세리프 리드문 (에세이·회고)
+ * layout: 'read' → 좁은 본문 + 목차 없음 + 세리프 리드문 (회고)
  */
 export const CATEGORIES = [
   { id: 'dev', label: 'DEV', name: '기술', layout: 'doc' },
   { id: 'ai', label: 'AI', name: 'AI 개발', layout: 'doc' },
   { id: 'retro', label: 'RETRO', name: '회고', layout: 'read' },
-  { id: 'essay', label: 'ESSAY', name: '생각', layout: 'read' },
 ] as const;
 
 export type CategoryId = (typeof CATEGORIES)[number]['id'];

@@ -21,6 +21,10 @@ const covers = {
     label:'TIMEOUT / DEADLINE', subtitle:'ONE REQUEST. ONE TIME BUDGET.', bg:'#eaf4ee',
     art: `${circle(600,365,176,'none',`stroke="#d4e6da" stroke-width="30"`)}${circle(600,365,176,'none',`stroke="${green}" stroke-width="30" stroke-dasharray="820 1106" transform="rotate(-90 600 365)" stroke-linecap="round"`)}${text(600,397,'5',132,dark,'text-anchor="middle" font-weight="700"')}${text(674,395,'s',52,green)}${rect(420,591,290,16,green,8)}${rect(722,591,58,16,'#92b9a2',8)}${text(420,645,'CALL BUDGET',21,green)}${text(780,645,'RETURN',21,green,'text-anchor="end"')}${circle(600,143,8,green)}`,
   },
+  'retry-policy-experiment': {
+    label:'RETRY POLICY / EXPERIMENT', subtitle:'SAME RETRIES. BETTER TIMING.', bg:'#f2f4f6',
+    art: `${text(230,236,'NO JITTER',21,gray)}${line('M230 400 H970',soft,3)}${[300,560,880].map((cx,c)=>[0,1,2,3,4].map(i=>rect(cx-45+i*19,400-[70,135,160,110,60][(i+c)%5],15,[70,135,160,110,60][(i+c)%5],'#c3cad2',5)).join('')).join('')}${line('M230 352 H970','#4f9699',3,'stroke-dasharray="10 9"')}${text(230,470,'FULL JITTER',21,green)}${line('M230 610 H970',soft,3)}${Array.from({length:30},(_,i)=>rect(238+i*24.4,610-(26+((i*37)%5)*6),15,26+((i*37)%5)*6,green,5)).join('')}${line('M230 562 H970','#4f9699',3,'stroke-dasharray="10 9"')}${text(970,548,'CAPACITY',19,'#4f9699','text-anchor="end"')}`,
+  },
   'backoff-jitter': {
     label:'BACKOFF / JITTER', subtitle:'SPREAD THE RETRIES.', bg:'#f2f4f6',
     art: `${line('M230 548 H970',soft,3)}${[60,108,165,230,300].map((h,i)=>rect(280+i*135,545-h,58,h,['#c9ded2','#a9cdb8','#7eae91','#508966',green][i],16)).join('')}${[0,1,2,3,4].map((i)=>`${circle(308+i*135,205+i*13,10,green)}${circle(332+i*130,256-i*14,7,'#93b69f')}${line(`M${308+i*135} ${240+i*13} V${520-[60,108,165,230,300][i]}`,gray,2,'stroke-dasharray="5 10"')}`).join('')}${text(235,606,'RETRY',23,gray)}${text(970,606,'TIME →',23,gray,'text-anchor="end"')}`,
