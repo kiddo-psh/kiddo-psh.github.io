@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
-import { portfolioCases as cases, highlights, skills, education, awards, certificates } from '../data/portfolio';
+import { portfolioCases as cases, highlights, skills, education, awards, certificates, otherProjects } from '../data/portfolio';
 import { inline as inlineSvg } from '../lib/inline-svg.mjs';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import ArrowRight from '@lucide/astro/icons/arrow-right';
@@ -122,6 +122,13 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
           </footer>
         </article>
       ))}
+    </section>
+
+    <section class="pf-section" aria-labelledby="others-title">
+      <h2 id="others-title" class="pf-label">기타 프로젝트</h2>
+      <dl class="rows">
+        {otherProjects.map(o => <div><dt>{o.period}</dt><dd><a href={o.href}><strong>{o.title}</strong></a> · {o.text}{o.award && ` · ${o.award}`}</dd></div>)}
+      </dl>
     </section>
 
     <section class="pf-section" aria-labelledby="skills-title">

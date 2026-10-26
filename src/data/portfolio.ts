@@ -129,6 +129,7 @@ export const portfolioCases: PortfolioCase[] = [
       {value:'9건', label:'병합 전 발견 결함', note:'적용 리허설'},
       {value:'54건', label:'판정 기록한 팀 MR'},
     ],
+    figure:{src:'/images/projects/ai-dev-harness/01-gates-overview.svg', alt:'AI 에이전트의 변경이 hooks·MR·CI 게이트를 지나 병합되고, 세션 기록이 AgentOps와 주간 리포트로 집계되는 구조'},
     solutions:[
       {
         title:'팀의 AI 작업 절차를 설치형 가드레일로',
@@ -197,33 +198,14 @@ export const portfolioCases: PortfolioCase[] = [
     boundary:'진행 중이며, 크롭과 전체 사진은 난이도가 달라 하락률로 비교하지 않습니다.',
     links:[{href:'/projects/kkugi', label:'상세 기록'}, {href:'https://teamyumyum.github.io', label:'Team Blog', external:true}],
   },
+];
+
+// 상세 사례로 다루지 않는 프로젝트. 이력서와 맞추기 위해 한 줄로 남긴다
+export const otherProjects = [
   {
-    id:'feelm', number:'05', title:'Feelm', period:'2026.08 ~ 2026.09',
-    summary:'MovieLens 32M 평점을 분산 처리해 취향 맞춤 추천을 제공하는 영화 추천 서비스',
-    team:'7명 · 팀장 · Backend 계정·인증, 통합·배포 QA (20%)',
-    award:'SSAFY 2학기 특화 프로젝트 우수상 (6팀 중 1등)',
-    roles:['계정·인증 백엔드','통합 MR 39건 중 31건 작성','CI 실패 이력 1,000건 수집·분류'],
-    metrics:[
-      {value:'31 / 39건', label:'작성한 통합 MR'},
-      {value:'1,000건', label:'분류한 CI 실패 이력'},
-    ],
-    figure:{src:'/images/projects/feelm/03-record-flow.webp', alt:'영화 평가에서 취향 기록으로 이어지는 feelm의 실제 화면'},
-    solutions:[
-      {
-        title:'동시 요청이 계정 잠금을 통과하던 결함 수정',
-        situation:'잠금 판정과 실패 기록이 분리돼, 동시에 들어온 요청이 모두 잠금을 통과했습니다.',
-        actions:['잠금 판정과 실패 기록을 **원자화**하고 동시성 테스트로 회귀 확인'],
-        results:['동시 요청이 잠금을 우회하던 결함 수정'],
-      },
-      {
-        title:'응답 시간으로 계정 존재가 드러나던 문제 해결',
-        situation:'메일 발송이 응답 경로에 묶여 있어, 응답 시간 차이로 계정 존재 여부가 드러났습니다.',
-        actions:['**메일 발송을 비동기로 분리**하고 이메일·IP·전역 단위로 발송량 제한'],
-        results:['제한 응답이 계정 존재를 드러내지 않는지 계약 테스트로 확인'],
-      },
-    ],
-    boundary:'추천 데이터 처리·모델·서빙은 팀원 담당입니다.',
-    links:[{href:'/projects/feelm', label:'상세 기록'}],
+    title:'Feelm', period:'2026.08 ~ 2026.09', href:'/projects/feelm',
+    text:'MovieLens 32M 기반 영화 추천 서비스 · 7명 팀장 · 계정·인증 백엔드, 통합 MR 39건 중 31건 작성',
+    award:'특화 프로젝트 우수상 (1등)',
   },
 ];
 
