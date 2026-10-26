@@ -11,13 +11,15 @@
  * <picture>는 두 장을 다 심고 CSS 미디어 쿼리로 하나만 보인다.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
 const IMG = /<img\s+src="(\/images\/[^"]+\.svg)"([^>]*)\/?>/g;
 const PICTURE = /<picture>\s*<source[^>]*media="([^"]+)"[^>]*srcset="(\/images\/[^"]+\.svg)"[^>]*\/?>\s*<img\s+src="(\/images\/[^"]+\.svg)"[^>]*\/?>\s*<\/picture>/g;
 
-function inline(src, only) {
-  let svg = readFileSync(new URL(`../../public${src}`, import.meta.url), 'utf8').trim();
+export function inline(src, only) {
+  // 페이지에서 불러도 번들 위치와 무관하게 찾도록 프로젝트 루트(빌드 실행 위치) 기준으로 읽는다
+  let svg = readFileSync(join(process.cwd(), 'public', src), 'utf8').trim();
   /*
    * 한 페이지에 여러 장이 들어가면 id(a·t·d)가 겹쳐 화살촉 marker가 첫 그림 것만
    * 쓰인다. 경로 해시로 앞을 붙여 갈라 둔다.

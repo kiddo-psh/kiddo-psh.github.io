@@ -1,101 +1,260 @@
-// Portfolio claims are summaries of the project articles, not independent achievements.
+// Portfolio claims follow the submitted resume (2026.10). Order, periods, roles and figures
+// must match it; detail pages keep the full measurement conditions.
 // Keep personal ownership, team outcomes and evaluation conditions together.
+// Only text a reader needs: a note or caption exists only when it changes how a number reads.
+// In bullet strings, **text** is rendered as emphasis.
+
+/** 문제 해결 사례 하나. 상황 → 해결 → 성과 순서로 읽는다 */
+export interface Solution {
+  title: string;
+  situation: string;
+  actions: string[];
+  results: string[];
+  /** 전후 비교 막대. 값이 작을수록 좋은 지표만 넣는다 */
+  compare?: { caption: string; unit: string; rows: { label: string; before: number; after: number }[] };
+}
+
 export interface PortfolioCase {
   id: string;
   number: string;
-  focus: string;
-  heading: string;
-  context: string;
-  ownership: string;
-  decisions: { title: string; text: string }[];
-  result: string;
+  title: string;
+  period: string;
+  summary: string;
+  /** 팀 규모 / 역할 (기여도) */
+  team: string;
+  award?: string;
+  /** 담당 업무. 짧은 명사구로 */
+  roles: string[];
+  metrics: { value: string; label: string; note?: string }[];
+  /** caption은 그림을 오해할 수 있을 때만 */
+  figure?: { src: string; alt: string; caption?: string };
+  solutions: Solution[];
+  /** 꼭 밝혀야 할 측정 한계 한 문장 */
   boundary: string;
-  evidence: {
-    type: 'image' | 'routing';
-    src?: string;
-    alt?: string;
-    caption: string;
-    label: string;
-    value: string;
-    note: string;
-  };
-  skills: string;
+  links: { href: string; label: string; external?: boolean }[];
 }
 
 export const portfolioCases: PortfolioCase[] = [
   {
-    id:'baro', number:'01', focus:'현장 문제를 판정 기준으로',
-    heading:'차량 감지를 이동 요청과 재확인까지 연결했습니다',
-    context:'주민은 통로를 막는 주차로 불편을 겪고, 관리인은 차주 연락과 이동 확인을 반복했습니다. 팀은 감지 → 이동 요청 → 응답 → 카메라 재확인을 파일럿으로 연결했습니다.',
-    ownership:'구역 방문 상태 머신부터 위반 규칙·사건 축약·출차 판정까지 판정 엔진을 설계·구현했습니다. 영상 리플레이, 단계별 성능 계측, 시연용 판정 오버레이 스트리밍도 맡았고, 스크럼 마스터로 일일 스크럼과 Jira를 관리했습니다.',
-    decisions:[
-      {title:'“겹친 차량”을 “출차를 막는 관계”로 다시 정의',text:'박스 겹침 비율은 차량 크기에 영향을 받고 실제 방해를 설명하지 못했습니다. 저는 이중주차를 구역 침범 기준으로 바꿨고, 팀원이 이를 출차 경로를 막는 관계로 발전시켰습니다.'},
-      {title:'안 보인다고 출차로 확정하지 않기',text:'5초간 보이지 않으면 출차로 확정했고, 잘못된 출차는 되돌릴 경로가 없었습니다. 출차 구역 통과가 관측될 때만 출차를 발행해, 관리자가 수동으로 풀 수 있는 세션 미결을 대가로 택했습니다.'},
-      {title:'모델을 바꾸기 전에 느린 구간부터 측정',text:'디코드부터 인코딩까지 실제 처리 경로를 나눠 재는 도구를 만들었습니다. 팀원은 계측을 바탕으로 입력 조정·GPU 보정·TensorRT 변환을 적용했습니다.'},
+    id:'yumyum', number:'01', title:'yumyum', period:'2026.05 ~ 2026.09',
+    summary:'사진 식단 분석, AI 영양 상담, 주간 코칭을 제공하는 LLM/VLM 기반 건강 코칭 서비스',
+    team:'2명 · 팀장 · Backend & AI 서버 (60%)',
+    award:'SSAFY 1학기 관통 프로젝트 최우수상 (12팀 중 1등)',
+    roles:['VLM 평가셋·평가 하니스 구축','주간 코칭 Agent 라우팅','AI 영양 상담 RAG','Claude 호출 지연·토큰·비용 계측'],
+    metrics:[
+      {value:'0.38 → 0.77', label:'음식명 F1', note:'평가셋 31장'},
+      {value:'49 → 7건', label:'과검출'},
+      {value:'−37.5%', label:'Agent 호출'},
     ],
-    result:'파일럿에서 감지부터 앱 응답·이동 재확인까지 시연했습니다. 팀 최적화 후 처리율은 약 6.5 → 15 FPS였고, SSAFY 공통 프로젝트 우수상을 수상했습니다.',
-    boundary:'수치는 프로젝트 당시 측정 기록입니다. 최적화 구현은 팀원 기여이며, 실제 아파트 장기 운영과 관리자 업무시간 절감은 검증하지 않았습니다.',
-    evidence:{type:'image',src:'/images/projects/baro/zone-overlay-045s-ev.jpg',alt:'파일럿 주차 모형에서 차량 검출과 주차 구역을 함께 표시한 실제 오버레이',caption:'실제 파일럿 영상 · 차량과 구역의 관계를 표시한 판정 오버레이',label:'팀 최적화 후 처리율',value:'6.5 → 15 FPS',note:'내 담당: 계측·판정·검증 / 팀원 담당: 입력·GPU 보정·TensorRT 최적화'},
-    skills:'Python · OpenCV · YOLOv8 · ByteTrack · Jetson',
+    solutions:[
+      {
+        title:'측정 없이 내려진 VLM 설계 결정을 평가셋으로 검증',
+        situation:'“DB 조회 대신 VLM이 직접 추정해도 정확도 차이가 없다”는 결정이 측정 없이 내려져 있었습니다.',
+        actions:[
+          '저울 실측·포장 표기로 정답을 단 **실제 사진 31장 평가셋**과 평가 하니스 구축',
+          'kcal 오차를 그램·밀도 오차로 분해하고, DB 조회 방식을 현실 규칙·oracle 상한과 같은 사진으로 비교',
+          '요리명과 재료를 중복 출력하는 과검출을 찾아 프롬프트 제약 추가',
+        ],
+        results:[
+          'DB 이름 매칭 실패 37.5% 확인 → **결론의 근거를 “이름 → 레코드 매칭 불가”로 수정**',
+          '**과검출 49 → 7건, 음식명 F1 0.38 → 0.77**, 항목 kcal MAPE 34.1 → 20.8%',
+        ],
+      },
+      {
+        title:'기록에 따라 필요한 Agent만 실행',
+        situation:'주간 코칭이 기록 유무와 관계없이 모든 Agent를 고정 실행했습니다.',
+        actions:[
+          '추가 LLM 호출 대신 **기록 상태를 읽는 테스트 가능한 규칙**으로 Agent 선택',
+          'RAG 검색 거리 임계값으로 관련성 낮은 근거 차단',
+        ],
+        results:[
+          '입력 조합 8개 × 3회 실제 API 비교에서 **Agent 호출 37.5% 감소**',
+          '평균 응답 11.1 → 8.7초, 응답 성공률 100% 유지',
+        ],
+        compare:{caption:'평균 실행 Agent 수', unit:'개', rows:[{label:'Agent', before:4.0, after:2.5}]},
+      },
+    ],
+    boundary:'응답시간은 비교 당시 프롬프트·검색 조건이 달라 같은 조건에서 재측정할 예정입니다.',
+    links:[{href:'/projects/yumyum', label:'상세 기록'}],
   },
   {
-    id:'yumyum', number:'02', focus:'AI 실행 범위를 데이터로 통제',
-    heading:'기록이 없는 분야까지 분석하던 AI 코칭을 바꿨습니다',
-    context:'주간 코칭이 기록 상태와 관계없이 모든 분석을 실행했습니다. 성능 테스트에서 예상보다 많은 토큰을 발견하고, 요청별로 필요한 분석과 검색을 먼저 정하도록 바꿨습니다.',
-    ownership:'원 프로젝트에서 운동 기능·주간 코칭·영양 상담과 화면을 구현했습니다. 9월의 후속 개선에서는 실행 선택 규칙, 조건부 검색, 평가·호출 계측을 맡았습니다.',
-    decisions:[
-      {title:'추가 AI 호출 대신 테스트할 수 있는 규칙을 선택',text:'영양·운동·체중 기록에서 판단할 수 있는 조건을 코드로 표현했습니다. 선택·생략한 단계와 이유를 남기고, 분석할 기록이 없으면 종합 생성도 생략했습니다.'},
-      {title:'분석과 근거 검색의 필요를 따로 판단',text:'영양 달성률이 부족한 경우에 검색하고, 목표가 0인 항목은 비교에서 제외했습니다. 빈 검색 결과와 검색 실패도 근거를 확보하지 못한 상태로 다뤘습니다.'},
-      {title:'호출 감소와 답변 품질을 별도로 검증',text:'고정 입력별 실행 조합을 검사하고 지연·토큰·추정 비용을 기록했습니다. 비교 조건이 달랐던 지연·비용 수치는 대표 성과로 올리지 않았습니다.'},
+    id:'baro', number:'02', title:'주차바로', period:'2026.07 ~ 2026.08',
+    summary:'AI 엣지 디바이스가 아파트 주차 위반을 감지하고, 개인정보 노출 없이 이동 요청부터 이동 확인까지 중계하는 서비스',
+    team:'7명 · AI 판정 파이프라인 (25%)',
+    award:'SSAFY 2학기 공통 프로젝트 우수상 (6팀 중 2등)',
+    roles:['판정 엔진(상태 머신·위반 규칙·사건 축약)','리플레이 하니스·판정 오버레이','단계별 성능 계측 도구','SQLite outbox 사건 전송'],
+    metrics:[
+      {value:'6.5 → 15 FPS', label:'처리 속도', note:'팀 최적화 결과'},
+      {value:'154 → 67ms', label:'프레임당 처리'},
+      {value:'1초 / 5초', label:'진입 확인 · 이탈 확정'},
     ],
-    result:'동일 비중의 평가 입력 8개에서 평균 실행 Agent 수가 4.0 → 2.5개로 줄었습니다. 원 프로젝트는 SSAFY 관통 프로젝트 최우수상을 수상했습니다.',
-    boundary:'실제 사용자 트래픽 평균은 아닙니다. 기존 지연 비교는 프롬프트 차이와 검색의 대체 경로 동작이 있어 재측정이 필요합니다. 후속 개선은 수상 이후 작업입니다.',
-    evidence:{type:'routing',caption:'평가 입력 8개 · 동일 비중의 실행 경로 비교. Agent는 전문 분석과 종합을 담당하는 실행 단계입니다.',label:'평가 입력당 평균 실행 단계',value:'4.0 → 2.5개',note:'모든 단계를 실행하는 방식에서 기록에 필요한 단계만 선택하는 방식으로 변경'},
-    skills:'Python · FastAPI · Claude API · ChromaDB · Spring Boot',
+    figure:{src:'/images/projects/baro/zone-overlay-045s-ev.jpg', alt:'파일럿 주차 모형에서 차량 검출과 주차 구역을 함께 표시한 실제 오버레이'},
+    solutions:[
+      {
+        title:'‘주차 위반’을 위치·시간 판정 규칙으로 정의',
+        situation:'프레임 단위 탐지를 그대로 위반으로 처리하면 가림·추적 단절·경계 통과에서 오탐과 중복 알림이 생겼습니다.',
+        actions:[
+          '구역 폴리곤 겹침·진입/이탈 확정 대기시간·사건 축약기로 판정 규칙 정의',
+          '파일럿 영상 리플레이로 임계값을 실측하고, 판정 근거를 라이브 오버레이로 시각화',
+          '확정 사건을 SQLite outbox에 먼저 기록하고 멱등 키로 전송',
+        ],
+        results:[
+          '진입 확인 **1초**, 이탈 확정 **5초**를 관측값으로 결정',
+          '불안정한 현장 네트워크에서도 사건 유실·중복 방지',
+        ],
+      },
+      {
+        title:'모델을 바꾸기 전에 느린 구간부터 측정',
+        situation:'처리 속도가 6.5 FPS에 그쳐 추적이 끊겼지만, 어느 단계가 느린지 알 수 없었습니다.',
+        actions:[
+          '영상 처리를 **7단계로 나눠 재는 계측 도구** 구현',
+          '추론과 왜곡 보정이 병목임을 확인 → 팀이 TensorRT FP16·GPU 보정 적용',
+        ],
+        results:[
+          '프레임당 154 → 67ms, **6.5 → 약 15 FPS (팀 성과)**',
+        ],
+        compare:{caption:'프레임당 처리 시간', unit:'ms', rows:[{label:'모델 추론', before:54, after:32}, {label:'왜곡 보정', before:33, after:3}, {label:'그 외', before:67, after:32}]},
+      },
+    ],
+    boundary:'파일럿 모형과 녹화 영상 기준이며, TensorRT·GPU 보정 구현은 팀원 몫입니다.',
+    links:[{href:'/projects/baro', label:'상세 기록'}],
   },
   {
-    id:'ai-dev-harness', number:'03', focus:'AI 실행의 가시성과 신뢰성',
-    heading:'AI 사용량과 검증 기록을 믿을 수 있게 만들었습니다',
-    context:'도구마다 사용량 형식이 다르고, 기록을 재전송하거나 세션이 작업을 옮기면 합계와 작업 귀속이 어긋날 수 있습니다. 공통 규칙 키트에서 출발해 Claude Code·Codex의 수집·정규화·복구·검증 근거를 다루는 AgentOps로 확장했습니다.',
-    ownership:'개인 프로젝트로 규칙 설치·검사, 위험 단계별 제어, 사용량 정규화와 작업별 실행 근거 수집을 설계·구현했습니다. 꾸기 인프라·대시보드에는 팀원 기여가 있습니다.',
-    decisions:[
-      {title:'재전송한 사용량이 합계에 두 번 들어가지 않게',text:'안정적인 사건 ID와 전송 대기 목록을 사용하고 발생 날짜·최초 단가를 보존했습니다. 미등록 단가와 미지원 상태는 0이나 성공으로 채우지 않았습니다.'},
-      {title:'세션이 작업을 옮겨도 발생 당시 작업에 귀속',text:'세션과 작업·PR의 연결 이력을 시간 구간으로 보존합니다. 늦게 도착한 사건을 현재 작업에 몰아넣지 않고, 자동 연결 이전의 기록도 소급하지 않습니다.'},
-      {title:'테스트 통과가 어느 코드의 결과인지 남기기',text:'작업·세션 연결 이력과 검증 전후 코드 상태 해시를 기록합니다. 코드가 바뀐 실행을 통과로 기록하지 않고, 직접 관측과 사람·에이전트 신고를 구분합니다.'},
-      {title:'사용량뿐 아니라 수집 실패까지 관측',text:'OpenTelemetry·Prometheus·Loki·Grafana로 수집 상태와 실행 근거를 관측합니다. 실패 기록은 다음 이벤트에서 재시도하고, 꾸기에는 실행 근거·이벤트 기반 수집을 적용한 이력이 있습니다.'},
+    id:'ai-dev-harness', number:'03', title:'ai-dev-harness', period:'2026.09 ~ 2026.10',
+    summary:'팀의 AI 에이전트 개발 절차를 다른 저장소에 설치하는 가드레일 키트',
+    team:'개인 프로젝트 · 설계·구현·측정 (100%)',
+    roles:['규칙 문서·양식·hooks 생성 CLI','보호 경로 승인·CI 검사','팀 MR 판정 기록','AgentOps 사용량 리포트'],
+    metrics:[
+      {value:'8건', label:'MR 단계 차단 CVE', note:'CRITICAL 3건 · 적용 리허설'},
+      {value:'9건', label:'병합 전 발견 결함', note:'적용 리허설'},
+      {value:'54건', label:'판정 기록한 팀 MR'},
     ],
-    result:'꾸기에 실행 근거·이벤트 기반 수집을 적용한 이력이 있습니다. 30초 주기 수집을 제거했고, 기본 수집에서 프롬프트·응답·코드 원문은 중앙으로 보내지 않습니다.',
-    boundary:'2026.10.24 조사 기준 main은 0.4.0이고 공통 v2·실행 근거 확장은 별도 개발 브랜치입니다. 대시보드는 목데이터이며, 팀 생산성의 도입 전후 효과는 미측정입니다.',
-    evidence:{type:'image',src:'/images/projects/ai-dev-harness/task-evidence.png',alt:'가상 작업의 검증 실행과 완료 조건을 표시한 AgentOps 대시보드 목데이터',caption:'목데이터 예시 · 실제 팀 성과가 아닌 작업별 실행 근거 화면',label:'AgentOps가 연결하는 근거',value:'사용량 → 작업 → 검증',note:'사건 ID로 중복을 제거하고, 작업 연결 이력과 코드 상태로 실행 근거를 추적'},
-    skills:'Python · Claude Code / Codex · OpenTelemetry · Prometheus · Loki · Grafana',
+    solutions:[
+      {
+        title:'팀의 AI 작업 절차를 설치형 가드레일로',
+        situation:'AI가 37분 만에 만든 기능을 완료 기준 불일치로 5시간 30분 동안 재작업했습니다.',
+        actions:[
+          '규칙 문서·플랜/리뷰 양식·hooks를 생성하는 CLI로 **팀의 작업 절차를 자산화**',
+          'DB 마이그레이션 같은 보호 경로 편집 시 사람 승인 요구',
+          'CI에서 MR 형식·보안·의존성 검사',
+        ],
+        results:[
+          '빈 저장소에 키트를 적용한 리허설에서 **CVE 8건(CRITICAL 3)** 버전을 MR 단계에서 차단',
+          '병합 전 결함 9건 발견',
+        ],
+      },
+      {
+        title:'AI 변경의 검증과 비용을 작업에 연결',
+        situation:'어떤 작업에 토큰이 쓰였는지, 그 변경이 검증됐는지 작업별로 추적할 수 없었습니다.',
+        actions:[
+          '팀 프로젝트 MR을 전부 판정하고 기록',
+          '에이전트 세션·토큰·추정 비용을 MR 본문과 주간 리포트로 제공(AgentOps)',
+        ],
+        results:[
+          '**MR 54건** 판정 기록',
+          '추론 서버 171초 지연과 정확도 과대 표현을 병합 전에 발견',
+        ],
+      },
+    ],
+    boundary:'도입 전후의 팀 생산성 변화는 측정하지 않았습니다.',
+    links:[{href:'/projects/ai-dev-harness', label:'상세 기록'}, {href:'https://github.com/kiddo-psh/ai-dev-harness', label:'GitHub', external:true}],
   },
   {
-    id:'feelm', number:'04', focus:'실패 조건과 시스템 연동',
-    heading:'계정 상태와 실제 화면이 같은 의미로 동작하게 했습니다',
-    context:'추천 기능이 있어도 인증 상태가 어긋나거나 화면에 서버가 보장하지 않는 수치를 표시하면 서비스를 신뢰하기 어렵습니다. 계정·인증과 실제 API 연동을 맡았습니다.',
-    ownership:'가입·로그인·재설정·탈퇴·차단을 구현하고 공통 HTTP 클라이언트와 주요 화면을 연결했습니다. 추천 데이터 처리·모델·서빙은 팀 담당 영역입니다.',
-    decisions:[
-      {title:'메일 제한과 토큰 무효화를 상태 기준으로',text:'이메일·IP·전역 발송량을 나누고 응답이 계정 존재를 드러내지 않는지 테스트했습니다. 비밀번호가 바뀌는 모든 경로에서 재설정 토큰을 무효화했습니다.'},
-      {title:'화면이 원하는 수치를 임의로 만들지 않기',text:'추천의 상대 순위를 확률처럼 표시하지 않았습니다. API가 제공하는 영화 수와 대표 영화로 화면을 맞추며 요구사항·계약·화면 문서를 함께 정리했습니다.'},
+    id:'kkugi', number:'04', title:'꾸기', period:'2026.09 ~ 진행 중',
+    summary:'사용자가 기록하지 않아도 미리 준비해 두는 AI 건강 코치 (yumyum 리뉴얼, Android · Wear OS)',
+    team:'6명 · 팀장 · AI·ML 트랙',
+    roles:['팀장 · 스프린트 관리','데이터셋 빌드·학습·평가','품질 게이트·MLflow 승격','onnxruntime 추론 서버'],
+    metrics:[
+      {value:'87.19%', label:'크롭 평가 top-1', note:'7,994장'},
+      {value:'2 / 26장', label:'실사용 전체 사진 top-1', note:'작은 표본'},
+      {value:'p95 ≤ 1초', label:'추론 지연 기준', note:'2 vCPU'},
     ],
-    result:'인증의 실패·만료·경쟁 요청을 코드와 테스트로 남기고 목업 화면을 실제 API에 연결했습니다. 팀은 SSAFY 특화 프로젝트 1등을 기록했습니다.',
-    boundary:'실제 공격 차단율·사용자 이탈률·인증 장애율 개선은 미측정입니다. 탈퇴 후 외부 정리의 모든 실패 복구까지 테스트가 증명하는 것은 아닙니다.',
-    evidence:{type:'image',src:'/images/projects/feelm/03-record-flow.webp',alt:'영화 평가에서 취향 기록으로 이어지는 feelm의 실제 화면',caption:'실제 서비스 화면 · 평가에서 취향 기록으로 이어지는 사용자 흐름',label:'직접 구현한 범위',value:'인증 + API 연동',note:'서버 응답뿐 아니라 화면·계정 상태 변화까지 연결'},
-    skills:'Java · Spring Boot · PostgreSQL · Redis · React',
+    figure:{src:'/images/projects/kkugi/01-system-overview.svg', alt:'폰·워치·관리자 웹이 Spring을 거쳐 추론 서버를 쓰고, 데이터셋 빌드·학습·평가·품질 게이트·MLflow를 거쳐 추론 서버로 돌아가는 꾸기 구성도', caption:'점선은 아직 연결하지 않은 재학습 경로'},
+    solutions:[
+      {
+        title:'데이터셋부터 추론 서버까지 MLOps 루프',
+        situation:'사용자 수정을 다음 학습에 쓰려면, 새 모델이 나아졌는지 같은 조건에서 판단할 기준이 필요했습니다.',
+        actions:[
+          'AI Hub 데이터셋 빌드(고정 80/10/10 층화 분할) → ConvNeXt·EfficientNet fine-tune',
+          'top-1 **품질 게이트** → MLflow Staging/Production 승격 → 추론 서버 로드',
+        ],
+        results:[
+          '396종 분류기 크롭 평가 **top-1 87.19%**, top-5 96.65%',
+        ],
+      },
+      {
+        title:'학습 조건과 서빙 조건의 차이 확인',
+        situation:'87.19%는 라벨 박스로 자른 사진의 값이었고, 앱 서버에는 GPU가 없었습니다.',
+        actions:[
+          '크롭(학습 조건)과 전체 사진(서빙 조건)을 **모두 평가**',
+          '2 vCPU 기준 **p95 1초 이하**를 정하고 int8 양자화 모델의 정확도·지연 측정',
+        ],
+        results:[
+          '실사용 전체 사진 **26장 중 top-1 2장** → 정답 하나 대신 후보를 제시하는 흐름 유지',
+        ],
+      },
+    ],
+    boundary:'진행 중이며, 크롭과 전체 사진은 난이도가 달라 하락률로 비교하지 않습니다.',
+    links:[{href:'/projects/kkugi', label:'상세 기록'}, {href:'https://teamyumyum.github.io', label:'Team Blog', external:true}],
   },
   {
-    id:'kkugi', number:'05', focus:'모델 수치를 서비스 기준으로',
-    heading:'음식 인식 정확도가 어떤 사진에서 나온 숫자인지 밝혔습니다',
-    context:'꾸기는 사진을 찍으면 앱이 음식 후보를 먼저 제시하고 사용자는 확인·수정만 하는 AI 건강 코치입니다. 사용자의 수정이 다음 학습 데이터가 되려면, 새 모델이 실제로 나아졌는지 같은 조건에서 판단할 기준이 필요했습니다.',
-    ownership:'6인 팀의 팀장으로 음식 사진 분류기의 데이터셋 빌드·학습·평가·품질 게이트·MLflow 등록·onnxruntime 추론 서버를 맡았습니다. AI 협업 규칙과 재시도 규약도 정했고, 폰·워치·백엔드 도메인 기능은 팀원이 구현했습니다.',
-    decisions:[
-      {title:'크롭 정확도와 전체 사진 정확도를 따로 재기',text:'AI Hub 평가의 87.19%는 라벨 상자로 음식만 자른 사진의 값이었습니다. 실사용 전체 사진 26장에서는 top-1이 2장이어서, 평가에 두 조건을 모두 넣고 서버는 정답 하나 대신 후보와 확신도를 돌려주게 했습니다.'},
-      {title:'평가 데이터가 다르면 비교하지 않는 품질 게이트',text:'데이터셋 분할을 결정적으로 만들고 다음 버전이 이전 분할을 이어받게 했습니다. 평가 데이터 버전이 다르면 게이트가 실패하고, Production 승격은 사람이 승인합니다.'},
-      {title:'AI가 만든 변경을 사람이 리뷰할 수 있는 절차',text:'변경을 경량·표준·엄격으로 판정하고, 엄격 변경은 서로의 결과를 보지 않는 두 리뷰 세션을 거치게 했습니다. 제 학습 MR도 이 절차에서 나온 9묶음 중 7개를 반영했습니다.'},
+    id:'feelm', number:'05', title:'Feelm', period:'2026.08 ~ 2026.09',
+    summary:'MovieLens 32M 평점을 분산 처리해 취향 맞춤 추천을 제공하는 영화 추천 서비스',
+    team:'7명 · 팀장 · Backend 계정·인증, 통합·배포 QA (20%)',
+    award:'SSAFY 2학기 특화 프로젝트 우수상 (6팀 중 1등)',
+    roles:['계정·인증 백엔드','통합 MR 39건 중 31건 작성','CI 실패 이력 1,000건 수집·분류'],
+    metrics:[
+      {value:'31 / 39건', label:'작성한 통합 MR'},
+      {value:'1,000건', label:'분류한 CI 실패 이력'},
     ],
-    result:'AI Hub 396종 분류기는 크롭 평가 7,994장에서 top-1 87.19%, top-5 96.65%였습니다. 데이터셋 빌드부터 추론 서버까지의 파이프라인을 코드와 테스트로 연결했습니다.',
-    boundary:'진행 중인 프로젝트로 MVP 데모 전입니다. 사용자 수정 데이터로 재학습하는 고리는 아직 돌지 않았고, 실사용 평가 26장은 표본이 작습니다. 협업 규칙의 효과는 미측정입니다.',
-    evidence:{type:'image',src:'/images/projects/kkugi/01-system-overview.svg',alt:'폰·워치·관리자 웹이 Spring을 거쳐 추론 서버를 쓰고, 데이터셋 빌드·학습·평가·품질 게이트·MLflow를 거쳐 추론 서버로 돌아가는 꾸기 구성도',caption:'시스템 구성 · 점선은 아직 연결하지 않은 재학습 경로',label:'같은 모델, 다른 입력 조건의 top-1',value:'87.19% / 2 of 26',note:'크롭 평가 7,994장 대비 실사용 전체 사진 26장. 이 차이로 후보 제시와 사용자 확정 흐름을 유지'},
-    skills:'PyTorch · timm · ONNX Runtime · MLflow · FastAPI',
+    figure:{src:'/images/projects/feelm/03-record-flow.webp', alt:'영화 평가에서 취향 기록으로 이어지는 feelm의 실제 화면'},
+    solutions:[
+      {
+        title:'동시 요청이 계정 잠금을 통과하던 결함 수정',
+        situation:'잠금 판정과 실패 기록이 분리돼, 동시에 들어온 요청이 모두 잠금을 통과했습니다.',
+        actions:['잠금 판정과 실패 기록을 **원자화**하고 동시성 테스트로 회귀 확인'],
+        results:['동시 요청이 잠금을 우회하던 결함 수정'],
+      },
+      {
+        title:'응답 시간으로 계정 존재가 드러나던 문제 해결',
+        situation:'메일 발송이 응답 경로에 묶여 있어, 응답 시간 차이로 계정 존재 여부가 드러났습니다.',
+        actions:['**메일 발송을 비동기로 분리**하고 이메일·IP·전역 단위로 발송량 제한'],
+        results:['제한 응답이 계정 존재를 드러내지 않는지 계약 테스트로 확인'],
+      },
+    ],
+    boundary:'추천 데이터 처리·모델·서빙은 팀원 담당입니다.',
+    links:[{href:'/projects/feelm', label:'상세 기록'}],
   },
+];
+
+// 대표 성과. 이력서에서 강조한 숫자와 같아야 한다
+export const highlights = [
+  {value:'0.38 → 0.77', label:'VLM 음식명 F1', from:'yumyum', href:'#yumyum'},
+  {value:'−37.5%', label:'Agent 호출', from:'yumyum', href:'#yumyum'},
+  {value:'6.5 → 15 FPS', label:'엣지 영상 처리 (팀)', from:'주차바로', href:'#baro'},
+  {value:'CVE 8건', label:'MR 단계 차단', from:'ai-dev-harness', href:'#ai-dev-harness'},
+];
+
+export const skills = [
+  {k:'LLM / VLM', v:'Claude API(structured output), VLM 프롬프트 설계, LLM/VLM 평가 하니스, RAG(ChromaDB), Agent 라우팅'},
+  {k:'Vision / MLOps', v:'PyTorch(timm), YOLOv8, ByteTrack, ONNX / TensorRT, MLflow, 품질 게이트'},
+  {k:'Backend / Infra', v:'Python(FastAPI), Java(Spring Boot), PostgreSQL, Redis, Docker Compose, Jetson Orin Nano'},
+  {k:'협업 / 자동화', v:'GitLab / GitHub CI, Git hooks, Jira, 코드 리뷰·ADR'},
+];
+export const education = [
+  {date:'2026.01 ~ 2026.12', title:'삼성 청년 SW·AI 아카데미(SSAFY) 15기', text:'Java 트랙 1,600시간 · 프로젝트 3건 팀장'},
+  {date:'2018.03 ~ 2024.02', title:'경희대학교 생체의공학과', text:'학점 3.91 / 4.5'},
+];
+export const awards = [
+  {date:'2026.10', text:'SSAFY 2학기 특화 프로젝트 우수상 (1등)'},
+  {date:'2026.08', text:'SSAFY 2학기 공통 프로젝트 우수상 (2등)'},
+  {date:'2026.06', text:'SSAFY 1학기 관통 프로젝트 최우수상 (1등)'},
+  {date:'2026.06', text:'SSAFY 1학기 성적우수상 (25명 중 2등)'},
+];
+export const certificates = [
+  {date:'2026.09', text:'정보처리기사'},
+  {date:'2026.06', text:'SQL 개발자(SQLD)'},
+  {date:'2026.06', text:'데이터분석 준전문가(ADsP)'},
+  {date:'2026.03', text:'삼성 SW 역량테스트 B형'},
+  {date:'2025.09', text:'OPIc 영어 IH'},
 ];

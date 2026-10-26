@@ -1,116 +1,162 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
-import { portfolioCases } from '../data/portfolio';
+import { portfolioCases as cases, highlights, skills, education, awards, certificates } from '../data/portfolio';
+import { inline as inlineSvg } from '../lib/inline-svg.mjs';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import Mail from '@lucide/astro/icons/mail';
 import Printer from '@lucide/astro/icons/printer';
 
-const entries = await getCollection('projects');
-const cases = portfolioCases.map(item => {
-  const project = entries.find(p => p.id === item.id);
-  if (!project) throw new Error(`Portfolio project not found: ${item.id}`);
-  return {...item, project:project.data};
-});
-const capabilities = [
-  {title:'문제를 실행 조건으로 정의',text:'차량의 겹침을 출차 방해 관계로, 사용자 기록을 AI 실행 조건으로 구체화했습니다.',href:'#baro',link:'현장 판정 사례'},
-  {title:'서비스 안에서 AI와 서버 연결',text:'AI 호출·검색·인증·화면의 계약을 맞추고, 실패와 근거 없음의 상태를 분리했습니다.',href:'#yumyum',link:'실행 선택 사례'},
-  {title:'검증을 재현하고 팀에 남기기',text:'녹화 영상 리플레이, 고정 입력 평가, 공통 검사와 실행 근거 수집을 구현했습니다.',href:'#ai-dev-harness',link:'도구화 사례'},
-];
+/*
+ * 포트폴리오. 제출한 이력서와 같은 내용·순서를 쓰고, 블로그 디자인 토큰을 따르지 않는다.
+ * 프로젝트마다 개요(소개·담당·숫자·화면)와 문제 해결 사례 두 개(상황 → 해결 → 성과)를 한 열로 쌓는다.
+ * 보조 글은 숫자를 다르게 읽게 만드는 것만 둔다. 나머지 설명은 프로젝트 상세 페이지에 있다.
+ */
+
+// **강조**만 허용한다. 나머지는 이스케이프해서 데이터의 꺾쇠가 마크업이 되지 않게 한다
+const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const rich = (s: string) => escape(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
 ---
-<BaseLayout title="박시현 · FDE 포트폴리오" description="업무의 문제를 데이터와 실행 조건으로 구체화하는 개발자 박시현. 현장 영상 판정, LLM 실행 선택, AI 개발 도구와 인증·연동의 구현 및 검증 사례를 소개합니다.">
+<BaseLayout title="박시현 · 포트폴리오" description="문제를 측정 가능한 기준으로 정의하고, 평가셋과 계측 도구로 AI 시스템의 설계 판단을 검증한 박시현의 프로젝트를 소개합니다.">
   <div class="page pf">
-    <section class="pf-intro" aria-labelledby="portfolio-title">
-      <div class="identity">
-        <p class="eyebrow">박시현</p>
-        <div class="intro-grid">
-          <div>
-            <h1 id="portfolio-title">업무의 문제를 정의하고,<br />AI가 동작할 기준까지 만듭니다.</h1>
-            <p class="intro-copy">현장 요구를 사건·데이터·실행 조건으로 구체화하고, AI와 백엔드를 연결합니다. 직접 구현한 범위와 검증한 결과로 제 경험을 설명합니다.</p>
-            <div class="contact-links">
-              <a class="contact-primary" href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
-              <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
-              <button type="button" id="portfolio-print"><Printer size={15} />인쇄 / PDF 저장</button>
-            </div>
-          </div>
-          <div class="intro-evidence" aria-label="대표 구현 경험">
-            <p class="small-label">이 포트폴리오에서 확인할 경험</p>
-            {cases.slice(0,3).map(p => (
-              <a href={`#${p.id}`}>
-                <span class="evidence-index">{p.number}</span>
-                <span><strong>{p.project.title}</strong><small>{p.focus}</small></span>
-                <ArrowRight size={17} />
-              </a>
-            ))}
-          </div>
+    <header class="pf-head">
+      <img class="pf-photo" src="/images/profile.jpg" alt="박시현 증명사진" width="480" height="617" decoding="async" />
+      <div class="pf-head-text">
+        <p class="pf-name">박시현</p>
+        <h1>문제를 측정 가능한 기준으로 정의하고, <br />AI가 현장의 제약 안에서 동작하는지 검증합니다.</h1>
+        <p class="pf-intro">평가셋과 계측 도구를 직접 만들어 설계 판단을 숫자로 확인합니다.</p>
+        <p class="pf-status">SSAFY 15기 (2026.12 수료 예정) · 경희대학교 생체의공학과</p>
+        <div class="pf-contact">
+          <a href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
+          <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
+          <button type="button" id="portfolio-print"><Printer size={15} />PDF로 저장</button>
         </div>
-        <p class="profile-line">Python · Java <span>AI 파이프라인 / 백엔드 / 화면 연동</span><span>SSAFY 15기 · 경희대학교 생체의공학과</span></p>
       </div>
+    </header>
+
+    <section class="pf-section" aria-labelledby="highlights-title">
+      <h2 id="highlights-title" class="pf-label">대표 성과</h2>
+      <ul class="highlights">
+        {highlights.map(h => (
+          <li><a href={h.href}><span class="h-label">{h.label}</span><strong>{h.value}</strong><span class="h-from">{h.from}</span></a></li>
+        ))}
+      </ul>
     </section>
 
-    <section class="capabilities" aria-labelledby="capability-title">
-      <div class="section-heading"><p class="eyebrow">HOW I WORK</p><h2 id="capability-title">문제에서 검증까지, 직접 연결한 경험</h2></div>
-      <div class="capability-grid">
-        {capabilities.map((c,i) => <article><span class="cap-number">0{i+1}</span><h3>{c.title}</h3><p>{c.text}</p><a href={c.href}>{c.link}<ArrowRight size={15} /></a></article>)}
-      </div>
-    </section>
+    <section class="pf-section" aria-labelledby="projects-title">
+      <h2 id="projects-title" class="pf-label">프로젝트</h2>
+      <ol class="toc">
+        {cases.map(p => (
+          <li><a href={`#${p.id}`}><span class="toc-num">{p.number}</span><strong>{p.title}</strong><span class="toc-date">{p.period}</span></a></li>
+        ))}
+      </ol>
 
-    <section class="selected-work" aria-labelledby="selected-title">
-      <div class="section-heading"><p class="eyebrow">SELECTED WORK</p><h2 id="selected-title">무엇을 바꿨고, 어디까지 확인했는가</h2><p>현장 영상 처리, AI 실행 제어, 개발 도구, 서비스 연동, 모델 평가 기준의 다섯 가지 사례입니다.</p></div>
       {cases.map(p => (
         <article class="case" id={p.id} aria-labelledby={`${p.id}-title`}>
-          <div class="case-heading">
-            <p class="case-kicker"><span>{p.number}</span>{p.focus}</p>
-            <h3 id={`${p.id}-title`}>{p.heading}</h3>
-            <p class="case-meta"><strong>{p.project.title}</strong><span>{p.project.projectType}</span><span>{p.project.period}</span></p>
-          </div>
-          <div class="case-grid">
-            <div class="case-story">
-              <div class="story-block"><h4>풀어야 했던 문제</h4><p>{p.context}</p></div>
-              <div class="ownership"><h4>직접 맡은 범위</h4><p>{p.ownership}</p></div>
-              <ol class="decisions" aria-label="구현하며 내린 선택">
-                {p.decisions.map((d,i) => <li><span class="decision-index">{i+1}</span><div><h4>{d.title}</h4><p>{d.text}</p></div></li>)}
-              </ol>
-            </div>
-            <div class="case-evidence">
-              {p.evidence.type === 'image' ? (
-                <figure><a href={p.evidence.src} aria-label={`${p.project.title} 근거 이미지 원본 보기`}><img src={p.evidence.src} alt={p.evidence.alt} loading="lazy" decoding="async" /></a><figcaption>{p.evidence.caption}</figcaption></figure>
-              ) : (
-                <figure class="routing-figure" aria-label="평가 입력당 평균 실행 단계 비교">
-                  <div class="routing-chart">
-                    <p>필요한 분석만 실행하도록</p>
-                    <div class="chart-row"><span>전체 실행</span><div class="chart-track"><i style="width:100%"></i></div><b>4.0</b></div>
-                    <div class="chart-row selected"><span>기록별 선택</span><div class="chart-track"><i style="width:62.5%"></i></div><b>2.5</b></div>
-                    <small>평가 입력 8개 · 평균 실행 Agent 수</small>
-                  </div>
-                  <figcaption>{p.evidence.caption}</figcaption>
-                </figure>
-              )}
-              <div class="evidence-result"><p>{p.evidence.label}</p><strong>{p.evidence.value}</strong><span>{p.evidence.note}</span></div>
-              <div class="verification"><h4>확인한 결과</h4><p>{p.result}</p><h4>측정 조건과 남은 검증</h4><p>{p.boundary}</p></div>
-            </div>
-          </div>
-          <div class="case-bottom"><p>{p.skills}</p><div><a href={`/projects/${p.id}`}>설계와 검증 기록<ArrowRight size={16} /></a>{p.project.repo && <a href={p.project.repo} target="_blank" rel="noopener noreferrer">소스 코드<ArrowUpRight size={16} /></a>}</div></div>
+          <header class="case-head">
+            <h3 id={`${p.id}-title`}><span class="case-num">{p.number}</span>{p.title}</h3>
+            <span class="case-date">{p.period}</span>
+          </header>
+
+          <p class="case-summary">{p.summary}</p>
+          <p class="case-meta"><span>{p.team}</span>{p.award && <span class="case-award">{p.award}</span>}</p>
+
+          <ul class="roles">{p.roles.map(r => <li>{r}</li>)}</ul>
+
+          <dl class="metrics">
+            {p.metrics.map(m => (
+              <div><dt>{m.label}</dt><dd class="m-value">{m.value}</dd>{m.note && <dd class="m-note">{m.note}</dd>}</div>
+            ))}
+          </dl>
+
+          {p.figure && (
+            <figure class="case-figure">
+              {/* 도해 SVG는 인라인으로 심어야 사이트 테마 토글을 따른다 */}
+              {p.figure.src.endsWith('.svg')
+                ? <div class="svg-wrap" set:html={inlineSvg(p.figure.src)} />
+                : <a href={p.figure.src} aria-label={`${p.title} 이미지 원본 보기`}><img src={p.figure.src} alt={p.figure.alt} loading="lazy" decoding="async" /></a>}
+              {p.figure.caption && <figcaption>{p.figure.caption}</figcaption>}
+            </figure>
+          )}
+
+          <h4 class="sol-heading">기술적 문제 해결</h4>
+          {p.solutions.map((s, i) => (
+            <section class="sol">
+              <h5><span>{i + 1})</span>{s.title}</h5>
+              <dl class="sar">
+                <div><dt>상황</dt><dd>{s.situation}</dd></div>
+                <div><dt>해결</dt><dd><ul>{s.actions.map(a => <li set:html={rich(a)} />)}</ul></dd></div>
+                <div><dt>성과</dt><dd>
+                  <ul>{s.results.map(r => <li set:html={rich(r)} />)}</ul>
+                  {s.compare && (() => {
+                    const max = Math.max(...s.compare.rows.map(r => r.before));
+                    return (
+                      <figure class="compare" aria-label={s.compare.caption}>
+                        <figcaption>{s.compare.caption}<span><i class="k-before" />전 <i class="k-after" />후</span></figcaption>
+                        {s.compare.rows.map(r => (
+                          <div class="cmp-row">
+                            <span class="cmp-label">{r.label}</span>
+                            <div class="cmp-bars">
+                              <div class="bar before" style={`width:${pct(r.before, max)}`}><b>{r.before}{s.compare!.unit}</b></div>
+                              <div class="bar after" style={`width:${pct(r.after, max)}`}><b>{r.after}{s.compare!.unit}</b></div>
+                            </div>
+                          </div>
+                        ))}
+                      </figure>
+                    );
+                  })()}
+                </dd></div>
+              </dl>
+            </section>
+          ))}
+
+          <footer class="case-foot">
+            <p class="boundary">※ {p.boundary}</p>
+            <span class="case-links">
+              {p.links.map(l => l.external
+                ? <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}<ArrowUpRight size={15} /></a>
+                : <a href={l.href}>{l.label}<ArrowRight size={15} /></a>)}
+            </span>
+          </footer>
         </article>
       ))}
     </section>
 
-    <section class="collaboration" aria-labelledby="collaboration-title">
-      <div class="section-heading"><p class="eyebrow">WORKING WITH A TEAM</p><h2 id="collaboration-title">개인의 시행착오를 팀의 절차로 옮겼습니다</h2></div>
-      <div class="collaboration-grid">
-        <article><h3>구현 전에 같은 기준을 공유하기</h3><p>주차바로에서 팀원마다 AI에 전달한 요구가 달라 재작업이 생겼습니다. feelm에서는 요구사항·계약의 우선순위와 위험에 따른 계획·리뷰·검증을 공통 규칙으로 정리했습니다.</p><a href="/posts/claude-code-retrospective">문제가 생긴 과정과 회고<ArrowRight size={15} /></a></article>
-        <article><h3>공통 규칙을 실제 작업에서 확인하기</h3><p>문서를 복사하는 것으로 끝내지 않고 설치·변경 검사·hooks·CI로 연결했습니다. 적용 과정에서 얻은 경험을 개인 키트로 일반화하고, 꾸기에서는 수집과 관측 기능을 적용했습니다.</p><a href="/projects/ai-dev-harness">재사용 도구로 옮긴 과정<ArrowRight size={15} /></a></article>
-      </div>
+    <section class="pf-section" aria-labelledby="skills-title">
+      <h2 id="skills-title" class="pf-label">기술</h2>
+      <dl class="rows">
+        {skills.map(s => <div><dt>{s.k}</dt><dd>{s.v}</dd></div>)}
+      </dl>
     </section>
 
-    <section class="background" aria-labelledby="background-title">
-      <div><p class="eyebrow">BACKGROUND</p><h2 id="background-title">배경과 개발 기반</h2><p>Python으로 AI 처리·평가·계측을 만들고, Java와 Spring Boot로 인증·업무 API를 구현했습니다. 화면 연동까지 맡으며 시스템 경계에서 생기는 불일치를 다뤘습니다.</p><a href="/about">전체 이력과 자격<ArrowRight size={15} /></a></div>
-      <dl><div><dt>교육</dt><dd>SSAFY 15기 <small>2026.01 ~</small><br />경희대학교 생체의공학과 <small>2018.03 ~ 2024.02</small></dd></div><div><dt>기반</dt><dd>Python · Java · SQL<br />Spring Boot · FastAPI · PostgreSQL · Redis</dd></div><div><dt>자격·언어</dt><dd>정보처리기사 · SQLD · ADsP<br />삼성 SW역량테스트 B형 · OPIc IH</dd></div></dl>
+    <section class="pf-section" aria-labelledby="edu-title">
+      <h2 id="edu-title" class="pf-label">교육</h2>
+      <dl class="rows">
+        {education.map(e => <div><dt>{e.date}</dt><dd><strong>{e.title}</strong> · {e.text}</dd></div>)}
+      </dl>
     </section>
 
-    <section class="portfolio-contact" aria-labelledby="contact-title"><p class="eyebrow">CONTACT</p><h2 id="contact-title">문제와 제약을 듣고,<br />구현과 검증으로 답하겠습니다.</h2><p>AI 기능을 업무 흐름에 연결하는 FDE·AI Application Engineering 기회를 찾고 있습니다.</p><a href={`mailto:${SITE.links.email}`}>{SITE.links.email}<ArrowUpRight size={20} /></a><span>박시현 · <a href={SITE.links.github}>GitHub</a></span></section>
+    <div class="pf-split">
+      <section class="pf-section" aria-labelledby="awards-title">
+        <h2 id="awards-title" class="pf-label">수상</h2>
+        <dl class="rows compact">
+          {awards.map(a => <div><dt>{a.date}</dt><dd>{a.text}</dd></div>)}
+        </dl>
+      </section>
+      <section class="pf-section" aria-labelledby="cert-title">
+        <h2 id="cert-title" class="pf-label">자격·어학</h2>
+        <dl class="rows compact">
+          {certificates.map(c => <div><dt>{c.date}</dt><dd>{c.text}</dd></div>)}
+        </dl>
+      </section>
+    </div>
+
+    <footer class="pf-end">
+      <a href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
+      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
+    </footer>
   </div>
 </BaseLayout>
 
@@ -119,125 +165,159 @@ const capabilities = [
 </script>
 
 <style>
-  .pf { padding-bottom:40px; }
-  .pf h1,.pf h2,.pf h3,.pf h4,.pf p { margin-top:0; }
-  .pf a { display:inline-flex; align-items:center; gap:8px; }
-  .eyebrow { margin-bottom:18px; color:var(--accent); font-size:12px; font-weight:750; letter-spacing:.12em; }
-  .pf-intro { padding:64px 0 0; }
-  .identity > .eyebrow { font-size:17px; color:var(--text); letter-spacing:-.02em; display:flex; align-items:center; flex-wrap:wrap; gap:18px; margin-bottom:30px; }
-  .intro-grid { display:grid; grid-template-columns:1.45fr 1fr; gap:50px; align-items:center; }
-  h1 { font-size:clamp(29px,3.2vw,42px); line-height:1.35; font-weight:750; letter-spacing:-.045em; margin-bottom:24px; text-wrap:balance; }
-  .intro-copy { margin-bottom:26px; max-width:540px; font-size:17px; line-height:1.85; color:var(--text-dim); }
-  .contact-links { display:flex; gap:14px 20px; flex-wrap:wrap; align-items:center; font-size:13px; }
-  .contact-links a { color:var(--text-dim); }
-  .contact-links .contact-primary { color:var(--accent); font-weight:650; }
-  #portfolio-print { display:inline-flex; align-items:center; gap:7px; border:0; background:none; padding:4px 0; color:var(--text-dim); font:inherit; cursor:pointer; }
-  #portfolio-print:hover { color:var(--accent); }
-  .intro-evidence { padding-left:28px; border-left:1px solid var(--border); }
-  .small-label { color:var(--text-dim); font-size:12px; margin-bottom:12px; }
-  .intro-evidence > a { display:flex; gap:14px; color:var(--text); padding:17px 0; border-bottom:1px solid var(--border); }
-  .intro-evidence > a:last-child { border:0; }
-  .intro-evidence > a:hover { color:var(--accent); text-decoration:none; }
-  .evidence-index { color:var(--accent); font-size:12px; font-variant-numeric:tabular-nums; }
-  .intro-evidence strong { display:block; font-size:15px; font-weight:650; }
-  .intro-evidence small { display:block; color:var(--text-dim); font-size:12px; margin-top:6px; }
-  .intro-evidence :global(svg) { margin-left:auto; flex:0 0 auto; }
-  .profile-line { display:flex; flex-wrap:wrap; gap:10px 24px; padding:25px 0; margin:36px 0 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-dim); }
-  .section-heading { margin-bottom:30px; }
-  .section-heading .eyebrow { margin-bottom:12px; }
-  .section-heading h2 { font-size:28px; line-height:1.45; letter-spacing:-.035em; font-weight:700; margin-bottom:12px; }
-  .section-heading > p:last-child:not(.eyebrow) { color:var(--text-dim); font-size:15px; margin-bottom:0; }
-  .capabilities { padding:56px 0; }
-  .capability-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
-  .capability-grid article { border-top:2px solid var(--border); padding-top:20px; }
-  .cap-number { color:var(--accent); font-size:12px; }
-  .capability-grid h3 { font-size:17px; font-weight:650; margin:12px 0; line-height:1.5; letter-spacing:-.02em; }
-  .capability-grid p { font-size:14px; line-height:1.8; color:var(--text-dim); margin-bottom:16px; }
-  .capability-grid a { font-size:12px; font-weight:650; }
-  .selected-work { padding-top:24px; }
-  .case { padding:40px 0 44px; border-top:1px solid var(--border); scroll-margin-top:90px; }
-  .case-kicker { display:flex; align-items:center; gap:12px; color:var(--accent); font-size:13px; font-weight:600; margin-bottom:14px; }
-  .case-kicker > span { font-variant-numeric:tabular-nums; font-weight:750; }
-  .case-heading h3 { font-size:clamp(24px,2.8vw,31px); line-height:1.45; font-weight:700; letter-spacing:-.035em; margin-bottom:16px; }
-  .case-meta { display:flex; flex-wrap:wrap; gap:8px 18px; color:var(--text-dim); font-size:12px; line-height:1.7; margin-bottom:32px; }
-  .case-meta strong { color:var(--text); font-weight:650; }
-  .case-grid { display:grid; grid-template-columns:1.15fr 1fr; gap:48px; align-items:start; }
-  .case h4 { font-size:14px; font-weight:700; letter-spacing:-.01em; margin:0 0 9px; line-height:1.6; }
-  .case-story p { color:var(--text-dim); font-size:15px; line-height:1.85; margin-bottom:0; }
-  .story-block { margin-bottom:22px; }
-  .ownership { border-left:3px solid var(--accent); padding-left:17px; margin-bottom:28px; }
-  .decisions { padding:0; margin:0; list-style:none; }
-  .decisions li { display:grid; grid-template-columns:20px minmax(0,1fr); gap:12px; margin-top:22px; }
-  .decision-index { font-size:12px; line-height:22px; color:var(--accent); font-variant-numeric:tabular-nums; }
-  .case-evidence { min-width:0; }
-  .case-evidence figure { margin:0 0 24px; }
-  .case-evidence figure > a { display:block; }
-  .case-evidence img { display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--border); }
-  .case-evidence figcaption { color:var(--text-dim); font-size:12px; line-height:1.65; margin-top:10px; }
-  .evidence-result { padding:24px; border-radius:14px; background:var(--code-bg); }
-  .evidence-result > p { color:var(--text-dim); font-size:12px; margin-bottom:12px; }
-  .evidence-result strong { display:block; font-size:30px; line-height:1.3; letter-spacing:-.04em; color:var(--accent); font-weight:750; margin-bottom:12px; }
-  .evidence-result > span { display:block; color:var(--text-dim); font-size:12px; line-height:1.75; }
-  .verification { margin-top:24px; }
-  .verification h4 { margin-bottom:8px; }
-  .verification p { font-size:13px; line-height:1.85; color:var(--text-dim); margin-bottom:20px; }
-  .verification p:last-child { margin-bottom:0; }
-  .case-bottom { border-top:1px solid var(--border); margin-top:30px; padding-top:18px; display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; }
-  .case-bottom p { font-size:12px; color:var(--text-dim); margin-bottom:0; }
-  .case-bottom > div { display:flex; flex-wrap:wrap; gap:20px; }
-  .case-bottom a { font-size:13px; font-weight:650; }
-  .routing-chart { padding:30px 24px; background:var(--code-bg); border-radius:14px; }
-  .routing-chart > p { margin-bottom:26px; font-size:16px; font-weight:650; }
-  .chart-row { display:grid; grid-template-columns:72px minmax(0,1fr) 28px; align-items:center; gap:12px; margin:20px 0; font-size:12px; }
-  .chart-track { min-width:0; height:20px; }
-  .chart-track i { display:block; height:100%; background:var(--text-dim); opacity:.5; border-radius:3px; }
-  .selected .chart-track i { background:var(--accent); opacity:1; }
-  .chart-row b { font-variant-numeric:tabular-nums; font-size:14px; }
-  .routing-chart > small { color:var(--text-dim); font-size:11px; }
-  .collaboration { border-top:1px solid var(--border); padding:48px 0; }
-  .collaboration-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:42px; }
-  .collaboration-grid h3 { font-size:18px; line-height:1.5; margin-bottom:12px; letter-spacing:-.025em; }
-  .collaboration-grid p { color:var(--text-dim); font-size:14px; line-height:1.85; }
-  .collaboration-grid a { font-size:13px; }
-  .background { border-top:1px solid var(--border); display:grid; grid-template-columns:1fr 1fr; gap:56px; padding:44px 0; }
-  .background h2 { font-size:25px; letter-spacing:-.03em; margin-bottom:16px; }
-  .background p:not(.eyebrow) { color:var(--text-dim); font-size:14px; line-height:1.85; }
-  .background a { font-size:13px; }
-  .background dl { margin:0; }
-  .background dl > div { display:grid; grid-template-columns:66px minmax(0,1fr); gap:12px; padding-bottom:18px; font-size:13px; line-height:1.8; }
-  .background dt { color:var(--text-dim); }
-  .background dd { margin:0; }.background dd small { display:block; font-size:11px; color:var(--text-dim); }
-  .portfolio-contact { padding:46px 0 0; border-top:1px solid var(--border); }
-  .portfolio-contact h2 { font-size:32px; line-height:1.4; letter-spacing:-.035em; font-weight:700; margin-bottom:18px; }
-  .portfolio-contact p:not(.eyebrow) { color:var(--text-dim); font-size:15px; line-height:1.85; }
-  .portfolio-contact > a { font-size:20px; font-weight:650; overflow-wrap:anywhere; }
-  .portfolio-contact > span { display:block; font-size:13px; color:var(--text-dim); margin-top:18px; }
-  @media(max-width:850px) {
-    .intro-grid { grid-template-columns:1fr; gap:32px; }.intro-evidence { padding-left:0; border-left:0; }.intro-evidence > a { padding-block:14px; }
-    .case-grid { gap:28px; }.case-meta { gap:6px 14px; }
-    .profile-line { margin-top:26px; }
+  /*
+   * 색은 본문 도해(diagram-theme.css)와 같은 벌을 쓴다. 강조는 g 초록, 면은 q 회색,
+   * 비교 막대의 전/후는 q-bar / g-bar. 보조 글은 대비를 지키게 한 단계 진한 회색을 쓴다
+   */
+  .pf {
+    --ink:#191f28; --body:#333d4b; --muted:#4e5968; --line:#e5e8eb; --surface:#f2f4f6;
+    --accent:#246b50; --accent-bg:#eaf4ee; --bar:#a6afb9;
+    max-width:860px; padding-bottom:72px; color:var(--body);
+    font-size:16.5px; line-height:1.7; word-break:keep-all;
   }
-  @media(max-width:650px) {
-    .pf-intro { padding-top:36px; }h1 { font-size:30px; }.intro-copy { font-size:16px; }
-    .intro-grid { gap:28px; }.contact-links { font-size:12px; }.identity > .eyebrow { margin-bottom:24px; gap:10px; }
-    .capabilities { padding:36px 0; }.capability-grid { grid-template-columns:1fr; gap:24px; }.capability-grid h3 { margin:8px 0; }
-    .section-heading h2 { font-size:24px; }.section-heading > p:last-child:not(.eyebrow) { line-height:1.8; }
-    .case { padding:32px 0; }.case-heading h3 { font-size:25px; }.case-grid { grid-template-columns:1fr; gap:28px; }
-    .case-evidence { padding-top:6px; }.case-evidence img { max-height:360px; object-fit:contain; background:var(--code-bg); }
-    .case-meta { margin-bottom:24px; }.case-story p { font-size:15px; }.evidence-result strong { font-size:28px; }
-    .collaboration { padding:36px 0; }.collaboration-grid,.background { grid-template-columns:1fr; gap:28px; }
-    .background { padding:36px 0; }.portfolio-contact h2 { font-size:27px; }.portfolio-contact > a { font-size:18px; }
+  :global([data-theme="dark"]) .pf {
+    --ink:#f9fafb; --body:#e5e8eb; --muted:#b0b8c1; --line:#333d4b; --surface:#262b32;
+    --accent:#80cfa7; --accent-bg:#1e332a; --bar:#77838f;
+  }
+  .pf h1,.pf h2,.pf h3,.pf h4,.pf h5,.pf p,.pf ul,.pf ol,.pf dl,.pf dd,.pf figure { margin:0; }
+  .pf a { color:var(--accent); display:inline-flex; align-items:center; gap:6px; }
+  .pf a:hover { text-decoration:underline; text-underline-offset:3px; }
+  .pf strong { color:var(--ink); font-weight:700; }
+
+  /* 머리 */
+  .pf-head { display:grid; grid-template-columns:minmax(0,1fr) 140px; gap:40px; align-items:center; padding:56px 0 40px; border-bottom:1px solid var(--line); }
+  .pf-photo { grid-column:2; grid-row:1; width:140px; height:auto; border-radius:12px; }
+  .pf-head-text { grid-column:1; grid-row:1; min-width:0; }
+  .pf-name { color:var(--ink); font-size:20px; font-weight:700; margin-bottom:12px; }
+  .pf h1 { color:var(--ink); font-size:clamp(25px,3.4vw,33px); line-height:1.45; font-weight:750; letter-spacing:-.03em; margin-bottom:14px; }
+  .pf-intro { font-size:17px; margin-bottom:6px; }
+  .pf-status { font-size:15px; font-weight:600; color:var(--muted); margin-bottom:20px !important; }
+  .pf-contact { display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center; font-size:15px; font-weight:600; }
+  #portfolio-print { display:inline-flex; align-items:center; gap:6px; padding:0; border:0; background:none; color:var(--muted); font:inherit; cursor:pointer; }
+  #portfolio-print:hover { color:var(--accent); }
+
+  /* 섹션 공통 */
+  .pf-section { padding-top:48px; }
+  .pf-label { color:var(--ink); font-size:20px; font-weight:750; letter-spacing:-.02em; margin-bottom:16px !important; }
+
+  /* 대표 성과 */
+  .highlights { list-style:none; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+  .highlights a { display:flex; flex-direction:column; align-items:flex-start; gap:2px; height:100%; padding:18px; border-radius:12px; background:var(--surface); color:var(--body); }
+  .highlights a:hover { text-decoration:none; outline:2px solid var(--accent); }
+  .h-label { font-size:14px; font-weight:600; color:var(--body); }
+  .highlights strong { color:var(--accent); font-size:24px; line-height:1.35; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .h-from { font-size:13px; color:var(--muted); margin-top:6px; }
+
+  /* 프로젝트 목차 */
+  .toc { list-style:none; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:0 28px; border-top:1px solid var(--line); }
+  .toc li { border-bottom:1px solid var(--line); }
+  .toc a { display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:10px; align-items:baseline; padding:11px 0; color:var(--body); }
+  .toc a:hover { text-decoration:none; }
+  .toc a:hover strong { color:var(--accent); }
+  .toc-num { color:var(--accent); font-size:14px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .toc strong { font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .toc-date { font-size:14px; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+  /* 프로젝트 */
+  .case { padding:64px 0 8px; scroll-margin-top:80px; }
+  .case-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 16px; padding-bottom:12px; margin-bottom:16px; border-bottom:2px solid var(--ink); }
+  .case h3 { color:var(--ink); font-size:30px; line-height:1.3; font-weight:800; letter-spacing:-.025em; }
+  .case-num { color:var(--accent); font-size:17px; font-weight:750; margin-right:12px; font-variant-numeric:tabular-nums; }
+  .case-date { color:var(--muted); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .case-summary { color:var(--ink); font-size:18px; font-weight:600; line-height:1.6; }
+  .case-meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:8px !important; font-size:15px; color:var(--body); }
+  .case-award { padding:2px 10px; border-radius:6px; background:var(--accent-bg); color:var(--accent); font-size:14px; font-weight:700; }
+
+  .roles { list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:8px; margin-top:18px !important; }
+  .roles li { padding:5px 12px; border:1px solid var(--line); border-radius:999px; font-size:14.5px; font-weight:500; }
+
+  .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-top:22px !important; }
+  .metrics > div { padding:14px 16px; border-radius:10px; background:var(--surface); }
+  .metrics dt { font-size:14px; font-weight:600; color:var(--body); }
+  .m-value { color:var(--accent); font-size:23px; font-weight:800; line-height:1.35; letter-spacing:-.02em; font-variant-numeric:tabular-nums; margin-top:2px !important; }
+  .m-note { font-size:13px; color:var(--muted); }
+
+  .case-figure { margin-top:22px !important; }
+  .case-figure a { display:block; }
+  .case-figure img { display:block; width:100%; max-height:400px; object-fit:contain; border-radius:10px; background:var(--surface); }
+  .svg-wrap { padding:12px; border-radius:10px; background:var(--surface); }
+  .svg-wrap :global(svg) { display:block; width:100%; height:auto; }
+  .case-figure figcaption { margin-top:6px; font-size:13.5px; color:var(--muted); }
+
+  /* 문제 해결 */
+  /* 구역 표시일 뿐이라 숫자 카드보다 약하게. 옅은 바탕에 강조색 글자 */
+  .sol-heading { margin-top:36px !important; padding:8px 14px; border-left:3px solid var(--accent); border-radius:0 6px 6px 0; background:var(--accent-bg); color:var(--accent); font-size:15px; font-weight:700; }
+  .sol { margin-top:24px; }
+  .sol + .sol { padding-top:24px; border-top:1px solid var(--line); }
+  .sol h5 { color:var(--ink); font-size:19px; font-weight:750; line-height:1.45; letter-spacing:-.02em; margin-bottom:10px !important; }
+  .sol h5 span { color:var(--accent); margin-right:8px; }
+  .sar > div { display:grid; grid-template-columns:44px minmax(0,1fr); gap:12px; padding:7px 0; }
+  .sar dt { color:var(--accent); font-size:15px; font-weight:750; line-height:1.7; }
+  .sar ul { padding-left:18px; }
+  .sar li + li { margin-top:4px; }
+  .sar li::marker { color:var(--muted); }
+
+  /* 전후 비교 막대 */
+  .compare { margin-top:12px !important; padding:14px 16px; border-radius:10px; background:var(--surface); max-width:520px; }
+  .compare figcaption { display:flex; justify-content:space-between; gap:12px; font-size:13.5px; font-weight:600; color:var(--body); margin-bottom:10px; }
+  .compare figcaption span { display:inline-flex; align-items:center; gap:6px; font-weight:500; }
+  .compare i { display:inline-block; width:10px; height:10px; border-radius:2px; }
+  .compare i.k-after { margin-left:8px; }
+  .k-before, .bar.before { background:var(--bar); }
+  .k-after, .bar.after { background:var(--accent); }
+  .cmp-row { display:grid; grid-template-columns:72px minmax(0,1fr); gap:10px; align-items:center; }
+  .cmp-row + .cmp-row { margin-top:10px; }
+  .cmp-label { font-size:13.5px; }
+  .cmp-bars { display:grid; gap:3px; padding-right:52px; }
+  .bar { position:relative; height:16px; border-radius:3px; }
+  .bar b { position:absolute; left:calc(100% + 6px); top:50%; transform:translateY(-50%); font-size:12.5px; font-weight:700; color:var(--body); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .bar.after b { color:var(--accent); }
+
+  .case-foot { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px 24px; margin-top:24px; padding-top:14px; border-top:1px solid var(--line); }
+  .boundary { flex:1 1 360px; font-size:14px; color:var(--muted); }
+  .case-links { display:flex; flex-wrap:wrap; gap:18px; font-size:15px; font-weight:700; }
+
+  /* 이력 */
+  .rows > div { display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px; padding:11px 0; border-top:1px solid var(--line); }
+  .rows > div:last-child { border-bottom:1px solid var(--line); }
+  .rows dt { color:var(--ink); font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .rows dd { font-size:15.5px; }
+  .rows.compact > div { grid-template-columns:72px minmax(0,1fr); padding:9px 0; }
+  .rows.compact dt { font-weight:600; color:var(--muted); }
+  .pf-split { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+
+  .pf-end { display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:48px; padding-top:24px; border-top:1px solid var(--line); font-size:15px; font-weight:600; }
+
+  @media (max-width:760px) {
+    .pf-head { grid-template-columns:1fr; gap:20px; }
+    .pf-photo, .pf-head-text { grid-column:1; grid-row:auto; }
+    .pf-photo { width:96px; border-radius:10px; }
+    .highlights { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .pf-split { grid-template-columns:1fr; gap:0; }
+  }
+  @media (max-width:520px) {
+    .pf { font-size:16px; }
+    .pf-head { padding-top:32px; }
+    .pf h1 br { display:none; }
+    .highlights strong { font-size:21px; }
+    .highlights a { padding:14px; }
+    .case { padding-top:48px; }
+    .case h3 { font-size:25px; }
+    .case-summary { font-size:17px; }
+    .sar > div { grid-template-columns:1fr; gap:0; }
+    .rows > div { grid-template-columns:1fr; gap:2px; }
+    .rows.compact > div { grid-template-columns:66px minmax(0,1fr); gap:10px; }
   }
   @media print {
-    :global(body > header),:global(body > footer),#portfolio-print { display:none; }
-    :global(html) { font-size:10pt; color-scheme:light; }
-    .pf { --bg:#fff; --text:#222; --text-dim:#555; --border:#ddd; --accent:#246b50; --code-bg:#f2f4f6; max-width:none; padding:0; }
-    .pf-intro { padding-top:0; }.intro-grid { grid-template-columns:1.5fr 1fr; gap:24px; }h1 { font-size:25pt; }
-    .capabilities { padding:24px 0; }.capability-grid { grid-template-columns:repeat(3,1fr); gap:18px; }
-    .case { break-before:page; padding:0; border:0; }.case-grid { grid-template-columns:1.15fr 1fr; gap:22px; }.case-heading h3 { font-size:21pt; }
-    .case-story p { font-size:10pt; line-height:1.65; }.decisions li { margin-top:14px; }.case-meta { margin-bottom:20px; }
-    .case-evidence img { max-height:65mm; object-fit:contain; }.verification p { font-size:9pt; }.evidence-result { padding:16px; }
-    .collaboration { break-before:page; }.portfolio-contact { padding-top:24px; }.contact-links a { font-size:10pt; }
-    a { text-decoration:none; }h2,h3,h4 { break-after:avoid; }figure,.ownership,.decisions li { break-inside:avoid; }
+    :global(body > header),:global(body > footer),#portfolio-print { display:none !important; }
+    :global(html) { color-scheme:light; }
+    .pf { --ink:#111; --body:#222; --muted:#555; --line:#ddd; --surface:#f4f6f9; --accent:#246b50; --accent-bg:#eaf4ee; --bar:#a6afb9; max-width:none; padding:0; font-size:10pt; }
+    .pf-head { padding-top:0; }
+    .highlights { grid-template-columns:repeat(4,1fr); }
+    .case { break-before:page; padding-top:0; }
+    .case-figure img { max-height:70mm; }
+    .pf a { text-decoration:none; }
+    h3,h4,h5 { break-after:avoid; }
+    .sol,.metrics,figure { break-inside:avoid; }
   }
 </style>
