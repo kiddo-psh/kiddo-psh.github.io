@@ -17,6 +17,10 @@ const paper = (x,y,w=140,h=180) => `${rect(x,y,w,h,'#fff',16,'filter="url(#shado
 const arrow = (x1,y1,x2,y2,color=gray,extra='') => line(`M${x1} ${y1} L${x2} ${y2}`,color,5,`marker-end="url(#arrow)" ${extra}`);
 
 const covers = {
+  'ste-writing-rules': {
+    label:'WRITING RULES / ASD-STE100', subtitle:'ONE SENTENCE. ONE DECISION.', bg:'#f2f4f6',
+    art: `${rect(200,232,340,330,'#fff',28,'filter="url(#shadow)"')}${[0,1,2,3,4,5].map(i=>line(`M238 ${282+i*45} H${[505,498,505,470,505,440][i]}`,soft,12)).join('')}${arrow(573,397,650,397)}${rect(690,232,310,330,'#fff',28,'filter="url(#shadow)"')}${[0,1,2,3].map(i=>`${circle(728,290+i*68,6,green)}${line(`M754 ${290+i*68} H${[960,900,940,880][i]}`,i===0?green:'#93b69f',10)}`).join('')}`,
+  },
   'timeout-deadline': {
     label:'TIMEOUT / DEADLINE', subtitle:'ONE REQUEST. ONE TIME BUDGET.', bg:'#eaf4ee',
     art: `${circle(600,365,176,'none',`stroke="#d4e6da" stroke-width="30"`)}${circle(600,365,176,'none',`stroke="${green}" stroke-width="30" stroke-dasharray="820 1106" transform="rotate(-90 600 365)" stroke-linecap="round"`)}${text(600,397,'5',132,dark,'text-anchor="middle" font-weight="700"')}${text(674,395,'s',52,green)}${rect(420,591,290,16,green,8)}${rect(722,591,58,16,'#92b9a2',8)}${text(420,645,'CALL BUDGET',21,green)}${text(780,645,'RETURN',21,green,'text-anchor="end"')}${circle(600,143,8,green)}`,
