@@ -17,6 +17,22 @@ const paper = (x,y,w=140,h=180) => `${rect(x,y,w,h,'#fff',16,'filter="url(#shado
 const arrow = (x1,y1,x2,y2,color=gray,extra='') => line(`M${x1} ${y1} L${x2} ${y2}`,color,5,`marker-end="url(#arrow)" ${extra}`);
 
 const covers = {
+  'async-def-blocking-io': {
+    label:'ASYNC / EVENT LOOP', subtitle:'WAITING CAN OVERLAP.', bg:'#eaf4ee',
+    art: `${text(210,205,'BLOCKING',23,gray)}${[0,1,2].map(i=>rect(220+i*235,255+i*95,225,72,'#c4ccd1',18)).join('')}${text(210,615,'ASYNC I/O',23,green)}${[0,1,2].map(i=>rect(430+i*82,570,225,72,['#b8d9c5','#8fbea3',green][i],18)).join('')}`,
+  },
+  'semaphore-per-worker': {
+    label:'SEMAPHORE / WORKERS', subtitle:'LOCAL LIMITS ADD UP.', bg:'#f2f4f6',
+    art: `${[0,1,2,3].map(i=>{const x=170+i*225;return `${rect(x,240,190,265,'#fff',25,'filter="url(#shadow)"')}${text(x+95,286,`WORKER ${i+1}`,21,gray,'text-anchor="middle"')}${[0,1,2].map(j=>circle(x+49+j*46,391,17,green)).join('')}`}).join('')}${line('M206 574 H998',green,5)}${text(600,636,'4 × 3 = 12',43,green,'text-anchor="middle" font-weight="700"')}`,
+  },
+  'redis-incr-race': {
+    label:'REDIS / ATOMICITY', subtitle:'ONE COMMAND IS NOT A WHOLE DECISION.', bg:'#f2f4f6',
+    art: `${rect(205,268,235,95,'#fff',22,'filter="url(#shadow)"')}${rect(205,425,235,95,'#fff',22,'filter="url(#shadow)"')}${text(322,328,'A: GET 2',29,green,'text-anchor="middle"')}${text(322,485,'B: GET 2',29,green,'text-anchor="middle"')}${arrow(465,316,670,376,gray)}${arrow(465,474,670,414,gray)}${rect(715,302,280,190,'#eaf4ee',30)}${text(855,385,'INCR',31,green,'text-anchor="middle"')}${text(855,451,'4 &gt; 3',53,dark,'text-anchor="middle" font-weight="700"')}`,
+  },
+  'lease-expiry-llm-work': {
+    label:'LEASE / EXPIRY', subtitle:'EXPIRED RIGHT. RUNNING WORK.', bg:'#eaf4ee',
+    art: `${text(210,238,'A · LLM CALL',24,green)}${rect(210,270,750,60,'#b8d9c5',18)}${text(210,416,'A · LEASE',24,green)}${rect(210,447,410,60,green,18)}${line('M620 225 V588',gray,4,'stroke-dasharray="10 10"')}${text(620,620,'TTL',24,gray,'text-anchor="middle"')}${text(660,416,'B · NEW LEASE',24,green)}${rect(660,447,300,60,'#7eae91',18)}`,
+  },
   'ste-writing-rules': {
     label:'WRITING RULES / ASD-STE100', subtitle:'ONE SENTENCE. ONE DECISION.', bg:'#f2f4f6',
     art: `${rect(200,232,340,330,'#fff',28,'filter="url(#shadow)"')}${[0,1,2,3,4,5].map(i=>line(`M238 ${282+i*45} H${[505,498,505,470,505,440][i]}`,soft,12)).join('')}${arrow(573,397,650,397)}${rect(690,232,310,330,'#fff',28,'filter="url(#shadow)"')}${[0,1,2,3].map(i=>`${circle(728,290+i*68,6,green)}${line(`M754 ${290+i*68} H${[960,900,940,880][i]}`,i===0?green:'#93b69f',10)}`).join('')}`,
@@ -63,10 +79,12 @@ const covers = {
   },
 };
 
+const only = new Set(process.argv.slice(2));
 const files = (await readdir(path.join(root,'src/content/posts'))).filter(f=>f.endsWith('.md')).sort();
 const previews = [];
 for (const file of files) {
   const id = file.replace(/^\d{4}-\d{2}-\d{2}-/,'').replace(/\.md$/,'');
+  if (only.size && !only.has(id)) continue;
   const design = covers[id];
   if (!design) throw new Error(`Missing cover design: ${id}`);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc"><title id="title">${design.label}</title><desc id="desc">${design.subtitle}</desc><defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#333d4b" flood-opacity=".055"/></filter><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8" fill="none" stroke="${green}" stroke-width="2"/></marker></defs>${rect(0,0,1200,750,design.bg,0)}${text(64,84,design.label,25,green,'font-weight="700" letter-spacing="2"')}${text(64,130,design.subtitle,18,'#6b7684','letter-spacing="1.5"')}${design.art}${text(64,708,'kiddo-psh',19,'#6b7684')}${circle(1120,700,8,green)}</svg>`;
@@ -82,6 +100,8 @@ for (const file of files) {
   previews.push({input:await sharp(png).resize(400,250).png().toBuffer(),left:(previews.length%3)*400,top:Math.floor(previews.length/3)*250});
   console.log(`${id}: ${Math.round(png.length/1024)} KB`);
 }
-await mkdir(path.join(root,'docs/mockups'),{recursive:true});
-await sharp({create:{width:1200,height:Math.ceil(previews.length/3)*250,channels:3,background:'#ffffff'}}).composite(previews).png().toFile(path.join(root,'docs/mockups/thumbnail-sheet.png'));
-console.log(`${files.length} post covers generated and attached.`);
+if (!only.size) {
+  await mkdir(path.join(root,'docs/mockups'),{recursive:true});
+  await sharp({create:{width:1200,height:Math.ceil(previews.length/3)*250,channels:3,background:'#ffffff'}}).composite(previews).png().toFile(path.join(root,'docs/mockups/thumbnail-sheet.png'));
+}
+console.log(`${previews.length} post covers generated and attached.`);
