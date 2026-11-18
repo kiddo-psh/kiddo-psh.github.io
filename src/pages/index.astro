@@ -5,7 +5,6 @@ import ProjectCard from '../components/ProjectCard.astro';
 import { getVisiblePosts, readingMinutes } from '../lib/posts';
 import { getCollection } from 'astro:content';
 import { SITE, getCategory } from '../site.config';
-import { briefings, briefingLabels } from '../lib/briefings';
 import { portfolioCases } from '../data/portfolio';
 
 const allPosts = await getVisiblePosts();
@@ -64,17 +63,14 @@ const featured = allProjects
       </section>
     )}
 
-    {briefings.length > 0 && (
-      <section class="collection" aria-labelledby="briefing-title">
-        <div class="sec-head"><h2 id="briefing-title">AI 브리핑</h2><a href="/ai-briefing/">전체 브리핑 →</a></div>
-        <div class="briefings">{briefings.slice(0, 3).map((item) => (
-          <a href={`/ai-briefing/${item.id}/`}>
-            <span class="source">{briefingLabels[item.type]} · {item.source}</span>
-            <h3>{item.title}</h3><span class="more" aria-hidden="true">↗</span>
-          </a>
-        ))}</div>
-      </section>
-    )}
+    <section class="collection" aria-labelledby="agentpedia-title">
+      <div class="sec-head">
+        <h2 id="agentpedia-title">Agentpedia</h2>
+        <a href={SITE.links.agentpedia}>기사 둘러보기 <span aria-hidden="true">↗</span></a>
+      </div>
+      <p>제가 운영하는 AI 에이전트 백과사전입니다. 에이전트를 만드는 사람과 활용 사례를 소개하고, 프로젝트에 적용해 볼 프롬프트를 함께 싣습니다.</p>
+      <a href="/ai-briefing/">지난 AI 브리핑 보기</a>
+    </section>
   </div>
 </BaseLayout>
 
@@ -111,11 +107,6 @@ const featured = allProjects
   .news-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
   @media(max-width:960px) { .news-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   @media(max-width:600px) { .news-grid { grid-template-columns:1fr; gap:30px; } }
-  .briefings { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
-  .briefings a { display:flex; flex-direction:column; padding:18px 0 8px; border-top:1px solid var(--border); color:var(--text); }
-  .briefings h3 { margin:12px 0 22px; font-size:20px; font-weight:580; line-height:1.45; letter-spacing:-.035em; }
-  .source { font-size:13px; color:var(--text-dim); }
-  .more { margin-top:auto; }
   @media(max-width:660px) {
     .intro { padding:40px 0 34px; }
     .intro h1 { font-size:clamp(31px,7.8vw,48px); }
@@ -124,6 +115,6 @@ const featured = allProjects
     .feature::before { background:linear-gradient(0deg,#0b0806f2,#0b080680 60%,transparent); }
     .feature-body { width:calc(100% - 38px); }
     .open { width:32px; height:32px; flex-shrink:0; }
-    .pj-grid,.briefings { grid-template-columns:1fr; }
+    .pj-grid { grid-template-columns:1fr; }
   }
 </style>

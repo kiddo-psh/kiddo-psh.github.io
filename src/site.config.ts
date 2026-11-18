@@ -18,6 +18,7 @@ export const SITE = {
    */
   lead: '뭘 만들었는지보다, 왜 그렇게 판단했는지를 써요.',
   links: {
+    agentpedia: 'https://agentpedia-flax.vercel.app/',
     github: 'https://github.com/kiddo-psh',
     email: 'kiddo.psh@gmail.com',
   },
