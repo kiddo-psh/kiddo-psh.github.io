@@ -1,0 +1,31 @@
+<script>
+  for (const block of document.querySelectorAll<HTMLPreElement>('.prose pre[data-language]')) {
+    const code = block.querySelector('code');
+    if (!code || !navigator.clipboard) continue;
+    const frame = document.createElement('div');
+    frame.className = 'code-sample';
+    const copy = document.createElement('button');
+    copy.className = 'code-copy';
+    copy.type = 'button';
+    copy.textContent = '복사';
+    copy.setAttribute('aria-label', '코드 복사');
+    copy.setAttribute('aria-live', 'polite');
+    block.before(frame);
+    frame.append(block, copy);
+    let reset: number;
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        copy.textContent = '복사됨';
+      } catch {
+        copy.textContent = '복사 실패';
+      }
+      copy.setAttribute('aria-label',copy.textContent);
+      clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        copy.textContent = '복사';
+        copy.setAttribute('aria-label','코드 복사');
+      },1800);
+    });
+  }
+</script>

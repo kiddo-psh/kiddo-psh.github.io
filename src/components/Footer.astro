@@ -5,6 +5,7 @@ import { SITE } from '../site.config';
 <footer>
   <div class="page">
     <span>© {SITE.author}</span>
+    <a href="/about/">소개</a>
     <a href={SITE.links.github}>GitHub</a>
     <a href={`mailto:${SITE.links.email}`}>Email</a>
     <a href="/rss.xml">RSS</a>
@@ -14,6 +15,7 @@ import { SITE } from '../site.config';
 <style>
   footer { border-top: 1px solid var(--border); margin-top: var(--space-20); padding: var(--space-6) 0 var(--space-12); }
   footer div { display: flex; gap: var(--space-4); font-size: var(--fs-200); color: var(--text-dim); }
+  footer span { margin-right:auto; font-weight:650; color:var(--text); }
   footer a { color: var(--text-dim); transition: color var(--dur) var(--ease); }
   footer a:hover { color: var(--text); }
 </style>

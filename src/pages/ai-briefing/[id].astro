@@ -131,10 +131,10 @@ const others = briefings
   .block p { margin: 0; line-height: var(--lh-relaxed); }
 
   .quote {
-    margin: var(--space-7) 0 0; padding: var(--space-5) var(--space-6);
-    border-radius: var(--radius-md); background: var(--code-bg);
+    margin:var(--space-10) 0 0; padding:20px 0 20px 22px;
+    border-inline-start:3px solid var(--signal);
   }
-  .quote blockquote { margin: 0; font-size: var(--fs-400); line-height: var(--lh-relaxed); }
+  .quote blockquote { margin:0; font-size:clamp(20px,2vw,26px); line-height:1.5; font-weight:520; letter-spacing:-.025em; }
   .quote-ko { margin: var(--space-3) 0 0; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
   .quote figcaption { margin-top: var(--space-3); color: var(--text-dim); font-size: var(--fs-200); }
 

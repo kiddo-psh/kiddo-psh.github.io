@@ -134,7 +134,7 @@ Supervisor를 실제로 구현해 규칙과 비교 실험한 것은 아닙니다
 원 프로젝트는 SSAFY 1학기 관통 프로젝트 최우수상(12팀 중 1등)을 수상했습니다. 이후의 VLM 평가와 실행 흐름 개선은 별도 작업이며, 수상 당시 결과와 합쳐 설명하지 않습니다.
 
 <figure>
-  <img src="/images/projects/yumyum/award.png" alt="냠냠코치의 SSAFY 1학기 관통 프로젝트 최우수상 증빙" />
+  <img src="/images/projects/yumyum/award.png" width="1191" height="1684" loading="lazy" decoding="async" alt="냠냠코치의 SSAFY 1학기 관통 프로젝트 최우수상 증빙" />
   <figcaption>식단·운동 기록과 AI 코칭을 연결한 원 프로젝트의 수상 기록.</figcaption>
 </figure>
 

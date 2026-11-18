@@ -1,8 +1,10 @@
 ---
+import '../styles/article-content.css';
 import BaseLayout from './BaseLayout.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import BackLink from '../components/BackLink.astro';
-import ArticleCover from '../components/ArticleCover.astro';
+import CoverImage from '../components/CoverImage.astro';
+import CodeCopy from '../components/CodeCopy.astro';
 import Comments from '../components/Comments.astro';
 import { getCategory } from '../site.config';
 import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
@@ -23,38 +25,38 @@ const ogImage = post.data.cover ?? `/og/${post.id}.png`;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
-  <div class="page-wide">
+  <article class="page-wide story" data-pagefind-body>
+    <div class="story-nav">
+      <BackLink href="/posts/" label="글 목록" />
+      <span>{date} · {minutes}분 읽기</span>
+    </div>
+    <header class="story-head">
+      <p class="category">{cat.name}</p>
+      <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
+    </header>
+    {post.data.cover && <div class="story-art"><CoverImage src={post.data.cover} sizes="(max-width:900px) 94vw, 850px" priority /></div>}
     <div class:list={['shell', isDoc ? 'doc' : 'read']}>
-      <article data-pagefind-body>
-        <BackLink href="/posts" label="글" />
-        <header>
-          {/* 목록과 상세에서 같은 주제별 커버를 사용한다. */}
-          <div class="article-hero">
-            {post.data.cover ? <img src={post.data.cover} alt="" width="1200" height="750" /> : <ArticleCover id={post.id} />}
-          </div>
-          <p class="cat">{cat.label}</p>
-          <h1 class="serif">{post.data.title}</h1>
-          <p class="date">{date} · {minutes}분 읽기</p>
-        </header>
-
+      <div class="reading-column">
         <div class="prose"><slot /></div>
 
         <RelatedLinks title="같은 분류의 다른 글" links={related} />
         <Comments slug={post.id} />
-      </article>
-
+      </div>
     </div>
-  </div>
+    <CodeCopy />
+  </article>
 </BaseLayout>
-
 <style>
-  header { margin-bottom: var(--space-8); }
-  .article-hero { margin:28px 0 36px; }
-  .article-hero img { display:block; width:100%; height:auto; border-radius:18px; }
-  .cat { margin: 0 0 var(--space-3); font-size: var(--fs-200); font-weight: 800; letter-spacing: var(--ls-label); color: var(--accent); }
-  h1 { margin: 0 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-  .date { margin: 0; padding-bottom: var(--space-5); border-bottom: 1px solid var(--border); font-size: var(--fs-300); color: var(--text-dim); }
-
-  .shell.read .prose { line-height: var(--lh-loose); }
-
+  .story { width:100%; }
+  .story-nav { max-width:1030px; margin:clamp(30px,4.3vw,64px) auto 0; display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13px; color:var(--text-dim); font-variant-numeric:tabular-nums; }
+  .story-nav :global(.back) { margin:0; }
+  .story-head { max-width:850px; margin:clamp(28px,4.6vw,64px) auto 32px; text-align:center; }
+  .category { margin:0 0 12px; color:var(--accent); font-size:13px; font-weight:600; }
+  h1 { margin:0 auto; font-size:clamp(32px,4.1vw,58px); font-weight:560; line-height:1.17; letter-spacing:-.065em; text-wrap:balance; }
+  .dek { max-width:610px; margin:20px auto 0; font-size:clamp(16px,1.45vw,20px); line-height:1.65; color:var(--text-dim); text-wrap:pretty; }
+  .story-art { max-width:850px; aspect-ratio:2.05; overflow:hidden; margin:0 auto; border-radius:16px; }
+  .reading-column { min-width:0; }
+  .shell.read .prose { line-height:var(--lh-loose); }
+  @media(max-width:600px) { .story-art { aspect-ratio:1.9; border-radius:12px; } .story-nav { font-size:12px; } }
 </style>

@@ -87,7 +87,7 @@ Claude Code 팀 플랜을 쓰며 토큰 부족을 반복해서 겪었습니다. 
 로컬 대시보드와 함께 OTel Collector → Prometheus·Loki → Grafana로 이어지는 선택적 팀 관측 구성을 제공합니다. 아래는 저장소에서 공개한 **가상 팀원·목데이터 화면**이며 실제 팀의 비용이나 생산성 수치가 아닙니다.
 
 <figure>
-  <img src="/images/projects/ai-dev-harness/team-usage.png" alt="가상 팀원의 도구별 토큰, 추정 비용과 미등록 단가를 보여주는 사용량 대시보드 예시" />
+  <img src="/images/projects/ai-dev-harness/team-usage.png" width="1800" height="1220" loading="lazy" decoding="async" alt="가상 팀원의 도구별 토큰, 추정 비용과 미등록 단가를 보여주는 사용량 대시보드 예시" />
   <figcaption>공통 사용량 v2 작업 버전의 예시 화면. 실제 팀 실적이 아닌 목데이터입니다.</figcaption>
 </figure>
 
@@ -117,7 +117,7 @@ Codex의 내장 관측 기능과 키트가 읽는 세션 기록은 같은 사용
 테스트 실행에는 실행 ID와 전후 코드 상태를 식별하는 해시를 남깁니다. 실행 중 코드가 바뀌면 통과로 기록하지 않습니다. 완료 조건의 검증 수는 같은 작업에서 관측된 통과 실행과 코드 상태가 연결된 경우에만 증가시킵니다.
 
 <figure>
-  <img src="/images/projects/ai-dev-harness/task-evidence.png" alt="예시 작업에 연결한 검증 실행, 완료 조건과 리뷰 사건을 보여주는 목데이터 화면" />
+  <img src="/images/projects/ai-dev-harness/task-evidence.png" width="1800" height="1220" loading="lazy" decoding="async" alt="예시 작업에 연결한 검증 실행, 완료 조건과 리뷰 사건을 보여주는 목데이터 화면" />
   <figcaption>테스트 하나의 통과와 작업 전체의 완료를 구분하기 위한 실행 근거 화면.</figcaption>
 </figure>
 
@@ -132,7 +132,7 @@ Codex의 내장 관측 기능과 키트가 읽는 세션 기록은 같은 사용
 Codex 비대화형 실행에서 프로젝트 hook이 동작하지 않는 등 한계도 있습니다. 자동 수집이 모든 실행을 덮는다고 가정하지 않고 수동 수집과 상태 진단을 제공합니다.
 
 <figure>
-  <img src="/images/projects/ai-dev-harness/collection-diagnostics.png" alt="가상 팀원의 기록 수신 상태, 오류와 hooks 개입을 보여주는 수집 진단 목데이터" />
+  <img src="/images/projects/ai-dev-harness/collection-diagnostics.png" width="1800" height="1220" loading="lazy" decoding="async" alt="가상 팀원의 기록 수신 상태, 오류와 hooks 개입을 보여주는 수집 진단 목데이터" />
   <figcaption>수치가 낮은 이유가 실제 사용량 감소인지 수집 실패인지 구분하기 위한 진단 화면.</figcaption>
 </figure>
 

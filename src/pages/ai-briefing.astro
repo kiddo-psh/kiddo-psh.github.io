@@ -132,7 +132,7 @@ const haystack = (item: Briefing) =>
    * 칩은 그 자체가 상자라서, 상자 없는 표 위에 얹으면 조작판이 목록보다 무거워진다.
    * 네비게이션이 현재 위치를 표시하는 방식과 같다.
    */
-  .types { display: flex; gap: var(--space-4); }
+  .types { display:flex; flex-wrap:wrap; gap:4px var(--space-4); }
   .tab {
     padding: var(--space-1) 0; border: 0; border-bottom: 2px solid transparent;
     background: none; color: var(--text-dim);
@@ -142,7 +142,7 @@ const haystack = (item: Briefing) =>
   }
   .tab:hover { color: var(--text); }
   .tab.on { color: var(--text); font-weight: 700; border-bottom-color: var(--accent); }
-  .tab .ct { margin-left: var(--space-1); font-size: var(--fs-100); opacity: .6; }
+  .tab .ct { margin-left: var(--space-1); font-size: var(--fs-200); color:var(--text-dim); }
 
   .q {
     width: 198px; padding: var(--space-2) var(--space-4);

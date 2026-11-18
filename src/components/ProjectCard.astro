@@ -17,8 +17,8 @@ const Tag = `h${headingLevel}` as 'h2' | 'h3';
   .card {
     display:block;
     min-width:0;
-    padding:22px 8px 24px 0;
-    border-top:1px solid var(--border);
+    padding:clamp(20px,2.2vw,32px); background:var(--code-bg); border-radius:14px;
+    border:1px solid transparent;
     color:var(--text);
     transition:border-color var(--dur) var(--ease);
   }
@@ -27,5 +27,5 @@ const Tag = `h${headingLevel}` as 'h2' | 'h3';
   .ttl { margin:0 0 9px; font-family:var(--font-sans); font-size:20px; font-weight:700; letter-spacing:-.03em; line-height:1.45; }
   .card:hover .ttl { color:var(--accent); }
   .sum { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:2; color:var(--text-dim); font-size:14px; line-height:1.7; }
-  @media(max-width:700px) { .card { padding:18px 0 20px; }.ttl { font-size:19px; } }
+  @media(max-width:700px) { .card { padding:22px; }.ttl { font-size:19px; } }
 </style>

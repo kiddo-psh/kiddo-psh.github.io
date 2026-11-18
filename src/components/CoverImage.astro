@@ -1,0 +1,15 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+interface Props { src: string; sizes: string; priority?: boolean }
+const { src, sizes, priority = false } = Astro.props;
+const stem = src.replace(/\.png$/, '');
+const responsive = stem !== src && existsSync(join(process.cwd(), 'public', stem + '-520.webp')) && existsSync(join(process.cwd(), 'public', stem + '-1200.webp'));
+---
+<img class="cover-image" src={responsive ? stem+'-1200.webp' : src}
+  srcset={responsive ? `${stem}-520.webp 520w, ${stem}-1200.webp 1200w` : undefined}
+  sizes={responsive ? sizes : undefined} alt="" width="1200" height="750"
+  loading={priority ? 'eager' : 'lazy'} decoding="async" fetchpriority={priority ? 'high' : undefined} />
+<style>
+  .cover-image { display:block; width:100%; height:100%; object-fit:cover; }
+</style>

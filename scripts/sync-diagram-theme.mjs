@@ -16,7 +16,7 @@ async function walk(directory) {
       : svg.replace(/\.dg\s*\{[^}]*\}\s*:root\[data-theme='dark'\]\s*\.dg\s*\{[^}]*\}/,block);
     if(!updated.includes(block)) throw Error(`Cannot migrate palette: ${file}`);
     updated=updated.replace('9장이 같은 규칙을 쓴다.','모든 본문 도식이 같은 규칙을 쓴다.')
-      .replace('v 보라','v 청록').replace('t 주황','t 연초록');
+      .replace('g 초록','g 구리').replace('v 청록','v 보라').replace('t 주황','t 청색').replace('t 연초록','t 청색');
     // Quantitative fills are independent of text colors: lighter bars, readable labels.
     updated=updated.replace(/\.dg \.bar\.([gvtq])\s*\{[^}]*\}/g,(rule,tone)=>
       rule.replace(/fill:var\(--(?:[gvtq]-text|[gvtq])\)/,`fill:var(--${tone}-bar)`));

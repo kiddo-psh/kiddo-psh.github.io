@@ -1,9 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import '../styles/article-content.css';
 import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
 import BackLink from '../components/BackLink.astro';
 import Motif from '../components/Motif.astro';
+import CoverImage from '../components/CoverImage.astro';
+import CodeCopy from '../components/CodeCopy.astro';
 import { projectTone } from '../lib/motif';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import { getVisiblePosts, readingMinutes } from '../lib/posts';
@@ -26,24 +29,19 @@ const related = (d.relatedPosts ?? [])
   }));
 ---
 
-<BaseLayout title={d.title} description={d.summary} ogImage={`/og/project-${project.id}.png`}>
+<BaseLayout title={d.title} description={d.summary} ogImage={d.cover ?? `/og/project-${project.id}.png`}>
   <div class="page-wide">
     <div class="shell doc">
       <article data-pagefind-body>
         <BackLink href="/projects" label="프로젝트" />
-        {/*
-          목록 카드에 있던 마크를 상세에도 둔다. 카드에서 마크를 보고 들어왔는데
-          상세에 없으면 같은 프로젝트라는 신호가 문턱에서 끊긴다.
-          글 상세와 같은 머리그림을 쓴다 — 상세 페이지는 둘 다 같은 자리에 같은 모양이어야 한다.
-          틴트는 카드와 같은 규칙(order)으로 정한다.
-        */}
-        <span
-          class:list={['art-frame', 'band', `t-${projectTone(d.order)}`, 'mk']}>
-          {d.cover ? <img class="project-cover" src={d.cover} alt="" width="1200" height="750" /> : <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>}
-        </span>
         <h1 class="page-title">{d.title}</h1>
         <p class="project-headline">{d.headline}</p>
         <p class="project-summary">{d.summary}</p>
+
+        <span
+          class:list={['art-frame', 'band', `t-${projectTone(d.order)}`, 'mk', { illustrated: !!d.cover }]}>
+          {d.cover ? <CoverImage src={d.cover} sizes="(max-width:740px) 94vw, 684px" priority /> : <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>}
+        </span>
 
         <dl class="facts">
           <div><dt>구성</dt><dd>{d.projectType}</dd></div>
@@ -79,17 +77,15 @@ const related = (d.relatedPosts ?? [])
 
     </div>
   </div>
+  <CodeCopy />
 </BaseLayout>
 
 <style>
-  /* 제목 위 머리그림. .page-title의 위 여백을 그림이 대신 갖는다 */
   .mk { margin: var(--space-6) 0 var(--space-7); }
-  .mk:has(.project-cover) { height: auto; aspect-ratio: 1.6; }
-  .project-cover { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .mk + .page-title { margin-top: 0; }
+  .mk.illustrated { height:auto; aspect-ratio:2.35; }
 
   /* 제목 위 여백은 BackLink가 만든다 */
-  .page-title { margin-top: 0; }
+  .page-title { margin-top:24px; }
   .project-headline { margin: 0 0 16px; font-size: clamp(22px, 4vw, 30px); font-weight: 700; line-height: 1.4; letter-spacing: -.03em; }
   .project-summary { margin: 0 0 28px; color: var(--text-dim); font-size: 18px; line-height: 1.8; }
   .contribution { margin: 24px 0 40px; padding: 24px; border-radius: 14px; background: var(--code-bg); line-height: 1.8; }

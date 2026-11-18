@@ -48,7 +48,7 @@ outcome: "파일럿 모형에서 감지 → 사건 발행 → 앱 알림 → 응
 서버는 앱으로 이동 요청을 보내고, 차주가 응답한 시간이 지나면 카메라 재확인을 요청합니다. 영상에서 얻은 결과가 앱의 알림으로 끝나지 않고 다음 확인 작업으로 이어지는 구조입니다.
 
 <figure class="wide">
-  <img src="/images/projects/baro/architecture.png" alt="번호판을 인식하는 입구 장치, 차량을 추적하는 천장 카메라와 Jetson, 사건을 처리하는 서버, 이동 요청과 응답을 주고받는 앱의 전체 구조" />
+  <a href="/images/projects/baro/architecture.png"><img src="/images/projects/baro/architecture.png" srcset="/images/projects/baro/architecture-720.webp 720w, /images/projects/baro/architecture-1440.webp 1440w" sizes="(max-width:700px) 95vw, 1008px" width="2746" height="1698" loading="lazy" decoding="async" alt="번호판을 인식하는 입구 장치, 차량을 추적하는 천장 카메라와 Jetson, 사건을 처리하는 서버, 이동 요청과 응답을 주고받는 앱의 전체 구조" /></a>
   <figcaption>장치의 관측부터 이동 요청과 재확인까지 연결한 팀의 서비스 구조.</figcaption>
 </figure>
 
@@ -158,7 +158,7 @@ Jetson 안의 판정 엔진은 다음 순서로 동작합니다.
 이를 비교할 수 있도록 녹화 영상을 영상 시간 기준으로 공급하는 리플레이를 구현했습니다. 처리 결과는 JSONL과 오버레이로 남겼습니다. 같은 입력의 결과가 재현되는지 테스트하고, 트랙 재결합·점유 시계·출차 조건을 수정할 때 기존 동작이 깨지는지 확인했습니다.
 
 <figure>
-  <img src="/images/projects/baro/zone-overlay-020s-disabled.jpg" alt="파일럿 영상에서 차량 추적 결과와 전용구역 점유 판정을 함께 표시한 오버레이" />
+  <img src="/images/projects/baro/zone-overlay-020s-disabled.jpg" width="1920" height="1080" loading="lazy" decoding="async" alt="파일럿 영상에서 차량 추적 결과와 전용구역 점유 판정을 함께 표시한 오버레이" />
   <figcaption>실제 파일럿 영상의 판정 오버레이. 차량 추적과 구역의 관계를 함께 확인했습니다.</figcaption>
 </figure>
 
@@ -179,7 +179,7 @@ Jetson 안의 판정 엔진은 다음 순서로 동작합니다.
 파일럿 모형에서는 감지에서 사건 발행, 앱 알림과 응답, 카메라 재확인까지 연결해 시연했습니다. 팀은 SSAFY 공통 프로젝트 우수상을 수상했습니다.
 
 <figure>
-  <img src="/images/projects/baro/award.jpg" alt="주차바로 팀의 SSAFY 공통 프로젝트 우수상 증빙" />
+  <img src="/images/projects/baro/award.jpg" width="3213" height="3454" loading="lazy" decoding="async" alt="주차바로 팀의 SSAFY 공통 프로젝트 우수상 증빙" />
   <figcaption>서비스 흐름을 연결한 파일럿 시연과 팀의 공통 프로젝트 우수상 수상.</figcaption>
 </figure>
 

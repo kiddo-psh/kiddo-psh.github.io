@@ -5,7 +5,7 @@ interface Props { active: string }
 const { active } = Astro.props;
 ---
 
-<nav class="tabs">
+<nav class="tabs" aria-label="글 분류">
   <a href="/posts" class:list={['chip', { on: active === 'all' }]}>전체</a>
   {CATEGORIES.map((c) => (
     <a href={`/posts?category=${c.id}`} class:list={['chip', { on: active === c.id }]}>

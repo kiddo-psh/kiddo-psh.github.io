@@ -1,47 +1,72 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostListItem from '../../components/PostListItem.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import CoverImage from '../../components/CoverImage.astro';
 import CategoryTabs from '../../components/CategoryTabs.astro';
 import { getVisiblePosts } from '../../lib/posts';
-
+import { getCategory } from '../../site.config';
 const posts = await getVisiblePosts();
+const lead = posts[0];
+const [topic, ...details] = lead?.data.title.split(' — ') ?? [];
+const headline = details.length ? details.join(' — ') : topic;
+const sizes = '(max-width: 600px) 95vw, (max-width: 960px) 46vw, 385px';
 ---
-
 <BaseLayout title="글" description="기술, AI 개발, 회고">
-  <div class="page">
-    <h1 class="page-title">글</h1>
-    <p class="page-lead">기술, AI 개발, 회고를 써요.</p>
-    <CategoryTabs active="all" />
-    <div id="list" class="post-list">
-      {posts.map((post) => (
-        <div class="cell" data-category={post.data.category}>
-          <PostListItem post={post} headingLevel={2} />
-        </div>
-      ))}
+  <div class="page archive">
+    {lead && <section id="latest" aria-label="최신 글">
+      <div class="lead-copy">
+        <p class="meta">{details.length ? topic : getCategory(lead.data.category).name} <span>/</span> 최신 글 · {lead.data.pubDate.toISOString().slice(0,10).replaceAll('-','.')}</p>
+        <p class="lead-title"><a href={`/posts/${lead.id}/`}>{headline}</a></p>
+        <p class="summary">{lead.data.description}</p>
+        <a class="cta" href={`/posts/${lead.id}/`}>글 읽기 <span aria-hidden="true">→</span></a>
+      </div>
+      {lead.data.cover && <div class="lead-art"><CoverImage src={lead.data.cover} sizes="(max-width:700px) 95vw, (max-width:1280px) 51vw, 660px" priority /></div>}
+    </section>}
+    <div class="collection-head"><h1>글 목록</h1><CategoryTabs active="all" /></div>
+    <div id="list">
+      {posts.map((post,i) => <div data-category={post.data.category} data-lead={i===0 || undefined} hidden={i===0}><NewsCard post={post} sizes={sizes}/></div>)}
     </div>
     <p id="empty" hidden>이 분류에 아직 글이 없습니다.</p>
   </div>
 </BaseLayout>
-
-
-
+<style>
+  #latest { position:relative; display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); align-items:center; gap:clamp(28px,5vw,85px); padding:clamp(40px,6.5vw,96px) 0; }
+  #latest[hidden],#list>[hidden] { display:none; }
+  .meta,.summary { margin:0; color:var(--text-dim); }
+  .meta { font-size:13px; font-variant-numeric:tabular-nums; }
+  .meta span { margin:0 5px; }
+  .lead-title { margin:14px 0 18px; font-size:clamp(31px,3.2vw,50px); font-weight:560; line-height:1.18; letter-spacing:-.06em; }
+  .lead-title a { color:inherit; }
+  .summary { font-size:clamp(15px,1.35vw,18px); line-height:1.65; }
+  .cta { display:inline-flex; align-items:center; gap:16px; margin-top:24px; padding:9px 19px; background:var(--text); color:var(--bg); font-size:14px; border-radius:99px; }
+  .lead-art { aspect-ratio:1.82; overflow:hidden; border-radius:16px; }
+  .collection-head { display:flex; align-items:center; flex-wrap:wrap; justify-content:space-between; gap:16px; margin:0 0 28px; padding-top:26px; border-top:1px solid var(--border); }
+  #latest[hidden]+.collection-head { padding-top:50px; border-top:0; }
+  h1 { margin:0; font-size:clamp(28px,3vw,40px); font-weight:570; letter-spacing:-.055em; }
+  #list { display:grid; gap:42px 22px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  @media(max-width:960px) { #list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:700px) { #latest { grid-template-columns:1fr; gap:22px; } .lead-art { grid-row:1; } }
+  @media(max-width:600px) { #list { grid-template-columns:1fr; gap:32px; } .collection-head { align-items:start; flex-direction:column; } }
+</style>
 <script>
   function applyFilter() {
     const wanted = new URLSearchParams(location.search).get('category');
+    const latest = document.getElementById('latest');
+    if (latest) latest.hidden = !!wanted;
     let shown = 0;
-    document.querySelectorAll<HTMLElement>('#list .cell').forEach((cell) => {
-      const hit = !wanted || cell.dataset.category === wanted;
-      cell.hidden = !hit;
-      if (hit) shown++;
-    });
+    for (const cell of document.querySelectorAll<HTMLElement>('#list [data-category]')) {
+      cell.hidden = wanted ? cell.dataset.category !== wanted : cell.hasAttribute('data-lead');
+      if (!cell.hidden) shown++;
+    }
     const empty = document.getElementById('empty');
-    if (empty) empty.hidden = shown > 0;
-
-    document.querySelectorAll<HTMLAnchorElement>('.tabs a').forEach((a) => {
-      const q = new URL(a.href, location.origin).searchParams.get('category');
-      a.classList.toggle('on', (q ?? null) === (wanted ?? null));
-    });
+    if (empty) empty.hidden = shown > 0 || (!!latest && !wanted);
+    for (const link of document.querySelectorAll<HTMLAnchorElement>('.tabs a')) {
+      const selected = new URL(link.href).searchParams.get('category') === wanted;
+      link.classList.toggle('on', selected);
+      if (selected) link.setAttribute('aria-current','true');
+      else link.removeAttribute('aria-current');
+    }
   }
   applyFilter();
-  window.addEventListener('pageshow', applyFilter);
+  window.addEventListener('pageshow',applyFilter);
 </script>

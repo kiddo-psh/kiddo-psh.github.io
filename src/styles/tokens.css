@@ -1,13 +1,14 @@
 :root {
   --bg: #ffffff;
+  --signal: #ed692c;
   --bg-elev: #ffffff;
-  --text: #333d4b;
-  --text-dim: #6b7684;
-  --border: #e5e8eb;
-  --accent: #246b50;
+  --text: #191918;
+  --text-dim: #63635f;
+  --border: #e4e4e0;
+  --accent: #923810;
   /* 표에서 결론에 해당하는 행을 칠하는 색. 종이색 위에서 글씨 대비를 깎지 않을 만큼만 진하다 */
-  --accent-soft: #eaf4ee;
-  --code-bg: #f2f4f6;
+  --accent-soft: #fbede4;
+  --code-bg: #f4f4f1;
 
   /*
    * 프로젝트 카드 틴트. 일러스트를 그리지 않는 대신 색으로 각 프로젝트를 구분한다.
@@ -15,22 +16,22 @@
    * var(--text)/var(--text-dim)를 그대로 쓴다. 그래서 다크모드에서는 틴트만
    * 어두운 쪽으로 뒤집으면 글씨가 자동으로 밝아진다.
    */
-  --pj-a: #dde7e0;
-  --pj-b: #dae2e9;
-  --pj-c: #e5eee8;
-  --pj-d: #e3dde8;
+  --pj-a: #fad8c5;
+  --pj-b: #d5e3f4;
+  --pj-c: #eeeaaa;
+  --pj-d: #dfd5f5;
 
   /*
    * 모티프 타일 색. 카드 틴트와 같은 계열이되 채도를 한 단계 올렸다 —
    * 타일이 64~96px이라 카드와 같은 연한 색을 쓰면 형태가 배경에 묻힌다.
    * 선은 별도 색을 두지 않고 var(--text)를 쓴다(다크모드에서 자동으로 뒤집힌다).
    */
-  --mk-a: #bcd2c4;
-  --mk-b: #b9c9d6;
-  --mk-c: #afc8b9;
-  --mk-d: #cbc2d8;
+  --mk-a: #e5ae8e;
+  --mk-b: #9bbad5;
+  --mk-c: #cac36e;
+  --mk-d: #b6a2d9;
 
-  --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   /*
    * 표시용 세리프. 시스템 명조만 쓰면 안드로이드·리눅스에서 Georgia로 떨어지고,
    * Georgia에는 한글이 없어서 결국 고딕으로 되돌아온다 — 세리프가 있는 기기에서만
@@ -116,7 +117,7 @@
   /* 브라우저 90% 줌의 물리 크기와 맞도록 글 폭도 같은 비율로 줄인다. */
   --w-doc: 684px;
   --w-read: 594px;
-  --w-page: 990px;
+  --w-page: 1280px;
   /*
    * 글 상세용. 본문+목차 블록은 약 960px이고 이 상한 안에서 가운데 정렬되므로,
    * 상한이 좌우 여백의 크기를 결정한다. 더 좁게 두면 여백이 자랄 여지가
@@ -127,25 +128,25 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #17191c;
-  --bg-elev: #202329;
-  --text: #e5e8eb;
-  --text-dim: #b0b8c1;
-  --border: #333d4b;
-  --accent: #4fbe8f;
-  --accent-soft: #1e332a;
-  --code-bg: #202329;
+  --bg: #141413;
+  --bg-elev: #20201e;
+  --text: #f3f3ee;
+  --text-dim: #b8b8b2;
+  --border: #3a3a36;
+  --accent: #ffae83;
+  --accent-soft: #38261e;
+  --code-bg: #20201e;
 
   /* 프로젝트 카드 틴트를 어두운 쪽으로 뒤집는다. 글씨는 var(--text)라 자동으로 밝아진다 */
-  --pj-a: #1f2b25;
+  --pj-a: #39281e;
   --pj-b: #1e2831;
-  --pj-c: #243b2e;
+  --pj-c: #323222;
   --pj-d: #272231;
 
   /* 마크 타일도 같이 뒤집는다. 라이트에서 틴트보다 진했듯, 다크에서는 틴트보다 밝다 */
-  --mk-a: #31463a;
+  --mk-a: #805c48;
   --mk-b: #2e4050;
-  --mk-c: #355440;
+  --mk-c: #656740;
   --mk-d: #3e3650;
 }
 

@@ -37,7 +37,7 @@ feelm에서 저는 계정·인증 백엔드와 화면의 API 연동을 맡았습
 feelm은 감상한 영화를 필름 한 칸으로 기록하고, 영화 취향을 팝콘 맛으로 보여주는 서비스입니다. 팀은 MovieLens 32M과 영화 메타데이터를 처리해 취향 맞춤·취향 발견·파티 추천을 구성했습니다.
 
 <figure>
-  <img src="/images/projects/feelm/02-pc-film.webp" alt="감상 기록을 필름으로, 영화 취향을 팝콘으로 보여주는 feelm의 실제 화면" />
+  <img src="/images/projects/feelm/02-pc-film.webp" width="1920" height="1132" loading="lazy" decoding="async" alt="감상 기록을 필름으로, 영화 취향을 팝콘으로 보여주는 feelm의 실제 화면" />
   <figcaption>팀이 구현한 취향 필름과 팝콘 화면. 추천 데이터 처리와 모델은 팀의 담당 영역입니다.</figcaption>
 </figure>
 
@@ -89,7 +89,7 @@ feelm은 감상한 영화를 필름 한 칸으로 기록하고, 영화 취향을
 화면의 일치도와 이유를 제거하고, 서버가 설명할 수 있는 `matchCount`와 `topMovies`를 사용하도록 API·요구사항·화면 문서를 함께 정리했습니다. 단건 조회는 새 API를 추가하지 않고 목록에서 찾는 방식을 유지했습니다.
 
 <figure>
-  <img src="/images/projects/feelm/03-record-flow.webp" alt="영화 평가에서 취향 기록으로 이어지는 feelm의 실제 화면 흐름" />
+  <img src="/images/projects/feelm/03-record-flow.webp" width="1880" height="1333" loading="lazy" decoding="async" alt="영화 평가에서 취향 기록으로 이어지는 feelm의 실제 화면 흐름" />
   <figcaption>화면이 기대하는 값과 실제 응답의 의미를 맞추며 연동했습니다.</figcaption>
 </figure>
 
@@ -100,7 +100,7 @@ feelm은 감상한 영화를 필름 한 칸으로 기록하고, 영화 취향을
 인증에서는 실패·만료·경쟁 요청을 구현과 테스트로 남겼고, 화면에서는 공통 HTTP 클라이언트와 인증 세션을 연결해 목업을 실제 API로 바꿨습니다.
 
 <figure>
-  <img src="/images/projects/feelm/04-recommend.webp" alt="추천 목록, 영화 상세, 취향 리포트를 보여주는 feelm의 실제 화면" />
+  <img src="/images/projects/feelm/04-recommend.webp" width="1880" height="1333" loading="lazy" decoding="async" alt="추천 목록, 영화 상세, 취향 리포트를 보여주는 feelm의 실제 화면" />
   <figcaption>팀이 구현한 추천·영화 상세·취향 리포트 화면.</figcaption>
 </figure>
 

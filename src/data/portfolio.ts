@@ -27,7 +27,7 @@ export interface PortfolioCase {
   roles: string[];
   metrics: { value: string; label: string; note?: string }[];
   /** caption은 그림을 오해할 수 있을 때만 */
-  figure?: { src: string; alt: string; caption?: string };
+  figure?: { src: string; alt: string; width?: number; height?: number; srcset?: string; caption?: string };
   solutions: Solution[];
   /** 꼭 밝혀야 할 측정 한계 한 문장 */
   boundary: string;
@@ -88,7 +88,7 @@ export const portfolioCases: PortfolioCase[] = [
       {value:'154 → 67ms', label:'프레임당 처리'},
       {value:'1초 / 5초', label:'진입 확인 · 이탈 확정'},
     ],
-    figure:{src:'/images/projects/baro/zone-overlay-045s-ev.jpg', alt:'파일럿 주차 모형에서 차량 검출과 주차 구역을 함께 표시한 실제 오버레이'},
+    figure:{src:'/images/projects/baro/zone-overlay-045s-ev.jpg', width:1920, height:1080, srcset:'/images/projects/baro/zone-overlay-045s-ev-720.webp 720w, /images/projects/baro/zone-overlay-045s-ev-1440.webp 1440w', alt:'파일럿 주차 모형에서 차량 검출과 주차 구역을 함께 표시한 실제 오버레이'},
     solutions:[
       {
         title:'‘주차 위반’을 위치·시간 판정 규칙으로 정의',

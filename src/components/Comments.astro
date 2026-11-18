@@ -10,20 +10,8 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 {enabled && (
   <section class="comments" aria-label="댓글">
     <script is:inline define:vars={{ giscus: g }}>
-      /*
-       * giscus 로더를 마크업이 아니라 여기서 만들어 붙인다.
-       * 로더 <script>를 마크업에 두고 형제 참조로 data-theme을 꽂으려 하면,
-       * 이 인라인 스크립트가 실행되는 시점에 그 형제가 아직 파싱되지 않아
-       * null이다. 로더가 이미 뜬 뒤에 테마를 바꿔봐야 늦다 —
-       * 다크 모드 독자가 라이트로 부팅된 댓글창을 한 번 보게 된다.
-       * (초기 테마 우선순위는 BaseLayout의 인라인 테마 스크립트와 같다: 저장값 → prefers-color-scheme)
-       */
-      (function () {
-        const saved = localStorage.getItem('theme');
-        const dark = saved
-          ? saved === 'dark'
-          : window.matchMedia('(prefers-color-scheme: dark)').matches;
-
+      const section = document.currentScript.parentElement;
+      function loadComments() {
         const loader = document.createElement('script');
         loader.src = 'https://giscus.app/client.js';
         loader.async = true;
@@ -40,12 +28,22 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
           inputPosition: 'top',
           lang: 'ko',
           loading: 'lazy',
-          theme: dark ? 'dark' : 'light',
+          theme: document.documentElement.dataset.theme,
         });
 
         // giscus는 자기 <script> 바로 뒤에 iframe을 꽂는다 — 이 섹션 안에 붙여야 한다.
-        document.currentScript.parentElement.appendChild(loader);
-      })();
+        section.appendChild(loader);
+      }
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          loadComments();
+        }, { rootMargin: '500px' });
+        observer.observe(section);
+      } else {
+        loadComments();
+      }
     </script>
   </section>
 )}

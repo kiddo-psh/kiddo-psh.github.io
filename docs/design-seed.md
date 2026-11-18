@@ -1,56 +1,36 @@
-# Editorial design seed
+# 블로그 디자인 시드
 
-Reference: https://toss.tech/ (2026-10-24).
+2026년 11월 18일 [x.ai 홈페이지](https://x.ai/)의 첫 화면을 브라우저에서 확인했다. 중앙의 두 줄 제목과 한 문장 설명, 채운 버튼과 옅은 버튼의 대비, 넓은 여백 뒤에 이어지는 시각적 콘텐츠가 탐색 순서를 만든다.
 
-## Observed reference
+## 블로그에 적용한 원칙
 
-The public page source uses white, neutral gray text and surfaces, category navigation, article thumbnails, and blue interactive accents. Observed source colors include #ffffff, #f9fafb, #6b7684, #8b95a1, and #3182f6. Browser visual inspection was unavailable; exact spacing is not a measured copy.
+- 홈은 박시현의 기존 소개 문장과 글 목록·포트폴리오로 시작한다. 최신 글은 큰 이미지와 실제 제목, 분류, 읽기 시간으로 보여준다. 이후에는 날짜와 제목으로 훑을 수 있는 글 목록, 프로젝트, AI 브리핑이 이어진다.
+- 화면의 기본색은 흰색과 먹색이다. 구리빛 주황은 로고·최신 글 표시·제목 마침표에 사용한다. 작은 링크는 밝은 화면에서 짙은 구리색, 어두운 화면에서 밝은 살구색을 쓴다. 색상값은 `src/styles/tokens.css`에서 관리한다.
+- 한국어는 어절 단위로 줄을 나눈다. 큰 제목과 짧은 소개는 중앙에, 글과 프로젝트 본문은 각각의 읽기 폭 안에서 왼쪽에 정렬한다. 도해의 실행·판정·경계·맥락을 서로 다른 색과 텍스트로 표시한다.
+- 첫 화면은 정적 HTML과 CSS로 렌더링한다. 시스템 글꼴로 바로 표시하고, 추천 글 이미지는 화면 폭에 따라 세 가지 WebP 중 하나를 읽는다. 댓글 로더는 독자가 댓글 영역에 가까이 왔을 때 실행한다.
+- 모바일에서는 글의 날짜·분류를 제목 위로 옮기고 프로젝트와 브리핑을 한 열로 표시한다. 헤더에서 검색과 테마 전환을 계속 사용할 수 있다.
 
-## Applied interpretation
+원본 기사 표지와 도해 제작 방법은 [도해 가이드](./diagrams.md)를 참고한다.
 
-- White background #ffffff; main text #333d4b; secondary text #6b7684; subtle surface #f2f4f6; border #e5e8eb.
-- Replace blue interactive accents with forest green #246b50; soft selected surface #eaf4ee. Green text on white is approximately 6.3:1 contrast.
-- Pretendard throughout, 100% base sizing; desktop article body 18px, mobile 17px. Use weight and whitespace for hierarchy.
-- Home: start directly with recent writing, one featured article with a large cover, then image-and-text rows. No introduction banner or replacement slogan. Keep AI briefings and projects.
-- Featured title 32px desktop / 27px mobile; regular titles 24px / 19px.
-- Content page maximum width 1080px including padding. At 700px, the featured article stacks; regular rows retain a compact thumbnail.
-- All nine current posts have individual vector illustrations exported as 1200×750 PNGs and attached through frontmatter. The same PNG appears in lists, article headers, and social sharing. Source SVGs and the generator are retained for editing. Future posts without a cover have a CSS fallback. No reference images, logos, or source components are reused.
-- Preserve category URLs, search, RSS, theme toggle, diagrams, and comments. Article and project pages have no table of contents: center the body column in the viewport, keep text left-aligned, and let wide diagrams expand symmetrically.
-- Project lists are text-first: omit thumbnails from both home and the project index. Retain project cover artwork for case detail and social previews. Use a single hierarchy and reveal details progressively.
-- Home projects: small project name, a problem/outcome-led headline, and a short summary. Keep ownership, validation, and team metadata on the case page; link to the case for evidence.
-- Project index: ordered typographic rows matching the portfolio. Each row shows a small number and project name, a problem/outcome-led headline, one summary, personal role, one validation fact, period, and one detail link. Make the project name secondary to the reason the case matters. Use open white space and thin separators instead of nested panels.
-- About: name, a concrete introduction, experience linked to cases, technologies explained through actual use, education, awards, qualifications and contact. Avoid decorative skill logos and unsupported proficiency ratings. Contact details always use `SITE.links`.
-- Dark mode uses neutral charcoal surfaces and brighter green accents. Reduced-motion users receive no thumbnail movement.
-- Article components share gray panels and 14px corners: code blocks, inline code, tables, quotes, and diagrams. Code syntax retains meaningful string/type/error colors. All 15 body SVGs receive the shared light/dark palette at build time. The timeout diagram has a dedicated mobile layout.
+## News와 Developer에서 가져온 구성
 
-## Approved palette (2026-10-24)
+[News 목록](https://x.ai/news)의 대표 기사에서는 날짜, 큰 제목과 설명을 왼쪽에 두고 오른쪽을 이미지에 내준다. [기사 상세](https://x.ai/news/grok-bot-1-0)는 뒤로 가기와 날짜 아래에 제목과 소개문을 가운데 놓는다. 블로그는 이를 글 목록의 대표 기사, 반응형 표지 그리드, 상세의 제목·요약과 좁은 본문 칼럼에 적용한다.
 
-This is the accepted design baseline. Reuse it for new articles, diagrams, and code blocks. Do not reintroduce brown accents or use unrelated decorative hues.
+[Developer](https://x.ai/api)의 예제 패널은 복사 동작과 코드를 분리한다. 블로그 코드 블록은 실제 마크다운 언어를 패널 제목에 표시하고 원문을 복사한다. 인용은 세로선과 큰 활자로, 도해는 색의 역할·라벨·캡션으로 읽는다. 기존 글 15개와 프로젝트 5개의 표지는 로컬 벡터 생성기로 만든다. 웹 화면에는 520px와 1200px WebP를, 소셜 미리보기에는 PNG를 제공한다.
 
-| Role | Light | Dark |
-| --- | --- | --- |
-| Page | `#ffffff` | `#17191c` |
-| Content panel | `#f2f4f6` | `#202329` |
-| Main text | `#333d4b` | `#e5e8eb` |
-| Secondary text | `#6b7684` | `#b0b8c1` |
-| Link / interactive accent | `#246b50` | `#4fbe8f` |
-| Graph: primary work | `#246b50` | `#80cfa7` |
-| Graph: review / waiting | `#4f9699` | `#4f9699` |
-| Graph: boundary / return / rework | `#b2c77d` | `#b2c77d` |
-| Graph: context | `#a6afb9` | `#77838f` |
+## 홈 개편 당시 검증 기록
 
-Graph labels use separate darker text tokens, not light bar fills. Preserve category labels and values so meaning never depends on color alone. Text warnings and syntax errors may retain red. Details and semantic mappings live in `docs/diagrams.md`.
+2026년 11월 18일 Chrome 157과 Lighthouse 13.6.0의 모바일 기본 시뮬레이션으로 측정했다. 개편 전후의 프로덕션 빌드는 같은 기계의 Python 정적 서버에서 제공했다. 개편 전은 1회, 개편 후 홈은 새 브라우저 세션으로 3회 측정했으며 표에는 중앙값을 기록했다.
 
-Code uses forest green for keywords/functions, teal for strings, and leaf green for numbers/types. Panels use 14px corners; inline code and table headers use their smaller component radii. Article column widths are 684px for technical/project writing and 594px for retrospectives, with responsive side padding.
+| 홈 지표 | 개편 전 | 개편 후 |
+| --- | ---: | ---: |
+| 성능 | 92 | 100 |
+| 접근성 자동 검사 | 95 | 100 |
+| 가장 큰 콘텐츠 표시 시간(LCP) | 3.05초 | 1.51초 |
+| 레이아웃 이동(CLS) | 0 | 0 |
+| 전송량 | 679 KiB | 78 KiB |
+| 네트워크 요청 | 23건 | 5건 |
 
-## Files
+같은 모바일 프로필로 공개 x.ai 홈을 1회 측정했을 때 성능 36점, LCP 10.93초였다. 공개망과 로컬 서버의 응답 조건이 다르므로 블로그의 개선 폭은 개편 전후 측정으로 판단했다.
 
-`src/styles/tokens.css`: color tokens. `src/styles/editorial.css`: editorial typography and layout overrides. `PostListItem.astro` and `ArticleCover.astro`: reusable presentation. `scripts/generate-post-covers.mjs`: source artwork and repeatable export.
-
-`src/styles/article-content.css`: article components. `src/styles/diagram-theme.css`: canonical light/dark diagram tokens, synchronized automatically during build. `src/lib/code-themes.mjs`: syntax highlighting. `docs/diagrams.md`: diagram conventions.
-
-Local mockups and generated review PNGs are ignored by Git; the design source and generators are versioned.
-
-## Project covers (2026-10-24)
-
-The four project covers use original vector illustrations in the same white/gray/forest-green palette. `scripts/generate-project-covers.mjs` writes editable SVGs and 1200×750 PNGs under `public/images/projects/<id>/`. Project frontmatter `cover` supplies the same image to cards and detail headers. These are conceptual illustrations; existing screenshots, awards, and experiment images remain the evidence. Regenerate with `node scripts/generate-project-covers.mjs`.
+홈·목록·상세·검색·소개·포트폴리오를 포함한 13개 대표 URL에서 모바일 성능 98~100점, 접근성 자동 검사 100점을 확인했다. 홈 데스크톱 성능은 100점이었다. 브라우저에서 50개 콘텐츠 화면을 320·768·1440px 폭으로 열었고, 320px에서 넘치던 두 표를 수정한 뒤 전체를 재검사했다. 404 화면, 글 분류, 브리핑 필터, 검색 결과, 테마 전환도 확인했다.

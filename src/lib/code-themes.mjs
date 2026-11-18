@@ -1,12 +1,12 @@
-// Shiki themes share the neutral/green article palette; token meanings remain distinct.
+// Shiki themes share the editorial palette; token meanings remain distinct.
 function theme(name, type, colors) {
-  const [background,foreground,comment,green,string,number] = colors;
+  const [background,foreground,comment,keyword,string,number] = colors;
   return {
     name,type,
     colors:{'editor.background':background,'editor.foreground':foreground},
     tokenColors:[
       {scope:['comment','punctuation.definition.comment'],settings:{foreground:comment}},
-      {scope:['keyword','storage','entity.name.function','support.function'],settings:{foreground:green}},
+      {scope:['keyword','storage','entity.name.function','support.function'],settings:{foreground:keyword}},
       {scope:['string','markup.inline.raw'],settings:{foreground:string}},
       {scope:['constant.numeric','constant.language','entity.name.type','support.type'],settings:{foreground:number}},
       {scope:['variable','punctuation','meta'],settings:{foreground}},
@@ -14,5 +14,5 @@ function theme(name, type, colors) {
     ],
   };
 }
-export const light=theme('kiddo-light','light',['#f2f4f6','#333d4b','#6b7684','#246b50','#21696d','#566b29']);
-export const dark=theme('kiddo-dark','dark',['#202329','#e5e8eb','#b0b8c1','#80cfa7','#83cdd0','#c0d58b']);
+export const light=theme('kiddo-light','light',['#fcfcfa','#252622','#626659','#a53450','#275e72','#865219']);
+export const dark=theme('kiddo-dark','dark',['#1c1d1b','#f1eee8','#b3b6a9','#ff9eb0','#a2d6e8','#f0c38b']);

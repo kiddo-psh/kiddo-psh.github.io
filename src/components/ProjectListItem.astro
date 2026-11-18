@@ -1,11 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import CoverImage from './CoverImage.astro';
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 interface Props { project: CollectionEntry<'projects'>; number: string; }
 const { project, number } = Astro.props;
 const d=project.data;
 ---
 <article class="project-entry">
+  {d.cover && <div class="case-art"><CoverImage src={d.cover} sizes="(max-width:700px) 95vw, 340px" /></div>}
   <div class="body">
     <p class="eyebrow"><span>{number}</span>{d.title}</p>
     <h2><a href={`/projects/${project.id}/`}>{d.headline}</a></h2>
@@ -19,6 +21,8 @@ const d=project.data;
 </article>
 <style>
   .project-entry { border-top:1px solid var(--border); padding:30px 0 32px; }
+  .project-entry { display:grid; grid-template-columns:minmax(0,.47fr) minmax(0,1fr); align-items:center; gap:clamp(24px,4vw,56px); }
+  .case-art { aspect-ratio:1.65; overflow:hidden; border-radius:12px; }
   .body { max-width:780px; }
   .eyebrow { display:flex; gap:10px; margin:0 0 9px; color:var(--text-dim); font-size:12px; line-height:1.5; }
   .eyebrow > span { min-width:22px; color:var(--accent); font-variant-numeric:tabular-nums; font-weight:700; }
@@ -34,7 +38,7 @@ const d=project.data;
   .metadata { margin:0; color:var(--text-dim); font-size:12px; line-height:1.6; }
   .read-more { display:inline-flex; align-items:center; gap:7px; color:var(--accent); font-size:13px; font-weight:650; white-space:nowrap; }
   @media(max-width:700px) {
-    .project-entry { padding:24px 0; }
+    .project-entry { padding:24px 0; grid-template-columns:1fr; gap:18px; }
     h2 { font-size:22px; }
     .facts { grid-template-columns:1fr; gap:6px; }
     .footer { align-items:flex-start; flex-direction:column; gap:8px; }
