@@ -2,10 +2,9 @@
 // properties, so the colors below duplicate the *light* theme tokens defined
 // in `src/styles/tokens.css` (--bg, --text, --text-dim, --accent). If those
 // tokens change, update the RGB triples here too:
-//   --bg        #FFFFFF -> [255, 255, 255]
-//   --text      #333D4B -> [25, 25, 24]
-//   --text-dim  #6B7684 -> [107, 118, 132]
-//   --accent    #246B50 -> [237, 105, 44]
+//   --bg        #fbfcfd -> [251, 252, 253]
+//   --text      #18191a -> [24, 25, 26]
+//   --text-dim  #6c6e70 -> [108, 110, 112]
 import { getCollection } from 'astro:content';
 import { OGImageRoute } from 'astro-og-canvas';
 import { getVisiblePosts } from '../../lib/posts';
@@ -31,21 +30,21 @@ export const { getStaticPaths, GET } = await OGImageRoute({
   getImageOptions: (_path, page) => ({
     title: page.title,
     description: page.description,
-    bgGradient: [[255, 255, 255]],
-    border: { color: [237, 105, 44], width: 24, side: 'inline-start' },
+    bgGradient: [[251, 252, 253]],
+    border: { color: [24, 25, 26], width: 8, side: 'inline-start' },
     padding: 60,
     font: {
       title: {
         size: 58,
         weight: 'Bold',
-        color: [25, 25, 24],
+        color: [24, 25, 26],
         lineHeight: 1.3,
         families: ['Pretendard'],
       },
       description: {
         size: 28,
         weight: 'Normal',
-        color: [107, 118, 132],
+        color: [108, 110, 112],
         lineHeight: 1.5,
         families: ['Pretendard'],
       },

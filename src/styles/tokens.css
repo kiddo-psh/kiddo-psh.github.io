@@ -1,156 +1,91 @@
 :root {
-  --bg: #ffffff;
-  --signal: #ed692c;
+  --bg: #fbfcfd;
   --bg-elev: #ffffff;
-  --text: #191918;
-  --text-dim: #63635f;
-  --border: #e4e4e0;
-  --accent: #923810;
-  /* 표에서 결론에 해당하는 행을 칠하는 색. 종이색 위에서 글씨 대비를 깎지 않을 만큼만 진하다 */
-  --accent-soft: #fbede4;
-  --code-bg: #f4f4f1;
-
-  /*
-   * 프로젝트 카드 틴트. 일러스트를 그리지 않는 대신 색으로 각 프로젝트를 구분한다.
-   * 채도를 낮춰 종이색 배경 위에서 튀지 않게 하고, 글씨는 별도 색을 두지 않고
-   * var(--text)/var(--text-dim)를 그대로 쓴다. 그래서 다크모드에서는 틴트만
-   * 어두운 쪽으로 뒤집으면 글씨가 자동으로 밝아진다.
-   */
-  --pj-a: #fad8c5;
-  --pj-b: #d5e3f4;
-  --pj-c: #eeeaaa;
-  --pj-d: #dfd5f5;
-
-  /*
-   * 모티프 타일 색. 카드 틴트와 같은 계열이되 채도를 한 단계 올렸다 —
-   * 타일이 64~96px이라 카드와 같은 연한 색을 쓰면 형태가 배경에 묻힌다.
-   * 선은 별도 색을 두지 않고 var(--text)를 쓴다(다크모드에서 자동으로 뒤집힌다).
-   */
-  --mk-a: #e5ae8e;
-  --mk-b: #9bbad5;
-  --mk-c: #cac36e;
-  --mk-d: #b6a2d9;
+  --text: #18191a;
+  --text-dim: #6c6e70;
+  --text-body: #414243;
+  --hair: #e4e7ea;
+  --divider: #e9ecee;
+  --border: var(--hair);
+  --link-line: #b9bfc5;
+  --back: #eef1f4;
+  --code-bg: #ffffff;
+  /* 강조색을 두지 않는다. 남아 있는 참조가 있어도 본문색으로 떨어지게 한다. */
+  --accent: var(--text);
+  --accent-soft: transparent;
+  --signal: var(--text);
 
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  /*
-   * 표시용 세리프. 시스템 명조만 쓰면 안드로이드·리눅스에서 Georgia로 떨어지고,
-   * Georgia에는 한글이 없어서 결국 고딕으로 되돌아온다 — 세리프가 있는 기기에서만
-   * 목소리가 생기는 셈이라 디자인으로 못 쓴다. 그래서 번들 웹폰트를 1순위에 둔다.
-   * 본문에는 쓰지 않는다. 화면에서 19px 명조는 고딕보다 읽기 힘들고, 큰 글씨에서만
-   * 명조의 획 대비가 살아난다. 히어로·글 제목·인용에만 붙인다.
-   */
-  --font-serif: 'Nanum Myeongjo', AppleMyungjo, Batang, 'Iowan Old Style', Georgia, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'Pretendard Variable', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --font-serif: var(--font-sans);
 
-  /* ── 글자 크기 ────────────────────────────────────────────────
-   * 사이트 전체는 global.css에서 브라우저 기본 크기의 90%로 렌더링한다.
-   * 아래 주석의 px 값은 100% 기준 설계값이며, 화면에서는 모두 0.9배가 된다.
-   * em을 겹쳐 쓰면 부모 크기에 곱해져서, 같은 역할의 글씨가 페이지마다
-   * 15.2 / 15.58 / 15.96처럼 갈라진다(한때 전체 37종이었다). 그래서 크기는
-   * 여기 정한 사다리에서만 고르고, 컴포넌트에서 em으로 새 값을 만들지 않는다.
-   * 단위가 rem인 것은 브라우저 기본 글자 크기 설정을 따라가게 하기 위해서다.
-   * ───────────────────────────────────────────────────────────── */
-  --fs-100: 0.6875rem;  /* 11px — 목록 번호처럼 아주 작은 라벨 */
-  --fs-200: 0.8125rem;  /* 13px — 메타, 푸터, 캡션 */
-  --fs-300: 0.9375rem;  /* 15px — 네비, 칩, 목차, 카드 설명 */
-  --fs-400: 1.0625rem;  /* 17px — 보조 본문 */
-  --fs-500: 1.1875rem;  /* 19px — 본문 */
-  --fs-600: 1.375rem;   /* 22px — 섹션 제목 */
-  --fs-700: 1.625rem;   /* 26px — 목록 아이템 제목 */
-  --fs-800: 1.875rem;   /* 30px — 페이지 제목 */
-  --fs-900: 2.5rem;     /* 40px — 글 상세 제목 */
-  /*
-   * 표시용 두 단. 여기는 고정값이 아니라 clamp라서 좁은 화면에서 스스로 줄어든다.
-   * 전에는 사다리 꼭대기가 40px이었고 그마저 글 상세에서만 썼다 — 홈에서 제일 큰
-   * 글자가 목록 제목(26px)이라 페이지에 들어가는 문이 없었다.
-   */
-  --fs-display: clamp(1.75rem, 1.2rem + 1.5vw, 2.375rem); /* 28 → 38px — 홈 선언문 */
-  --fs-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);   /* 18 → 22px — 선언문 옆 리드 */
-  /*
-   * 글 상세 제목과 페이지 제목. 40px 고정이었는데 390px 화면에서 긴 제목이 네 줄로
-   * 넘쳐 첫 화면을 제목이 다 먹었다. 표시용 글씨는 전부 화면 폭을 따라가야 한다.
-   */
-  --fs-title: clamp(1.75rem, 1.35rem + 1.7vw, 2.5rem);  /* 28 → 40px */
+  --fs-100: 0.6875rem;
+  --fs-200: 0.8125rem;
+  --fs-300: 0.875rem;
+  --fs-400: 0.9375rem;
+  --fs-500: 1.0625rem;
+  --fs-600: 1.0625rem;
+  --fs-700: 1.0625rem;
+  --fs-800: 1.0625rem;
+  --fs-900: 1.0625rem;
+  --fs-title: 1.0625rem;
+  --fs-display: 1.0625rem;
+  --fs-lead: 1rem;
 
-  /* 줄 간격. 한국어는 영문보다 넉넉해야 해서 본문 기준이 1.8이다 */
-  --lh-tight: 1.3;    /* 큰 제목 */
-  --lh-snug: 1.45;    /* 작은 제목, 카드 */
-  --lh-normal: 1.6;   /* UI 텍스트, 표 */
-  --lh-relaxed: 1.8;  /* 본문 */
-  --lh-loose: 1.95;   /* 회고·에세이 본문 */
+  --lh-tight: 1.4;
+  --lh-snug: 1.45;
+  --lh-normal: 1.6;
+  --lh-relaxed: 1.625;
+  --lh-loose: 1.625;
 
-  /* 자간. 큰 글씨는 좁히고 대문자풍 라벨은 벌린다 */
-  --ls-tight: -0.03em;
-  --ls-snug: -0.02em;
-  --ls-label: 0.12em;
+  --ls-tight: 0;
+  --ls-snug: 0;
+  --ls-label: 0;
 
-  /* ── 간격 ─────────────────────────────────────────────────────
-   * 4px 그리드. 05만 반 칸(2px)으로, 라벨과 값을 붙이는 자리에 쓴다.
-   * ───────────────────────────────────────────────────────────── */
-  --space-05: 0.125rem; /* 2px */
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.25rem;   /* 20px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-7: 1.75rem;   /* 28px */
-  --space-8: 2rem;      /* 32px */
-  --space-10: 2.5rem;   /* 40px */
-  --space-12: 3rem;     /* 48px */
-  --space-14: 3.5rem;   /* 56px */
-  --space-16: 4rem;     /* 64px */
-  --space-20: 5rem;     /* 80px */
+  --space-05: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
 
-  /* 모서리 */
-  --radius-sm: 4px;     /* 인라인 코드, 태그 */
-  --radius-md: 6px;     /* 버튼, 입력 */
-  --radius-lg: 10px;    /* 코드블록, 안쪽 박스 */
-  --radius-xl: 12px;    /* 카드 */
-  --radius-pill: 999px; /* 칩 */
-  --radius-full: 50%;   /* 아바타 */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-pill: 999px;
+  --radius-full: 50%;
 
-  /* 모션. hover 피드백은 전부 이 하나를 쓴다 — 어떤 건 스르륵, 어떤 건 툭 바뀌면 질감이 갈린다 */
-  --dur: 0.15s;
+  --dur: 180ms;
   --ease: ease;
 
-  /* 브라우저 90% 줌의 물리 크기와 맞도록 글 폭도 같은 비율로 줄인다. */
-  --w-doc: 684px;
-  --w-read: 594px;
-  --w-page: 1280px;
-  /*
-   * 글 상세용. 본문+목차 블록은 약 960px이고 이 상한 안에서 가운데 정렬되므로,
-   * 상한이 좌우 여백의 크기를 결정한다. 더 좁게 두면 여백이 자랄 여지가
-   * 없어서 넓은 화면에서도 여백이 12%에 머문다.
-   */
-  --w-page-wide: 1440px;
-  --nav-h: 64px;
+  --w-col: 43.25rem;
+  --pad-x: 24px;
+  --pad-y: 64px;
+  --section: 64px;
+
+  --w-doc: var(--w-col);
+  --w-read: var(--w-col);
+  --w-page: var(--w-col);
+  --w-page-wide: var(--w-col);
+  --nav-h: 0px;
 }
 
-:root[data-theme='dark'] {
-  --bg: #141413;
-  --bg-elev: #20201e;
-  --text: #f3f3ee;
-  --text-dim: #b8b8b2;
-  --border: #3a3a36;
-  --accent: #ffae83;
-  --accent-soft: #38261e;
-  --code-bg: #20201e;
-
-  /* 프로젝트 카드 틴트를 어두운 쪽으로 뒤집는다. 글씨는 var(--text)라 자동으로 밝아진다 */
-  --pj-a: #39281e;
-  --pj-b: #1e2831;
-  --pj-c: #323222;
-  --pj-d: #272231;
-
-  /* 마크 타일도 같이 뒤집는다. 라이트에서 틴트보다 진했듯, 다크에서는 틴트보다 밝다 */
-  --mk-a: #805c48;
-  --mk-b: #2e4050;
-  --mk-c: #656740;
-  --mk-d: #3e3650;
+@media (min-width: 640px) {
+  :root {
+    --pad-y: 128px;
+    --section: 128px;
+  }
 }
 
-/* 모션을 줄이라고 설정한 사용자에게는 전환을 끈다 — 토큰 하나만 0으로 만들면 된다 */
 @media (prefers-reduced-motion: reduce) {
   :root { --dur: 0.01ms; }
 }

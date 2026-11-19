@@ -1,8 +1,6 @@
 ---
 import { SITE } from '../site.config';
 
-interface Props { slug: string }
-const { slug } = Astro.props;
 const g = SITE.giscus;
 const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 ---
@@ -28,10 +26,8 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
           inputPosition: 'top',
           lang: 'ko',
           loading: 'lazy',
-          theme: document.documentElement.dataset.theme,
+          theme: 'light',
         });
-
-        // giscus는 자기 <script> 바로 뒤에 iframe을 꽂는다 — 이 섹션 안에 붙여야 한다.
         section.appendChild(loader);
       }
       if ('IntersectionObserver' in window) {
@@ -49,27 +45,5 @@ const enabled = g.repo !== '' && g.repoId !== '' && g.categoryId !== '';
 )}
 
 <style>
-  .comments { margin-top: var(--space-14); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+  .comments { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--hair); }
 </style>
-
-<script>
-  // 테마 토글에 맞춰 giscus iframe 테마를 바꾼다.
-  function sendTheme() {
-    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
-    if (!frame?.contentWindow) return;
-    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-    frame.contentWindow.postMessage(
-      { giscus: { setConfig: { theme } } },
-      'https://giscus.app',
-    );
-  }
-
-  new MutationObserver(sendTheme).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  });
-
-  window.addEventListener('message', (e) => {
-    if (e.origin === 'https://giscus.app') sendTheme();
-  });
-</script>

@@ -1,100 +1,93 @@
 ---
-import { SITE } from '../site.config';
-import ThemeToggle from './ThemeToggle.astro';
+interface Props {
+  backHref?: string;
+  backLabel?: string;
+}
+const { backHref, backLabel = '뒤로' } = Astro.props;
 
 const LINKS = [
-  { href: '/posts', label: '글 목록' },
-  { href: SITE.links.agentpedia, label: 'Agentpedia' },
+  { href: '/posts', label: '글' },
   { href: '/projects', label: '프로젝트' },
   { href: '/portfolio', label: '포트폴리오' },
 ];
 
-// 글 상세(/posts/…)에서도 "글"이 켜지도록 접두사까지 본다.
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
-<header>
-  <nav class="page" aria-label="주 탐색">
-    <a class="brand" href="/" aria-label={SITE.title} aria-current={path === '/' ? 'page' : undefined}>
-      <svg class="mk" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
-        <path d="M16 25 V12 A13 13 0 0 0 3 25 Z" fill="currentColor" />
-        <path d="M16 25 V12 A13 13 0 0 1 29 25 Z" class="gate" />
-        <circle cx="16" cy="6" r="3" fill="currentColor" />
+<header class="bar">
+  {backHref ? (
+    <a class="back" href={backHref} aria-label={backLabel}>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6"></path>
       </svg>
-      <span>{SITE.title}</span>
     </a>
-    {LINKS.map((l) => (
-      <a href={l.href} class:list={[{ on: isOn(l.href) }]} aria-current={isOn(l.href) ? 'page' : undefined}>
-        {l.label}
-      </a>
+  ) : (
+    <a class="name" href="/" aria-current={path === '/' ? 'page' : undefined}>박시현</a>
+  )}
+  <nav aria-label="주 탐색">
+    {LINKS.map((link) => (
+      <a href={link.href} aria-current={isOn(link.href) ? 'page' : undefined}>{link.label}</a>
     ))}
-    <div class="right">
-      <a
-        href="/search"
-        aria-label="검색"
-        title="검색 (Ctrl/⌘ K)"
-        class:list={['icon', { on: isOn('/search') }]}
-      >
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
-          <circle cx="11" cy="11" r="7"></circle>
-          <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
-        </svg>
-        <span class="search-label">검색</span>
-      </a>
-      <ThemeToggle />
-    </div>
   </nav>
 </header>
 
 <style>
-  header { position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--border); }
-  nav { height:var(--nav-h); display:flex; align-items:center; gap:clamp(8px,1.8vw,28px); }
-  nav a { display:inline-flex; align-items:center; min-height:42px; color:var(--text-dim); white-space:nowrap; font-size:14px; font-weight:550; }
-  nav a:hover,nav .on { color:var(--text); text-decoration:underline; text-underline-offset:5px; }
-  .brand { margin-right:clamp(8px,3vw,44px); gap:8px; color:var(--text); font-size:23px; font-weight:700; letter-spacing:-.075em; }
-  .brand:hover { text-decoration:none; }
-  .brand .gate { fill:var(--signal); }
-  .right { display:flex; align-items:center; gap:6px; margin-left:auto; }
-  .icon { min-height:36px; padding:0 16px; gap:7px; border:1px solid var(--border); border-radius:99px; color:var(--text); }
-  @media(max-width:620px) {
-    nav { gap:clamp(8px,3vw,16px); height:56px; padding-inline:16px; }
-    nav a { font-size:13px; }
-    .brand { margin:0; }
-    .brand span,.search-label { display:none; }
-    .icon { border:0; padding:0; width:28px; justify-content:center; }
-    .right { gap:0; }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 36px;
   }
-  @media(max-width:360px) {
-    nav { gap:3px; padding-inline:6px; }
-    nav a { font-size:12px; }
-    .icon { width:24px; }
-    .brand { min-width:20px; }
+  .name {
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  nav { display: flex; align-items: center; gap: 16px; }
+  nav a {
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  nav a:hover, nav a[aria-current='page'] { color: var(--text); }
+  .back {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--back);
+    color: var(--text);
+    text-decoration: none;
+    transition: background-color var(--dur) var(--ease);
+  }
+  .back:hover { background: #e6eaee; }
+  @media (max-width: 400px) {
+    nav { gap: 12px; }
+    nav a { font-size: 14px; }
   }
 </style>
+
 <script>
-  /*
-   * 검색 단축키를 전역에 둔다. 전에는 /search 안 입력창에만 "Ctrl K" 힌트가 있었고
-   * 정작 단축키는 어디에도 없었다 — 이미 검색창에 들어온 사람에게만 알려주는 꼴이었다.
-   */
   function focusSearchbox(): boolean {
     const box = document.querySelector('pagefind-searchbox');
     if (!box) return false;
-    const input =
-      box.querySelector('input') ??
-      box.shadowRoot?.querySelector('input') ??
-      null;
+    const input = box.querySelector('input') ?? box.shadowRoot?.querySelector('input') ?? null;
     if (!input) return false;
     input.focus();
     input.select();
     return true;
   }
 
-  window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() !== 'k' || !(e.ctrlKey || e.metaKey) || e.altKey) return;
-    e.preventDefault();
-    // 이미 검색 페이지면 입력창으로만 보낸다. 아직 커스텀 엘리먼트가 안 떴으면 이동.
+  window.addEventListener('keydown', (event) => {
+    if (event.key.toLowerCase() !== 'k' || !(event.ctrlKey || event.metaKey) || event.altKey) return;
+    event.preventDefault();
     if (!focusSearchbox()) window.location.href = '/search';
   });
 </script>

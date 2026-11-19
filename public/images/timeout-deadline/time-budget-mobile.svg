@@ -15,14 +15,6 @@
   --v:var(--v-text); --t:var(--t-text); --line:var(--hair);
   font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
 }
-:root[data-theme='dark'] .dg {
-  --ink:#f3f1e9; --ink2:#c6c5ba; --hair:#56594e; --arrow:#76776c;
-  --g-fill:#39271e; --g-line:#b18060; --g-text:#ffc192;
-  --v-fill:#2e273e; --v-line:#8f80af; --v-text:#d2c3ff;
-  --t-fill:#1e303b; --t-line:#7ca0b6; --t-text:#a8d8ee;
-  --q-fill:#272825; --q-line:#56594e; --q-text:#c6c5ba;
-  --g-bar:#ffc192; --v-bar:#9283bd; --t-bar:#78a2bb; --q-bar:#8d9086;
-}
 /* diagram-theme:end */
     .dg .hd { fill:var(--ink); font-size:18px; font-weight:700; }
     .dg .l { fill:var(--ink); font-size:15px; font-weight:650; }

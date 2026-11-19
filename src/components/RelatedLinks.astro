@@ -1,11 +1,4 @@
 ---
-/*
- * 상세 페이지 맨 아래의 "다음에 볼 것".
- *
- * 전에는 글은 "같은 분류의 다른 글", 프로젝트는 본문 안에 마크다운으로 쓴
- * "관련 회고"(불릿 리스트), 브리핑은 아무것도 없어서 세 종류가 제각각이었다.
- * 페이지 끝에서 다음 행동이 예측되려면 같은 자리에 같은 모양이어야 한다.
- */
 interface Props {
   title: string;
   links: { href: string; label: string; meta?: string }[];
@@ -15,12 +8,12 @@ const { title, links } = Astro.props;
 
 {links.length > 0 && (
   <section class="rel">
-    <h2 class="section-label">{title}</h2>
+    <h2 class="sec-title">{title}</h2>
     <ul>
-      {links.map((l) => (
+      {links.map((link) => (
         <li>
-          <a href={l.href}>{l.label}</a>
-          {l.meta && <span class="meta">{l.meta}</span>}
+          <a href={link.href}>{link.label}</a>
+          {link.meta && <span class="meta">{link.meta}</span>}
         </li>
       ))}
     </ul>
@@ -28,19 +21,30 @@ const { title, links } = Astro.props;
 )}
 
 <style>
-  .rel { margin-top: var(--space-16); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+  .rel { margin-top: var(--section); }
   ul { list-style: none; margin: 0; padding: 0; }
   li {
-    display: flex; align-items: baseline; gap: var(--space-3);
-    padding: var(--space-3) 0; border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--divider);
   }
-  li:last-child { border-bottom: 0; }
-  li a { color: var(--text); font-size: var(--fs-400); transition: color var(--dur) var(--ease); }
-  li a:hover { color: var(--accent); text-decoration: none; }
-  .meta { margin-left: auto; flex: 0 0 auto; font-size: var(--fs-200); color: var(--text-dim); }
-
-  @media (max-width: 560px) {
-    li { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+  a {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 450;
+    line-height: 1.45;
+  }
+  a:hover { color: var(--text); }
+  .meta {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 520px) {
     .meta { margin-left: 0; }
   }
 </style>

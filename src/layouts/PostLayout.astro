@@ -1,62 +1,40 @@
 ---
-import '../styles/article-content.css';
 import BaseLayout from './BaseLayout.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
-import BackLink from '../components/BackLink.astro';
-import CoverImage from '../components/CoverImage.astro';
 import CodeCopy from '../components/CodeCopy.astro';
 import Comments from '../components/Comments.astro';
 import { getCategory } from '../site.config';
-import { getRelatedPosts, readingMinutes, type Post } from '../lib/posts';
+import { getRelatedPosts, type Post } from '../lib/posts';
+import { dotDate } from '../lib/format';
 
 interface Props { post: Post }
 const { post } = Astro.props;
 
 const cat = getCategory(post.data.category);
-const isDoc = cat.layout === 'doc';
-const related = (await getRelatedPosts(post)).map((p) => ({
-  href: `/posts/${p.id}`,
-  label: p.data.title,
-  meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
+const related = (await getRelatedPosts(post)).map((item) => ({
+  href: `/posts/${item.id}/`,
+  label: item.data.title,
+  meta: `${getCategory(item.data.category).name} · ${dotDate(item.data.pubDate)}`,
 }));
-const date = post.data.pubDate.toISOString().slice(0, 10).replace(/-/g, '.');
-const minutes = readingMinutes(post.body);
-const ogImage = post.data.cover ?? `/og/${post.id}.png`;
+const date = dotDate(post.data.pubDate);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} ogImage={ogImage} ogType="article">
-  <article class="page-wide story" data-pagefind-body>
-    <div class="story-nav">
-      <BackLink href="/posts/" label="글 목록" />
-      <span>{date} · {minutes}분 읽기</span>
-    </div>
-    <header class="story-head">
-      <p class="category">{cat.name}</p>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogImage={post.data.cover ?? `/og/${post.id}.png`}
+  ogType="article"
+  backHref="/posts/"
+  backLabel="글 목록"
+>
+  <article data-pagefind-body>
+    <header class="doc-head">
       <h1>{post.data.title}</h1>
-      <p class="dek">{post.data.description}</p>
+      <p class="meta">{cat.name} · {date}</p>
     </header>
-    {post.data.cover && <div class="story-art"><CoverImage src={post.data.cover} sizes="(max-width:900px) 94vw, 850px" priority /></div>}
-    <div class:list={['shell', isDoc ? 'doc' : 'read']}>
-      <div class="reading-column">
-        <div class="prose"><slot /></div>
-
-        <RelatedLinks title="같은 분류의 다른 글" links={related} />
-        <Comments slug={post.id} />
-      </div>
-    </div>
-    <CodeCopy />
+    <div class="prose"><slot /></div>
+    <RelatedLinks title="같은 분류의 다른 글" links={related} />
+    <Comments />
   </article>
+  <CodeCopy />
 </BaseLayout>
-<style>
-  .story { width:100%; }
-  .story-nav { max-width:1030px; margin:clamp(30px,4.3vw,64px) auto 0; display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13px; color:var(--text-dim); font-variant-numeric:tabular-nums; }
-  .story-nav :global(.back) { margin:0; }
-  .story-head { max-width:850px; margin:clamp(28px,4.6vw,64px) auto 32px; text-align:center; }
-  .category { margin:0 0 12px; color:var(--accent); font-size:13px; font-weight:600; }
-  h1 { margin:0 auto; font-size:clamp(32px,4.1vw,58px); font-weight:560; line-height:1.17; letter-spacing:-.065em; text-wrap:balance; }
-  .dek { max-width:610px; margin:20px auto 0; font-size:clamp(16px,1.45vw,20px); line-height:1.65; color:var(--text-dim); text-wrap:pretty; }
-  .story-art { max-width:850px; aspect-ratio:2.05; overflow:hidden; margin:0 auto; border-radius:16px; }
-  .reading-column { min-width:0; }
-  .shell.read .prose { line-height:var(--lh-loose); }
-  @media(max-width:600px) { .story-art { aspect-ratio:1.9; border-radius:12px; } .story-nav { font-size:12px; } }
-</style>

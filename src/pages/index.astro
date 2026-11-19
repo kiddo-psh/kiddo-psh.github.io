@@ -1,120 +1,45 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import NewsCard from '../components/NewsCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { getVisiblePosts, readingMinutes } from '../lib/posts';
 import { getCollection } from 'astro:content';
-import { SITE, getCategory } from '../site.config';
-import { portfolioCases } from '../data/portfolio';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ListRow from '../components/ListRow.astro';
+import { getVisiblePosts } from '../lib/posts';
+import { SITE } from '../site.config';
+import { dotDate, glyph, oneLine } from '../lib/format';
+import { sortProjects } from '../lib/projects';
 
-const allPosts = await getVisiblePosts();
-const [lead, ...rest] = allPosts.slice(0, 5);
-const [topic, ...subtitle] = lead?.data.title.split(' — ') ?? [];
-const allProjects = await getCollection('projects');
-const featured = allProjects
-  .filter((p) => p.data.featured)
-  .sort((a, b) => {
-    const rank = (id: string) => portfolioCases.findIndex(p => p.id === id);
-    const ar=rank(a.id),br=rank(b.id);
-    return (ar<0?Number.MAX_SAFE_INTEGER:ar)-(br<0?Number.MAX_SAFE_INTEGER:br) || a.data.order-b.data.order;
-  });
+const posts = (await getVisiblePosts()).slice(0, 4);
+const projects = sortProjects(await getCollection('projects')).filter((project) => project.data.featured);
 ---
 
 <BaseLayout title={SITE.title}>
-  <div class="page journal">
-    <section class="intro" aria-labelledby="journal-title">
-      <a class="byline" href="/about/"><i aria-hidden="true"></i>박시현의 개발 노트 <span aria-hidden="true">↗</span></a>
-      <h1 id="journal-title">{SITE.statement}<span class="period">.</span></h1>
-      <p>{SITE.lead}</p>
-      <div class="actions">
-        <a class="primary" href="/posts/">글 둘러보기 <span aria-hidden="true">→</span></a>
-        <a href="/portfolio/">포트폴리오</a>
-      </div>
+  <h1 class="intro">{SITE.intro}</h1>
+
+  <section class="block" aria-labelledby="posts-title">
+    <h2 id="posts-title" class="sec-title">글</h2>
+    <ul class="list">
+      {posts.map((post) => (
+        <li>
+          <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {projects.length > 0 && (
+    <section class="block" aria-labelledby="projects-title">
+      <h2 id="projects-title" class="sec-title">프로젝트</h2>
+      <ul class="list">
+        {projects.map((project) => (
+          <li>
+            <ListRow
+              href={`/projects/${project.id}/`}
+              title={project.data.title}
+              meta={oneLine(project.data.summary)}
+              mark={glyph(project.data.title)}
+            />
+          </li>
+        ))}
+      </ul>
     </section>
-
-    {lead && (
-      <a class="feature" href={`/posts/${lead.id}/`}>
-        <img src="/images/journal/loop-1200.webp"
-          srcset="/images/journal/loop-640.webp 640w, /images/journal/loop-1200.webp 1200w, /images/journal/loop-1920.webp 1920w"
-          sizes="(max-width: 700px) 100vw, (max-width: 1280px) 94vw, 1200px"
-          width="1200" height="400" alt="" fetchpriority="high" />
-        <div class="feature-body">
-          <span class="feature-meta"><i aria-hidden="true"></i> 최신 글 <span>/</span> {getCategory(lead.data.category).name}</span>
-          <h2>{topic}</h2>
-          {subtitle.length > 0 && <p>{subtitle.join(' — ')}</p>}
-          <span class="feature-date">{lead.data.pubDate.toISOString().slice(0,10).replaceAll('-', '.')} <span>·</span> {readingMinutes(lead.body)}분 읽기</span>
-        </div>
-        <span class="open" aria-hidden="true">↗</span>
-      </a>
-    )}
-
-    <section class="collection" aria-labelledby="posts-title">
-      <div class="sec-head">
-        <h2 id="posts-title">최근 기록</h2>
-        <a href="/posts/">전체 글 <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="news-grid">{rest.map(post => <NewsCard post={post} sizes="(max-width:600px) 94vw, (max-width:960px) 45vw, 286px" heading="h3"/>)}</div>
-    </section>
-
-    {featured.length > 0 && (
-      <section class="collection" aria-labelledby="pj-title">
-        <div class="sec-head"><h2 id="pj-title">프로젝트</h2><a href="/projects/">전체 프로젝트 →</a></div>
-        <div class="pj-grid">{featured.map((project) => <ProjectCard project={project} />)}</div>
-      </section>
-    )}
-
-    <section class="collection" aria-labelledby="agentpedia-title">
-      <div class="sec-head">
-        <h2 id="agentpedia-title">Agentpedia</h2>
-        <a href={SITE.links.agentpedia}>기사 둘러보기 <span aria-hidden="true">↗</span></a>
-      </div>
-      <p>제가 운영하는 AI 에이전트 백과사전입니다. 에이전트를 만드는 사람과 활용 사례를 소개하고, 프로젝트에 적용해 볼 프롬프트를 함께 싣습니다.</p>
-      <a href="/ai-briefing/">지난 AI 브리핑 보기</a>
-    </section>
-  </div>
+  )}
 </BaseLayout>
-
-<style>
-  .intro { padding:clamp(40px,5vw,80px) 0 clamp(36px,4.6vw,68px); text-align:center; }
-  .byline { display:inline-flex; align-items:center; gap:9px; padding:4px 12px; border:1px solid var(--border); border-radius:99px; color:var(--text); font-size:13px; }
-  .byline span { color:var(--text-dim); }
-  .byline i,.feature-meta i { width:7px; height:7px; border-radius:50%; background:var(--signal); }
-  .intro h1 { margin:20px 0 14px; white-space:pre-line; font-size:clamp(38px,5.2vw,76px); font-weight:600; line-height:1.12; letter-spacing:-.068em; }
-  .period { color:var(--signal); }
-  .intro p { margin:0; font-size:clamp(16px,1.4vw,20px); color:var(--text-dim); letter-spacing:-.025em; }
-  .actions { display:flex; justify-content:center; gap:8px; margin-top:24px; }
-  .actions a { display:inline-flex; gap:14px; align-items:center; justify-content:center; min-height:44px; border-radius:99px; padding:8px 23px; background:var(--code-bg); color:var(--text); font-size:14px; font-weight:600; }
-  .actions .primary { background:var(--text); color:var(--bg); }
-  .actions a:hover,.byline:hover { text-decoration:none; box-shadow:inset 0 0 0 1px currentColor; }
-  .feature { isolation:isolate; position:relative; overflow:hidden; display:flex; align-items:end; min-height:clamp(240px,23vw,340px); padding:clamp(24px,3.4vw,52px); border-radius:18px; background:#190f0a; color:white; }
-  .feature img,.feature::before { position:absolute; inset:0; width:100%; height:100%; }
-  .feature img { object-fit:cover; z-index:-2; }
-  .feature::before { content:''; z-index:-1; background:linear-gradient(90deg,#0b0806e8 0%,#120b0978 47%,transparent 78%); }
-  .feature:hover { text-decoration:none; }
-  .feature-body { width:min(78%,620px); }
-  .feature-meta,.feature-date { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:550; }
-  .feature-meta span { opacity:.55; }
-  .feature h2 { margin:14px 0 4px; font-size:clamp(28px,3.4vw,50px); font-weight:570; line-height:1.16; letter-spacing:-.045em; }
-  .feature p { margin:0; font-size:clamp(15px,1.4vw,21px); line-height:1.55; }
-  .feature-date { margin-top:20px; font-family:var(--font-mono),var(--font-sans); color:#e6dcd7; font-weight:400; }
-  .open { display:grid; place-items:center; margin-left:auto; width:42px; height:42px; border:1px solid #ffffff90; background:#140e09a6; border-radius:50%; font-size:20px; }
-  .feature:hover .open { color:#111; background:white; }
-  .collection { margin-top:clamp(52px,6vw,88px); }
-  .sec-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:22px; }
-  .sec-head h2 { font-size:clamp(28px,3vw,40px); line-height:1.15; font-weight:580; letter-spacing:-.055em; margin:0; }
-  .sec-head a,.collection > a { font-size:13px; color:var(--text-dim); }
-  .pj-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-  .news-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
-  @media(max-width:960px) { .news-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-  @media(max-width:600px) { .news-grid { grid-template-columns:1fr; gap:30px; } }
-  @media(max-width:660px) {
-    .intro { padding:40px 0 34px; }
-    .intro h1 { font-size:clamp(31px,7.8vw,48px); }
-    .feature { min-height:248px; padding:22px; }
-    .feature img { object-position:64% center; }
-    .feature::before { background:linear-gradient(0deg,#0b0806f2,#0b080680 60%,transparent); }
-    .feature-body { width:calc(100% - 38px); }
-    .open { width:32px; height:32px; flex-shrink:0; }
-    .pj-grid { grid-template-columns:1fr; }
-  }
-</style>

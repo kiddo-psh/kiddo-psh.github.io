@@ -1,14 +1,11 @@
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
-html { color-scheme:light dark; font-size:100%; }
-:root[data-theme='light'] { color-scheme: light; }
-:root[data-theme='dark'] { color-scheme: dark; }
 
-/*
- * 푸터를 화면 바닥에 붙인다. 검색 첫 화면·404·결과가 적은 필터처럼 내용이
- * 짧은 페이지에서 푸터가 중간에 뜨고 그 아래로 빈 배경이 깔리는 걸 막는다.
- */
+html { color-scheme: light; font-size: 100%; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -18,237 +15,155 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: var(--fs-500);
-  line-height: var(--lh-relaxed);
+  font-size: 17px;
+  line-height: 1.625;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
-  /*
-   * 한국어 줄바꿈을 어절 단위로 끊는다. 기본값은 글자 단위라 "만드는 일보/다"처럼
-   * 한 단어 중간에서 줄이 넘어간다 — 영문에서는 절대 허용하지 않을 일이고, 큰
-   * 글씨일수록 눈에 띈다. keep-all만 두면 긴 영문·URL이 컨테이너를 밀어내므로
-   * overflow-wrap으로 그 경우에만 강제로 끊게 한다.
-   */
   word-break: keep-all;
   overflow-wrap: break-word;
 }
-main { flex: 1 0 auto; }
-.skip-link { position:fixed; z-index:20; top:8px; left:8px; transform:translateY(-160%); padding:6px 14px; background:var(--text); color:var(--bg); border-radius:6px; }
-.skip-link:focus { transform:none; }
 
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+button, input { font: inherit; color: inherit; }
 
-/*
- * 포커스 링. 전에는 규칙이 하나도 없어서 브라우저 기본에만 기댔다 —
- * outline: none을 지운 적이 없으니 깨지진 않았지만, 키보드로 도는 동안만
- * 디자인 밖으로 나갔다. :focus-visible이라 마우스 클릭에는 뜨지 않는다.
- */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+.column {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, calc(var(--w-col) + var(--pad-x) * 2));
+  margin-inline: auto;
+  padding: var(--pad-y) var(--pad-x);
 }
-/* 칩·카드는 자기 모서리를 그대로 따라가게 한다 */
-.chip:focus-visible { border-radius: var(--radius-pill); }
+
+main { flex: 1 0 auto; }
+
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  padding: 6px 14px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 6px;
+}
+.skip-link:focus { transform: none; }
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 img { max-width: 100%; height: auto; }
 
-/*
- * 표시용 세리프를 붙이는 유일한 자리. 명조는 같은 픽셀 크기에서 고딕보다 작아
- * 보이고 자간이 벌어져 보이므로, 크기를 키우는 대신 자간을 조이고 굵기를 700으로
- * 올려 옆에 놓인 고딕과 무게가 맞게 한다.
- */
-.serif {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  letter-spacing: var(--ls-snug);
-  /* 명조는 괄호·따옴표 주변이 헐거워서 커닝을 켠다 */
-  font-kerning: normal;
+/* 페이지가 남긴 래퍼. 폭과 여백은 .column 이 맡는다. */
+.page, .page-wide, .w-doc, .w-read { width: 100%; max-width: none; margin: 0; padding: 0; }
+
+main > :first-child { margin-top: 56px; }
+@media (min-width: 640px) {
+  main > :first-child { margin-top: 72px; }
 }
 
-.page { max-width: var(--w-page); margin: 0 auto; padding: 0 18px; }
-.page-wide { max-width: var(--w-page-wide); margin: 0 auto; padding: 0 18px; }
-.w-doc  { max-width: var(--w-doc); }
-.w-read { max-width: var(--w-read); }
-
-/*
- * 좁은 본문도 시작선은 헤더·푸터와 같은 1100 그리드에 맞춘다.
- * 가운데 정렬로 두면 소개(660)·프로젝트(760)·글 목록(1100)을 오갈 때
- * 헤더는 가만히 있는데 본문 덩어리만 좌우로 튄다.
- * 화면이 1100보다 좁으면 max()가 0을 골라 .page 기본 동작으로 돌아간다.
- */
-.page.w-doc,
-.page.w-read {
-  margin-left: max(0px, calc((100% - var(--w-page)) / 2));
-  margin-right: auto;
-}
-
-/*
- * 페이지 제목과 섹션 라벨.
- *
- * 전에는 페이지마다 h1 규칙을 따로 썼고, 그래서 1.5em/1.6em(28.5/30.4px)과
- * 34/40px 여백이 섞여 있었다. 섹션 라벨은 더 심해서 홈 한 페이지 안에서도
- * "AI 브리핑"(24.3px 잉크색)과 "프로젝트"(14.8px 흐린색)가 같은 층위인데
- * 다르게 보였다. 두 역할을 여기서 한 번만 정의하고 각 페이지는 클래스만 붙인다.
- */
-/*
- * 페이지 제목. 30px 고딕이었는데, 그러면 "글" 페이지의 제목(30px)과 그 아래
- * 글 제목(26px)이 4px 차이라 어느 쪽이 페이지고 어느 쪽이 항목인지 알 수 없었다.
- * 40px 명조로 올려 홈의 선언문과 같은 층(표시용 서체)에 둔다 — 어느 페이지에
- * 들어가도 제일 큰 글자가 "여기가 어디인지"를 먼저 말한다.
- */
-.page-title {
-  margin: var(--space-14) 0 var(--space-4);
-  font-family: var(--font-serif);
-  font-size: var(--fs-title); line-height: var(--lh-tight);
-  letter-spacing: var(--ls-tight); font-weight: 700;
-}
-/* 제목 아래 한 줄 설명. 제목만 있는 페이지와 설명이 있는 페이지의 간격을 맞춘다 */
-.page-lead {
-  margin: 0 0 var(--space-10); max-width: 52ch;
-  font-size: var(--fs-400); line-height: var(--lh-relaxed); color: var(--text-dim);
-}
-/* 설명이 없으면 제목 아래 간격을 .page-lead가 갖던 만큼 제목이 갖는다 */
-.page-title:not(:has(+ .page-lead)) { margin-bottom: var(--space-8); }
-/*
- * 칩. 한때 분류 탭(radius 20px)·브리핑 필터(100px)·기술 스택(999px)·검색 분류가
- * 각자 다른 radius·크기·padding으로 네 벌 있었다. 모양은 여기서만 정한다.
- * 변형은 배경이나 안쪽 요소만 덧붙이고 기하는 건드리지 않는다.
- */
-.chip {
-  display: inline-flex; align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--border); border-radius: var(--radius-pill);
-  background: var(--code-bg); color: var(--text-dim);
-  font: inherit; font-size: var(--fs-300); line-height: var(--lh-normal);
-  white-space: nowrap;
-  transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease),
-              border-color var(--dur) var(--ease);
-}
-button.chip { cursor: pointer; }
-a.chip:hover, button.chip:not(:disabled):hover { color: var(--text); text-decoration: none; }
-/* 선택 상태. 탭은 .on, 필터 버튼은 aria-pressed를 쓴다 */
-.chip.on, .chip[aria-pressed='true'] {
-  background: var(--text); color: var(--bg); border-color: var(--text);
-}
-/* 칩 안의 개수 */
-.chip .count { margin-left: var(--space-1); opacity: .65; font-size: var(--fs-100); }
-
-/*
- * 섹션 라벨("같은 분류의 다른 글", "최근 글"). 한글이라 자간을 벌리지 않는다 —
- * --ls-label은 "DEV"·"CURATED READING" 같은 라틴 대문자용이다.
- */
-.section-label {
-  margin: 0 0 var(--space-3);
-  font-size: var(--fs-300); font-weight: 800;
-  letter-spacing: var(--ls-snug); line-height: var(--lh-normal);
+.intro {
+  margin: 0;
   color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+@media (min-width: 640px) {
+  .intro { font-size: 16px; }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   그림 액자.
+.block { margin-top: var(--section); }
 
-   색이 깔린 면 위에 도판 한 장을 올리는 틀이다. 프로젝트 카드의 썸네일 칸과
-   글·프로젝트 상세의 머리그림이 같은 것을 쓴다 — 전에는 카드는 도판, 상세는
-   맨 그림이라 같은 사이트 안에서 그림이 두 종류로 보였다.
-
-   틴트(액자 바탕)가 "이 글/프로젝트의 색"이고, 그 위 도판이 그림이다.
-   ───────────────────────────────────────────────────────────── */
-.art-frame {
-  display: grid; place-items: center;
-  background: var(--pj);
-  /* 도판 확대가 액자 밖으로 나가지 않게 자른다 */
-  overflow: hidden;
+.sec-title, .page-title {
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
 }
-.art-frame.t-a { --pj: var(--pj-a); }
-.art-frame.t-b { --pj: var(--pj-b); }
-.art-frame.t-c { --pj: var(--pj-c); }
-.art-frame.t-d { --pj: var(--pj-d); }
-
-.art-plate {
-  display: grid; place-items: center;
-  border: 1px solid var(--border); border-radius: var(--radius-lg);
-  background: var(--bg-elev);
-  /* 그림자는 종이색 위가 아니라 틴트 위에 떨어지므로 아주 옅어도 보인다 */
-  box-shadow: 0 4px 14px rgb(35 33 29 / .10);
-  transition: transform calc(var(--dur) * 2) var(--ease), box-shadow calc(var(--dur) * 2) var(--ease);
-}
-/*
- * 다크에서는 --bg-elev(#211f1c)가 틴트와 명도가 거의 같아 도판이 배경에 묻힌다.
- * 라이트에서 도판이 틴트보다 밝듯 다크에서는 더 어두운 쪽으로 간다.
- */
-:root[data-theme='dark'] .art-plate { background: var(--bg); box-shadow: 0 4px 14px rgb(0 0 0 / .35); }
-
-/*
- * 머리그림. 액자를 가로로 눕힌다. 전에는 안에 흰 도판을 한 겹 더 두었는데, 색판 안에
- * 흰 판, 그 안에 그림이라 액자 속 액자였다. 지금은 마크(Motif)가 도형을 색판 위에
- * 바로 놓으므로 도판은 투명하게 두고 액자가 곧 그림의 바탕이 된다.
- */
-.art-frame.band { height: 158px; padding: 0; border-radius: var(--radius-lg); }
-.art-frame.band .art-plate {
-  width: 100%; height: 100%;
-  background: transparent; border: 0; box-shadow: none; border-radius: 0;
-}
-:root[data-theme='dark'] .art-frame.band .art-plate { background: transparent; box-shadow: none; }
-@media (max-width: 640px) {
-  .art-frame.band { height: 119px; }
+.page-lead {
+  margin: 14px 0 0;
+  max-width: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.65;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   문서 껍데기. 글 상세와 프로젝트 상세가 같이 쓴다 — 프로젝트 문서가
-   글보다 길면서(baro는 1만 픽셀이 넘는다) 목차가 없던 것이 이 둘을
-   따로 두고 있었기 때문이다. 폭·목차·그림 확장 규칙을 한 군데서 정한다.
-   ───────────────────────────────────────────────────────────── */
-/*
- * 글과 프로젝트는 목차 없이 본문 영역만 화면 가운데에 둔다.
- * 본문 안의 글자는 왼쪽 정렬을 유지한다.
- */
-.shell { display: grid; margin: var(--space-10) 0 0; }
-/*
- * --bleed: figure.wide가 본문 폭 밖으로 좌우 확장하는 폭.
- * 목차가 없는 글은 본문이 가운데 있으므로 좌우 여백의 전부까지 나갈 수 있다.
- */
-.shell.doc {
-  --bleed: clamp(43px, calc((100vw - 36px - var(--w-doc)) / 2), 162px);
-  grid-template-columns: minmax(0, var(--w-doc));
-  justify-content: center;
+.sec-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair);
 }
-/*
- * 회고·에세이: 본문이 가운데 있고 목차가 없으므로 그림은 좌우 여백 안에서 최대 135px씩 나간다.
- * 594 + 270 = 864라 넓은 화면에서는 다이어그램을 충분히 크게 보이고, 좁은 화면에서는 확장을 접는다.
- */
-.shell.read {
-  --bleed: clamp(0px, calc((100vw - 36px - var(--w-read)) / 2), 135px);
-  grid-template-columns: minmax(0, var(--w-read));
-  justify-content: center;
+.sec-row .sec-title, .sec-row .page-title { padding: 0; border: 0; }
+
+ul.list { list-style: none; margin: 0; padding: 0; }
+ul.list > li { border-bottom: 1px solid var(--divider); }
+ul.list > li[hidden] { display: none; }
+
+.note {
+  margin: 16px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
-/* 작은 화면에서는 넓은 그림의 본문 밖 확장을 접는다. */
-@media (max-width: 1120px) {
-  .shell.doc { --bleed: 0px; }
+.doc-head h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 550;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.doc-head .meta {
+  margin: 6px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.doc-lead {
+  margin: 22px 0 0;
+  color: var(--text-body);
+  font-size: 17px;
+  line-height: 1.625;
+}
+.doc-lead + .doc-lead { margin-top: 10px; }
+
+.content-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--link-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+.content-link:hover {
+  color: var(--text);
+  text-decoration-color: var(--text);
 }
 
-/*
- * 글 목록은 리스트, 프로젝트는 카드.
- *
- * 글은 계속 늘어나며 훑는 대상이라, 카드의 썸네일 자리가 정보 없는 장식이
- * 되고 밀도를 깎는다(이미지를 매 글마다 만들지 않기로 했으므로). 프로젝트는
- * 성과 숫자와 기술 스택처럼 카드가 실제로 담을 것이 있고 개수가 적다.
- */
-.post-list { margin-top: var(--space-4); }
+.empty { margin: 20px 0 0; color: var(--text-dim); font-size: 15px; }
+.empty[hidden] { display: none; }
 
-/*
- * 프로젝트 카드 그리드. auto-fill이라 프로젝트가 하나여도 칸 하나만 차지한다 —
- * 카드 내용이 제목과 설명뿐이라 전체 폭으로 늘리면 가로로 긴 띠가 된다.
- *
- * 최소 폭을 252px로 두면 990px 그리드에서 프로젝트 세 장이 한 줄로 떨어진다.
- * 프로젝트가 3개라 마지막 줄에 칸 하나가 빈 채로 남으면 그 빈 사각형은
- * "아직 안 채운 자리"로 읽힌다.
- */
-.pj-grid {
-  display: grid; gap: var(--space-4);
-  /*
-   * min()이 없으면 컨테이너가 252보다 좁아도 트랙이 252로 잡혀 페이지가
-   * 가로로 밀린다.
-   */
-  grid-template-columns: repeat(auto-fill, minmax(min(252px, 100%), 1fr));
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

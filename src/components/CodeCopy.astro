@@ -1,4 +1,7 @@
 <script>
+  const copyIcon = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg>';
+  const checkIcon = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 9.5 17 19 7"></path></svg>';
+
   for (const block of document.querySelectorAll<HTMLPreElement>('.prose pre[data-language]')) {
     const code = block.querySelector('code');
     if (!code || !navigator.clipboard) continue;
@@ -7,25 +10,24 @@
     const copy = document.createElement('button');
     copy.className = 'code-copy';
     copy.type = 'button';
-    copy.textContent = '복사';
+    copy.innerHTML = copyIcon;
     copy.setAttribute('aria-label', '코드 복사');
-    copy.setAttribute('aria-live', 'polite');
     block.before(frame);
     frame.append(block, copy);
     let reset: number;
     copy.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(code.textContent ?? '');
-        copy.textContent = '복사됨';
+        copy.innerHTML = checkIcon;
+        copy.setAttribute('aria-label', '복사됨');
       } catch {
-        copy.textContent = '복사 실패';
+        copy.setAttribute('aria-label', '복사 실패');
       }
-      copy.setAttribute('aria-label',copy.textContent);
       clearTimeout(reset);
       reset = window.setTimeout(() => {
-        copy.textContent = '복사';
-        copy.setAttribute('aria-label','코드 복사');
-      },1800);
+        copy.innerHTML = copyIcon;
+        copy.setAttribute('aria-label', '코드 복사');
+      }, 1800);
     });
   }
 </script>
