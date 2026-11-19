@@ -55,8 +55,8 @@ const qualifications = [
 
     <section class="about-section" aria-labelledby="writing-title">
       <h2 id="writing-title">이 블로그에 남기는 기록</h2>
-      <p class="section-copy">프로젝트 글에는 어떤 문제를 맡았고 왜 그 방법을 골랐는지 씁니다. 기술 글에는 HTTP, 멱등성, 재시도와 시간 제한처럼 구현 중 만나는 개념을 정리합니다. 수치를 적을 때는 측정 조건을 함께 남기고, 팀의 결과와 직접 기여를 구분합니다.</p>
-      <div class="proof-links"><a href="/projects/">프로젝트 기록<ArrowRight size={15} /></a><a href="/posts/">기술 글과 회고<ArrowRight size={15} /></a></div>
+      <p class="section-copy">프로젝트 글에는 어떤 문제를 맡았고 왜 그 방법을 골랐는지 씁니다. CS 글에는 HTTP, 멱등성, 재시도와 시간 제한처럼 구현 중 만나는 개념을 정리합니다. 기술 글에는 그 개념을 실제 개발에 적용하며 숫자를 정한 기록만 남깁니다. 수치를 적을 때는 측정 조건을 함께 남기고, 팀의 결과와 직접 기여를 구분합니다.</p>
+      <div class="proof-links"><a href="/projects/">프로젝트 기록<ArrowRight size={15} /></a><a href="/posts/">글과 회고<ArrowRight size={15} /></a></div>
     </section>
 
     <section class="about-section" aria-labelledby="education-title"><h2 id="education-title">학력·교육</h2><dl class="education">{education.map(e=><div><dt>{e.date}</dt><dd><strong>{e.title}</strong>{e.note&&<p>{e.note}</p>}</dd></div>)}</dl></section>

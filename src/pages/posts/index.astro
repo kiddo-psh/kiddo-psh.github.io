@@ -11,7 +11,7 @@ const [topic, ...details] = lead?.data.title.split(' — ') ?? [];
 const headline = details.length ? details.join(' — ') : topic;
 const sizes = '(max-width: 600px) 95vw, (max-width: 960px) 46vw, 385px';
 ---
-<BaseLayout title="글" description="기술, AI 개발, 회고">
+<BaseLayout title="글" description="CS, 기술, AI 개발, 회고">
   <div class="page archive">
     {lead && <section id="latest" aria-label="최신 글">
       <div class="lead-copy">

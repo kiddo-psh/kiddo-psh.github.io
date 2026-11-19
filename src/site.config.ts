@@ -3,7 +3,7 @@ export const SITE = {
   title: 'kiddo-psh',
   author: 'kiddo-psh',
   tagline: 'AI 파이프라인 · 백엔드 개발자',
-  description: '판정 기준을 숫자로 만드는 개발자 kiddo-psh의 기록. 기술, 프로젝트, 회고, 생각을 씁니다.',
+  description: '판정 기준을 숫자로 만드는 개발자 kiddo-psh의 기록. CS, 기술, 프로젝트, 회고를 씁니다.',
   /*
    * 홈 첫 화면의 선언문. 소개 페이지 첫 문단에만 있던 문장을 끌어올렸다 —
    * 사이트에서 제일 할 말이 있는 문장이 660px 본문 안에 19px로 묻혀 있었고,
@@ -36,6 +36,7 @@ export const SITE = {
  * layout: 'read' → 좁은 본문 + 목차 없음 + 세리프 리드문 (회고)
  */
 export const CATEGORIES = [
+  { id: 'cs', label: 'CS', name: 'CS', layout: 'doc' },
   { id: 'dev', label: 'DEV', name: '기술', layout: 'doc' },
   { id: 'ai', label: 'AI', name: 'AI 개발', layout: 'doc' },
   { id: 'retro', label: 'RETRO', name: '회고', layout: 'read' },

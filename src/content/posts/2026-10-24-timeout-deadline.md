@@ -2,7 +2,7 @@
 title: "타임아웃과 데드라인 — 여러 서버를 거쳐도 전체 5초를 지키려면"
 description: "개별 호출의 타임아웃과 전체 요청의 데드라인을 구분하고, 재시도와 대기를 포함한 시간 예산을 어떻게 관리할지 살펴봅니다."
 pubDate: 2026-10-24
-category: dev
+category: cs
 cover: "/images/covers/timeout-deadline.png"
 draft: false
 ---

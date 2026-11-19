@@ -2,7 +2,7 @@
 title: "멱등성 — 타임아웃된 요청을 안전하게 재시도하려면"
 description: "멱등성의 기준과 멱등성 키의 역할을 정리합니다. 고객 ID, DB 유일성 제약, 트랜잭션으로 같은 작업의 중복 등록을 막는 설계를 살펴봅니다."
 pubDate: 2026-10-20
-category: dev
+category: cs
 cover: "/images/covers/http-idempotency.png"
 ---
 
