@@ -1,0 +1,86 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  meta: string;
+  mark?: string;
+}
+const { href, title, meta, mark } = Astro.props;
+---
+
+<a class="row" href={href}>
+  <span class="thumb" aria-hidden="true">
+    {mark ? (
+      <span class="glyph">{mark}</span>
+    ) : (
+      <span class="skel"><i></i><i></i><i></i></span>
+    )}
+  </span>
+  <span class="copy">
+    <span class="ttl">{title}</span>
+    <span class="meta">{meta}</span>
+  </span>
+  <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 6l6 6-6 6"></path>
+  </svg>
+</a>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 16px;
+    gap: 14px;
+    align-items: center;
+    padding: 13px 0;
+    color: inherit;
+    text-decoration: none;
+  }
+  .thumb {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 48px;
+    border-radius: 8px;
+    background: linear-gradient(#fff, #f6f7f8);
+    box-shadow:
+      0 1px 1px rgb(24 25 26 / 0.04),
+      0 5px 12px rgb(24 25 26 / 0.06),
+      inset 0 0 0 1px #e4e7ea;
+  }
+  .skel { display: flex; flex-direction: column; gap: 3px; width: 22px; }
+  .skel i { display: block; height: 3px; border-radius: 99px; background: #e3e6e9; }
+  .skel i:nth-child(1) { width: 14px; }
+  .skel i:nth-child(2) { width: 22px; }
+  .skel i:nth-child(3) { width: 10px; }
+  .glyph { color: #18191a; font-size: 13px; font-weight: 500; line-height: 1; }
+  .ttl {
+    display: block;
+    color: #18191a;
+    font-size: 15px;
+    font-weight: 450;
+    line-height: 1.45;
+  }
+  .meta {
+    display: block;
+    margin-top: 2px;
+    overflow: hidden;
+    color: #6c6e70;
+    font-size: 13px;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .chev {
+    color: #6c6e70;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .row:hover .chev { opacity: 1; transform: none; }
+  }
+  @media (max-width: 420px) {
+    .row { gap: 12px; }
+  }
+</style>

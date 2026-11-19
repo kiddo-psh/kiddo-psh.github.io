@@ -7,7 +7,6 @@ import {
   bodyLabels,
   type Briefing,
 } from '../../lib/briefings';
-import BackLink from '../../components/BackLink.astro';
 import RelatedLinks from '../../components/RelatedLinks.astro';
 
 export function getStaticPaths() {
@@ -36,17 +35,15 @@ const others = briefings
   }));
 ---
 
-<BaseLayout title={item.title} description={item.preview}>
-  <article class="page w-doc briefing-detail">
-    <BackLink href="/ai-briefing" label="AI 브리핑" />
-
-    <header>
-      <div class="meta">
-        <span class="type">{briefingLabels[item.type]}</span>
+<BaseLayout title={item.title} description={item.preview} backHref="/ai-briefing" backLabel="AI 브리핑">
+  <article class="briefing-detail">
+    <header class="doc-head">
+      <h1>{item.title}</h1>
+      <p class="meta">
+        <span>{briefingLabels[item.type]}</span>
         <span>{item.source}</span>
         <time datetime={item.publishedAt}>{item.publishedAt.replaceAll('-', '.')}</time>
-      </div>
-      <h1 class="serif">{item.title}</h1>
+      </p>
       {/* 태그는 목록으로 되돌아가는 문이다. 장식으로 두면 여기서 길이 끊긴다 */}
       <div class="tags" aria-label="주제 태그">
         {item.tags.map((tag) => (
@@ -107,62 +104,34 @@ const others = briefings
 </BaseLayout>
 
 <style>
-  .briefing-detail { padding-top: var(--space-8); padding-bottom: var(--space-20); }
-  header { padding-bottom: var(--space-7); border-bottom: 1px solid var(--border); }
-  .meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; color: var(--text-dim); font-size: var(--fs-200); }
-  .meta span + span::before, .meta time::before { content: '·'; margin-right: var(--space-3); color: var(--border); }
-  .meta .type { color: var(--accent); font-weight: 800; }
-  h1 { margin: var(--space-4) 0 var(--space-4); font-size: var(--fs-title); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
-
-  .tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 0; margin-top: 8px; color: var(--text-dim); font-size: 13px; }
+  .meta span + span::before, .meta time::before { content: '·'; margin: 0 8px; color: var(--hair); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 14px; }
   .tags a {
-    padding: var(--space-05) var(--space-2); border-radius: var(--radius-sm);
-    background: var(--accent-soft); color: var(--accent);
-    font-size: var(--fs-100); font-weight: 700;
+    color: var(--text-dim); font-size: 13px;
+    text-decoration: underline; text-decoration-color: var(--link-line); text-underline-offset: 3px;
   }
-  .tags a:hover { text-decoration: none; filter: brightness(.94); }
-
-  .lead { margin: var(--space-6) 0 0; color: var(--text-dim); font-size: var(--fs-400); line-height: var(--lh-relaxed); }
-  .basis { margin: var(--space-4) 0 0; color: var(--text-dim); font-size: var(--fs-200); line-height: var(--lh-normal); }
-
-  /* ── 요약 두 칸 ───────────────────────────────────────────────── */
-  .block { padding: var(--space-7) 0; border-bottom: 1px solid var(--border); }
-  .block h2 { margin: 0 0 var(--space-3); font-size: var(--fs-400); letter-spacing: var(--ls-snug); }
-  .block p { margin: 0; line-height: var(--lh-relaxed); }
-
-  .quote {
-    margin:var(--space-10) 0 0; padding:20px 0 20px 22px;
-    border-inline-start:3px solid var(--signal);
+  .tags a:hover { color: var(--text); text-decoration-color: var(--text); }
+  .lead { margin: 18px 0 0; color: var(--text-body); font-size: 17px; line-height: 1.625; }
+  .basis { margin: 10px 0 0; color: var(--text-dim); font-size: 13px; line-height: 1.6; }
+  .block { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--hair); }
+  .block h2 { margin: 0 0 8px; color: var(--text); font-size: 17px; font-weight: 550; }
+  .block p { margin: 0; color: var(--text-body); font-size: 17px; line-height: 1.625; }
+  .quote { margin: 28px 0 0; padding: 2px 0 2px 16px; border-left: 2px solid var(--hair); }
+  .quote blockquote { margin: 0; color: var(--text-dim); font-size: 17px; font-weight: 400; line-height: 1.625; }
+  .quote-ko { margin: 10px 0 0; color: var(--text-dim); font-size: 15px; line-height: 1.65; }
+  .quote figcaption { margin-top: 10px; color: var(--text-dim); font-size: 13px; }
+  .open { margin-top: 64px; }
+  .open h2 {
+    margin: 0 0 12px; padding-top: 16px; border-top: 1px solid var(--hair);
+    color: var(--text); font-size: 17px; font-weight: 550;
   }
-  .quote blockquote { margin:0; font-size:clamp(20px,2vw,26px); line-height:1.5; font-weight:520; letter-spacing:-.025em; }
-  .quote-ko { margin: var(--space-3) 0 0; color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
-  .quote figcaption { margin-top: var(--space-3); color: var(--text-dim); font-size: var(--fs-200); }
-
-  /*
-   * 마지막 칸. 여기가 원문으로 가는 자리라 링크를 안에 둔다 — 빈자리를 말한
-   * 문단과 그 빈자리를 채우는 링크가 떨어져 있으면 둘이 이어지지 않는다.
-   */
-  .open {
-    margin-top: var(--space-8); padding: var(--space-7);
-    border: 1px solid var(--border); border-left: 3px solid var(--accent);
-    border-radius: var(--radius-lg); background: var(--bg-elev);
-  }
-  .open h2 { margin: 0 0 var(--space-3); font-size: var(--fs-500); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
-  .open p { margin: 0; line-height: var(--lh-relaxed); }
-  /* 어디로 가는지는 버튼 옆에 둔다 — 출처 이름을 버튼에 넣으면 "arXiv · EchoPath (Zhao 외)에서 읽기"가 된다 */
-  .go-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: var(--space-5) 0 0; }
-  .go-src { color: var(--text-dim); font-size: var(--fs-200); }
+  .open p { margin: 0; color: var(--text-body); font-size: 17px; line-height: 1.625; }
+  .go-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; margin-top: 14px; }
   .go {
-    display: inline-block;
-    padding: var(--space-2) var(--space-4); border-radius: var(--radius-md);
-    background: var(--accent); color: var(--bg);
-    font-size: var(--fs-300); font-weight: 800;
-    transition: filter var(--dur) var(--ease);
+    color: inherit; font-size: 15px;
+    text-decoration: underline; text-decoration-color: var(--link-line); text-underline-offset: 3px;
   }
-  .go:hover { text-decoration: none; filter: brightness(1.08); }
-
-  @media (max-width: 600px) {
-    .briefing-detail { padding-top: var(--space-6); padding-bottom: var(--space-16); }
-    .open { padding: var(--space-5); }
-  }
+  .go:hover { text-decoration-color: var(--text); }
+  .go-src { color: var(--text-dim); font-size: 13px; }
 </style>

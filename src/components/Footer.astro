@@ -3,19 +3,23 @@ import { SITE } from '../site.config';
 ---
 
 <footer>
-  <div class="page">
-    <span>© {SITE.author}</span>
-    <a href="/about/">소개</a>
+  <nav aria-label="사이트">
     <a href={SITE.links.github}>GitHub</a>
     <a href={`mailto:${SITE.links.email}`}>Email</a>
     <a href="/rss.xml">RSS</a>
-  </div>
+    <a href="/search">검색</a>
+  </nav>
 </footer>
 
 <style>
-  footer { border-top: 1px solid var(--border); margin-top: var(--space-20); padding: var(--space-6) 0 var(--space-12); }
-  footer div { display: flex; gap: var(--space-4); font-size: var(--fs-200); color: var(--text-dim); }
-  footer span { margin-right:auto; font-weight:650; color:var(--text); }
-  footer a { color: var(--text-dim); transition: color var(--dur) var(--ease); }
-  footer a:hover { color: var(--text); }
+  footer { margin-top: var(--section); }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  a {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  a:hover { color: var(--text); }
 </style>

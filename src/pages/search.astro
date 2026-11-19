@@ -1,74 +1,50 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
-import RelatedLinks from '../components/RelatedLinks.astro';
-import { getVisiblePosts, readingMinutes } from '../lib/posts';
-import { CATEGORIES, getCategory } from '../site.config';
+import ListRow from '../components/ListRow.astro';
+import CategoryTabs from '../components/CategoryTabs.astro';
+import { getVisiblePosts } from '../lib/posts';
+import { dotDate } from '../lib/format';
 
 const recent = (await getVisiblePosts()).slice(0, 5);
 ---
 
 <BaseLayout title="검색" description="사이트 내 글 검색">
-  <div class="page w-doc">
-    <h1 class="page-title">검색</h1>
-    <noscript>검색에는 자바스크립트가 필요합니다. <a href="/posts">글 목록에서 분류별로 둘러보세요</a>.</noscript>
-    <PagefindConfig />
-    <pagefind-searchbox></pagefind-searchbox>
-
-    {/*
-      검색어를 넣기 전의 화면. 전에는 입력창 하나뿐이라 백지였다.
-      Pagefind 결과는 입력창 아래로 겹쳐 뜨므로 이 블록을 가려도 된다.
-    */}
-    <section class="start" aria-label="둘러보기">
-      <nav class="cats" aria-label="분류">
-        {CATEGORIES.map((c) => (
-          <a class="chip" href={`/posts?category=${c.id}`}>{c.name}</a>
-        ))}
-      </nav>
-
-      {/*
-        상세 페이지 아래의 "다음에 볼 것"과 같은 컴포넌트를 쓴다. 전에는 여기만
-        손으로 목록을 한 벌 더 만들어 두어, 같은 역할(제목 + 분류·분량)인데
-        간격과 글자 크기가 달랐다.
-      */}
-      <RelatedLinks
-        title="최근 글"
-        links={recent.map((p) => ({
-          href: `/posts/${p.id}`,
-          label: p.data.title,
-          meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
-        }))}
-      />
-    </section>
+  <h1 class="page-title">검색</h1>
+  <noscript class="note">검색에는 자바스크립트가 필요합니다. <a class="content-link" href="/posts">글 목록에서 분류별로 둘러보세요</a>.</noscript>
+  <PagefindConfig />
+  <pagefind-searchbox></pagefind-searchbox>
+  <div class="filters">
+    <CategoryTabs active="" />
   </div>
+
+  <section class="block" aria-labelledby="recent-title">
+    <h2 id="recent-title" class="sec-title">최근 글</h2>
+    <ul class="list">
+      {recent.map((post) => (
+        <li>
+          <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
+        </li>
+      ))}
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
-  /*
-   * Pagefind 1.5+ 컴포넌트 UI는 --pf-* 커스텀 프로퍼티로 테마를 받는다
-   * (구 Search.astro 번들 UI의 --pagefind-ui-* 와는 이름이 다르다).
-   * 사이트 토큰(tokens.css)의 var(--...)를 그대로 연결해두면,
-   * data-theme 토글에 따라 라이트/다크가 자동으로 따라온다.
-   */
   pagefind-searchbox {
     --pf-background: var(--bg);
     --pf-text: var(--text);
     --pf-text-secondary: var(--text-dim);
     --pf-text-muted: var(--text-dim);
-    --pf-border: var(--border);
-    --pf-border-focus: var(--accent);
-    --pf-hover: var(--code-bg);
-    --pf-mark: var(--accent);
-    --pf-outline-focus: var(--accent);
+    --pf-border: var(--hair);
+    --pf-border-focus: var(--text);
+    --pf-hover: #f4f6f8;
+    --pf-mark: var(--text);
+    --pf-outline-focus: var(--text);
     --pf-font: var(--font-sans);
     --pf-searchbox-max-width: 100%;
     display: block;
+    margin-top: 20px;
   }
-
-  .start { margin-top: var(--space-8); }
-
-  /* 칩은 CategoryTabs와 같은 모양이어야 한다 — .chip 유틸리티를 쓴다 */
-  .cats { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-
-  /* "최근 글" 목록 모양은 RelatedLinks가 갖는다 — 여기에는 규칙이 없다 */
+  .filters { margin-top: 16px; }
 </style>

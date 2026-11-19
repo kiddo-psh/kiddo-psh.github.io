@@ -6,11 +6,11 @@ import sharp from 'sharp';
 const root=path.resolve(import.meta.dirname,'..');
 const css=await readFile(path.join(root,'src/styles/diagram-theme.css'),'utf8');
 const light=css.match(/\.dg\s*\{([^}]+)\}/)[1];
-const dark=css.match(/:root\[data-theme='dark'\]\s*\.dg\s*\{([^}]+)\}/)[1];
+const dark=css.match(/:root\[data-theme='dark'\]\s*\.dg\s*\{([^}]+)\}/)?.[1] ?? '';
 const samples=['timeout-deadline/time-budget.svg','timeout-deadline/time-budget-mobile.svg','ai-pipeline-risk-gates/01-before-after.svg','retro/03-ev-branch-timeline.svg'];
 const output=path.join(root,'docs/mockups/article-diagrams');
 await mkdir(output,{recursive:true});
-for(const appearance of ['light','dark']) {
+for(const appearance of dark ? ['light','dark'] : ['light']) {
   const variables=Object.fromEntries([...`${light};${appearance==='dark'?dark:''}`.matchAll(/--([\w-]+):([^;]+);/g)].map(m=>[m[1],m[2].trim()]));
   for(const sample of samples) {
     let svg=await readFile(path.join(root,'public/images',sample),'utf8');
