@@ -1,109 +1,104 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import '../styles/article-content.css';
 import BaseLayout from './BaseLayout.astro';
 import MetricsTable from '../components/MetricsTable.astro';
-import BackLink from '../components/BackLink.astro';
-import Motif from '../components/Motif.astro';
-import CoverImage from '../components/CoverImage.astro';
 import CodeCopy from '../components/CodeCopy.astro';
-import { projectTone } from '../lib/motif';
 import RelatedLinks from '../components/RelatedLinks.astro';
-import { getVisiblePosts, readingMinutes } from '../lib/posts';
+import { getVisiblePosts } from '../lib/posts';
 import { getCategory } from '../site.config';
+import { dotDate } from '../lib/format';
 
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
 const d = project.data;
 
-
-// frontmatter의 relatedPosts를 실제 글로 바꾼다. 없는 slug는 조용히 버린다.
 const all = await getVisiblePosts();
 const related = (d.relatedPosts ?? [])
-  .map((id) => all.find((p) => p.id === id))
-  .filter((p): p is (typeof all)[number] => Boolean(p))
-  .map((p) => ({
-    href: `/posts/${p.id}`,
-    label: p.data.title,
-    meta: `${getCategory(p.data.category).label} · ${readingMinutes(p.body)}분`,
+  .map((id) => all.find((post) => post.id === id))
+  .filter((post): post is (typeof all)[number] => Boolean(post))
+  .map((post) => ({
+    href: `/posts/${post.id}/`,
+    label: post.data.title,
+    meta: `${getCategory(post.data.category).name} · ${dotDate(post.data.pubDate)}`,
   }));
 ---
 
-<BaseLayout title={d.title} description={d.summary} ogImage={d.cover ?? `/og/project-${project.id}.png`}>
-  <div class="page-wide">
-    <div class="shell doc">
-      <article data-pagefind-body>
-        <BackLink href="/projects" label="프로젝트" />
-        <h1 class="page-title">{d.title}</h1>
-        <p class="project-headline">{d.headline}</p>
-        <p class="project-summary">{d.summary}</p>
+<BaseLayout title={d.title} description={d.summary} ogImage={d.cover ?? `/og/project-${project.id}.png`} backHref="/projects/" backLabel="프로젝트">
+  <article data-pagefind-body>
+    <header class="doc-head">
+      <h1>{d.title}</h1>
+      <p class="meta">{d.period}</p>
+    </header>
+    <p class="doc-lead">{d.headline}</p>
+    <p class="doc-lead">{d.summary}</p>
 
-        <span
-          class:list={['art-frame', 'band', `t-${projectTone(d.order)}`, 'mk', { illustrated: !!d.cover }]}>
-          {d.cover ? <CoverImage src={d.cover} sizes="(max-width:740px) 94vw, 684px" priority /> : <span class="art-plate"><Motif seed={project.id} tone={projectTone(d.order)} banner plain /></span>}
-        </span>
+    <dl class="facts">
+      <div><dt>구성</dt><dd>{d.projectType}</dd></div>
+      <div><dt>역할</dt><dd>{d.role}</dd></div>
+      <div><dt>기술</dt><dd>{d.stack.join(', ')}</dd></div>
+      {(d.repo || d.demo) && (
+        <div>
+          <dt>링크</dt>
+          <dd>
+            {d.repo && <a href={d.repo}>GitHub</a>}
+            {d.repo && d.demo && ' · '}
+            {d.demo && <a href={d.demo}>Demo</a>}
+          </dd>
+        </div>
+      )}
+    </dl>
 
-        <dl class="facts">
-          <div><dt>구성</dt><dd>{d.projectType}</dd></div>
-          <div><dt>기간</dt><dd>{d.period}</dd></div>
-          <div><dt>역할</dt><dd>{d.role}</dd></div>
-          <div><dt>주요 기술</dt><dd>{d.stack.join(', ')}</dd></div>
-          {(d.repo || d.demo) && (
-            <div>
-              <dt>링크</dt>
-              <dd>
-                {d.repo && <a href={d.repo}>GitHub</a>}
-                {d.repo && d.demo && ' · '}
-                {d.demo && <a href={d.demo}>Demo</a>}
-              </dd>
-            </div>
-          )}
-        </dl>
+    <section class="quiet" aria-label="역할과 기여 범위">
+      <h2>직접 책임진 일</h2>
+      <ul>{d.contributions.map((item) => <li>{item}</li>)}</ul>
+      <p class="collab"><strong>협업 범위</strong> {d.collaboration}</p>
+      <h2>확인한 결과</h2>
+      <p>{d.outcome}</p>
+    </section>
 
-        <section class="contribution" aria-label="역할과 기여 범위">
-          <h2>직접 책임진 일</h2>
-          <ul>{d.contributions.map((item) => <li>{item}</li>)}</ul>
-          <p class="collaboration"><strong>협업 범위</strong> {d.collaboration}</p>
-          <div class="outcome"><h2>확인한 결과</h2><p>{d.outcome}</p></div>
-        </section>
+    <MetricsTable metrics={d.metrics} />
+    {d.metricNote && <p class="note">{d.metricNote}</p>}
 
-        <MetricsTable metrics={d.metrics} />
-        {d.metricNote && <p class="metric-note">{d.metricNote}</p>}
-
-        <div class="prose"><slot /></div>
-
-        <RelatedLinks title="관련 회고" links={related} />
-      </article>
-
-    </div>
-  </div>
+    <div class="prose"><slot /></div>
+    <RelatedLinks title="관련 글" links={related} />
+  </article>
   <CodeCopy />
 </BaseLayout>
 
 <style>
-  .mk { margin: var(--space-6) 0 var(--space-7); }
-  .mk.illustrated { height:auto; aspect-ratio:2.35; }
-
-  /* 제목 위 여백은 BackLink가 만든다 */
-  .page-title { margin-top:24px; }
-  .project-headline { margin: 0 0 16px; font-size: clamp(22px, 4vw, 30px); font-weight: 700; line-height: 1.4; letter-spacing: -.03em; }
-  .project-summary { margin: 0 0 28px; color: var(--text-dim); font-size: 18px; line-height: 1.8; }
-  .contribution { margin: 24px 0 40px; padding: 24px; border-radius: 14px; background: var(--code-bg); line-height: 1.8; }
-  .contribution h2 { margin: 0 0 12px; font-size: 17px; }
-  .contribution ul { padding-left: 22px; margin: 0 0 20px; }
-  .contribution li + li { margin-top: 6px; }
-  .collaboration { margin: 0; color: var(--text-dim); }
-  .collaboration strong { display: block; color: var(--text); }
-  .outcome { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
-  .outcome p { margin: 0; }
-
-  .facts {
-    margin: 0 0 var(--space-1); padding: var(--space-4) 0;
-    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-    display: grid; gap: var(--space-2);
+  .facts { margin: 28px 0 0; padding: 0; border-top: 1px solid var(--hair); }
+  .facts div {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--divider);
+    font-size: 15px;
+    line-height: 1.6;
   }
-  .facts div { display: flex; gap: var(--space-3); font-size: var(--fs-400); }
-  dt { flex: 0 0 64px; color: var(--text-dim); }
+  dt { color: var(--text-dim); }
   dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-  .metric-note { margin: calc(var(--space-5) * -1) 0 var(--space-8); color: var(--text-dim); font-size: var(--fs-300); line-height: var(--lh-relaxed); }
+  .facts a, .quiet a {
+    text-decoration: underline;
+    text-decoration-color: var(--link-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .facts a:hover, .quiet a:hover { text-decoration-color: var(--text); }
+  .quiet { margin-top: 8px; color: var(--text-body); font-size: 17px; line-height: 1.625; }
+  .quiet h2 {
+    margin: 64px 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair);
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 550;
+    line-height: 1.5;
+  }
+  .quiet ul { margin: 0 0 1em; padding-inline-start: 1.3em; }
+  .quiet li { margin-bottom: 0.35em; }
+  .quiet li::marker { color: var(--text-dim); }
+  .quiet p { margin: 0 0 1em; }
+  .collab { color: var(--text-dim); }
+  .collab strong { display: block; color: var(--text); font-weight: 550; }
 </style>

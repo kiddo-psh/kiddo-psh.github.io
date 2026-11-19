@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import '../styles/editorial.css';
+import '../styles/article-content.css';
 import { SITE } from '../site.config';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -10,6 +10,8 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  backHref?: string;
+  backLabel?: string;
 }
 
 const {
@@ -17,6 +19,8 @@ const {
   description = SITE.description,
   ogImage = '/og/site.png',
   ogType = 'website',
+  backHref,
+  backLabel,
 } = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
@@ -24,17 +28,15 @@ const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
 ---
 
 <!doctype html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:site_name" content={SITE.title} />
@@ -43,22 +45,15 @@ const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
     <meta property="og:url" content={canonical} />
     {ogUrl && <meta property="og:image" content={ogUrl} />}
     <meta name="twitter:card" content={ogUrl ? 'summary_large_image' : 'summary'} />
-
-    <script is:inline>
-      // 첫 페인트 전에 테마를 확정해서 색 번쩍임을 막는다.
-      const saved = localStorage.getItem('theme');
-      const dark = saved ? saved === 'dark'
-        : window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">본문으로 이동</a>
-    <Nav />
-    <main id="main-content">
-      <slot />
-    </main>
-    <Footer />
-
+    <div class="column">
+      <Nav backHref={backHref} backLabel={backLabel} />
+      <main id="main-content">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

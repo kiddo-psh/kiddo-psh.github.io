@@ -6,15 +6,26 @@ const { active } = Astro.props;
 ---
 
 <nav class="tabs" aria-label="글 분류">
-  <a href="/posts" class:list={['chip', { on: active === 'all' }]}>전체</a>
-  {CATEGORIES.map((c) => (
-    <a href={`/posts?category=${c.id}`} class:list={['chip', { on: active === c.id }]}>
-      {c.name}
+  <a href="/posts" class:list={[{ on: active === 'all' }]} aria-current={active === 'all' ? 'page' : undefined}>전체</a>
+  {CATEGORIES.map((category) => (
+    <a
+      href={`/posts?category=${category.id}`}
+      class:list={[{ on: active === category.id }]}
+      aria-current={active === category.id ? 'page' : undefined}
+    >
+      {category.name}
     </a>
   ))}
 </nav>
 
 <style>
-  /* 칩 모양은 global.css의 .chip이 담당한다 — 여기서는 배치만 */
-  .tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  a {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  a.on, a:hover { color: var(--text); }
 </style>
