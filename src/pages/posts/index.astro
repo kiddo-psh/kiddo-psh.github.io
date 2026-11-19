@@ -2,13 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ListRow from '../../components/ListRow.astro';
 import CategoryTabs from '../../components/CategoryTabs.astro';
-import { getVisiblePosts } from '../../lib/posts';
+import { getWritingPosts } from '../../lib/posts';
 import { dotDate } from '../../lib/format';
 
-const posts = await getVisiblePosts();
+const posts = await getWritingPosts();
 ---
 
-<BaseLayout title="글" description="CS, 기술, AI 개발, 회고">
+<BaseLayout title="글" description="기술, AI 개발, 회고">
   <section class="block" aria-labelledby="posts-title">
     <div class="sec-row">
       <h1 id="posts-title" class="sec-title">글</h1>
@@ -28,6 +28,10 @@ const posts = await getVisiblePosts();
 <script>
   function applyFilter() {
     const wanted = new URLSearchParams(location.search).get('category');
+    if (wanted === 'cs') {
+      location.replace('/cs/');
+      return;
+    }
     let shown = 0;
     for (const cell of document.querySelectorAll<HTMLElement>('#list [data-category]')) {
       cell.hidden = Boolean(wanted) && cell.dataset.category !== wanted;

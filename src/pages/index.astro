@@ -2,28 +2,18 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ListRow from '../components/ListRow.astro';
-import { getVisiblePosts } from '../lib/posts';
+import { getCsPosts, getWritingPosts } from '../lib/posts';
 import { SITE } from '../site.config';
 import { dotDate, glyph, oneLine } from '../lib/format';
 import { sortProjects } from '../lib/projects';
 
-const posts = (await getVisiblePosts()).slice(0, 4);
+const writing = (await getWritingPosts()).slice(0, 4);
+const csPosts = (await getCsPosts()).slice(0, 4);
 const projects = sortProjects(await getCollection('projects')).filter((project) => project.data.featured);
 ---
 
 <BaseLayout title={SITE.title}>
   <h1 class="intro">{SITE.intro}</h1>
-
-  <section class="block" aria-labelledby="posts-title">
-    <h2 id="posts-title" class="sec-title">글</h2>
-    <ul class="list">
-      {posts.map((post) => (
-        <li>
-          <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
-        </li>
-      ))}
-    </ul>
-  </section>
 
   {projects.length > 0 && (
     <section class="block" aria-labelledby="projects-title">
@@ -37,6 +27,30 @@ const projects = sortProjects(await getCollection('projects')).filter((project) 
               meta={oneLine(project.data.summary)}
               mark={glyph(project.data.title)}
             />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="block" aria-labelledby="posts-title">
+    <h2 id="posts-title" class="sec-title">글</h2>
+    <ul class="list">
+      {writing.map((post) => (
+        <li>
+          <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {csPosts.length > 0 && (
+    <section class="block" aria-labelledby="cs-title">
+      <h2 id="cs-title" class="sec-title">CS</h2>
+      <ul class="list">
+        {csPosts.map((post) => (
+          <li>
+            <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
           </li>
         ))}
       </ul>

@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { isCsCategory } from '../site.config';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -10,6 +11,16 @@ export async function getVisiblePosts(): Promise<Post[]> {
   return posts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
+}
+
+/** 글 섹션용 — CS를 제외한 기술·AI·회고 */
+export async function getWritingPosts(): Promise<Post[]> {
+  return (await getVisiblePosts()).filter((p) => !isCsCategory(p.data.category));
+}
+
+/** CS 섹션용 */
+export async function getCsPosts(): Promise<Post[]> {
+  return (await getVisiblePosts()).filter((p) => isCsCategory(p.data.category));
 }
 
 /**

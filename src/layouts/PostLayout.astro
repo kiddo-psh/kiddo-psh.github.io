@@ -3,7 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import CodeCopy from '../components/CodeCopy.astro';
 import Comments from '../components/Comments.astro';
-import { getCategory } from '../site.config';
+import { getCategory, isCsCategory } from '../site.config';
 import { getRelatedPosts, type Post } from '../lib/posts';
 import { dotDate } from '../lib/format';
 
@@ -11,6 +11,7 @@ interface Props { post: Post }
 const { post } = Astro.props;
 
 const cat = getCategory(post.data.category);
+const fromCs = isCsCategory(post.data.category);
 const related = (await getRelatedPosts(post)).map((item) => ({
   href: `/posts/${item.id}/`,
   label: item.data.title,
@@ -24,8 +25,8 @@ const date = dotDate(post.data.pubDate);
   description={post.data.description}
   ogImage={post.data.cover ?? `/og/${post.id}.png`}
   ogType="article"
-  backHref="/posts/"
-  backLabel="글 목록"
+  backHref={fromCs ? '/cs/' : '/posts/'}
+  backLabel={fromCs ? 'CS 목록' : '글 목록'}
 >
   <article data-pagefind-body>
     <header class="doc-head">
