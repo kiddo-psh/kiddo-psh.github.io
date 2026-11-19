@@ -2,7 +2,7 @@
 title: "리스(lease) — 점유권이 만료돼도 LLM 호출이 끝나지 않는 이유"
 description: "TTL이 있는 점유권인 lease를 살펴봅니다. 만료, 갱신, 소유권 확인 후 해제, 느리게 끝난 작업의 처리까지 서로 다른 문제로 나눕니다."
 pubDate: "2026-11-09T09:01:00+09:00"
-category: dev
+category: cs
 cover: "/images/covers/lease-expiry-llm-work.png"
 draft: false
 ---

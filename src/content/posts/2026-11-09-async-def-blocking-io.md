@@ -2,7 +2,7 @@
 title: "비동기 I/O — async def만으로 여러 요청을 처리할 수 있을까"
 description: "코루틴 선언과 실제 비동기 I/O를 구분합니다. time.sleep과 asyncio.sleep의 작은 재현 실험으로 이벤트 루프가 언제 다른 요청을 처리하는지 살펴봅니다."
 pubDate: "2026-11-09T09:04:00+09:00"
-category: dev
+category: cs
 cover: "/images/covers/async-def-blocking-io.png"
 draft: false
 ---

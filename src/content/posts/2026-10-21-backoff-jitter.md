@@ -2,7 +2,7 @@
 title: "백오프와 지터 — 재시도가 장애를 키우지 않도록 설계하기"
 description: "지수 백오프와 Full Jitter의 역할을 정리하고, 5초 이내 재시도 요구사항과 여러 계층의 재시도 정책을 어떻게 설계할지 살펴봅니다."
 pubDate: 2026-10-21
-category: dev
+category: cs
 cover: "/images/covers/backoff-jitter.png"
 ---
 

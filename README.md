@@ -21,7 +21,11 @@ npm run build   # dist/ 에 정적 사이트 생성
 1. `src/content/posts/YYYY-MM-DD-slug.md` 파일을 만든다.
 2. 날짜 접두사는 URL에서 제거된다. 예: `2026-08-13-jpa-n1.md` → `/posts/jpa-n1`
 3. slug는 영문 소문자, 숫자, 하이픈만 사용한다. 한글 파일명은 URL이 퍼센트 인코딩되어 공유하기 지저분해진다.
-4. 프론트매터 필수 항목: `title`, `description`, `pubDate`, `category`(`dev` | `ai` | `retro`)
+4. 프론트매터 필수 항목: `title`, `description`, `pubDate`, `category`(`cs` | `dev` | `ai` | `retro`)
+   - `cs`: CS 개념 정리
+   - `dev`: 개념을 실제 개발에 적용한 기록
+   - `ai`: AI 개발
+   - `retro`: 회고
 5. 선택 항목: `draft: true`(dev에서만 보이고 빌드에서 제외), `cover`(`/`로 시작하는 `public/` 기준 경로)
 6. `git push`로 배포된다. 프론트매터 값이 잘못되면 배포되지 않고 빌드가 실패한다.
 
@@ -39,7 +43,7 @@ npm run build   # dist/ 에 정적 사이트 생성
 > 범위를 파일 하나로 묶으면 diff가 읽을 수 있는 크기로 나온다.
 ```
 
-**`<figure class="wide">`로 감싼 그림은 본문 폭을 넘어 넓게 나온다.** 글자가 많은 다이어그램에 쓴다. `dev`·`ai` 글은 목차와의 간격만큼, `retro` 글은 좌우 여백 안에서 최대 150px씩 확장된다. 좁은 화면에서는 본문 폭과 같아진다. 다이어그램은 960px 폭으로 그리면 넓은 화면에서 원본 크기로 보인다.
+**`<figure class="wide">`로 감싼 그림은 본문 폭을 넘어 넓게 나온다.** 글자가 많은 다이어그램에 쓴다. `cs`·`dev`·`ai` 글은 목차와의 간격만큼, `retro` 글은 좌우 여백 안에서 최대 150px씩 확장된다. 좁은 화면에서는 본문 폭과 같아진다. 다이어그램은 960px 폭으로 그리면 넓은 화면에서 원본 크기로 보인다.
 
 ```md
 <figure class="wide">

@@ -2,7 +2,7 @@
 title: "세마포어와 워커 — 전체 LLM 호출 수를 제한하려면"
 description: "asyncio.Semaphore가 제한하는 범위를 확인하고, 워커가 여러 개일 때 로컬 동시성 제한과 서비스 전체 제한이 어떻게 달라지는지 살펴봅니다."
 pubDate: "2026-11-09T09:03:00+09:00"
-category: dev
+category: cs
 cover: "/images/covers/semaphore-per-worker.png"
 draft: false
 ---
