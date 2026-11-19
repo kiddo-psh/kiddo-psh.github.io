@@ -22,7 +22,7 @@ npm run build   # dist/ 에 정적 사이트 생성
 2. 날짜 접두사는 URL에서 제거된다. 예: `2026-08-13-jpa-n1.md` → `/posts/jpa-n1`
 3. slug는 영문 소문자, 숫자, 하이픈만 사용한다. 한글 파일명은 URL이 퍼센트 인코딩되어 공유하기 지저분해진다.
 4. 프론트매터 필수 항목: `title`, `description`, `pubDate`, `category`(`cs` | `dev` | `ai` | `retro`)
-   - `cs`: CS 개념 정리
+   - `cs`: CS 개념 정리 (홈·내비의 독립 섹션 `/cs`, 글 목록 탭에는 없음)
    - `dev`: 개념을 실제 개발에 적용한 기록
    - `ai`: AI 개발
    - `retro`: 회고

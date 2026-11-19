@@ -1,5 +1,5 @@
 ---
-import { CATEGORIES } from '../site.config';
+import { WRITING_CATEGORIES } from '../site.config';
 
 interface Props { active: string }
 const { active } = Astro.props;
@@ -7,7 +7,7 @@ const { active } = Astro.props;
 
 <nav class="tabs" aria-label="글 분류">
   <a href="/posts" class:list={[{ on: active === 'all' }]} aria-current={active === 'all' ? 'page' : undefined}>전체</a>
-  {CATEGORIES.map((category) => (
+  {WRITING_CATEGORIES.map((category) => (
     <a
       href={`/posts?category=${category.id}`}
       class:list={[{ on: active === category.id }]}

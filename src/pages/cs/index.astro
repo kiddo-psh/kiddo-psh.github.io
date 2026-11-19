@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ListRow from '../../components/ListRow.astro';
+import { getCsPosts } from '../../lib/posts';
+import { dotDate } from '../../lib/format';
+
+const posts = await getCsPosts();
+---
+
+<BaseLayout title="CS" description="HTTP, 재시도, 비동기 동시성 등 CS 개념 정리">
+  <section class="block" aria-labelledby="cs-title">
+    <h1 id="cs-title" class="sec-title">CS</h1>
+    <ul class="list">
+      {posts.map((post) => (
+        <li>
+          <ListRow href={`/posts/${post.id}/`} title={post.data.title} meta={dotDate(post.data.pubDate)} />
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

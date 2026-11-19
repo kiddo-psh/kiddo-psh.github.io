@@ -35,6 +35,9 @@ export const SITE = {
 /**
  * layout: 'doc'  → 넓은 본문 + 좌측 목차 (기술글)
  * layout: 'read' → 좁은 본문 + 목차 없음 + 세리프 리드문 (회고)
+ *
+ * CS는 글(posts) 안의 필터가 아니라 홈·내비의 독립 섹션이다.
+ * 글 탭에는 WRITING_CATEGORIES만 노출한다.
  */
 export const CATEGORIES = [
   { id: 'cs', label: 'CS', name: 'CS', layout: 'doc' },
@@ -45,8 +48,15 @@ export const CATEGORIES = [
 
 export type CategoryId = (typeof CATEGORIES)[number]['id'];
 
+/** 글 목록 탭에 쓰는 분류. CS는 제외한다. */
+export const WRITING_CATEGORIES = CATEGORIES.filter((c) => c.id !== 'cs');
+
 export function getCategory(id: string) {
   const found = CATEGORIES.find((c) => c.id === id);
   if (!found) throw new Error(`알 수 없는 카테고리: ${id}`);
   return found;
+}
+
+export function isCsCategory(id: string): boolean {
+  return id === 'cs';
 }
