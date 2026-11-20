@@ -241,6 +241,17 @@
  padding: 18px 18px 14px; }
 .kkugi .chart-grid {
  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (min-width: 721px) {
+.kkugi .chart-grid {
+ grid-template-rows: auto auto auto; align-items: stretch; }
+.kkugi .chart-grid > .chart-card {
+ display: grid; grid-template-rows: subgrid; grid-row: 1 / span 3; }
+.kkugi .chart-grid > .chart-card:nth-child(1) { grid-column: 1; }
+.kkugi .chart-grid > .chart-card:nth-child(2) { grid-column: 2; }
+.kkugi .chart-grid > .chart-card > .fig-title { align-self: end; }
+.kkugi .chart-grid > .chart-card > .bars {
+ display: grid; grid-template-rows: subgrid; grid-row: span 2; }
+}
 /* Error bars (CI) */
 .kkugi .ci {
  position: absolute; top: -5px; bottom: -5px; left: var(--lo); width: calc(var(--hi) - var(--lo)); pointer-events: none; }
@@ -457,8 +468,6 @@
 .kkugi .caution {
  margin: 8px 0 24px; padding: 16px 20px; background: var(--card); border-radius: var(--card-radius); border: var(--card-border); box-shadow: var(--card-shadow); }
 .kkugi .caution .c-head {
- display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--secondary); font-size: 0.875rem; font-weight: 600; }
-.kkugi .caution .c-head svg {
  display: none; }
 .kkugi .caution ul {
  margin: 0; padding: 0; list-style: none; }
@@ -674,7 +683,11 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .vs td:first-child {
  white-space: nowrap; }
 .kkugi .vs th {
- white-space: normal; }
+ white-space: normal; vertical-align: bottom; }
+.kkugi .vs table { table-layout: fixed; }
+.kkugi .vs th:first-child,
+.kkugi .vs td:first-child { width: 7.75rem; }
+.kkugi .vs td.num { text-align: start; }
 .kkugi .vs-grid {
  grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
 @media (max-width:720px) {
@@ -976,12 +989,15 @@ to {
 .kkugi .pose { margin: 0; padding: 18px 16px 14px; display: flex; flex-direction: column; align-items: center; height: 100%; }
 .kkugi .pose .stage { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 200px; }
 .kkugi .pose .stage img, .kkugi .pose .stage video {
- position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .5s var(--ease);
+ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block;
 }
+.kkugi .pose .stage img { transition: opacity .25s var(--ease), transform .5s var(--ease); }
 .kkugi .pose .stage video { opacity: 0; transition: opacity .25s var(--ease); }
 .kkugi .pose.playing .stage video { opacity: 1; }
+.kkugi .pose.playing .stage img { opacity: 0; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
 .kkugi .pose:hover .stage img { transform: translateY(-3px); }
+.kkugi .pose.playing:hover .stage img { transform: none; }
 }
 .kkugi .cast.compact { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
 .kkugi .cast.compact .pose { padding: 12px 8px; }

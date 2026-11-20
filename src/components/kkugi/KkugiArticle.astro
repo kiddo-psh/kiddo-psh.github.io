@@ -239,7 +239,7 @@ const asset = (file: string) => `/projects/kkugi/${file}`;
 <div class="chart-grid">
   <Bars
     title="탐지기 p95 · 후보 비교용 측정 서버(Xeon 6740P, 1코어)"
-    columns="96px minmax(0,1fr) 64px"
+    columns="6.75rem minmax(0,1fr) 4rem"
     rows={[
       { label: 'OWLv2', pct: 100, display: '10.02초', tone: 'soft' },
       { label: 'OWL-ViT B/32', pct: 8.2, display: '0.82초', tone: 'strong', highlight: true },
@@ -247,7 +247,7 @@ const asset = (file: string) => `/projects/kkugi/${file}`;
   />
   <Bars
     title="탐지기 recall"
-    columns="96px minmax(0,1fr) 64px"
+    columns="6.75rem minmax(0,1fr) 4rem"
     rows={[
       { label: 'fp32', pct: 90.3, display: '90.3%', tone: 'strong', highlight: true },
       { label: 'INT8', pct: 81.2, display: '81.2%', tone: 'soft' },
