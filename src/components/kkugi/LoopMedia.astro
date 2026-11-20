@@ -1,0 +1,30 @@
+---
+interface Props {
+  webm: string;
+  mp4: string;
+  gif: string;
+  poster: string;
+  label: string;
+  width: number;
+  height: number;
+}
+
+const { webm, mp4, gif, poster, label, width, height } = Astro.props;
+---
+
+<video
+  data-autoplay
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="metadata"
+  poster={poster}
+  width={width}
+  height={height}
+  aria-label={label}
+>
+  <source src={webm} type="video/webm" />
+  <source src={mp4} type="video/mp4" />
+  <img src={gif} width={width} height={height} alt={label} />
+</video>

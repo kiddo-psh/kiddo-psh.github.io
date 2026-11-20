@@ -1,0 +1,34 @@
+---
+const base = '/projects/kkugi/collab';
+const poses = [
+  { name: 'wave', alt: '손을 흔드는 꾸기', width: 581, height: 600 },
+  { name: 'camera', alt: '카메라를 든 꾸기', width: 442, height: 480 },
+  { name: 'hiking', alt: '배낭을 메고 걷는 꾸기', width: 435, height: 480 },
+  { name: 'heart', alt: '하트를 안고 힘을 보태는 꾸기', width: 490, height: 480 },
+  { name: 'phone', alt: '휴대폰을 보며 웃는 꾸기', width: 595, height: 600 },
+  { name: 'laptop', alt: '노트북으로 기록을 살펴보는 꾸기', width: 568, height: 480 },
+];
+---
+
+<figure class="wide rv" data-component="CharacterPoses">
+  <ul class="cast compact" aria-label="꾸기 포즈">
+    {
+      poses.map((pose) => (
+        <li>
+          <div class="card pose" data-loop={`${base}/kkugi-${pose.name}-loop.webm`}>
+            <div class="stage">
+              <img
+                src={`${base}/kkugi-${pose.name}.webp`}
+                width={pose.width}
+                height={pose.height}
+                loading="lazy"
+                decoding="async"
+                alt={pose.alt}
+              />
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</figure>

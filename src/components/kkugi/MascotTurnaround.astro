@@ -1,0 +1,24 @@
+---
+import LoopMedia from './LoopMedia.astro';
+import MediaToggle from './MediaToggle.astro';
+
+const base = '/projects/kkugi/collab';
+const label = '초록 잎사귀 모자를 쓴 뻐꾸기 마스코트 꾸기';
+---
+
+<figure class="mascot-fig rv" data-media data-component="MascotTurnaround">
+  <div class="card mascot">
+    <div class="stage">
+      <LoopMedia
+        webm={`${base}/kkugi-mascot.webm`}
+        mp4={`${base}/kkugi-mascot.mp4`}
+        gif={`${base}/kkugi-mascot.gif`}
+        poster={`${base}/kkugi-mascot-poster.webp`}
+        label={label}
+        width={360}
+        height={360}
+      />
+    </div>
+    <MediaToggle />
+  </div>
+</figure>
