@@ -991,10 +991,6 @@ to {
 .kkugi .mascot .stage { width: min(260px, 70%); aspect-ratio: 1 / 1; position: relative; }
 .kkugi .mascot video, .kkugi .mascot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
 .kkugi .mascot-fig { margin: 8px 0 28px; }
-.kkugi .browser.tall { max-width: 440px; margin: 0 auto; }
-.kkugi .browser.tall .browser-view { aspect-ratio: auto; background: #fff; }
-.kkugi .browser.tall .browser-view img { position: static; height: auto; }
-.kkugi .shot-fig { margin: 8px 0 28px; }
 .kkugi .hero-fig { margin-top: 8px; margin-bottom: 28px; }
 .kkugi .photo-fig { margin-top: 8px; margin-bottom: 28px; }
 .kkugi .diagram { margin-top: 8px; margin-bottom: 28px; }
