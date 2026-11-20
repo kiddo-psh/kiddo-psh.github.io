@@ -80,15 +80,33 @@ function timelines(root: ParentNode): void {
   });
 }
 
+function placePill(track: HTMLElement, animate: boolean): void {
+  const thumb = track.querySelector('.pill-thumb');
+  const selected = track.querySelector<HTMLElement>('[aria-pressed="true"], [aria-selected="true"]');
+  if (!(thumb instanceof HTMLElement) || !selected) return;
+  const trackBox = track.getBoundingClientRect();
+  const box = selected.getBoundingClientRect();
+  if (!animate) thumb.style.transition = 'none';
+  thumb.style.width = `${box.width}px`;
+  thumb.style.transform = `translateX(${box.left - trackBox.left}px)`;
+  if (!animate) {
+    thumb.getBoundingClientRect();
+    thumb.style.transition = '';
+  }
+  track.classList.add('pill-ready');
+}
+
 function tray(root: ParentNode): void {
   root.querySelectorAll<HTMLElement>('.tray').forEach((fig) => {
     const stage = fig.querySelector('.tray-stage');
     const buttons = fig.querySelectorAll<HTMLButtonElement>('.seg-btn');
-    if (!(stage instanceof HTMLElement)) return;
+    const track = fig.querySelector('.tray-toggle');
+    if (!(stage instanceof HTMLElement) || !(track instanceof HTMLElement)) return;
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         stage.setAttribute('data-state', button.dataset.show ?? 'detected');
         buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+        placePill(track, true);
       });
     });
   });
@@ -337,6 +355,8 @@ function replay(root: ParentNode): void {
         item.tabIndex = on ? 0 : -1;
       });
       panel.setAttribute('aria-labelledby', tab.id);
+      const track = tab.closest('.replay-tabs');
+      if (track instanceof HTMLElement) placePill(track, true);
       if (focus) tab.focus();
       current = tab.dataset.ex ?? current;
       void play(current);
@@ -372,6 +392,14 @@ function replay(root: ParentNode): void {
   });
 }
 
+function pills(root: ParentNode): void {
+  const tracks = [...root.querySelectorAll<HTMLElement>('.tray-toggle, .replay-tabs')];
+  const placeAll = () => tracks.forEach((track) => placePill(track, false));
+  placeAll();
+  window.addEventListener('resize', placeAll);
+  if (document.fonts) void document.fonts.ready.then(placeAll);
+}
+
 export function enhanceKkugi(): void {
   const root = document.querySelector('.kkugi');
   if (!root) return;
@@ -380,4 +408,5 @@ export function enhanceKkugi(): void {
   timelines(root);
   tray(root);
   replay(root);
+  pills(root);
 }

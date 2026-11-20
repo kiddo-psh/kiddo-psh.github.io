@@ -16,6 +16,7 @@ const { original, detected, labels, caption } = Astro.props;
 
 <figure class="tray rv" data-component="TrayCompare">
   <div class="tray-toggle" role="group" aria-label="식판 사진 보기">
+    <span class="pill-thumb" aria-hidden="true"></span>
     <button type="button" class="seg-btn" data-show="original" aria-pressed="false">{labels[0]}</button>
     <button type="button" class="seg-btn" data-show="detected" aria-pressed="true">{labels[1]}</button>
   </div>
