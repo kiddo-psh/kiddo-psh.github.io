@@ -52,20 +52,20 @@
  margin: 0 0 .4em; padding-left: .2em; }
 .kkugi ol li::marker {
  color: var(--secondary); font-variant-numeric: tabular-nums; }
-.kkugi hr {
- border: 0; height: 1px; background: var(--hairline); margin: 96px 0 0; }
 .kkugi h2.post-h2 {
- display: flex; align-items: center; gap: 12px; margin: 96px 0 20px; font-size: 17px; font-weight: 550; line-height: 1.5; }
+ display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+ margin: 144px 0 28px; color: var(--text);
+ font-size: 22px; font-weight: 650; line-height: 1.35; letter-spacing: -0.02em;
+}
 .kkugi h2.post-h2 .rule {
- flex: 1 1 auto; height: 1px; background: var(--hairline-strong); }
-.kkugi h2.part {
- margin-top: 112px; }
+ flex: 1 1 64px; min-width: 48px; height: 1px; background: var(--hairline-strong); }
+.kkugi h2.part { margin-top: 168px; }
 .kkugi h2.part .kicker {
- color: var(--secondary); font-weight: 500; margin-right: -4px; }
+ color: var(--secondary); font-size: 15px; font-weight: 550; letter-spacing: 0; margin-right: 0; }
 .kkugi h3.post-h3 {
- margin: 64px 0 14px; font-size: 17px; font-weight: 550; line-height: 1.5; color: var(--text); }
-.kkugi hr + h2.post-h2 {
- margin-top: 96px; }
+ margin: 72px 0 18px; color: var(--text);
+ font-size: 18px; font-weight: 650; line-height: 1.4; letter-spacing: -0.015em;
+}
 /* —— Glossary (details) —— */
 .kkugi .glossary {
  margin: 4px 0 28px; border: 1px solid var(--hairline-strong); border-radius: 12px; background: transparent; }
@@ -537,12 +537,9 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 }
 /* —— Mobile —— */
 @media (max-width: 720px) {
-.kkugi h2.post-h2 {
- margin-top: 72px; }
-.kkugi hr {
- margin-top: 72px; }
-.kkugi h3.post-h3 {
- margin-top: 48px; }
+.kkugi h2.post-h2 { margin-top: 104px; font-size: 20px; }
+.kkugi h2.part { margin-top: 120px; }
+.kkugi h3.post-h3 { margin-top: 56px; font-size: 17px; }
 .kkugi .hero-grid, .kkugi .ps-grid, .kkugi .vs-grid, .kkugi .lessons, .kkugi .chart-grid, .kkugi .ts-head {
  grid-template-columns: 1fr; }
 .kkugi .callouts {
@@ -882,6 +879,23 @@ to {
  height: 480px; }
 .kkugi .replay-tabs [role="tab"] {
  padding: 8px 10px; }
+}
+.kkugi .replay { max-width: 480px; margin-inline: auto; }
+.kkugi .term {
+ appearance: none; border: 0; margin: 0; padding: 0; background: none;
+ color: inherit; font: inherit; letter-spacing: inherit; line-height: inherit;
+ cursor: pointer; text-decoration: underline; text-decoration-style: dotted;
+ text-decoration-color: var(--ink-soft); text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.kkugi .term:hover, .kkugi .term[aria-expanded='true'] {
+ color: var(--text); text-decoration-style: solid; text-decoration-color: var(--text); }
+.kkugi .term-pop {
+ position: fixed; z-index: 40; box-sizing: border-box;
+ width: min(280px, calc(100vw - 24px));
+ padding: 10px 12px; border: 1px solid var(--hairline-strong); border-radius: 12px;
+ background: #fff; color: var(--paragraph);
+ box-shadow: 0 1px 2px rgba(24,25,26,.04), 0 8px 24px -12px rgba(24,25,26,.28);
+ font-size: 14px; font-weight: 400; line-height: 1.55; letter-spacing: 0; text-align: start;
 }
 .kkugi .chat-phone {
  height: 500px; }
