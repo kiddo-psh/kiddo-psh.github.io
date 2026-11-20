@@ -1,19 +1,26 @@
 ---
 import '../../styles/kkugi.css';
 import Bars from './Bars.astro';
+import BrowserFrame from './BrowserFrame.astro';
 import Callouts from './Callouts.astro';
 import Caution from './Caution.astro';
 import ChatReplay from './ChatReplay.astro';
 import CIBars from './CIBars.astro';
 import Compare from './Compare.astro';
 import DataTable from './DataTable.astro';
+import DiagramCard from './DiagramCard.astro';
 import FlowInline from './FlowInline.astro';
+import HeroSwitch from './HeroSwitch.astro';
 import LatencyBudget from './LatencyBudget.astro';
 import Lessons from './Lessons.astro';
+import MascotTurnaround from './MascotTurnaround.astro';
 import PhoneRow from './PhoneRow.astro';
+import PhotoPair from './PhotoPair.astro';
 import Pipeline from './Pipeline.astro';
+import PoseRow from './PoseRow.astro';
 import ProblemSolution from './ProblemSolution.astro';
 import ResultCards from './ResultCards.astro';
+import ScrollShot from './ScrollShot.astro';
 import StackChips from './StackChips.astro';
 import StackedBar from './StackedBar.astro';
 import Stepper from './Stepper.astro';
@@ -517,6 +524,40 @@ const asset = (file: string) => `/projects/kkugi/${file}`;
     { area: '앱·백엔드', items: [{ text: 'Android' }, { text: 'Spring' }] },
   ]}
 />
+
+<h2 class="post-h2" id="design-collab">디자인과 협업<span class="rule" aria-hidden="true"></span></h2>
+<p>모델과 서버 바깥에서도 꾸기를 만들었다. 이름을 짓고 마스코트를 디자인했으며, 랜딩 페이지와 팀 기술 블로그를 만들었다. 팀이 서로의 기능을 이해하는 자리인 리뷰데이도 블로그에 정리했다.</p>
+<h3 class="post-h3">이름과 마스코트</h3>
+<MascotTurnaround />
+<p>'꾸기'는 직접 지은 이름이다. '꾸준히 기록'을 줄인 말이면서, 쉬지 않고 우는 뻐꾸기처럼 목표를 끝낼 때까지 계속 알림을 보낸다는 뜻을 담았다.</p>
+<p>마스코트도 이름에서 나왔다. 뻐꾸기를 바탕으로 캐릭터를 그렸고, 뻐꾸기 특유의 어두운 색이 무겁게 보이지 않도록 초록 잎사귀 모자를 씌웠다. 이 캐릭터는 팀 블로그 첫 화면에서 "오늘 점심 기록해 뒀어요!"라는 말풍선과 함께 인사하고, 글마다 붙는 커버 카드와 로고 옆에도 들어간다.</p>
+<PoseRow />
+<h3 class="post-h3">랜딩 페이지: 꾸기에서 꾸준히 기록으로</h3>
+<HeroSwitch />
+<p><a href="https://kkugi.duckdns.org/" target="_blank" rel="noopener noreferrer">꾸기 랜딩 페이지</a>의 히어로는 이 프로젝트에서 가장 아끼는 결과물이다. 식사, 달리기, 웨이트 같은 일상의 장면을 담은 클립을 격자로 깔고, 그 위에서 '꾸기'라는 이름이 '꾸준히 기록'으로 풀린다. 일상의 조각을 모아 꾸준히 기록할 수 있게 하겠다는 서비스의 뜻을 첫 화면에 그대로 옮기고 싶었다.</p>
+<ScrollShot caption="프레임 안에서 스크롤하면 실제 랜딩 페이지를 데스크톱 화면 비율로 따라갈 수 있다." />
+<p>클립은 직접 만들었다. GPT Astra가 Blender로 장면의 구도를 잡고, 그 구도를 바탕으로 Higgsfield의 Kling 2.5 모델로 영상을 생성했다.</p>
+<h3 class="post-h3">팀 기술 블로그 '꾸기 테크'</h3>
+<BrowserFrame />
+<p><a href="https://teamyumyum.github.io/" target="_blank" rel="noopener noreferrer">꾸기 테크</a>는 TeamYumYum의 기술 블로그로, 직접 만들고 운영한다. "꾸기를 만들며 배운 기술과 부딪힌 문제, 일하는 방식을 솔직하게 나눠요"라는 소개처럼, 글을 기술, 트러블슈팅, 문화, 소식 네 분류로 나눈다. 글마다 분류 배지와 마스코트 커버 카드를 붙이고, 연재 글에는 'RAG 설계기 01·02'처럼 회차 번호를 단다. 첫 화면 아래에는 회원, 식단, 운동, 코칭, 성장, 검수를 한 명씩 맡은 6명의 팀 소개가 있다.</p>
+<p>2026년 10월 19일 첫 글을 올렸고, 11월 20일 기준으로 팀원 세 명과 팀 계정이 쓴 글 8편이 올라와 있다.</p>
+<h3 class="post-h3">협업: 리뷰데이</h3>
+<p>우리 팀은 도메인을 하나씩 맡아 화면부터 API와 테이블까지 각자 끝까지 구현한다. 한 기능을 온전히 책임질 수 있는 대신, 다른 팀원이 맡은 기능의 내부 흐름은 따로 시간을 내야 알 수 있다. 그래서 한 주 동안 만든 기능과 그 안의 고민을 함께 살펴보는 리뷰데이를 시작했고, 그 방식을 <a href="https://teamyumyum.github.io/posts/review-day/" target="_blank" rel="noopener noreferrer">리뷰데이 글</a>로 정리했다.</p>
+<PhotoPair />
+<p>발표 단위는 구현한 스토리 하나다. 사용자가 겪는 문제에서 출발해 기능이 실제로 어떻게 동작하는지 따라가며, 네 가지 관점으로 준비한다.</p>
+<DataTable
+  scroll
+  headers={['관점', '다루는 내용']}
+  rows={[
+    ['기능 소개', '어떤 사용자 문제를 해결하는 기능인가'],
+    ['동작 흐름', '화면에서 시작한 요청이 서버, DB, AI를 거쳐 어떤 응답으로 돌아오는가'],
+    ['핵심 구현 판단', '그 구현 방식을 고른 이유와 과정의 고민'],
+    ['논의할 내용', '남은 문제, 팀원의 의견이 필요한 부분'],
+  ]}
+/>
+<p>동작 흐름은 Mermaid 시퀀스 다이어그램으로 그리고, 분기나 실패 처리가 복잡하면 플로우차트를 더한다. 예를 들어 음식 사진 인식 기능에서는 Spring 서버가 AI 서버의 응답을 기다린 뒤에야 사진과 결과를 저장하는 트랜잭션을 시작하고, 저장에 실패하면 전체를 롤백하며, 커밋이 성공한 뒤에 사용자에게 응답한다. 흐름을 이렇게 펼쳐 두면 "AI 응답이 늦어지면 어떻게 될까?", "저장에 실패하면 무엇이 남을까?" 같은 질문이 자연스럽게 나온다.</p>
+<DiagramCard />
+<p>완성한 기능만 가져오지는 않는다. 개발 중인 기능, 막힌 부분, 아직 결론을 못 낸 구현 방식도 리뷰데이의 주제다. 발표 자료를 꾸미기보다 흐름과 고민을 전하는 데 집중하고, 듣는 사람의 질문이 다음 구현의 실마리가 되기를 기대한다.</p>
 
 <script id="kkugi-chat" type="application/json" is:inline set:html={JSON.stringify(chatExchanges)}></script>
 <script id="kkugi-terms" type="application/json" is:inline set:html={JSON.stringify(termDefs)}></script>

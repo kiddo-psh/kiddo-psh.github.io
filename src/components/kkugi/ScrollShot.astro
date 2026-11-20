@@ -1,0 +1,52 @@
+---
+import BrowserBar from './BrowserBar.astro';
+import CollabMark from './CollabMark.astro';
+
+interface Props {
+  caption: string;
+}
+
+const { caption } = Astro.props;
+const base = '/projects/kkugi/collab';
+const tiles = [
+  { file: 'landing-scroll-01.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-02.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-03.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-04.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-05.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-06.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-07.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-08.webp', width: 1440, height: 1800 },
+  { file: 'landing-scroll-09.webp', width: 1440, height: 1161 },
+];
+const lead =
+  '꾸기 랜딩 페이지를 데스크톱 폭으로 위에서 아래까지 이어 붙인 화면. 문이 열리며 꾸기가 등장하는 첫 장면, 사진 카드가 격자로 모여 꾸준히기록이 되는 장면, 알림 예시, 주간 리포트 예시, 하루 곳곳의 꾸기, 내려받기 영역 순서다.';
+---
+
+<figure class="wide lp-fig rv" data-component="LandingScrollFrame">
+  <div class="browser lp-frame">
+    <BrowserBar url="kkugi.duckdns.org" />
+    <div class="lp-view">
+      <div class="lp-scroll" tabindex="0" role="region" aria-label="꾸기 랜딩 페이지 전체 화면. 스크롤해서 끝까지 볼 수 있다.">
+        {
+          tiles.map((tile, index) => (
+            <img
+              src={`${base}/${tile.file}`}
+              width={tile.width}
+              height={tile.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              alt={index === 0 ? lead : ''}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <figcaption class="fig-cap">{caption}</figcaption>
+  <div class="lp-actions">
+    <a class="pill-btn" href="https://kkugi.duckdns.org/" target="_blank" rel="noopener noreferrer">
+      새 탭에서 열기<CollabMark name="out" />
+    </a>
+  </div>
+</figure>

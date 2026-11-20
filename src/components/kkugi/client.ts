@@ -1,4 +1,5 @@
 import type { ChatTurn } from './chat';
+import { enhanceCollab } from './collab';
 import type { termDefs } from './terms';
 
 function reveal(root: ParentNode): void {
@@ -409,4 +410,5 @@ export function enhanceKkugi(): void {
   tray(root);
   replay(root);
   pills(root);
+  enhanceCollab(root);
 }

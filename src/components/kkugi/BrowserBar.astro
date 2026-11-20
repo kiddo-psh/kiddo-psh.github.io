@@ -1,0 +1,15 @@
+---
+import CollabMark from './CollabMark.astro';
+
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+---
+
+<div class="browser-bar">
+  <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="browser-url"><CollabMark name="lock" />{url}</span>
+  <span class="spacer" aria-hidden="true"></span>
+</div>
