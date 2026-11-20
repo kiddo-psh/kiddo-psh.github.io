@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+
+interface Item {
+  icon: 'flask-conical' | 'clipboard-check' | 'code' | 'server';
+  title: string;
+  body: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="lessons" data-component="LessonCards">
+  {
+    items.map((item) => (
+      <li class="card lesson rv">
+        <span class="ic">
+          <Icon name={item.icon} size={22} />
+        </span>
+        <h4>{item.title}</h4>
+        <p>{item.body}</p>
+      </li>
+    ))
+  }
+</ul>

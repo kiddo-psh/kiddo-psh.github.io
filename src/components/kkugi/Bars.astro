@@ -1,0 +1,53 @@
+---
+interface Row {
+  label: string;
+  /** 축 기준 막대 길이, 0–100 */
+  pct: number;
+  display: string;
+  tone: 'strong' | 'mid' | 'soft';
+  highlight?: boolean;
+}
+
+interface Props {
+  title: string;
+  rows: Row[];
+  axis?: string[];
+  caption?: string;
+  columns?: string;
+  bare?: boolean;
+}
+
+const { title, rows, axis, caption, columns, bare = false } = Astro.props;
+const rowStyle = columns ? `grid-template-columns:${columns}` : undefined;
+---
+
+<figure class:list={['fig', 'card', 'chart-card', 'rv', { bare }]} data-component="BarChart">
+  <p class="fig-title">{title}</p>
+  <ul class="bars">
+    {
+      rows.map((row) => (
+        <li class:list={['bar-row', { hl: row.highlight }]} style={rowStyle}>
+          <span class="bl">{row.label}</span>
+          <span class="track">
+            <span class:list={['fill', row.tone === 'mid' ? undefined : row.tone]} style={`--w:${row.pct}%`} />
+          </span>
+          <span class="bv num">{row.display}</span>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    axis && (
+      <div class="axis">
+        <span />
+        <span class="ticks num">
+          {axis.map((tick) => (
+            <span>{tick}</span>
+          ))}
+        </span>
+        <span />
+      </div>
+    )
+  }
+  {caption && <p class="fig-cap">{caption}</p>}
+</figure>

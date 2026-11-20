@@ -1,0 +1,64 @@
+---
+interface Event {
+  date: string;
+  name: string;
+  result: string;
+  key?: boolean;
+  final?: boolean;
+  tag?: string;
+}
+
+interface Phase {
+  label: string;
+  events: Event[];
+}
+
+interface Legend {
+  kind: 'key' | 'final';
+  text: string;
+}
+
+interface Props {
+  label: string;
+  legend: Legend[];
+  phases: Phase[];
+}
+
+const { label, legend, phases } = Astro.props;
+---
+
+<div class="tl-legend">
+  {
+    legend.map((item) => (
+      <span>
+        <span class:list={['dot', item.kind === 'key' ? 'key' : 'filled']} />
+        <span>{item.text}</span>
+      </span>
+    ))
+  }
+</div>
+<div class="tl-frame" data-component="ScrollTimeline">
+  <div class="tl-scroll" tabindex="0" role="region" aria-label={label}>
+    <ol class="vtl" data-component="VerticalTimeline">
+      <span class="rail" aria-hidden="true"><i></i></span>
+      {
+        phases.map((phase) => (
+          <>
+            <li class="phase num">{phase.label}</li>
+            {phase.events.map((event) => (
+              <li class:list={['ev', { key: event.key, final: event.final }]}>
+                <div class="ev-top">
+                  <span class="date num">{event.date}</span>
+                  <p class="nm">{event.name}</p>
+                  {event.tag && <span class="tag">{event.tag}</span>}
+                </div>
+                <p class="rs">{event.result}</p>
+                <span class="dot" />
+              </li>
+            ))}
+          </>
+        ))
+      }
+    </ol>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import KkugiArticle from '../../components/kkugi/KkugiArticle.astro';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 export async function getStaticPaths() {
@@ -11,9 +12,10 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
+const rendered = project.data.essay ? null : await render(project);
+const Content = rendered?.Content;
 ---
 
 <ProjectLayout project={project}>
-  <Content />
+  {Content ? <Content /> : <KkugiArticle />}
 </ProjectLayout>

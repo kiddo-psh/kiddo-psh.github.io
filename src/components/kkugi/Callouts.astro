@@ -1,0 +1,25 @@
+---
+interface Item {
+  value: string;
+  key: string;
+  note: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="callouts rv" data-component="MetricCallouts">
+  {
+    items.map((item) => (
+      <div class="callout">
+        <p class="v num">{item.value}</p>
+        <p class="k">{item.key}</p>
+        <p class="n">{item.note}</p>
+      </div>
+    ))
+  }
+</div>

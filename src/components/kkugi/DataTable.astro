@@ -1,0 +1,28 @@
+---
+interface Props {
+  headers: string[];
+  rows: string[][];
+  scroll?: boolean;
+}
+
+const { headers, rows, scroll = false } = Astro.props;
+---
+
+<div class:list={['table-wrap', { scroll }]}>
+  <table>
+    <thead>
+      <tr>
+        {headers.map((header) => <th>{header}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            {row.map((cell) => <td>{cell}</td>)}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

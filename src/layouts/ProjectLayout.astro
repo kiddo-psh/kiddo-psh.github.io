@@ -23,7 +23,12 @@ const related = (d.relatedPosts ?? [])
   }));
 ---
 
-<BaseLayout title={d.title} description={d.summary} ogImage={d.cover ?? `/og/project-${project.id}.png`} backHref="/projects/" backLabel="프로젝트">
+<BaseLayout title={d.pageTitle ?? d.title} description={d.summary} ogImage={d.cover ?? `/og/project-${project.id}.png`} backHref="/projects/" backLabel="프로젝트" earlyScript={d.essay}>
+  {d.essay ? (
+    <article class="kkugi" data-pagefind-body>
+      <slot />
+    </article>
+  ) : (
   <article data-pagefind-body>
     <header class="doc-head">
       <h1>{d.title}</h1>
@@ -62,7 +67,8 @@ const related = (d.relatedPosts ?? [])
     <div class="prose"><slot /></div>
     <RelatedLinks title="관련 글" links={related} />
   </article>
-  <CodeCopy />
+  )}
+  {!d.essay && <CodeCopy />}
 </BaseLayout>
 
 <style>
