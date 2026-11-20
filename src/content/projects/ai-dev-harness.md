@@ -22,6 +22,7 @@ relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates
 cover: "/images/projects/ai-dev-harness/cover.png"
+logo: "/images/projects/ai-dev-harness/logo.png"
 headline: "AI 사용량과 테스트 근거를 작업에 연결하다"
 projectType: "개인 프로젝트 · AI 실행의 가시성과 신뢰성"
 cardRole: "사용량 정규화·작업 귀속·수집 복구·실행 근거 구현"
