@@ -1,5 +1,5 @@
 ---
-title: "Redis 원자성 — INCR만으로 동시 호출을 제한할 수 있을까"
+title: "INCR는 원자적이지만 GET 후 INCR는 원자적이지 않다"
 description: "명령 하나의 원자성과 GET→판단→INCR 전체의 원자성을 구분합니다. 두 요청이 한 자리를 동시에 봤을 때 생기는 문제와 Lua 스크립트의 역할을 정리합니다."
 pubDate: "2026-11-09T09:02:00+09:00"
 category: cs
