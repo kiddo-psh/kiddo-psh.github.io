@@ -33,7 +33,7 @@
 .kkugi .chart-card.stepper-card { padding: 22px 18px 18px; }
 .kkugi .glossary.follow { margin-top: 20px; }
 .kkugi p.spaced { margin-top: 28px; }
-.kkugi .ts-head + .fig { margin-top: 0; }
+.kkugi .ts-head + .fig, .kkugi .ts-note + .fig { margin-top: 0; }
 
 /* 꾸기 프로젝트 글 미리보기 — 쿨톤 1 · 헤더 B · jakub 타이포 */
 .kkugi .num {
@@ -258,11 +258,16 @@
  grid-template-columns: 148px minmax(0, 1fr) 140px; }
 /* —— Testset headline —— */
 .kkugi .ts-head {
- display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 12px; }
+ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 12px; }
 .kkugi .ts-stat {
- padding: 16px 18px; }
+ min-width: 0; padding: 16px 18px; }
+.kkugi .ts-stat .k,
+.kkugi .ts-stat .n {
+ overflow-wrap: break-word; }
 .kkugi .ts-stat .k {
- margin: 0 0 8px; color: var(--secondary); font-size: 0.875rem; font-weight: 500; }
+ margin: 0 0 8px; color: var(--secondary); font-size: 0.875rem; font-weight: 500; line-height: 1.45; }
+.kkugi .ts-note {
+ margin: 4px 0 16px; }
 .kkugi .ts-stat .v {
  margin: 0; font-size: 1.875rem; font-weight: 550; letter-spacing: -0.03em; line-height: 1.1; }
 .kkugi .ts-stat .n {

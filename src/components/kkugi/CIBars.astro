@@ -18,9 +18,10 @@ interface Row {
 interface Props {
   headline: Headline[];
   rows: Row[];
+  note?: string;
 }
 
-const { headline, rows } = Astro.props;
+const { headline, rows, note } = Astro.props;
 ---
 
 <div data-component="TestsetSummary">
@@ -35,8 +36,9 @@ const { headline, rows } = Astro.props;
       ))
     }
   </div>
+  {note && <p class="ts-note">{note}</p>}
   <figure class="fig card chart-card rv" data-component="CIBarChart">
-    <p class="fig-title">음식 개수별 top-3 · 95% 신뢰구간</p>
+    <p class="fig-title">음식 개수별 끝단 top-3 · 95% 신뢰구간</p>
     <ul class="bars">
       {
         rows.map((row) => (

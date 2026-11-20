@@ -16,9 +16,9 @@ interface Item {
   /** 값 뒤에 붙는 분수. 예: /48 */
   suffix?: string;
   arrow?: boolean;
-  label: string;
+  label: string | ChipPart[];
   chips: (string | ChipPart[])[];
-  caption: string;
+  caption: string | ChipPart[];
 }
 
 interface Props {
@@ -44,7 +44,11 @@ const { items } = Astro.props;
           {item.unit && <span class="unit">{item.unit}</span>}
           {item.suffix && <span class="from">{item.suffix}</span>}
         </p>
-        <p class="label">{item.label}</p>
+        <p class="label">
+          {typeof item.label === 'string'
+            ? item.label
+            : item.label.map((part) => (part.nowrap ? <span class="nowrap">{part.text}</span> : part.text))}
+        </p>
         <div class="sub">
           {item.chips.map((chip) => (
             <span class="tag">
@@ -54,7 +58,11 @@ const { items } = Astro.props;
             </span>
           ))}
         </div>
-        <p class="cap">{item.caption}</p>
+        <p class="cap">
+          {typeof item.caption === 'string'
+            ? item.caption
+            : item.caption.map((part) => (part.nowrap ? <span class="nowrap">{part.text}</span> : part.text))}
+        </p>
       </section>
     ))
   }
