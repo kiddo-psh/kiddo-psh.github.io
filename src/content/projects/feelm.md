@@ -19,6 +19,7 @@ relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates
 cover: "/images/projects/feelm/cover.png"
+logo: "/images/projects/feelm/logo.png"
 headline: "인증 실패를 다루고 추천 목업을 실제 API에 연결하다"
 projectType: "7인 팀 · SSAFY 2학기 특화 프로젝트"
 cardRole: "계정·인증 백엔드 / 프론트엔드 API 연동"

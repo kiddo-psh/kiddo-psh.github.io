@@ -80,7 +80,7 @@ export const portfolioCases: PortfolioCase[] = [
     links:[{href:'/projects/yumyum', label:'상세 기록'}],
   },
   {
-    id:'baro', number:'02', title:'주차바로', period:'2026.07 ~ 2026.08',
+    id:'baro', number:'02', title:'주차바로', period:'2026.07 ~ 2026.08', logo:'/images/projects/baro/logo.png',
     summary:'AI 엣지 디바이스가 아파트 주차 위반을 감지하고, 개인정보 노출 없이 이동 요청부터 이동 확인까지 중계하는 서비스',
     team:'7명 · AI 판정 파이프라인 (25%)',
     award:'SSAFY 2학기 공통 프로젝트 우수상 (6팀 중 2등)',
