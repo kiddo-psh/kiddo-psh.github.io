@@ -1,4 +1,5 @@
 import type { ChatTurn } from './chat';
+import type { termDefs } from './terms';
 
 function reveal(root: ParentNode): void {
   const targets = root.querySelectorAll('.rv, .chart-card, .budget, .vtl, .stepper, .pipe, .callouts, .stack-list');
@@ -41,6 +42,7 @@ function timelines(root: ParentNode): void {
     if (document.fonts) document.fonts.ready.then(update);
     update();
     box.addEventListener('keydown', (event) => {
+      if (event.target instanceof Element && event.target.closest('button, a, input, textarea')) return;
       const line = 48;
       const page = box.clientHeight * 0.85;
       let top: number | null = null;
@@ -92,23 +94,116 @@ function tray(root: ParentNode): void {
   });
 }
 
-function video(root: ParentNode): void {
-  const final = document.documentElement.classList.contains('final');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  root.querySelectorAll('video').forEach((node) => {
-    if (final) {
-      node.removeAttribute('autoplay');
-      node.pause();
-      node.preload = 'none';
-      node.load();
-      return;
-    }
-    if (reduce) {
-      node.removeAttribute('autoplay');
-      node.pause();
-      node.controls = true;
-    }
+function bindTerms(root: ParentNode): void {
+  const data = root.querySelector('#kkugi-terms');
+  if (!(data instanceof HTMLScriptElement)) return;
+  const terms = JSON.parse(data.textContent || '[]') as typeof termDefs;
+  let open: HTMLButtonElement | null = null;
+  let suppressFocus = false;
+
+  const place = (button: HTMLButtonElement) => {
+    const pop = document.getElementById(button.getAttribute('aria-controls') || '');
+    if (!(pop instanceof HTMLElement)) return;
+    const rect = button.getBoundingClientRect();
+    const margin = 12;
+    const width = pop.offsetWidth;
+    const height = pop.offsetHeight;
+    let left = rect.left;
+    let top = rect.bottom + 8;
+    if (left + width > window.innerWidth - margin) left = window.innerWidth - margin - width;
+    if (left < margin) left = margin;
+    if (top + height > window.innerHeight - margin && rect.top - height - 8 > margin) top = rect.top - height - 8;
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
+  };
+  const close = (button: HTMLButtonElement) => {
+    const pop = document.getElementById(button.getAttribute('aria-controls') || '');
+    button.setAttribute('aria-expanded', 'false');
+    if (pop) pop.hidden = true;
+    if (open === button) open = null;
+  };
+  const show = (button: HTMLButtonElement) => {
+    if (open && open !== button) close(open);
+    const pop = document.getElementById(button.getAttribute('aria-controls') || '');
+    if (!(pop instanceof HTMLElement)) return;
+    pop.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    open = button;
+    place(button);
+  };
+
+  terms.forEach((term, index) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('script, style, button, .term-pop, .chat-log, .sr-only')) return NodeFilter.FILTER_REJECT;
+        if (!node.nodeValue?.includes(term.match)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const node = walker.nextNode();
+    if (!(node instanceof Text) || node.nodeValue == null) return;
+    const at = node.nodeValue.indexOf(term.match);
+    const before = node.nodeValue.slice(0, at);
+    const after = node.nodeValue.slice(at + term.match.length);
+    const popId = `kkugi-term-${index}`;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'term';
+    button.textContent = term.match;
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-controls', popId);
+    button.setAttribute('aria-describedby', popId);
+    const pop = document.createElement('span');
+    pop.id = popId;
+    pop.className = 'term-pop';
+    pop.role = 'note';
+    pop.hidden = true;
+    pop.textContent = term.desc;
+    const parent = node.parentNode;
+    if (!parent) return;
+    if (before) parent.insertBefore(document.createTextNode(before), node);
+    parent.insertBefore(button, node);
+    parent.insertBefore(pop, node);
+    node.nodeValue = after;
+    let fromPointer = false;
+    button.addEventListener('pointerdown', () => {
+      fromPointer = true;
+    });
+    button.addEventListener('focus', () => {
+      if (suppressFocus || fromPointer) return;
+      show(button);
+    });
+    button.addEventListener('click', () => {
+      if (button.getAttribute('aria-expanded') === 'true') close(button);
+      else show(button);
+      fromPointer = false;
+    });
   });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!open) return;
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    const pop = document.getElementById(open.getAttribute('aria-controls') || '');
+    if (open.contains(target) || pop?.contains(target)) return;
+    close(open);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !open) return;
+    const button = open;
+    suppressFocus = true;
+    close(button);
+    button.focus();
+    suppressFocus = false;
+  });
+  window.addEventListener('resize', () => {
+    if (open) place(open);
+  });
+  document.addEventListener('scroll', () => {
+    if (open) place(open);
+  }, { capture: true, passive: true });
 }
 
 function replay(root: ParentNode): void {
@@ -280,9 +375,9 @@ function replay(root: ParentNode): void {
 export function enhanceKkugi(): void {
   const root = document.querySelector('.kkugi');
   if (!root) return;
+  bindTerms(root);
   reveal(root);
   timelines(root);
   tray(root);
-  video(root);
   replay(root);
 }
