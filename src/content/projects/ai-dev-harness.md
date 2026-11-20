@@ -17,7 +17,7 @@ stack:
   - Grafana
 repo: "https://github.com/kiddo-psh/ai-dev-harness"
 featured: true
-order: 4
+order: 3
 relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates

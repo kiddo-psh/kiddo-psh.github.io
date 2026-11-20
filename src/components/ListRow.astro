@@ -4,13 +4,16 @@ interface Props {
   title: string;
   meta: string;
   mark?: string;
+  logo?: string;
 }
-const { href, title, meta, mark } = Astro.props;
+const { href, title, meta, mark, logo } = Astro.props;
 ---
 
 <a class="row" href={href}>
-  <span class="thumb" aria-hidden="true">
-    {mark ? (
+  <span class={logo ? 'thumb has-logo' : 'thumb'} aria-hidden="true">
+    {logo ? (
+      <img class="logo" src={logo} alt="" width="40" height="40" loading="lazy" decoding="async" />
+    ) : mark ? (
       <span class="glyph">{mark}</span>
     ) : (
       <span class="skel"><i></i><i></i><i></i></span>
@@ -47,6 +50,8 @@ const { href, title, meta, mark } = Astro.props;
       0 5px 12px rgb(24 25 26 / 0.06),
       inset 0 0 0 1px #e4e7ea;
   }
+  .thumb.has-logo { height: 40px; background: none; box-shadow: none; }
+  .logo { display: block; width: 40px; height: 40px; }
   .skel { display: flex; flex-direction: column; gap: 3px; width: 22px; }
   .skel i { display: block; height: 3px; border-radius: 99px; background: #e3e6e9; }
   .skel i:nth-child(1) { width: 14px; }
