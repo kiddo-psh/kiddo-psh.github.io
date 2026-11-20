@@ -122,7 +122,7 @@ export const portfolioCases: PortfolioCase[] = [
     links:[{href:'/projects/baro', label:'상세 기록'}],
   },
   {
-    id:'ai-dev-harness', number:'03', title:'ai-dev-harness', period:'2026.09 ~ 2026.10',
+    id:'ai-dev-harness', number:'03', title:'ai-dev-harness', period:'2026.09 ~ 2026.10', logo:'/images/projects/ai-dev-harness/logo.png',
     summary:'팀의 AI 에이전트 개발 절차를 다른 저장소에 설치하는 가드레일 키트',
     team:'개인 프로젝트 · 설계·구현·측정 (100%)',
     roles:['규칙 문서·양식·hooks 생성 CLI','보호 경로 승인·CI 검사','팀 MR 판정 기록','AgentOps 사용량 리포트'],
