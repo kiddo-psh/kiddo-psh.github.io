@@ -31,9 +31,9 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
         <p class="pf-intro">평가셋과 계측 도구를 직접 만들어 설계 판단을 숫자로 확인합니다.</p>
         <p class="pf-status">SSAFY 15기 (2026.12 수료 예정) · 경희대학교 생체의공학과</p>
         <div class="pf-contact">
-          <a href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
-          <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
-          <button type="button" id="portfolio-print"><Printer size={15} />PDF로 저장</button>
+          <a href={`mailto:${SITE.links.email}`}><Mail size={16} stroke-width={2} absoluteStrokeWidth />{SITE.links.email}</a>
+          <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} stroke-width={2} absoluteStrokeWidth /></a>
+          <button type="button" id="portfolio-print"><Printer size={15} stroke-width={2} absoluteStrokeWidth />PDF로 저장</button>
         </div>
       </div>
     </header>
@@ -118,8 +118,8 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
             <p class="boundary">※ {p.boundary}</p>
             <span class="case-links">
               {p.links.map(l => l.external
-                ? <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}<ArrowUpRight size={15} /></a>
-                : <a href={l.href}>{l.label}<ArrowRight size={15} /></a>)}
+                ? <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}<ArrowUpRight size={15} stroke-width={2} absoluteStrokeWidth /></a>
+                : <a href={l.href}>{l.label}<ArrowRight size={15} stroke-width={2} absoluteStrokeWidth /></a>)}
             </span>
           </footer>
         </article>
@@ -163,8 +163,8 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
     </div>
 
     <footer class="pf-end">
-      <a href={`mailto:${SITE.links.email}`}><Mail size={16} />{SITE.links.email}</a>
-      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} /></a>
+      <a href={`mailto:${SITE.links.email}`}><Mail size={16} stroke-width={2} absoluteStrokeWidth />{SITE.links.email}</a>
+      <a href={SITE.links.github} target="_blank" rel="noopener noreferrer">GitHub<ArrowUpRight size={15} stroke-width={2} absoluteStrokeWidth /></a>
     </footer>
   </div>
 </BaseLayout>
@@ -174,7 +174,7 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
 </script>
 
 <style>
-  .pf { padding-bottom: 8px; color: var(--text-body); font-size: 16px; line-height: 1.7; }
+  .pf { padding-bottom: 8px; color: var(--text-body); font-size: 1rem; line-height: 1.6; }
   .pf h1, .pf h2, .pf h3, .pf h4, .pf h5, .pf p, .pf ul, .pf ol, .pf dl, .pf dd, .pf figure { margin: 0; }
   .pf a:not(.row) {
     color: inherit;
@@ -196,14 +196,14 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
   }
   .pf-photo { grid-column: 2; grid-row: 1; width: 96px; height: auto; border-radius: 8px; }
   .pf-head-text { grid-column: 1; grid-row: 1; min-width: 0; }
-  .pf-name { margin-bottom: 8px; color: var(--text); font-size: 17px; font-weight: 500; }
-  .pf h1 { color: var(--text); font-size: 17px; font-weight: 550; line-height: 1.55; }
-  .pf-intro { margin-top: 10px; color: var(--text-body); font-size: 16px; }
-  .pf-status { margin-top: 6px; color: var(--text-dim); font-size: 14px; }
-  .pf-contact { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 16px; font-size: 14px; }
+  .pf-name { margin-bottom: 8px; color: var(--text); font-size: 1.0625rem; font-weight: 500; }
+  .pf h1 { color: var(--text); font-size: 1.5rem; font-weight: 650; line-height: 1.3; letter-spacing: -0.015em; text-wrap: balance; }
+  .pf-intro { margin-top: 10px; color: var(--text-body); font-size: 1rem; }
+  .pf-status { margin-top: 6px; color: var(--text-dim); font-size: 0.875rem; }
+  .pf-contact { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 16px; font-size: 0.875rem; }
   #portfolio-print {
     padding: 0; border: 0; background: none; color: var(--text-dim);
-    font: inherit; font-size: 14px; cursor: pointer;
+    font: inherit; font-size: 0.875rem; cursor: pointer;
     text-decoration: underline; text-decoration-color: var(--link-line); text-underline-offset: 3px;
   }
   #portfolio-print:hover { color: var(--text); text-decoration-color: var(--text); }
@@ -214,38 +214,39 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--hair);
     color: var(--text);
-    font-size: 17px;
-    font-weight: 500;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
   }
 
   .highlights { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
   .highlights li { border-bottom: 1px solid var(--divider); }
   .pf .highlights a { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 0; text-decoration: none; }
   .pf .highlights a:hover { text-decoration: none; }
-  .h-label { font-size: 13px; color: var(--text-dim); }
-  .highlights strong { color: var(--text); font-size: 17px; font-weight: 550; font-variant-numeric: tabular-nums; }
-  .h-from { font-size: 13px; color: var(--text-dim); }
+  .h-label { font-size: 0.8125rem; color: var(--text-dim); }
+  .highlights strong { color: var(--text); font-size: 1.0625rem; font-weight: 550; font-variant-numeric: tabular-nums; }
+  .h-from { font-size: 0.8125rem; color: var(--text-dim); }
 
   .case { padding-top: 64px; scroll-margin-top: 24px; }
   .case-head {
     display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
     gap: 4px 16px; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--hair);
   }
-  .case h3 { color: var(--text); font-size: 17px; font-weight: 550; line-height: 1.45; }
-  .case-num { margin-right: 8px; color: var(--text-dim); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
-  .case-date { color: var(--text-dim); font-size: 13px; font-variant-numeric: tabular-nums; }
-  .case-summary { color: var(--text); font-size: 16px; font-weight: 500; line-height: 1.6; }
-  .case-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px !important; color: var(--text-dim); font-size: 14px; }
+  .case h3 { color: var(--text); font-size: 1.125rem; font-weight: 650; line-height: 1.3; }
+  .case-num { margin-right: 8px; color: var(--text-dim); font-size: 0.8125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .case-date { color: var(--text-dim); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+  .case-summary { color: var(--text); font-size: 1rem; font-weight: 500; line-height: 1.6; }
+  .case-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px !important; color: var(--text-dim); font-size: 0.875rem; }
   .case-award { color: var(--text); }
 
   .roles { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 14px !important; }
-  .roles li { color: var(--text-dim); font-size: 14px; }
+  .roles li { color: var(--text-dim); font-size: 0.875rem; }
 
   .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0 20px; margin-top: 18px !important; border-top: 1px solid var(--hair); }
   .metrics > div { padding: 12px 0; border-bottom: 1px solid var(--divider); }
-  .metrics dt { font-size: 13px; color: var(--text-dim); }
-  .m-value { color: var(--text); font-size: 17px; font-weight: 550; line-height: 1.4; font-variant-numeric: tabular-nums; }
-  .m-note { font-size: 13px; color: var(--text-dim); }
+  .metrics dt { font-size: 0.8125rem; color: var(--text-dim); }
+  .m-value { color: var(--text); font-size: 1.0625rem; font-weight: 550; line-height: 1.4; font-variant-numeric: tabular-nums; }
+  .m-note { font-size: 0.8125rem; color: var(--text-dim); }
 
   .case-figure { margin-top: 18px !important; }
   .case-figure img, .svg-wrap {
@@ -253,24 +254,24 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
   }
   .svg-wrap { padding: 8px; }
   .svg-wrap :global(svg) { display: block; width: 100%; height: auto; }
-  .case-figure figcaption { margin-top: 8px; font-size: 13px; color: var(--text-dim); }
+  .case-figure figcaption { margin-top: 8px; font-size: 0.8125rem; color: var(--text-dim); }
 
   .sol-heading {
     margin-top: 36px !important; padding-top: 16px; border-top: 1px solid var(--hair);
-    color: var(--text); font-size: 17px; font-weight: 550;
+    color: var(--text); font-size: 1.0625rem; font-weight: 600; line-height: 1.3;
   }
   .sol { margin-top: 20px; }
   .sol + .sol { padding-top: 20px; border-top: 1px solid var(--divider); }
-  .sol h5 { color: var(--text); font-size: 16px; font-weight: 550; line-height: 1.5; margin-bottom: 8px !important; }
+  .sol h5 { color: var(--text); font-size: 1rem; font-weight: 650; line-height: 1.3; margin-bottom: 8px !important; }
   .sol h5 span { color: var(--text-dim); margin-right: 8px; font-weight: 500; }
   .sar > div { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 6px 0; }
-  .sar dt { color: var(--text-dim); font-size: 14px; font-weight: 500; }
+  .sar dt { color: var(--text-dim); font-size: 0.875rem; font-weight: 500; }
   .sar ul { padding-left: 18px; }
   .sar li + li { margin-top: 4px; }
   .sar li::marker { color: var(--text-dim); }
 
   .compare { margin-top: 12px !important; max-width: 520px; }
-  .compare figcaption { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 13px; color: var(--text-dim); }
+  .compare figcaption { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 0.8125rem; color: var(--text-dim); }
   .compare figcaption span { display: inline-flex; align-items: center; gap: 6px; }
   .compare i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
   .compare i.k-after { margin-left: 8px; }
@@ -278,12 +279,12 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
   .k-after, .bar.after { background: var(--text); }
   .cmp-row { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; align-items: center; }
   .cmp-row + .cmp-row { margin-top: 8px; }
-  .cmp-label { font-size: 13px; color: var(--text-dim); }
+  .cmp-label { font-size: 0.8125rem; color: var(--text-dim); }
   .cmp-bars { display: grid; gap: 3px; padding-right: 52px; }
   .bar { position: relative; height: 8px; border-radius: 99px; }
   .bar b {
     position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%);
-    font-size: 12px; font-weight: 500; color: var(--text-dim); white-space: nowrap; font-variant-numeric: tabular-nums;
+    font-size: 0.75rem; font-weight: 500; color: var(--text-dim); white-space: nowrap; font-variant-numeric: tabular-nums;
   }
   .bar.after b { color: var(--text); }
 
@@ -291,19 +292,19 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
     display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
     gap: 8px 20px; margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--divider);
   }
-  .boundary { flex: 1 1 240px; font-size: 13px; color: var(--text-dim); }
-  .case-links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
+  .boundary { flex: 1 1 240px; font-size: 0.8125rem; color: var(--text-dim); }
+  .case-links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.875rem; }
 
   .rows > div { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-top: 1px solid var(--divider); }
   .rows > div:last-child { border-bottom: 1px solid var(--divider); }
-  .rows dt { color: var(--text); font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; }
-  .rows dd { font-size: 15px; }
+  .rows dt { color: var(--text); font-size: 0.875rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .rows dd { font-size: 0.9375rem; }
   .rows.compact > div { grid-template-columns: 72px minmax(0, 1fr); }
   .rows.compact dt { color: var(--text-dim); font-weight: 400; }
   .pf-split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
   .pf-end {
     display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 48px; padding-top: 16px;
-    border-top: 1px solid var(--hair); font-size: 14px;
+    border-top: 1px solid var(--hair); font-size: 0.875rem;
   }
 
   @media (max-width: 640px) {

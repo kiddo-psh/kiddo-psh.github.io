@@ -2,9 +2,9 @@
 .page,.page-wide { padding-inline:clamp(20px,3.8vw,52px); }
 .page.w-doc,.page.w-read { margin-inline:auto; }
 .serif,.page-title { font-family:var(--font-sans); }
-.page-title { margin-top:clamp(42px,6vw,82px); font-size:clamp(34px,4vw,56px); font-weight:600; letter-spacing:-.055em; }
-.prose { font-size:18px; line-height:1.85; min-width:0; }
+.page-title { margin-top:clamp(42px,6vw,82px); font-size: clamp(2.125rem,4vw,3.5rem); font-weight:600; letter-spacing:-.055em; }
+.prose { font-size: 1.125rem; line-height:1.85; min-width:0; }
 .prose h2 { letter-spacing:-.035em; }
 .chip { background:var(--code-bg); border-color:transparent; padding:8px 16px; }
 .chip.on,.chip[aria-pressed='true'] { color:var(--bg); background:var(--text); }
-@media(max-width:700px) { .prose { font-size:17px; } }
+@media(max-width:700px) { .prose { font-size: 1.0625rem; } }

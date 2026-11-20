@@ -23,7 +23,7 @@ const { href, title, meta, mark, logo } = Astro.props;
     <span class="ttl">{title}</span>
     <span class="meta">{meta}</span>
   </span>
-  <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M9 6l6 6-6 6"></path>
   </svg>
 </a>
@@ -57,11 +57,11 @@ const { href, title, meta, mark, logo } = Astro.props;
   .skel i:nth-child(1) { width: 14px; }
   .skel i:nth-child(2) { width: 22px; }
   .skel i:nth-child(3) { width: 10px; }
-  .glyph { color: #18191a; font-size: 13px; font-weight: 500; line-height: 1; }
+  .glyph { color: #18191a; font-size: 0.8125rem; font-weight: 500; line-height: 1; }
   .ttl {
     display: block;
     color: #18191a;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 450;
     line-height: 1.45;
   }
@@ -70,7 +70,7 @@ const { href, title, meta, mark, logo } = Astro.props;
     margin-top: 2px;
     overflow: hidden;
     color: #6c6e70;
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.45;
     text-overflow: ellipsis;
     white-space: nowrap;
