@@ -86,6 +86,21 @@ const isOn = (href: string) => path === href || path.startsWith(`${href}/`);
     return true;
   }
 
+  const back = document.querySelector('header a.back');
+  if (back instanceof HTMLAnchorElement && document.referrer) {
+    try {
+      const from = new URL(document.referrer);
+      const fromHome = from.origin === location.origin && (from.pathname === '/' || from.pathname === '');
+      const toProjects = back.pathname.replace(/\/+$/, '') === '/projects';
+      if (fromHome && toProjects) {
+        back.href = '/';
+        back.setAttribute('aria-label', '홈');
+      }
+    } catch {
+      // referrer가 URL이 아니면 목록으로 둔다.
+    }
+  }
+
   window.addEventListener('keydown', (event) => {
     if (event.key.toLowerCase() !== 'k' || !(event.ctrlKey || event.metaKey) || event.altKey) return;
     event.preventDefault();
