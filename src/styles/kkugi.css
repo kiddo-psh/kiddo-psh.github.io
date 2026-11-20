@@ -5,7 +5,18 @@
   --hairline: var(--divider);
   --hairline-strong: var(--hair);
   --track: var(--back);
-  --card: #f4f6f8;
+  /* 카드 면은 minimal-article.css 의 --mx-* 를 그대로 쓴다. 페이지 배경(--bg)은 그대로 둔다. */
+  --card: var(--mx-surface);
+  --card-soft: var(--mx-surface-soft);
+  --card-radius: var(--mx-radius);
+  --card-radius-inner: 8px;
+  --card-shadow: var(--mx-shadow);
+  --card-border: 1px solid transparent;
+  --pill-radius: var(--radius-pill);
+  --stat-num: 1.75rem;
+  --stat-num-weight: 600;
+  --stat-label: 0.875rem;
+  --stat-note: 0.875rem;
   --ink-soft: var(--link-line);
   --mono: var(--font-mono);
   --col: var(--w-col);
@@ -45,7 +56,7 @@
 .kkugi strong {
  color: var(--text); font-weight: 650; }
 .kkugi code {
- font-family: var(--mono); font-size: 0.875rem; background: var(--card); border: 1px solid var(--hairline); border-radius: 5px; padding: .08em .32em; }
+ font-family: var(--mono); font-size: 0.875rem; background: var(--card); border: 0; box-shadow: 0 0 0 1px var(--hairline-strong); border-radius: 6px; padding: .08em .32em; }
 .kkugi ol:not([class]), .kkugi ul.plain {
  margin: 0 0 1.25em; padding-left: 1.3em; color: var(--paragraph); }
 .kkugi ol:not([class]) > li, .kkugi ul.plain > li {
@@ -68,7 +79,7 @@
 }
 /* —— Glossary (details) —— */
 .kkugi .glossary {
- margin: 4px 0 28px; border: 1px solid var(--hairline-strong); border-radius: 12px; background: transparent; }
+ margin: 4px 0 28px; border: var(--card-border); border-radius: var(--card-radius); background: var(--card); box-shadow: var(--card-shadow); }
 .kkugi .glossary summary {
 
   list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
@@ -94,13 +105,17 @@
  margin: 0; color: var(--paragraph); font-size: 0.9375rem; line-height: 1.6; }
 /* —— Tables —— */
 .kkugi .table-wrap {
- margin: 8px 0 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+ margin: 8px 0 24px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+ background: var(--card); border: var(--card-border); border-radius: var(--card-radius);
+ box-shadow: var(--card-shadow); padding: 6px 8px 8px; }
 .kkugi table {
- width: 100%; border-collapse: collapse; font-size: 0.9375rem; line-height: 1.55; }
+ width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.9375rem; line-height: 1.55; }
 .kkugi th {
- text-align: left; color: var(--secondary); font-weight: 500; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--hairline-strong); white-space: nowrap; }
+ text-align: left; color: var(--secondary); font-weight: 500; padding: 8px 12px; border-bottom: 1px solid var(--hairline-strong); white-space: nowrap; background: transparent; }
 .kkugi td {
- color: var(--paragraph); padding: 10px 12px 10px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+ color: var(--paragraph); padding: 10px 12px; border-bottom: 0; vertical-align: top; }
+.kkugi td.num, .kkugi th.num {
+ text-align: right; font-variant-numeric: tabular-nums; }
 .kkugi td:first-child {
  color: var(--text); font-weight: 500; }
 .kkugi tr:last-child td {
@@ -109,7 +124,7 @@
  min-width: 560px; }
 /* —— Card base —— */
 .kkugi .card {
- background: var(--card); border: 1px solid var(--hairline-strong); border-radius: 12px; }
+ background: var(--card); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
 .kkugi .fig {
  margin: 20px 0 28px; }
 .kkugi .fig-cap {
@@ -117,50 +132,50 @@
 .kkugi .fig-title {
  margin: 0 0 12px; color: var(--text); font-size: 0.9375rem; font-weight: 600; }
 .kkugi .tag {
- display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border: 1px solid var(--hairline-strong); border-radius: 999px; color: var(--secondary); font-size: 0.875rem; font-weight: 500; line-height: 1; white-space: nowrap; background: var(--bg); }
+ display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border: 0; border-radius: var(--pill-radius); color: var(--secondary); font-size: 0.875rem; font-weight: 500; line-height: 1; white-space: nowrap; background: transparent; box-shadow: inset 0 0 0 1px var(--hairline-strong); }
 .kkugi .tag.dark {
- background: var(--text); color: #fff; border-color: var(--text); }
+ background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--text) 28%, transparent); }
 .kkugi .need {
  color: #8a5a00; background: #fff6e0; border: 1px dashed #e0b860; border-radius: 6px; padding: 0 6px; font-size: 0.875rem; font-weight: 500; }
 /* —— 1. Hero result cards —— */
 .kkugi .hero-grid {
- display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 20px; }
+ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 20px; }
 .kkugi .hcard {
- padding: 18px 18px 16px; display: flex; flex-direction: column; min-width: 0; }
+ padding: 18px 20px 16px; display: flex; flex-direction: column; min-width: 0; }
 .kkugi .hcard .tag {
- align-self: flex-start; margin-bottom: 16px; }
+ align-self: flex-start; margin-bottom: 14px; }
 .kkugi .hcard .value {
- margin: 0; font-size: 2.125rem; font-weight: 550; line-height: 1.1; letter-spacing: -0.03em; }
+ margin: 0; font-size: var(--stat-num); font-weight: var(--stat-num-weight); line-height: 1.2; letter-spacing: -0.015em; color: var(--text); }
 .kkugi .hcard .value .unit {
- font-size: 1.25rem; font-weight: 500; letter-spacing: -0.01em; margin-left: 2px; }
+ font-size: max(14px, 0.5357em); font-weight: 500; letter-spacing: 0; margin-left: 0.1em; color: var(--secondary); }
 .kkugi .hcard .value .arrow {
  display: inline-flex; vertical-align: middle; color: var(--secondary); margin: 0 6px; }
 .kkugi .hcard .value .arrow svg {
- width: 22px; height: 22px; }
+ width: 18px; height: 18px; }
 .kkugi .hcard .value .from {
  color: var(--secondary); font-weight: 500; }
 .kkugi .hcard .label {
- margin: 6px 0 0; font-size: 0.9375rem; font-weight: 550; color: var(--text); }
+ margin: 4px 0 0; font-size: var(--stat-label); font-weight: 400; line-height: 1.45; color: var(--paragraph); }
 .kkugi .hcard .sub {
  display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
 /* 서브 칩을 flex로 두면 용어 버튼 앞뒤 공백이 사라져 라벨과 값이 붙는다. */
 .kkugi .hcard .sub .tag {
  display: inline-block; height: auto; min-height: 24px; max-width: 100%; padding: 0 9px; line-height: 22px; white-space: normal; }
 .kkugi .hcard .cap {
- margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline-strong); color: var(--secondary); font-size: 0.875rem; line-height: 1.55; }
+ margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline); color: var(--secondary); font-size: var(--stat-note); line-height: 1.55; }
 /* —— Problem / solution —— */
 .kkugi .ps-grid {
- display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 24px; }
+ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 24px; }
 .kkugi .ps {
- padding: 18px; }
+ padding: 18px 20px; }
 .kkugi .ps .ps-head {
  display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 0.9375rem; font-weight: 600; }
 .kkugi .ps .ps-head svg {
- width: 18px; height: 18px; color: var(--secondary); }
+ display: none; }
 .kkugi .ps .stat-row {
  display: flex; gap: 20px; margin: 0 0 12px; }
 .kkugi .ps .stat b {
- display: block; font-size: 1.625rem; font-weight: 550; letter-spacing: -0.03em; line-height: 1.15; }
+ display: block; font-size: var(--stat-num); font-weight: var(--stat-num-weight); letter-spacing: -0.015em; line-height: 1.2; }
 .kkugi .ps .stat span {
  color: var(--secondary); font-size: 0.875rem; }
 .kkugi .ps ul {
@@ -168,9 +183,9 @@
 .kkugi .ps li {
  display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--hairline-strong); color: var(--paragraph); font-size: 0.9375rem; line-height: 1.55; }
 .kkugi .ps li svg {
- width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--text); }
+ display: none; }
 .kkugi .ps.problem {
- background: transparent; }
+ background: var(--card); }
 /* —— Service architecture mini —— */
 .kkugi .arch {
  display: flex; align-items: center; gap: 8px; margin: 8px 0 28px; }
@@ -186,17 +201,17 @@
  width: 18px; height: 18px; }
 /* —— Metric callouts —— */
 .kkugi .callouts {
- display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hairline-strong); border-bottom: 1px solid var(--hairline-strong); margin: 8px 0 24px; }
+ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border: 0; margin: 8px 0 24px; }
 .kkugi .callout {
- padding: 18px 16px 16px 0; min-width: 0; }
+ padding: 16px 18px 17px; min-width: 0; background: var(--card); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
 .kkugi .callout + .callout {
- padding-left: 16px; border-left: 1px solid var(--hairline); }
+ padding-left: 18px; border-left: var(--card-border); }
 .kkugi .callout .v {
- margin: 0; font-size: 2rem; font-weight: 550; letter-spacing: -0.03em; line-height: 1.1; }
+ margin: 0; font-size: var(--stat-num); font-weight: var(--stat-num-weight); letter-spacing: -0.015em; line-height: 1.2; color: var(--text); }
 .kkugi .callout .k {
- margin: 6px 0 0; font-size: 0.9375rem; font-weight: 550; }
+ margin: 4px 0 0; font-size: var(--stat-label); font-weight: 400; color: var(--paragraph); line-height: 1.45; }
 .kkugi .callout .n {
- margin: 2px 0 0; color: var(--secondary); font-size: 0.875rem; line-height: 1.5; }
+ margin: 2px 0 0; color: var(--secondary); font-size: var(--stat-note); line-height: 1.45; }
 /* —— Bars (generic) —— */
 .kkugi .bars {
  margin: 0; padding: 0; list-style: none; }
@@ -291,7 +306,7 @@
 .kkugi .pcard {
  min-width: 0; padding: 16px 14px 14px; display: flex; flex-direction: column; position: relative; }
 .kkugi .pcard .ic {
- width: 22px; height: 22px; margin: 0 0 12px; color: var(--text); }
+ width: 22px; height: 22px; margin: 0 0 12px; color: var(--secondary); }
 .kkugi .pcard .ic svg {
  width: 22px; height: 22px; display: block; }
 .kkugi .pcard .no {
@@ -301,13 +316,13 @@
 .kkugi .pcard .dt {
  margin: 4px 0 0; color: var(--secondary); font-size: 0.875rem; line-height: 1.45; }
 .kkugi .pcard.accent {
- background: #fff; border-color: #d5dade; box-shadow: 0 1px 2px rgba(24,25,26,.04); }
+ background: var(--card); border-color: transparent; box-shadow: var(--card-shadow); }
 .kkugi .chev {
  display: flex; align-items: center; justify-content: center; color: var(--secondary); }
 .kkugi .chev svg {
  width: 18px; height: 18px; display: block; }
 .kkugi .branch {
- display: flex; align-items: center; gap: 10px; margin: 12px 0 0; padding: 10px 14px; border: 1px dashed #cfd5da; border-radius: 12px; color: var(--paragraph); font-size: 0.875rem; line-height: 1.5; }
+ display: flex; align-items: center; gap: 10px; margin: 12px 0 0; padding: 10px 14px; border: 1px dashed var(--hairline-strong); border-radius: var(--card-radius); background: var(--card); color: var(--paragraph); font-size: 0.875rem; line-height: 1.5; }
 .kkugi .branch svg {
  width: 18px; height: 18px; flex: none; color: var(--secondary); }
 .kkugi .branch b {
@@ -332,15 +347,17 @@
 .kkugi .stepper {
  position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); column-gap: 16px; }
 .kkugi .stepper .line {
- position: absolute; top: 9px; left: 12.5%; right: 12.5%; height: 3px; background: var(--track); border-radius: 3px; }
+ position: absolute; top: 3.5px; left: 12.5%; right: 12.5%; height: 1px; background: var(--hairline-strong); border-radius: 1px; }
 .kkugi .stepper .line i {
- position: absolute; inset: 0; background: var(--text); border-radius: 3px; transform-origin: left center; }
+ position: absolute; inset: 0; background: var(--secondary); border-radius: 1px; transform-origin: left center; }
 .kkugi .stepper li.st {
  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
 .kkugi .dot {
- width: 20px; height: 20px; border-radius: 50%; border: 3px solid var(--text); background: var(--bg); flex: none; }
+ width: 8px; height: 8px; border-radius: 50%; border: 0; background: var(--card); box-shadow: inset 0 0 0 1.5px var(--secondary); flex: none; }
 .kkugi .dot.filled {
- background: var(--text); }
+ background: var(--text); box-shadow: none; }
+.kkugi .dot.key {
+ background: var(--card); box-shadow: inset 0 0 0 1.5px var(--text); }
 .kkugi .stepper .date {
  margin: 12px 0 2px; color: var(--secondary); font-size: 0.875rem; }
 .kkugi .stepper .nm {
@@ -371,16 +388,16 @@
 .kkugi .budget-legend .sw {
  width: 10px; height: 10px; border-radius: 3px; }
 .kkugi .formula {
- margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--hairline-strong); font-size: 0.875rem; color: var(--paragraph); line-height: 1.5; }
+ margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--card); border: var(--card-border); box-shadow: var(--card-shadow); font-size: 0.875rem; color: var(--paragraph); line-height: 1.5; }
 /* —— Compare cards —— */
 .kkugi .vs-grid {
- display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 24px; }
+ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 24px; }
 .kkugi .vs {
  padding: 16px 18px; }
 .kkugi .vs .vs-title {
  margin: 0 0 12px; display: flex; align-items: center; gap: 8px; font-size: 0.9375rem; font-weight: 600; }
 .kkugi .vs .vs-title svg {
- width: 18px; height: 18px; color: var(--secondary); }
+ display: none; }
 .kkugi .vs table {
  font-size: 0.875rem; }
 .kkugi .vs th {
@@ -394,14 +411,14 @@
 .kkugi .vs .vs-cap {
  margin: 10px 0 0; color: var(--secondary); font-size: 0.875rem; line-height: 1.5; }
 .kkugi .vs .chip-win {
- display: inline-flex; align-items: center; height: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--text); color: #fff; font-size: 0.875rem; font-weight: 500; vertical-align: 1px; }
+ display: inline-flex; align-items: center; height: 22px; padding: 0 7px; margin-left: 4px; border-radius: var(--pill-radius); background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--text) 28%, transparent); font-size: 0.875rem; font-weight: 500; vertical-align: 1px; }
 /* —— Vertical timeline —— */
 .kkugi .vtl {
  position: relative; list-style: none; margin: 8px 0 0; padding: 0 0 0 36px; }
 .kkugi .vtl .rail {
- position: absolute; left: 9px; top: 10px; bottom: 10px; width: 3px; background: var(--track); border-radius: 3px; }
+ position: absolute; left: 10px; top: 10px; bottom: 10px; width: 1px; background: var(--hairline-strong); border-radius: 1px; }
 .kkugi .vtl .rail i {
- position: absolute; inset: 0; background: var(--text); border-radius: 3px; transform-origin: top center; }
+ position: absolute; inset: 0; background: var(--hairline-strong); border-radius: 1px; transform-origin: top center; }
 .kkugi .vtl .phase {
  position: relative; margin: 20px 0 6px; color: var(--secondary); font-size: 0.875rem; font-weight: 600; letter-spacing: .01em; }
 .kkugi .vtl .phase:first-of-type {
@@ -409,15 +426,15 @@
 .kkugi .vtl .phase::before {
  content: ""; position: absolute; left: -36px; top: 50%; width: 21px; height: 0; }
 .kkugi .vtl .ev {
- position: relative; padding: 10px 0 12px; border-bottom: 1px solid var(--hairline); }
+ position: relative; padding: 10px 0 12px; border-bottom: 0; }
 .kkugi .vtl .ev:last-child {
  border-bottom: 0; }
 .kkugi .vtl .ev .dot {
- position: absolute; left: -36px; top: 13px; }
+ position: absolute; left: -29.5px; top: 17px; }
 .kkugi .vtl .ev.key .dot {
- box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--text); }
+ background: var(--card); box-shadow: inset 0 0 0 1.5px var(--text); }
 .kkugi .vtl .ev.final .dot {
- background: var(--text); }
+ background: var(--text); box-shadow: none; }
 .kkugi .vtl .ev-top {
  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .kkugi .vtl .date {
@@ -433,31 +450,31 @@
 .kkugi .tl-legend span {
  display: inline-flex; align-items: center; gap: 8px; }
 .kkugi .tl-legend .dot {
- width: 14px; height: 14px; border-width: 2px; }
+ width: 8px; height: 8px; }
 .kkugi .tl-legend .dot.key {
- box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--text); }
+ background: var(--card); box-shadow: inset 0 0 0 1.5px var(--text); }
 /* —— Limits (caution box) —— */
 .kkugi .caution {
- margin: 8px 0 24px; padding: 16px 18px; background: #f1f3f5; border-radius: 12px; border: 1px solid var(--hairline-strong); }
+ margin: 8px 0 24px; padding: 16px 20px; background: var(--card); border-radius: var(--card-radius); border: var(--card-border); box-shadow: var(--card-shadow); }
 .kkugi .caution .c-head {
  display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--secondary); font-size: 0.875rem; font-weight: 600; }
 .kkugi .caution .c-head svg {
- width: 16px; height: 16px; }
+ display: none; }
 .kkugi .caution ul {
  margin: 0; padding: 0; list-style: none; }
 .kkugi .caution li {
- position: relative; padding: 8px 0 8px 16px; color: var(--paragraph); font-size: 0.9375rem; line-height: 1.6; border-top: 1px solid #e4e7ea; }
+ position: relative; padding: 8px 0 8px 16px; color: var(--paragraph); font-size: 0.9375rem; line-height: 1.6; border-top: 1px solid var(--hairline); }
 .kkugi .caution li:first-child {
  border-top: 0; }
 .kkugi .caution li::before {
  content: ""; position: absolute; left: 2px; top: 18px; width: 5px; height: 5px; border-radius: 50%; background: var(--secondary); }
 /* —— Lessons —— */
 .kkugi .lessons {
- display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 24px; list-style: none; padding: 0; }
+ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 24px; list-style: none; padding: 0; }
 .kkugi .lesson {
- padding: 18px; }
+ padding: 18px 20px; }
 .kkugi .lesson .ic {
- width: 22px; height: 22px; margin-bottom: 12px; color: var(--text); }
+ display: none; }
 .kkugi .lesson .ic svg {
  width: 22px; height: 22px; display: block; }
 .kkugi .lesson h4 {
@@ -477,8 +494,10 @@
  display: flex; flex-wrap: wrap; gap: 6px; }
 .kkugi .chip {
  display: inline-flex; align-items: center; min-height: 28px; padding: 2px 10px; border-radius: 8px; background: var(--card); border: 1px solid var(--hairline-strong); color: var(--paragraph); font-size: 0.875rem; font-weight: 500; line-height: 1.35; }
+.kkugi .stack-list .chip {
+ border-radius: var(--pill-radius); background: var(--card); border: 0; box-shadow: inset 0 0 0 1px var(--hairline-strong); }
 .kkugi .chip code {
- font-family: var(--mono); font-size: 0.875rem; background: none; border: 0; padding: 0; }
+ font-family: var(--mono); font-size: 0.875rem; background: none; border: 0; box-shadow: none; padding: 0; }
 /* —— Media placeholders —— */
 .kkugi .ph {
  margin: 20px 0 28px; border: 1px dashed #c9cfd5; border-radius: 12px; background: repeating-linear-gradient(135deg, #f4f6f8 0 10px, #f0f2f5 10px 20px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 24px; color: var(--secondary); }
@@ -549,9 +568,9 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .callouts {
  grid-template-columns: 1fr; }
 .kkugi .callout {
- padding: 14px 0; }
+ padding: 16px 18px 17px; }
 .kkugi .callout + .callout {
- padding-left: 0; border-left: 0; border-top: 1px solid var(--hairline); }
+ padding-left: 18px; border-left: var(--card-border); border-top: 0; }
 .kkugi .arch {
  flex-direction: column; align-items: stretch; }
 .kkugi .arch .link {
@@ -579,7 +598,7 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .stepper {
  grid-template-columns: 1fr; row-gap: 0; padding-left: 36px; }
 .kkugi .stepper .line {
- top: 10px; bottom: 10px; left: 9px; right: auto; width: 3px; height: auto; }
+ top: 10px; bottom: 10px; left: 10px; right: auto; width: 1px; height: auto; }
 .kkugi .stepper .line i {
  transform-origin: top center; }
 .js .kkugi .stepper .line i {
@@ -589,7 +608,7 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .stepper li.st {
  align-items: flex-start; text-align: left; padding: 0 0 18px; }
 .kkugi .stepper li.st .dot {
- position: absolute; left: -36px; top: 2px; }
+ position: absolute; left: -29.5px; top: 6px; }
 .kkugi .stepper .date {
  margin-top: 0; }
 .kkugi .bar-row, .kkugi .axis {
@@ -610,8 +629,8 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
  grid-template-columns: 1fr 1fr; }
 .kkugi .ph-row .ph:nth-child(3) {
  display: none; }
-.kkugi .hcard .value {
- font-size: 1.875rem; }
+.kkugi .hcard .value, .kkugi .callout .v, .kkugi .ps .stat b {
+ font-size: 1.5rem; }
 .kkugi .budget-bar .seg {
  font-size: 0.875rem; }
 .kkugi .budget-bar .seg .lbl-long {
@@ -664,20 +683,20 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 }
 /* —— Scrollable timeline box —— */
 .kkugi .tl-frame {
- position: relative; margin: 8px 0 0; border: 1px solid var(--hairline-strong); border-radius: 12px; background: var(--bg); overflow: hidden; }
+ position: relative; margin: 8px 0 0; border: var(--card-border); border-radius: var(--card-radius); background: var(--card); box-shadow: var(--card-shadow); overflow: hidden; }
 .kkugi .tl-scroll {
 
   max-height: min(520px, 70vh); overflow-y: auto; overflow-x: hidden;
   overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
-  padding: 0 14px 6px 16px; border-radius: 12px; outline: none;
-  scrollbar-width: thin; scrollbar-color: #e4e7ea #eef1f4; scroll-padding-top: 40px;
+  padding: 8px 16px 8px 18px; border-radius: var(--card-radius); outline: none;
+  scrollbar-width: thin; scrollbar-color: #e4e7ea transparent; scroll-padding-top: 40px;
 }
 .kkugi .tl-scroll::-webkit-scrollbar {
  width: 8px; }
 .kkugi .tl-scroll::-webkit-scrollbar-track {
- background: #eef1f4; border-radius: 8px; margin: 8px 0; }
+ background: transparent; border-radius: 8px; margin: 8px 0; }
 .kkugi .tl-scroll::-webkit-scrollbar-thumb {
- background: #e4e7ea; border-radius: 8px; border: 2px solid #eef1f4; }
+ background: #e4e7ea; border-radius: 8px; border: 2px solid #fff; }
 .kkugi .tl-scroll:hover::-webkit-scrollbar-thumb {
  background: #d5dade; }
 .kkugi .tl-frame:has(.tl-scroll:focus-visible) {
@@ -689,7 +708,7 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .tl-frame .vtl .phase {
 
   position: sticky; top: 0; z-index: 3; margin: 0 0 0 -36px; padding: 10px 0 8px 36px;
-  background: var(--bg); border-bottom: 1px solid var(--hairline);
+  background: var(--card); border-bottom: 1px solid var(--hairline);
 }
 .kkugi .tl-frame .vtl .phase:first-of-type {
  margin-top: 0; }
@@ -704,9 +723,9 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
   opacity: 0; transition: opacity 200ms ease;
 }
 .kkugi .tl-frame::before {
- top: 38px; background: linear-gradient(var(--bg), rgba(251,252,253,0)); }
+ top: 38px; background: linear-gradient(var(--card), rgba(255,255,255,0)); }
 .kkugi .tl-frame::after {
- bottom: 0; background: linear-gradient(rgba(251,252,253,0), var(--bg)); }
+ bottom: 0; background: linear-gradient(rgba(255,255,255,0), var(--card)); }
 .kkugi .tl-frame.more-top::before, .kkugi .tl-frame.more-bottom::after {
  opacity: 1; }
 @media (max-width: 720px) {
@@ -756,7 +775,7 @@ html:not(.js) .kkugi .tray-toggle {
 .kkugi .seg-btn:focus-visible {
  outline: 2px solid #6c6e70; outline-offset: 2px; }
 .kkugi .tray-stage {
- position: relative; aspect-ratio: 840 / 1120; border: 1px solid var(--hairline-strong); border-radius: 12px; overflow: hidden; background: var(--card); }
+ position: relative; aspect-ratio: 840 / 1120; border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--card-shadow); overflow: hidden; background: var(--card); }
 .kkugi .tray-img {
  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 250ms ease; }
 .kkugi .tray-stage .tray-original {
@@ -910,9 +929,9 @@ to {
 .kkugi .term-pop {
  position: fixed; z-index: 40; box-sizing: border-box;
  width: min(280px, calc(100vw - 24px));
- padding: 10px 12px; border: 1px solid var(--hairline-strong); border-radius: 12px;
- background: #fff; color: var(--paragraph);
- box-shadow: 0 1px 2px rgba(24,25,26,.04), 0 8px 24px -12px rgba(24,25,26,.28);
+ padding: 10px 14px; border: var(--card-border); border-radius: var(--card-radius);
+ background: var(--card); color: var(--paragraph);
+ box-shadow: var(--card-shadow);
  font-size: 0.875rem; font-weight: 400; line-height: 1.55; letter-spacing: 0; text-align: start;
 }
 .kkugi .chat-phone {
@@ -924,12 +943,12 @@ to {
 
 /* —— 디자인과 협업 —— */
 .kkugi .browser {
- margin: 0; background: #fff; border: 1px solid var(--hairline-strong); border-radius: 12px; overflow: hidden;
- box-shadow: 0 1px 2px rgba(24,25,26,.04), 0 6px 16px -8px rgba(24,25,26,.10);
+ margin: 0; background: var(--card); border: var(--card-border); border-radius: var(--card-radius); overflow: hidden;
+ box-shadow: var(--card-shadow);
 }
 .kkugi .browser-bar {
  display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px;
- border-bottom: 1px solid var(--hairline); background: #f8f9fa;
+ border-bottom: 1px solid var(--hairline); background: var(--card);
 }
 .kkugi .browser-dots { display: flex; gap: 6px; flex: none; }
 .kkugi .browser-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--hairline-strong); display: block; }

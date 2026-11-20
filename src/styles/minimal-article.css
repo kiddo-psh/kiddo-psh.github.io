@@ -33,7 +33,9 @@
 
 /* 2. 본문 컴포넌트가 함께 쓰는 변수 (.mx-* 클래스가 읽는다) ---------------- */
 
-.minimal-prose {
+/* 꾸기 프로젝트 글도 같은 카드 토큰을 쓴다. 다크 모드 덮어쓰기는 .minimal-prose 만. */
+.minimal-prose,
+.kkugi {
   --mx-text: var(--text-body);
   --mx-text-strong: var(--text);
   --mx-text-dim: var(--text-dim);
