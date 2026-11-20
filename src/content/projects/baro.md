@@ -15,7 +15,7 @@ stack:
   - React Native
   - Vue 3
 featured: true
-order: 1
+order: 2
 relatedPosts:
   - seven-person-team-retrospective
   - claude-code-retrospective

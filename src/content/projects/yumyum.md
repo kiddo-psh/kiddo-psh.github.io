@@ -15,6 +15,7 @@ stack:
   - Java
 featured: true
 order: 2
+listed: false
 cover: "/images/projects/yumyum/cover.png"
 headline: "VLM 추정의 정확도를 재고, 필요한 Agent만 실행하다"
 projectType: "2인 팀 · 팀장 · SSAFY 1학기 관통 프로젝트"

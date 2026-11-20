@@ -21,8 +21,9 @@ stack:
   - OpenTelemetry
   - Grafana
 featured: true
-order: 5
+order: 1
 cover: "/images/projects/kkugi/cover.png"
+logo: "/images/projects/kkugi/logo.png"
 headline: "음식 인식 모델의 숫자를 서비스의 기준으로 바꾸다"
 projectType: "6인 팀 · SSAFY 자율 프로젝트 · AI 헬스케어(Android · Wear OS)"
 cardRole: "팀장 · 음식 인식 학습·평가·서빙 · AI 협업 규칙"

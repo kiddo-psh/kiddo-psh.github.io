@@ -14,7 +14,7 @@ stack:
   - pgvector
   - React
 featured: true
-order: 3
+order: 4
 relatedPosts:
   - ai-rule-docs-cleanup
   - ai-pipeline-risk-gates

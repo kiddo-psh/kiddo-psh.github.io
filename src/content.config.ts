@@ -29,6 +29,8 @@ const projects = defineCollection({
     title: z.string().min(1),
     summary: z.string().min(1),
     cover: z.string().startsWith('/').optional(),
+    // 목록에서 제목 앞 글리프 대신 쓰는 정사각 로고. public/ 기준 절대 경로.
+    logo: z.string().startsWith('/').optional(),
     period: z.string().min(1),
     headline: z.string().min(1),
     projectType: z.string().min(1),
@@ -48,6 +50,8 @@ const projects = defineCollection({
     metricNote: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(99),
+    // false면 목록에서 빠진다. 상세 페이지는 남아 다른 글의 링크가 살아 있다.
+    listed: z.boolean().default(true),
     /*
      * 관련 회고. 전에는 본문 마크다운에 "## 관련 회고 + 불릿"으로 적혀 있어서
      * 글 상세의 "같은 분류의 다른 글"과 생김새가 달랐다. 관계는 산문이 아니라

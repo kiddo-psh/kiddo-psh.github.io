@@ -51,7 +51,7 @@ const pct = (v: number, max: number) => `${Math.max(2, (v / max) * 100)}%`;
       <h2 id="projects-title" class="pf-label">프로젝트</h2>
       <ul class="list">
         {cases.map(p => (
-          <li><ListRow href={`#${p.id}`} title={p.title} meta={p.summary} mark={glyph(p.title)} /></li>
+          <li><ListRow href={`#${p.id}`} title={p.title} meta={p.summary} mark={glyph(p.title)} logo={p.logo} /></li>
         ))}
       </ul>
 

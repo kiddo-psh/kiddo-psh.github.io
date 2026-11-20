@@ -5,11 +5,11 @@ import ListRow from '../components/ListRow.astro';
 import { getCsPosts, getWritingPosts } from '../lib/posts';
 import { SITE } from '../site.config';
 import { dotDate, glyph, oneLine } from '../lib/format';
-import { sortProjects } from '../lib/projects';
+import { EXTERNAL_PROJECTS, listProjects } from '../lib/projects';
 
 const writing = (await getWritingPosts()).slice(0, 4);
 const csPosts = (await getCsPosts()).slice(0, 4);
-const projects = sortProjects(await getCollection('projects')).filter((project) => project.data.featured);
+const projects = listProjects(await getCollection('projects')).filter((project) => project.data.featured);
 ---
 
 <BaseLayout title={SITE.title}>
@@ -26,7 +26,13 @@ const projects = sortProjects(await getCollection('projects')).filter((project) 
               title={project.data.title}
               meta={oneLine(project.data.summary)}
               mark={glyph(project.data.title)}
+              logo={project.data.logo}
             />
+          </li>
+        ))}
+        {EXTERNAL_PROJECTS.map((project) => (
+          <li>
+            <ListRow href={project.href} title={project.title} meta={project.summary} logo={project.logo} />
           </li>
         ))}
       </ul>

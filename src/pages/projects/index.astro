@@ -3,9 +3,9 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ListRow from '../../components/ListRow.astro';
 import { glyph, oneLine } from '../../lib/format';
-import { sortProjects } from '../../lib/projects';
+import { EXTERNAL_PROJECTS, listProjects } from '../../lib/projects';
 
-const projects = sortProjects(await getCollection('projects'));
+const projects = listProjects(await getCollection('projects'));
 ---
 
 <BaseLayout title="프로젝트" description="현장 영상 처리, AI 코칭, 개발 도구와 인증·연동. 직접 맡은 문제와 설계 선택, 검증 결과를 프로젝트별로 기록합니다.">
@@ -19,7 +19,13 @@ const projects = sortProjects(await getCollection('projects'));
             title={project.data.title}
             meta={oneLine(project.data.summary)}
             mark={glyph(project.data.title)}
+            logo={project.data.logo}
           />
+        </li>
+      ))}
+      {EXTERNAL_PROJECTS.map((project) => (
+        <li>
+          <ListRow href={project.href} title={project.title} meta={project.summary} logo={project.logo} />
         </li>
       ))}
     </ul>

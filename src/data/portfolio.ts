@@ -20,6 +20,8 @@ export interface PortfolioCase {
   title: string;
   period: string;
   summary: string;
+  /** 목록에서 제목 앞 글리프 대신 쓰는 정사각 로고 */
+  logo?: string;
   /** 팀 규모 / 역할 (기여도) */
   team: string;
   award?: string;
@@ -161,7 +163,7 @@ export const portfolioCases: PortfolioCase[] = [
     links:[{href:'/projects/ai-dev-harness', label:'상세 기록'}, {href:'https://github.com/kiddo-psh/ai-dev-harness', label:'GitHub', external:true}],
   },
   {
-    id:'kkugi', number:'04', title:'꾸기', period:'2026.09 ~ 진행 중',
+    id:'kkugi', number:'04', title:'꾸기', period:'2026.09 ~ 진행 중', logo:'/images/projects/kkugi/logo.png',
     summary:'사용자가 기록하지 않아도 미리 준비해 두는 AI 건강 코치 (yumyum 리뉴얼, Android · Wear OS)',
     team:'6명 · 팀장 · AI·ML 트랙',
     roles:['팀장 · 스프린트 관리','데이터셋 빌드·학습·평가','품질 게이트·MLflow 승격','onnxruntime 추론 서버'],
