@@ -1,5 +1,5 @@
 ---
-title: "같은 Claude Code를 써도 쓰는 방식이 코드를 가른다"
+title: "에이전트 사용 방식이 팀원마다 달라 리뷰와 재작업 비용이 늘었다"
 description: "같은 AI 도구를 사용한 팀에서 에이전트 활용 방식의 차이가 리뷰 비용과 재작업 비용으로 이어진 과정을 돌아본다."
 pubDate: 2026-08-14
 category: retro
@@ -139,4 +139,4 @@ Claude Code나 Codex는 저장소 안의 규칙 파일(AGENTS.md, CLAUDE.md)을 
 
 을 다음 프로젝트에서는 하나의 **공통 Development Pipeline** 안에 넣어 보기로 했어요.
 
-이 회고의 배경이 된 시스템과 담당 기능은 [주차바로 프로젝트 소개](/projects/baro)에서 확인할 수 있어요. 같은 7인 팀에서 의사결정 구조가 어떻게 작동했는지는 [7명이 모이면 더 좋은 결정을 할 수 있을까](/posts/seven-person-team-retrospective)에 정리했습니다.
+이 회고의 배경이 된 시스템과 담당 기능은 [주차바로 프로젝트 소개](/projects/baro)에서 확인할 수 있어요. 같은 7인 팀에서 의사결정 구조가 어떻게 작동했는지는 [7인 팀에서는 결정마다 담당자와 합의 범위를 정해야 한다](/posts/seven-person-team-retrospective)에 정리했습니다.

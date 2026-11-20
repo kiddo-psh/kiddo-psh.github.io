@@ -1,5 +1,5 @@
 ﻿---
-title: "에이전트 규칙은 실험으로 검증해야 한다"
+title: "에이전트에게는 절차 대신 목표, 제약, 완료 조건을 준다"
 description: "Claude Code의 프롬프트 축소 사례를 바탕으로 AI 에이전트 규칙과 AGENTS.md를 실험적으로 설계하는 방법을 정리한다."
 pubDate: 2026-09-05
 category: ai
