@@ -1,7 +1,6 @@
 ---
 import '../../styles/kkugi.css';
 import Bars from './Bars.astro';
-import BrowserFrame from './BrowserFrame.astro';
 import Callouts from './Callouts.astro';
 import Caution from './Caution.astro';
 import ChatReplay from './ChatReplay.astro';
@@ -535,10 +534,9 @@ const asset = (file: string) => `/projects/kkugi/${file}`;
 <h3 class="post-h3">랜딩 페이지: 꾸기에서 꾸준히 기록으로</h3>
 <HeroSwitch />
 <p><a href="https://kkugi.duckdns.org/" target="_blank" rel="noopener noreferrer">꾸기 랜딩 페이지</a>의 히어로는 이 프로젝트에서 가장 아끼는 결과물이다. 식사, 달리기, 웨이트 같은 일상의 장면을 담은 클립을 격자로 깔고, 그 위에서 '꾸기'라는 이름이 '꾸준히 기록'으로 풀린다. 일상의 조각을 모아 꾸준히 기록할 수 있게 하겠다는 서비스의 뜻을 첫 화면에 그대로 옮기고 싶었다.</p>
-<ScrollShot caption="프레임 안에서 스크롤하면 실제 랜딩 페이지를 데스크톱 화면 비율로 따라갈 수 있다." />
 <p>클립은 직접 만들었다. GPT Astra가 Blender로 장면의 구도를 잡고, 그 구도를 바탕으로 Higgsfield의 Kling 2.5 모델로 영상을 생성했다.</p>
 <h3 class="post-h3">팀 기술 블로그 '꾸기 테크'</h3>
-<BrowserFrame />
+<ScrollShot caption="프레임 안에서 스크롤하면 실제 꾸기 테크 페이지를 데스크톱 화면 비율로 따라갈 수 있다." />
 <p><a href="https://teamyumyum.github.io/" target="_blank" rel="noopener noreferrer">꾸기 테크</a>는 TeamYumYum의 기술 블로그로, 직접 만들고 운영한다. "꾸기를 만들며 배운 기술과 부딪힌 문제, 일하는 방식을 솔직하게 나눠요"라는 소개처럼, 글을 기술, 트러블슈팅, 문화, 소식 네 분류로 나눈다. 글마다 분류 배지와 마스코트 커버 카드를 붙이고, 연재 글에는 'RAG 설계기 01·02'처럼 회차 번호를 단다. 첫 화면 아래에는 회원, 식단, 운동, 코칭, 성장, 검수를 한 명씩 맡은 6명의 팀 소개가 있다.</p>
 <p>2026년 10월 19일 첫 글을 올렸고, 11월 20일 기준으로 팀원 세 명과 팀 계정이 쓴 글 8편이 올라와 있다.</p>
 <h3 class="post-h3">협업: 리뷰데이</h3>
