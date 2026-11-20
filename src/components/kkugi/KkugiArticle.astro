@@ -39,7 +39,14 @@ const asset = (file: string) => `/projects/kkugi/${file}`;
       value: '96.6',
       unit: '%',
       label: '검증 세트 top-5 · 정답 박스 크롭',
-      chips: ['운영 지연 p95 6.74초 / 요구 10초'],
+      chips: [
+        [
+          { text: '운영 지연' },
+          { text: ' ' },
+          { text: 'p95\u00A06.74초', nowrap: true },
+          { text: ' · 요구 10초' },
+        ],
+      ],
       caption: '1,020클래스 분류기. 검증 세트 top-5 96.6%(정답 박스 크롭). GPU 없는 2 vCPU 서버에서 운영 요청 p95 6.74초(요구 10초)',
     },
     {
