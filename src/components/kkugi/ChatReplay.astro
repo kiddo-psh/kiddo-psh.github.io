@@ -1,0 +1,74 @@
+---
+import Icon from './Icon.astro';
+
+interface Exchange {
+  q: string;
+  a: string;
+  chip?: string;
+}
+
+interface Tab {
+  key: string;
+  label: string;
+}
+
+interface Props {
+  tabs: Tab[];
+  exchanges: Record<string, Exchange[]>;
+  caption: string;
+}
+
+const { tabs, exchanges, caption } = Astro.props;
+const first = tabs[0];
+const initial = exchanges[first.key] ?? [];
+---
+
+<figure class="replay rv" data-component="ChatReplay">
+  <div class="replay-bar">
+    <div class="replay-tabs" role="tablist" aria-label="채팅 예시">
+      {
+        tabs.map((tab, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`rt-${tab.key}`}
+            aria-controls="rp-panel"
+            aria-selected={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+            data-ex={tab.key}
+          >
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
+    <button type="button" class="replay-btn" aria-label="다시 재생" title="다시 재생">
+      <Icon name="rotate-ccw" size={16} />
+    </button>
+  </div>
+  <div class="chat-phone" id="rp-panel" role="tabpanel" aria-labelledby={`rt-${first.key}`}>
+    <div class="chat-head" aria-hidden="true">
+      <Icon name="chevron-left" size={22} />
+      <span>꾸기에게 묻기</span>
+    </div>
+    <div class="chat-log" aria-hidden="true">
+      {
+        initial.map((turn) => (
+          <>
+            <div class="msg user">{turn.q}</div>
+            <div class="msg bot">
+              {turn.a}
+              {turn.chip && <span class="chip">{turn.chip}</span>}
+            </div>
+          </>
+        ))
+      }
+    </div>
+    <div class="chat-input" aria-hidden="true">
+      <span class="ci-text">무엇이든 물어보세요</span>
+      <span class="ci-send"><Icon name="send" size={16} /></span>
+    </div>
+    <p class="sr-only chat-live" aria-live="polite"></p>
+  </div>
+  <figcaption class="fig-cap">{caption}</figcaption>
+</figure>

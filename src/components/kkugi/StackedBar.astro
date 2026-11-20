@@ -1,0 +1,45 @@
+---
+interface Row {
+  label: string;
+  desc: string;
+  count: number;
+  color: string;
+}
+
+interface Props {
+  total: string;
+  totalNote: string;
+  rows: Row[];
+}
+
+const { total, totalNote, rows } = Astro.props;
+const sum = rows.reduce((acc, row) => acc + row.count, 0);
+const aria = `출처별 클래스 수: ${rows.map((row) => row.count).join(', ')}`;
+---
+
+<figure class="fig card chart-card rv" data-component="StackedBar">
+  <div class="stack-total">
+    <b class="num">{total}</b>
+    <span class="num">{totalNote}</span>
+  </div>
+  <div class="stack" role="img" aria-label={aria}>
+    {
+      rows.map((row, index) => (
+        <span class={`seg s${index + 1}`} style={`--w:${(row.count / sum) * 100}%`} />
+      ))
+    }
+  </div>
+  <ul class="stack-legend">
+    {
+      rows.map((row) => (
+        <li>
+          <span class="sw" style={`background:${row.color}`} />
+          <span>
+            <b>{row.label}</b> · {row.desc}
+          </span>
+          <span class="cnt num">{row.count}</span>
+        </li>
+      ))
+    }
+  </ul>
+</figure>

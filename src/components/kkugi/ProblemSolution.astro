@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Solution {
+  icon: 'scan' | 'message-square-text';
+  title: string;
+  body: string;
+}
+
+interface Props {
+  stats: Stat[];
+  problem: string;
+  solutionTitle: string;
+  solutions: Solution[];
+}
+
+const { stats, problem, solutionTitle, solutions } = Astro.props;
+---
+
+<div class="ps-grid" data-component="ProblemSolution">
+  <section class="card ps problem rv">
+    <p class="ps-head"><Icon name="circle-alert" size={18} />문제</p>
+    <div class="stat-row">
+      {
+        stats.map((stat) => (
+          <div class="stat">
+            <b class="num">{stat.value}</b>
+            <span>{stat.label}</span>
+          </div>
+        ))
+      }
+    </div>
+    <p class="body">{problem}</p>
+  </section>
+  <section class="card ps rv">
+    <p class="ps-head"><Icon name="split" size={18} />{solutionTitle}</p>
+    <ul>
+      {
+        solutions.map((item) => (
+          <li>
+            <Icon name={item.icon} size={18} />
+            <span>
+              <strong>{item.title}</strong>: {item.body}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</div>

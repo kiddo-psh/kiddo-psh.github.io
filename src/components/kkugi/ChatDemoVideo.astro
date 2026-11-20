@@ -1,0 +1,33 @@
+---
+interface Props {
+  webm: string;
+  mp4: string;
+  poster: string;
+  width?: number;
+  height?: number;
+  label: string;
+  caption: string;
+}
+
+const { webm, mp4, poster, width = 432, height = 896, label, caption } = Astro.props;
+---
+
+<figure class="phone-fig chat-video rv">
+  <div class="phone">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      width={width}
+      height={height}
+      poster={poster}
+      aria-label={label}
+    >
+      <source src={webm} type="video/webm" />
+      <source src={mp4} type="video/mp4" />
+    </video>
+  </div>
+  <figcaption class="fig-cap">{caption}</figcaption>
+</figure>

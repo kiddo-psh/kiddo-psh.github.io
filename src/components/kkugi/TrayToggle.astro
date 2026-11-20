@@ -1,0 +1,43 @@
+---
+interface Shot {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  original: Shot;
+  detected: Shot;
+  labels: [string, string];
+  caption: string;
+}
+
+const { original, detected, labels, caption } = Astro.props;
+---
+
+<figure class="tray rv" data-component="TrayCompare">
+  <div class="tray-toggle" role="group" aria-label="식판 사진 보기">
+    <button type="button" class="seg-btn" data-show="original" aria-pressed="false">{labels[0]}</button>
+    <button type="button" class="seg-btn" data-show="detected" aria-pressed="true">{labels[1]}</button>
+  </div>
+  <div class="tray-stage" data-state="detected">
+    <img
+      class="tray-img tray-original"
+      src={original.src}
+      width="840"
+      height="1120"
+      loading="lazy"
+      decoding="async"
+      alt={original.alt}
+    />
+    <img
+      class="tray-img tray-detected"
+      src={detected.src}
+      width="840"
+      height="1120"
+      loading="lazy"
+      decoding="async"
+      alt={detected.alt}
+    />
+  </div>
+  <figcaption class="fig-cap">{caption}</figcaption>
+</figure>

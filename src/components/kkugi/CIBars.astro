@@ -1,0 +1,62 @@
+---
+interface Headline {
+  key: string;
+  value: string;
+  note: string;
+}
+
+interface Row {
+  label: string;
+  pct: number;
+  n: number;
+  N: number;
+  lo: string;
+  hi: string;
+  highlight?: boolean;
+}
+
+interface Props {
+  headline: Headline[];
+  rows: Row[];
+}
+
+const { headline, rows } = Astro.props;
+---
+
+<div data-component="TestsetSummary">
+  <div class="ts-head">
+    {
+      headline.map((item) => (
+        <div class="card ts-stat rv">
+          <p class="k">{item.key}</p>
+          <p class="v num">{item.value}</p>
+          <p class="n num">{item.note}</p>
+        </div>
+      ))
+    }
+  </div>
+  <figure class="fig card chart-card rv" data-component="CIBarChart">
+    <p class="fig-title">음식 개수별 top-3 · 95% 신뢰구간</p>
+    <ul class="bars">
+      {
+        rows.map((row) => (
+          <li class:list={['bar-row', 'ci-row', { hl: row.highlight }]}>
+            <span class="bl">{row.label}</span>
+            <span class="track">
+              <span class:list={['fill', { strong: row.highlight }]} style={`--w:${row.pct}%`} />
+              <span class="ci" style={`--lo:${row.lo}%;--hi:${row.hi}%`} />
+            </span>
+            <span class="bv num">
+              {row.pct}% <small>{row.n} / {row.N} · {row.lo}–{row.hi}%</small>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="axis ci-axis">
+      <span></span>
+      <span class="ticks num"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></span>
+      <span></span>
+    </div>
+  </figure>
+</div>

@@ -1,0 +1,66 @@
+---
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import CircleAlert from '@lucide/astro/icons/circle-alert';
+import ClipboardCheck from '@lucide/astro/icons/clipboard-check';
+import Code from '@lucide/astro/icons/code';
+import CornerDownRight from '@lucide/astro/icons/corner-down-right';
+import Cpu from '@lucide/astro/icons/cpu';
+import Crop from '@lucide/astro/icons/crop';
+import FlaskConical from '@lucide/astro/icons/flask-conical';
+import ImageIcon from '@lucide/astro/icons/image';
+import Info from '@lucide/astro/icons/info';
+import Layers from '@lucide/astro/icons/layers';
+import ListOrdered from '@lucide/astro/icons/list-ordered';
+import MessageSquareText from '@lucide/astro/icons/message-square-text';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import Route from '@lucide/astro/icons/route';
+import Scan from '@lucide/astro/icons/scan';
+import Search from '@lucide/astro/icons/search';
+import Send from '@lucide/astro/icons/send';
+import Server from '@lucide/astro/icons/server';
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import Smartphone from '@lucide/astro/icons/smartphone';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import Split from '@lucide/astro/icons/split';
+
+const icons = {
+  'arrow-right': ArrowRight,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
+  'circle-alert': CircleAlert,
+  'clipboard-check': ClipboardCheck,
+  code: Code,
+  'corner-down-right': CornerDownRight,
+  cpu: Cpu,
+  crop: Crop,
+  'flask-conical': FlaskConical,
+  image: ImageIcon,
+  info: Info,
+  layers: Layers,
+  'list-ordered': ListOrdered,
+  'message-square-text': MessageSquareText,
+  'rotate-ccw': RotateCcw,
+  route: Route,
+  scan: Scan,
+  search: Search,
+  send: Send,
+  server: Server,
+  'shield-check': ShieldCheck,
+  smartphone: Smartphone,
+  sparkles: Sparkles,
+  split: Split,
+};
+
+interface Props {
+  name: keyof typeof icons;
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 24, class: className } = Astro.props;
+const Glyph = icons[name];
+---
+
+<Glyph class={className} size={size} stroke-width={1.75} aria-hidden="true" />

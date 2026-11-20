@@ -1,0 +1,51 @@
+---
+import Icon from './Icon.astro';
+
+interface Item {
+  tag: string;
+  value: string;
+  unit?: string;
+  /** 값 앞에 두는 이전 수치. 화살표와 함께 쓴다. */
+  from?: string;
+  /** 값 뒤에 붙는 분수. 예: /48 */
+  suffix?: string;
+  arrow?: boolean;
+  label: string;
+  chips: string[];
+  caption: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="hero-grid" data-component="HeroResultCards">
+  {
+    items.map((item) => (
+      <section class="card hcard rv">
+        <span class="tag">{item.tag}</span>
+        <p class="value num">
+          {item.from && <span class="from">{item.from}</span>}
+          {item.arrow && (
+            <span class="arrow" aria-label="에서">
+              <Icon name="arrow-right" size={22} />
+            </span>
+          )}
+          {item.value}
+          {item.unit && <span class="unit">{item.unit}</span>}
+          {item.suffix && <span class="from">{item.suffix}</span>}
+        </p>
+        <p class="label">{item.label}</p>
+        <div class="sub">
+          {item.chips.map((chip) => (
+            <span class="tag">{chip}</span>
+          ))}
+        </div>
+        <p class="cap">{item.caption}</p>
+      </section>
+    ))
+  }
+</div>

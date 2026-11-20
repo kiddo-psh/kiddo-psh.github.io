@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+
+interface Node {
+  icon: 'smartphone' | 'server' | 'cpu';
+  label: string;
+  accent?: boolean;
+}
+
+interface Props {
+  label: string;
+  nodes: Node[];
+}
+
+const { label, nodes } = Astro.props;
+---
+
+<div class="arch rv" data-component="ServiceArch" aria-label={label}>
+  {
+    nodes.map((node, index) => (
+      <>
+        {index > 0 && (
+          <div class="link" aria-hidden="true">
+            <Icon name="chevron-right" size={18} />
+          </div>
+        )}
+        <div class:list={['card', 'node', { accent: node.accent }]}>
+          <Icon name={node.icon} size={20} />
+          <span>{node.label}</span>
+        </div>
+      </>
+    ))
+  }
+</div>

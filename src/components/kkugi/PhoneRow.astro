@@ -1,0 +1,36 @@
+---
+interface Shot {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
+interface Props {
+  label: string;
+  items: Shot[];
+  caption: string;
+}
+
+const { label, items, caption } = Astro.props;
+---
+
+<figure class="phone-fig rv" data-component="PhoneRow">
+  <div class="phone-row" tabindex="0" role="region" aria-label={label}>
+    {
+      items.map((item) => (
+        <div class="phone">
+          <img
+            src={item.src}
+            width={item.width}
+            height={item.height}
+            loading="lazy"
+            decoding="async"
+            alt={item.alt}
+          />
+        </div>
+      ))
+    }
+  </div>
+  <figcaption class="fig-cap">{caption}</figcaption>
+</figure>

@@ -1,0 +1,101 @@
+---
+import Icon from './Icon.astro';
+
+interface Step {
+  icon: 'image' | 'scan' | 'crop' | 'layers' | 'list-ordered' | 'route' | 'search' | 'sparkles' | 'shield-check';
+  name: string;
+  detail: string;
+  no?: string;
+  accent?: boolean;
+}
+
+interface Detail {
+  no: string;
+  name: string;
+  before: string;
+  code?: string;
+  after?: string;
+}
+
+interface Props {
+  steps: Step[];
+  branch?: { lead?: string; text: string };
+  loop?: string;
+  details?: Detail[];
+}
+
+const { steps, branch, loop, details } = Astro.props;
+const width = steps.length === 5 ? 'pipe-5' : 'pipe-4';
+---
+
+<figure class="fig wide" data-component="Pipeline">
+  <ol class:list={['pipe', width]}>
+    {
+      steps.map((step, stepIndex) => (
+        <>
+          <li class:list={['card', 'pcard', { accent: step.accent }]} style={`--i:${stepIndex * 2}`}>
+            {step.no && <span class="no num">{step.no}</span>}
+            <span class="ic">
+              <Icon name={step.icon} size={22} />
+            </span>
+            <p class="nm">{step.name}</p>
+            <p class="dt">{step.detail}</p>
+          </li>
+          {stepIndex < steps.length - 1 && (
+            <li class="chev" aria-hidden="true" style={`--i:${stepIndex * 2 + 1}`}>
+              <Icon name="chevron-right" size={18} />
+            </li>
+          )}
+        </>
+      ))
+    }
+  </ol>
+  {
+    branch && (
+      <div class="branch rv">
+        <Icon name="corner-down-right" size={18} />
+        <span>
+          {branch.lead && <b>{branch.lead}</b>}
+          {branch.lead ? ' ' : ''}
+          {branch.text}
+        </span>
+      </div>
+    )
+  }
+  {
+    loop && (
+      <>
+        <div class="loop rv" aria-hidden="true">
+          <span class="lb" />
+          <span class="loop-label">
+            <Icon name="rotate-ccw" size={16} />
+            {loop}
+          </span>
+        </div>
+        <div class="branch loop-m">
+          <Icon name="rotate-ccw" size={18} />
+          <span>출력 검증 → 생성 · {loop}</span>
+        </div>
+      </>
+    )
+  }
+  {
+    details && (
+      <ol class="step-detail">
+        {details.map((detail) => (
+          <li>
+            <span class="k">
+              <span>{detail.no}</span>
+              {detail.name}
+            </span>
+            <span>
+              {detail.before}
+              {detail.code && <code>{detail.code}</code>}
+              {detail.after}
+            </span>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</figure>

@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+
+interface Row {
+  k: string;
+  values: string[];
+  winner: number;
+}
+
+interface Props {
+  title: string;
+  icon: 'search' | 'route';
+  cols: string[];
+  rows: Row[];
+  caption: string;
+}
+
+const { title, icon, cols, rows, caption } = Astro.props;
+---
+
+<section class="card vs rv">
+  <p class="vs-title"><Icon name={icon} size={18} />{title}</p>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        {cols.map((col) => <th>{col}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <td>{row.k}</td>
+            {row.values.map((value, index) => (
+              <td class:list={['num', { win: index === row.winner }]}>{value}</td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="vs-cap">{caption}</p>
+</section>

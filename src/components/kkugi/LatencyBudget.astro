@@ -1,0 +1,52 @@
+---
+interface Part {
+  label: string;
+  sec: number;
+  count: number;
+  kind: 'det' | 'cls';
+}
+
+interface Props {
+  budget: number;
+  parts: Part[];
+  formula: string;
+  aria: string;
+}
+
+const { budget, parts, formula, aria } = Astro.props;
+
+const segments = parts.flatMap((part) =>
+  Array.from({ length: part.count }, () => ({
+    kind: part.kind,
+    width: (part.sec / budget) * 100,
+    text: part.kind === 'det' ? `${part.sec}초` : String(part.sec),
+  })),
+);
+---
+
+<figure class="fig card budget rv" data-component="LatencyBudget">
+  <p class="fig-title">지연 예산</p>
+  <div class="budget-bar" role="img" aria-label={aria}>
+    {
+      segments.map((segment) => (
+        <span class:list={['seg', segment.kind]} style={`--w:${segment.width.toFixed(2)}%`}>
+          {segment.kind === 'cls' ? <span class="lbl-long">{segment.text}</span> : segment.text}
+        </span>
+      ))
+    }
+    <span class="seg rest"></span>
+    <span class="budget-limit"><span>{budget.toFixed(1)}초</span></span>
+  </div>
+  <ul class="budget-legend">
+    {
+      parts.map((part) => (
+        <li>
+          <span class="sw" style={`background:${part.kind === 'det' ? '#18191a' : '#6c6e70'}`} />
+          {part.label}
+        </li>
+      ))
+    }
+    <li><span class="sw" style="border:1px solid #18191a;width:2px;border-radius:0"></span>추론 서버 예산 {budget.toFixed(1)}초</li>
+  </ul>
+  <p class="formula num">{formula}</p>
+</figure>

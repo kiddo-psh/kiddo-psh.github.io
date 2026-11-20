@@ -12,6 +12,8 @@ interface Props {
   ogType?: string;
   backHref?: string;
   backLabel?: string;
+  /** 첫 페인트 전에 html.js를 붙여 등장 애니메이션이 깜빡이지 않게 한다. */
+  earlyScript?: boolean;
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   ogType = 'website',
   backHref,
   backLabel,
+  earlyScript = false,
 } = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
@@ -30,6 +33,14 @@ const ogUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
 <!doctype html>
 <html lang="ko">
   <head>
+    {
+      earlyScript && (
+        <script is:inline>
+          document.documentElement.classList.add('js');
+          if (/[?&]final=1/.test(location.search)) document.documentElement.classList.add('final');
+        </script>
+      )
+    }
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>

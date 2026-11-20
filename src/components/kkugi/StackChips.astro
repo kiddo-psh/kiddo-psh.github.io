@@ -1,0 +1,32 @@
+---
+interface Chip {
+  text: string;
+  code?: boolean;
+}
+
+interface Group {
+  area: string;
+  items: Chip[];
+}
+
+interface Props {
+  groups: Group[];
+}
+
+const { groups } = Astro.props;
+---
+
+<ul class="stack-list rv" data-component="TechStack">
+  {
+    groups.map((group) => (
+      <li>
+        <span class="area">{group.area}</span>
+        <span class="chips">
+          {group.items.map((item) => (
+            <span class="chip">{item.code ? <code>{item.text}</code> : item.text}</span>
+          ))}
+        </span>
+      </li>
+    ))
+  }
+</ul>

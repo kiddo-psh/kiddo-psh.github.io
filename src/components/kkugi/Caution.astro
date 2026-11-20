@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  items: string[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<aside class="caution rv" data-component="Caution">
+  <p class="c-head"><Icon name="info" size={16} />{title}</p>
+  <ul>
+    {items.map((item) => <li>{item}</li>)}
+  </ul>
+</aside>

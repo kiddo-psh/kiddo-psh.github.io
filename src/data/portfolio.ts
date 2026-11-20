@@ -77,7 +77,7 @@ export const portfolioCases: PortfolioCase[] = [
       },
     ],
     boundary:'응답시간은 비교 당시 프롬프트·검색 조건이 달라 같은 조건에서 재측정할 예정입니다.',
-    links:[{href:'/projects/yumyum', label:'상세 기록'}],
+    links:[{href:'/projects/kkugi', label:'상세 기록'}],
   },
   {
     id:'baro', number:'02', title:'주차바로', period:'2026.07 ~ 2026.08', logo:'/images/projects/baro/logo.png',

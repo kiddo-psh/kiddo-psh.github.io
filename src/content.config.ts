@@ -29,6 +29,10 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string().min(1),
+    // 목록 제목과 다른 문서 제목. 꾸기 글은 제목 아래 메타 줄을 두지 않는다.
+    pageTitle: z.string().min(1).optional(),
+    // true면 본문은 디자인된 글 컴포넌트이고, 기간·역할 상자는 그리지 않는다.
+    essay: z.boolean().default(false),
     summary: z.string().min(1),
     cover: z.string().startsWith('/').optional(),
     // 목록에서 제목 앞 글리프 대신 쓰는 정사각 로고. public/ 기준 절대 경로.

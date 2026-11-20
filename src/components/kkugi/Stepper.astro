@@ -1,0 +1,29 @@
+---
+interface Step {
+  date: string;
+  name: string;
+  desc: string;
+}
+
+interface Props {
+  steps: Step[];
+}
+
+const { steps } = Astro.props;
+---
+
+<figure class="fig card chart-card stepper-card" data-component="Stepper">
+  <ol class="stepper">
+    <span class="line" aria-hidden="true"><i></i></span>
+    {
+      steps.map((step, index) => (
+        <li class="st">
+          <span class:list={['dot', { filled: index === steps.length - 1 }]} />
+          <p class="date num">{step.date}</p>
+          <p class="nm">{step.name}</p>
+          <p class="dt">{step.desc}</p>
+        </li>
+      ))
+    }
+  </ol>
+</figure>

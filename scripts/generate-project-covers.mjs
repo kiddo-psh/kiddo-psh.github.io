@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 
 const projects = {
   baro:['gate','cobalt',1.6],
-  yumyum:['fold','citron',.6],
   feelm:['wave','iris',4],
   'ai-dev-harness':['gate','steel',4.5],
   kkugi:['orbit','tide',2],
