@@ -282,7 +282,16 @@
 .kkugi .ts-stat .v {
  margin: 0; font-size: 1.875rem; font-weight: 550; letter-spacing: -0.03em; line-height: 1.1; }
 .kkugi .ts-stat .n {
- margin: 6px 0 0; color: var(--secondary); font-size: 0.875rem; }
+ margin: 6px 0 0; color: var(--secondary); font-size: 0.875rem; line-height: 1.45; }
+@media (min-width: 721px) {
+.kkugi .ts-head {
+ grid-template-rows: auto auto auto; column-gap: 12px; row-gap: 0; }
+.kkugi .ts-stat {
+ display: grid; grid-template-rows: subgrid; grid-row: span 3; }
+.kkugi .ts-stat .k { align-self: end; }
+.kkugi .ts-stat .v,
+.kkugi .ts-stat .n { align-self: start; }
+}
 /* —— Stacked bar (data sources) —— */
 .kkugi .stack {
  display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--track); gap: 2px; }
