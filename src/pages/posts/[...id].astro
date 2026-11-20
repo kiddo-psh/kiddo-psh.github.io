@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import MinimalPostLayout from '../../layouts/MinimalPostLayout.astro';
 import { getVisiblePosts } from '../../lib/posts';
 
 export async function getStaticPaths() {
@@ -10,8 +11,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const Layout = post.data.layout === 'minimal' ? MinimalPostLayout : PostLayout;
 ---
 
-<PostLayout post={post}>
+<Layout post={post}>
   <Content />
-</PostLayout>
+</Layout>

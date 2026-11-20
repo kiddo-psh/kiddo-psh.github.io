@@ -1,0 +1,314 @@
+/*
+ * 미니멀 글 레이아웃(MinimalPostLayout) 전용 스타일.
+ * 모든 규칙은 .minimal-post 가 있는 페이지에만 닿는다. 기존 글(.prose)은 건드리지 않는다.
+ */
+
+/* 1. 페이지 토큰 ---------------------------------------------------------- */
+
+/* 열 폭을 644px로 줄인다. Nav, 본문, Footer가 같은 가장자리에 선다. */
+:root:has(.minimal-post) { --w-col: 40.25rem; }
+
+/*
+ * 이 사이트에는 다크 테마가 없다(global.css 가 color-scheme: light 다).
+ * 미니멀 글에서만 OS 설정을 따라 기본 토큰을 어둡게 바꾼다.
+ * 토큰을 바꾸므로 Nav 와 Footer 도 함께 어두워진다.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:has(.minimal-post) {
+    color-scheme: dark;
+    --bg: #111213;
+    --bg-elev: #1b1c1e;
+    --text: #ededee;
+    --text-body: #c6c8ca;
+    --text-dim: #9b9ea1;
+    --hair: #2c2e31;
+    --divider: #25272a;
+    --link-line: #5d6165;
+    --back: #232528;
+    --code-bg: #1b1c1e;
+  }
+  /* Nav 의 뒤로가기 hover 색은 밝은 회색으로 고정돼 있다. 다크에서만 덮는다. */
+  :root:has(.minimal-post) .bar .back:hover { background: #2e3134; }
+}
+
+/* 2. 본문 컴포넌트가 함께 쓰는 변수 (.mx-* 클래스가 읽는다) ---------------- */
+
+.minimal-prose {
+  --mx-text: var(--text-body);
+  --mx-text-strong: var(--text);
+  --mx-text-dim: var(--text-dim);
+  --mx-surface: var(--bg-elev);
+  --mx-surface-soft: var(--back);
+  --mx-line: var(--hair);
+  --mx-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 1px 2px -1px rgba(0, 0, 0, 0.06),
+    0 2px 4px 0 rgba(0, 0, 0, 0.04);
+  --mx-radius: 16px;
+  --mx-radius-sm: var(--radius-sm);
+  /* 이 사이트는 강조색을 두지 않는다. 강조는 진한 글자색과 굵기로 한다. */
+  --mx-accent: var(--text);
+  --mx-accent-soft: var(--back);
+  --mx-gap: 32px;
+  --mx-fs-sm: 0.9375rem;
+  --mx-fs-xs: 0.8125rem;
+}
+@media (prefers-color-scheme: dark) {
+  .minimal-prose {
+    --mx-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.09),
+      0 1px 2px -1px rgba(0, 0, 0, 0.5),
+      0 2px 4px 0 rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* 3. 글머리 --------------------------------------------------------------- */
+
+.minimal-head h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.0625rem;
+  font-weight: 550;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.minimal-head time {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dim);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 4. 본문 ----------------------------------------------------------------- */
+
+.minimal-prose {
+  margin-top: 26px;
+  color: var(--mx-text);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  letter-spacing: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.minimal-prose > :first-child { margin-top: 0; }
+.minimal-prose > :last-child { margin-bottom: 0; }
+
+.minimal-prose :is(h2, h3) {
+  color: var(--mx-text-strong);
+  font-size: 1.0625rem;
+  font-weight: 550;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-wrap: balance;
+  scroll-margin-top: 24px;
+}
+.minimal-prose h2 { margin: 72px 0 20px; }
+.minimal-prose h3 { margin: 48px 0 12px; }
+@media (min-width: 640px) {
+  .minimal-prose h2 { margin-top: 96px; }
+}
+
+.minimal-prose :is(p, ul, ol) { margin: 0 0 26px; }
+.minimal-prose p { text-wrap: pretty; }
+.minimal-prose :is(ul, ol) { padding-inline-start: 1.3em; }
+.minimal-prose li { margin-bottom: 0.4em; padding-inline-start: 0.15em; }
+.minimal-prose li:last-child { margin-bottom: 0; }
+.minimal-prose li > :is(ul, ol) { margin-block: 0.4em 0; }
+.minimal-prose li::marker { color: var(--mx-text-dim); font-variant-numeric: tabular-nums; }
+
+.minimal-prose strong { color: var(--mx-text-strong); font-weight: 600; }
+/* 한글에는 기울임꼴이 없어 브라우저가 억지로 기울인다. 굵기와 색으로 강조한다. */
+.minimal-prose em { color: var(--mx-text-strong); font-style: normal; font-weight: 500; }
+
+.minimal-prose a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--link-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+.minimal-prose a:hover {
+  color: var(--mx-text-strong);
+  text-decoration-color: var(--mx-text-strong);
+}
+
+.minimal-prose hr { margin: 64px 0; border: 0; border-top: 1px solid var(--mx-line); }
+
+.minimal-prose blockquote {
+  margin: var(--mx-gap) 0;
+  padding: 2px 0;
+  padding-inline-start: 16px;
+  border-inline-start: 2px solid var(--mx-line);
+  color: var(--mx-text-dim);
+}
+.minimal-prose blockquote > :last-child { margin-bottom: 0; }
+
+.minimal-prose :not(pre) > code {
+  padding: 2px 4px;
+  border-radius: var(--mx-radius-sm);
+  background: var(--mx-surface);
+  box-shadow: 0 0 0 1px var(--mx-line);
+  color: var(--mx-text-strong);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.minimal-prose pre {
+  max-width: 100%;
+  margin: var(--mx-gap) 0;
+  padding: 18px 20px;
+  overflow: auto;
+  border-radius: var(--mx-radius);
+  /* Shiki 가 pre 에 배경색을 인라인으로 넣는다. 카드 배경으로 덮는다. */
+  background: var(--mx-surface) !important;
+  box-shadow: var(--mx-shadow);
+  color: var(--mx-text-strong);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  letter-spacing: 0;
+  tab-size: 2;
+  word-break: normal;
+}
+.minimal-prose pre code { font: inherit; color: inherit; }
+@media (prefers-color-scheme: dark) {
+  /* 코드 하이라이트 테마가 라이트 하나뿐이고 색을 인라인으로 넣는다. 다크에서는 한 색으로 덮는다. */
+  .minimal-prose pre,
+  .minimal-prose pre span { color: var(--mx-text-strong) !important; }
+}
+
+.minimal-prose table {
+  width: 100%;
+  margin: var(--mx-gap) 0;
+  border-collapse: collapse;
+  font-size: var(--mx-fs-sm);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.minimal-prose :is(th, td) {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--divider);
+  text-align: start;
+  vertical-align: top;
+}
+.minimal-prose :is(th, td):first-child { padding-inline-start: 0; }
+.minimal-prose :is(th, td):last-child { padding-inline-end: 0; }
+.minimal-prose thead th {
+  border-bottom-color: var(--mx-line);
+  color: var(--mx-text-dim);
+  font-size: var(--mx-fs-xs);
+  font-weight: 500;
+}
+.minimal-prose tbody tr:last-child :is(th, td) { border-bottom: 0; }
+.minimal-prose tbody th { color: var(--mx-text-strong); font-weight: 500; }
+
+.minimal-prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: var(--mx-gap) auto;
+  border-radius: var(--mx-radius);
+  outline: 1px solid rgba(128, 128, 128, 0.18);
+  outline-offset: -1px;
+}
+.minimal-prose figure { margin: var(--mx-gap) 0; }
+.minimal-prose figure > :is(img, svg) { margin: 0; }
+.minimal-prose figcaption {
+  margin-top: 10px;
+  color: var(--mx-text-dim);
+  font-size: var(--mx-fs-xs);
+  line-height: 1.6;
+}
+/* 인라인 도해(src/lib/inline-svg.mjs). 도해 색이 라이트 고정이라 배경도 흰색으로 둔다. */
+.minimal-prose svg.dg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--mx-radius);
+  background: #fff;
+  box-shadow: var(--mx-shadow);
+}
+.minimal-prose svg.dg[data-only='narrow'] { display: none; }
+
+@media (max-width: 700px) {
+  .minimal-prose > table { display: block; overflow-x: auto; }
+  .minimal-prose pre { padding: 16px; font-size: 0.8125rem; }
+  .minimal-prose svg.dg[data-only='wide'] { display: none; }
+  .minimal-prose svg.dg[data-only='narrow'] { display: block; }
+}
+
+/* 5. 글 끝 ---------------------------------------------------------------- */
+
+.minimal-end {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--hair);
+}
+
+.minimal-copy {
+  position: relative;
+  flex: none;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--back);
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.minimal-copy[hidden] { display: none; }
+.minimal-copy:hover { color: var(--text-dim); }
+.minimal-copy:focus-visible { border-radius: var(--radius-pill); }
+/* 보이는 높이는 36px, 누르는 영역은 44px 다. */
+.minimal-copy::before { content: ''; position: absolute; inset: -4px 0; }
+
+.minimal-next {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  margin-inline-start: auto;
+  text-align: end;
+  text-decoration: none;
+}
+.minimal-next-label { color: var(--text-dim); font-size: 0.8125rem; line-height: 1.5; }
+.minimal-next-title {
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.5;
+  text-wrap: balance;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+.minimal-next:hover .minimal-next-title { text-decoration-color: var(--text); }
+
+@media (max-width: 480px) {
+  /* 좁은 화면에서는 긴 제목이 버튼 옆에서 네 줄로 꺾인다. 위아래로 쌓는다. */
+  .minimal-end { flex-direction: column; }
+  .minimal-next { align-self: flex-end; }
+}
+
+.minimal-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
