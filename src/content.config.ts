@@ -20,6 +20,8 @@ const posts = defineCollection({
     draft: z.boolean().default(false),
     // public/ 기준 절대 경로. 예: /images/n1.png
     cover: z.string().startsWith('/').optional(),
+    // minimal이면 MinimalPostLayout으로 나온다. 적지 않으면 기존 PostLayout이다.
+    layout: z.enum(['default', 'minimal']).default('default'),
   }),
 });
 

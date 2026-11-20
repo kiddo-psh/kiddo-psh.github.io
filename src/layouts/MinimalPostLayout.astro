@@ -1,0 +1,68 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import '../styles/minimal-article.css';
+import '../styles/minimal-components.css';
+import { isCsCategory } from '../site.config';
+import { getCsPosts, getWritingPosts, type Post } from '../lib/posts';
+import { dotDate } from '../lib/format';
+
+interface Props { post: Post }
+const { post } = Astro.props;
+
+const fromCs = isCsCategory(post.data.category);
+const siblings = fromCs ? await getCsPosts() : await getWritingPosts();
+// 목록은 최신순이다. 다음 글은 이 글보다 하나 오래된 글이다.
+const next = siblings[siblings.findIndex((item) => item.id === post.id) + 1];
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogImage={post.data.cover ?? `/og/${post.id}.png`}
+  ogType="article"
+  backHref={fromCs ? '/cs/' : '/posts/'}
+  backLabel={fromCs ? 'CS 목록' : '글 목록'}
+>
+  <article class="minimal-post" data-pagefind-body>
+    <header class="minimal-head">
+      <h1>{post.data.title}</h1>
+      <time datetime={post.data.pubDate.toISOString()}>{dotDate(post.data.pubDate)}</time>
+    </header>
+    <div class="minimal-prose"><slot /></div>
+    <footer class="minimal-end" data-pagefind-ignore>
+      <button class="minimal-copy" type="button" data-copy-link hidden>링크 복사</button>
+      <span class="minimal-sr" role="status" data-copy-status></span>
+      {next && (
+        <a class="minimal-next" href={`/posts/${next.id}/`}>
+          <span class="minimal-next-label">다음 글</span>
+          <span class="minimal-next-title">{next.data.title}</span>
+        </a>
+      )}
+    </footer>
+  </article>
+</BaseLayout>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-copy-link]');
+  const status = document.querySelector<HTMLElement>('[data-copy-status]');
+  if (button && status && navigator.clipboard) {
+    const idle = button.textContent ?? '';
+    let reset: number;
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        button.textContent = '복사됨';
+        status.textContent = '링크를 복사했습니다';
+      } catch {
+        button.textContent = '복사 실패';
+        status.textContent = '링크를 복사하지 못했습니다';
+      }
+      clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        button.textContent = idle;
+        status.textContent = '';
+      }, 1800);
+    });
+  }
+</script>

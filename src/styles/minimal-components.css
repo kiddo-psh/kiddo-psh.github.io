@@ -1,0 +1,421 @@
+/*
+ * 미니멀 글 본문에 넣는 시각 요소. 모두 .minimal-prose 안에서만 동작한다.
+ * 색, 그림자, 모서리는 minimal-article.css가 정의하는 --mx-* 변수를 쓴다.
+ * 쓰는 법은 _workspace/kkugi-ai/COMPONENTS.md에 있다.
+ */
+
+.minimal-prose :is(.mx-stats, .mx-table, .mx-timeline, .mx-case) {
+  margin-block: var(--mx-gap);
+  margin-inline: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--mx-text);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 카드 면. 그림자가 테두리 역할을 한다. 투명 테두리는 강제 색상 모드에서 윤곽이 된다. */
+.minimal-prose :is(.mx-stat, .mx-table, .mx-timeline, .mx-case) {
+  background: var(--mx-surface);
+  border: 1px solid transparent;
+  box-shadow: var(--mx-shadow);
+}
+
+.minimal-prose :is(.mx-table, .mx-timeline, .mx-case) {
+  border-radius: var(--mx-radius);
+}
+
+/* 보조 꼬리표. 채택 표시처럼 색만으로 전하면 안 되는 뜻을 글자로 함께 적는다. */
+.minimal-prose .mx-tag {
+  display: inline-block;
+  margin-inline-start: 0.5em;
+  padding: 0.0625rem 0.4375rem;
+  border-radius: 999px;
+  background: var(--mx-surface-soft);
+  box-shadow: inset 0 0 0 1px var(--mx-line);
+  color: var(--mx-text-dim);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: 0.08em;
+}
+
+.minimal-prose .mx-pick .mx-tag {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mx-accent) 35%, transparent);
+  color: var(--mx-accent);
+}
+
+/* ── 1. 대표 숫자 ─────────────────────────────────────────── */
+
+.minimal-prose .mx-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+}
+
+.minimal-prose .mx-stat {
+  flex: 1 1 8.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-width: 0;
+  margin: 0;
+  padding: 1rem 1.125rem 1.0625rem;
+  border-radius: var(--mx-radius);
+}
+
+.minimal-prose .mx-stat > dt {
+  margin: 0;
+  color: var(--mx-text-dim);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.minimal-prose .mx-stat > dd {
+  margin: 0;
+  color: var(--mx-text-strong);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.minimal-prose .mx-unit {
+  margin-inline-start: 0.1em;
+  color: var(--mx-text-dim);
+  font-size: 0.5357em;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.minimal-prose .mx-stat > dd.mx-stat-note {
+  order: -1;
+  color: var(--mx-text-dim);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+  white-space: normal;
+}
+
+/* ── 2. 비교 표 ───────────────────────────────────────────── */
+
+.minimal-prose .mx-table {
+  padding: 0;
+  overflow: hidden;
+}
+
+.minimal-prose .mx-table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  container-type: inline-size;
+  padding: 0.375rem 0.5rem 0.5rem;
+  border-radius: calc(var(--mx-radius) - 1px);
+}
+
+.minimal-prose .mx-table-scroll:focus-visible {
+  outline: 2px solid var(--mx-text-strong);
+  outline-offset: -2px;
+}
+
+.minimal-prose .mx-table table {
+  display: table;
+  width: 100%;
+  min-width: 100%;
+  margin: 0;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.minimal-prose .mx-table.mx-table-wide table {
+  min-width: 34rem;
+}
+
+.minimal-prose .mx-table caption {
+  caption-side: top;
+  padding: 0.625rem 0.75rem 0.375rem;
+  color: var(--mx-text-strong);
+  font-size: 0.875rem;
+  font-weight: 550;
+  text-align: start;
+  /* 표가 카드보다 넓어도 제목은 카드 폭 안에서 줄을 바꾸고, 가로로 밀어도 제자리에 남는다. */
+  position: sticky;
+  left: 0;
+  box-sizing: border-box;
+  max-width: 100cqi;
+  text-wrap: balance;
+}
+
+.minimal-prose .mx-table table :is(th, td) {
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--mx-text);
+  font-weight: 400;
+  text-align: start;
+  vertical-align: top;
+}
+
+.minimal-prose .mx-table thead th {
+  padding-block: 0.375rem 0.5rem;
+  border-bottom: 1px solid var(--mx-line);
+  color: var(--mx-text-dim);
+  font-weight: 500;
+  vertical-align: bottom;
+}
+
+.minimal-prose .mx-table tbody::before {
+  content: '';
+  display: table-row;
+  height: 0.25rem;
+}
+
+.minimal-prose .mx-table tbody th {
+  color: var(--mx-text-strong);
+  font-weight: 500;
+}
+
+.minimal-prose .mx-table .mx-num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* 넓은 표는 가로로 밀어도 첫 열이 남는다. 그림자는 스크롤 영역의 왼쪽 여백을 가린다. */
+.minimal-prose .mx-table-wide :is(thead, tbody) th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--mx-surface);
+  box-shadow: -0.5rem 0 0 var(--mx-surface);
+}
+
+/* 채택한 행. 옅은 면, 굵은 글자, "채택" 꼬리표를 함께 써서 색에만 기대지 않는다. */
+.minimal-prose .mx-table table tr.mx-pick > * {
+  background: var(--mx-accent-soft);
+  color: var(--mx-text-strong);
+  font-weight: 600;
+}
+
+/* 안쪽 모서리 8px = 카드 16px - 안쪽 여백 8px */
+.minimal-prose .mx-table tr.mx-pick > :first-child {
+  border-start-start-radius: 8px;
+  border-end-start-radius: 8px;
+}
+
+.minimal-prose .mx-table tr.mx-pick > :last-child {
+  border-start-end-radius: 8px;
+  border-end-end-radius: 8px;
+}
+
+.minimal-prose .mx-table-note {
+  margin: 0;
+  padding: 0.625rem 1.25rem 0.75rem;
+  border-top: 1px solid var(--mx-line);
+  color: var(--mx-text-dim);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* ── 3. 연대표 ────────────────────────────────────────────── */
+
+.minimal-prose .mx-timeline {
+  display: flex;
+  flex-direction: column;
+  padding: 1.125rem 1.25rem;
+  list-style: none;
+}
+
+.minimal-prose .mx-timeline > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8.25rem minmax(0, 1fr);
+  column-gap: 1rem;
+  margin: 0;
+  padding: 0.375rem 0 0.375rem 1.375rem;
+  list-style: none;
+}
+
+/* 점. 한 줄의 가운데(위 여백 6px + 줄 높이 22.5px의 절반)에 맞춘다. */
+.minimal-prose .mx-timeline > li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(0.375rem + 0.75em - 3.5px);
+  width: 7px;
+  height: 7px;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--mx-surface);
+  box-shadow: inset 0 0 0 1.5px var(--mx-text-dim);
+}
+
+/* 점 사이를 잇는 선 */
+.minimal-prose .mx-timeline > li::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 3px;
+  top: calc(0.375rem + 0.75em + 7.5px);
+  bottom: calc(-0.375rem - 0.75em + 7.5px);
+  width: 1px;
+  background: var(--mx-line);
+}
+
+.minimal-prose .mx-timeline > li:last-child::after {
+  content: none;
+}
+
+.minimal-prose .mx-timeline > li.mx-pick::before {
+  background: var(--mx-accent);
+  box-shadow: none;
+}
+
+.minimal-prose .mx-when {
+  color: var(--mx-text-dim);
+  font-size: 0.875rem;
+  line-height: 1.6072;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.minimal-prose .mx-what {
+  min-width: 0;
+  color: var(--mx-text);
+}
+
+.minimal-prose .mx-timeline > li.mx-pick .mx-what {
+  color: var(--mx-text-strong);
+  font-weight: 550;
+}
+
+/* ── 4. 트러블슈팅 묶음 ───────────────────────────────────── */
+
+.minimal-prose .mx-case {
+  padding: 0.25rem;
+}
+
+/* 연달아 놓은 카드는 문단 간격(26px)보다 좁게 붙여 한 묶음으로 읽히게 한다. */
+.minimal-prose .mx-case:has(+ .mx-case) {
+  margin-bottom: 0.75rem;
+}
+
+.minimal-prose .mx-case + .mx-case {
+  margin-top: 0;
+}
+
+/* 안쪽 모서리 12px = 카드 16px - 안쪽 여백 4px */
+.minimal-prose .mx-case-title {
+  margin: 0;
+  padding: 0.6875rem 1rem;
+  border-radius: 12px;
+  background: var(--mx-surface-soft);
+  color: var(--mx-text-strong);
+  font-size: 0.9375rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+.minimal-prose .mx-case > dl {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  margin: 0;
+  padding: 0.375rem 1rem 0.5rem;
+}
+
+.minimal-prose .mx-case > dl > dt,
+.minimal-prose .mx-case > dl > dd {
+  margin: 0;
+  padding-block: 0.625rem;
+  border-top: 1px solid var(--mx-line);
+}
+
+.minimal-prose .mx-case > dl > :is(dt:first-of-type, dt:first-of-type + dd) {
+  border-top: 0;
+}
+
+.minimal-prose .mx-case > dl > dt {
+  color: var(--mx-text-dim);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.6072;
+  white-space: nowrap;
+}
+
+.minimal-prose .mx-case > dl > dd {
+  color: var(--mx-text);
+}
+
+.minimal-prose .mx-case > dl > dd.mx-pick {
+  color: var(--mx-text-strong);
+  font-weight: 550;
+}
+
+.minimal-prose :is(.mx-case, .mx-timeline, .mx-table) code {
+  font-size: 0.8125rem;
+}
+
+/* ── 좁은 화면 ────────────────────────────────────────────── */
+
+@media (max-width: 30rem) {
+  .minimal-prose .mx-table table :is(th, td),
+  .minimal-prose .mx-table caption {
+    padding-inline: 0.5rem;
+  }
+
+  .minimal-prose .mx-stat {
+    flex-basis: 7.5rem;
+    padding: 0.875rem 1rem 0.9375rem;
+  }
+
+  .minimal-prose .mx-stat > dd {
+    font-size: 1.5rem;
+  }
+
+  .minimal-prose .mx-timeline {
+    padding: 1rem 1.125rem;
+  }
+
+  .minimal-prose .mx-timeline > li {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 0.5rem;
+  }
+
+  .minimal-prose .mx-timeline > li::before {
+    top: calc(0.5rem + 0.75em - 3.5px);
+  }
+
+  .minimal-prose .mx-timeline > li::after {
+    top: calc(0.5rem + 0.75em + 7.5px);
+    bottom: calc(-0.5rem - 0.75em + 7.5px);
+  }
+
+  .minimal-prose .mx-case > dl {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 0.875rem;
+  }
+
+  .minimal-prose .mx-case > dl > dt {
+    padding-bottom: 0;
+  }
+
+  .minimal-prose .mx-case > dl > dd {
+    padding-top: 0.125rem;
+    border-top: 0;
+  }
+
+  .minimal-prose .mx-case > dl > dt:first-of-type + dd {
+    border-top: 0;
+  }
+}
