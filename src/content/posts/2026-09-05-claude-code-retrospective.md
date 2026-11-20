@@ -1,5 +1,5 @@
 ---
-title: "같은 Claude Code를 썼는데 왜 코드는 달랐을까"
+title: "같은 Claude Code를 써도 쓰는 방식이 코드를 가른다"
 description: "같은 AI 도구를 사용한 팀에서 에이전트 활용 방식의 차이가 리뷰 비용과 재작업 비용으로 이어진 과정을 돌아본다."
 pubDate: 2026-08-14
 category: retro
