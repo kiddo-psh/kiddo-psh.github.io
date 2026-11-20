@@ -143,6 +143,9 @@
  margin: 6px 0 0; font-size: 0.9375rem; font-weight: 550; color: var(--text); }
 .kkugi .hcard .sub {
  display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+/* 서브 칩을 flex로 두면 용어 버튼 앞뒤 공백이 사라져 라벨과 값이 붙는다. */
+.kkugi .hcard .sub .tag {
+ display: inline-block; height: auto; min-height: 24px; max-width: 100%; padding: 0 9px; line-height: 22px; white-space: normal; }
 .kkugi .hcard .cap {
  margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline-strong); color: var(--secondary); font-size: 0.875rem; line-height: 1.55; }
 /* —— Problem / solution —— */

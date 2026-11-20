@@ -1,6 +1,12 @@
 ---
 import Icon from './Icon.astro';
 
+interface ChipPart {
+  text: string;
+  /** 이 조각 안에서는 줄바꿈하지 않는다. */
+  nowrap?: boolean;
+}
+
 interface Item {
   tag: string;
   value: string;
@@ -11,7 +17,7 @@ interface Item {
   suffix?: string;
   arrow?: boolean;
   label: string;
-  chips: string[];
+  chips: (string | ChipPart[])[];
   caption: string;
 }
 
@@ -41,7 +47,11 @@ const { items } = Astro.props;
         <p class="label">{item.label}</p>
         <div class="sub">
           {item.chips.map((chip) => (
-            <span class="tag">{chip}</span>
+            <span class="tag">
+              {typeof chip === 'string'
+                ? chip
+                : chip.map((part) => (part.nowrap ? <span class="nowrap">{part.text}</span> : part.text))}
+            </span>
           ))}
         </div>
         <p class="cap">{item.caption}</p>
