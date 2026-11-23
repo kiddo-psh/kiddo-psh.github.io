@@ -2,7 +2,21 @@
 import Icon from './Icon.astro';
 
 interface Step {
-  icon: 'image' | 'scan' | 'crop' | 'layers' | 'list-ordered' | 'route' | 'search' | 'sparkles' | 'shield-check';
+  icon:
+    | 'image'
+    | 'scan'
+    | 'crop'
+    | 'layers'
+    | 'list-ordered'
+    | 'route'
+    | 'search'
+    | 'sparkles'
+    | 'shield-check'
+    | 'code'
+    | 'clipboard-check'
+    | 'send'
+    | 'server'
+    | 'cpu';
   name: string;
   detail: string;
   no?: string;
@@ -25,7 +39,7 @@ interface Props {
 }
 
 const { steps, branch, loop, details } = Astro.props;
-const width = steps.length === 5 ? 'pipe-5' : 'pipe-4';
+const width = steps.length === 7 ? 'pipe-7' : steps.length === 5 ? 'pipe-5' : 'pipe-4';
 ---
 
 <figure class="fig wide" data-component="Pipeline">

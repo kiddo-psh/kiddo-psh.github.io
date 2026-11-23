@@ -1,0 +1,563 @@
+---
+import '../../styles/minimal-article.css';
+import '../../styles/kkugi.css';
+import Bars from '../kkugi/Bars.astro';
+import Callouts from '../kkugi/Callouts.astro';
+import Caution from '../kkugi/Caution.astro';
+import DataTable from '../kkugi/DataTable.astro';
+import Lessons from '../kkugi/Lessons.astro';
+import Pipeline from '../kkugi/Pipeline.astro';
+import ProblemSolution from '../kkugi/ProblemSolution.astro';
+import ResultCards from '../kkugi/ResultCards.astro';
+import ShotTabs from '../kkugi/ShotTabs.astro';
+import StackChips from '../kkugi/StackChips.astro';
+import StackedBar from '../kkugi/StackedBar.astro';
+import Timeline from '../kkugi/Timeline.astro';
+import { termDefs } from './terms';
+---
+
+<h1 class="post-title">ai-dev-harness: AI 코딩 도구를 쓰는 팀에 규칙과 검증을 설치하다</h1>
+
+<blockquote class="lede">
+  <p>팀의 AI 작업 절차를 새 저장소에 설치하는 개발 가드레일 키트를 만들었다. 규칙 문서와 hooks, MR·CI 검사로 표준을 벗어난 변경을 막고, Claude Code와 Codex의 사용량과 검증 기록을 같은 기준으로 모아 본다. 꾸기 개발에서는 이 절차 안의 리뷰가 실제 결함 230건을 찾아 고쳤다.</p>
+</blockquote>
+
+<h2 class="post-h2" id="summary">한눈에 보는 성과<span class="rule" aria-hidden="true"></span></h2>
+<ResultCards
+  items={[
+    {
+      tag: '꾸기 적용',
+      value: '230',
+      unit: '건',
+      label: '리뷰가 찾아 고친 확정 결함',
+      chips: [
+        [{ text: '리뷰 ' }, { text: '261개', nowrap: true }],
+        [{ text: '독립 실행 근거 ' }, { text: '215건', nowrap: true }],
+      ],
+      caption: [
+        { text: '리뷰 처리 표 ' },
+        { text: '1,166행', nowrap: true },
+        { text: ' 중 ' },
+        { text: '230건', nowrap: true },
+        { text: '. 꾸기 팀 리뷰 기록 감사(2026-11-09), 기준 커밋 고정, 비교군 없음' },
+      ],
+    },
+    {
+      tag: '가드레일 키트',
+      value: '64',
+      unit: '분',
+      label: '빈 저장소에서 첫 엄격 MR 병합까지',
+      chips: ['목표 반나절', [{ text: '리허설 ' }, { text: '1회', nowrap: true }]],
+      caption: [
+        { text: '2026-10-13 빈 저장소에 키트를 붙여 첫날 체크리스트 ' },
+        { text: '1~9번', nowrap: true },
+        { text: '을 ' },
+        { text: '64분', nowrap: true },
+        { text: '에 마쳤다. 스택 골격 생성, Runner 등록, 사람 승인 대기 포함' },
+      ],
+    },
+    {
+      tag: '가드레일 키트',
+      value: '8',
+      unit: '건',
+      label: 'MR 단계에서 막은 CVE',
+      chips: [
+        [{ text: 'CRITICAL\u00A03', nowrap: true }],
+        [{ text: 'HIGH\u00A05', nowrap: true }],
+      ],
+      caption: '의존성 감사가 첫 MR 파이프라인을 실패시켰다. Spring Boot 4.1.1 기본 버전의 tomcat·jackson',
+    },
+    {
+      tag: '키트 전체',
+      value: '742',
+      unit: '개',
+      label: '단위 테스트 통과',
+      chips: [
+        [{ text: '0.4.1까지 ' }, { text: '27일', nowrap: true }],
+        [{ text: '릴리스 ' }, { text: '9개', nowrap: true }],
+      ],
+      caption: [
+        { text: '2026-09-30 저장소 초기화 → 2026-10-26 0.4.1. 테스트는 2026-11-23 main에서 실행(' },
+        { text: '3개', nowrap: true },
+        { text: ' 건너뜀)' },
+      ],
+    },
+  ]}
+/>
+<p>카드 1은 꾸기 실제 개발의 리뷰 기록, 카드 2·3은 2026-10-13 설치 리허설(혼자 진행, MR 2건)의 기록이다.</p>
+<p>첫 줄은 실제 프로젝트(꾸기)의 리뷰 기록을, 나머지는 혼자 진행한 설치 리허설과 키트 저장소를 근거로 한다. 230건은 리뷰가 찾아 고친 결함 수이고 결함이 줄었다는 뜻은 아니다. 하네스를 쓰지 않은 비교군이 없어 감소율·예방률·생산성 효과는 계산하지 않았다.</p>
+
+<h2 class="post-h2" id="overview">프로젝트 개요<span class="rule" aria-hidden="true"></span></h2>
+<ProblemSolution
+  stats={[
+    { value: '5시간\u00A031분', label: '재작업 · 내 작업 37분' },
+    { value: '1,402줄', label: '재작업(기능 235줄)' },
+  ]}
+  solutionTitle="해결"
+  solution="다음 프로젝트인 feelm에서 요구사항 우선순위, 구현 전 합의 항목, 변경 위험에 따른 계획·리뷰·검증 절차를 공통 규칙으로 정리했다. 이 규칙을 다른 팀도 첫날부터 쓸 수 있게 키트로 만들었다."
+  solutions={[
+    {
+      icon: 'shield-check',
+      title: '가드레일 키트',
+      body: '규칙 문서와 양식을 설치하고, 작업 중(hooks)·MR·CI 세 지점에서 같은 규칙을 검사한다.',
+    },
+    {
+      icon: 'server',
+      title: 'AgentOps',
+      body: 'Claude Code와 Codex의 사용량, 작업에 연결된 검증 기록을 같은 기준으로 모아 대시보드로 본다.',
+    },
+  ]}
+>
+  <span slot="problem"><a href="/projects/baro/">주차바로</a> 팀 프로젝트에서는 거의 모두가 AI 코딩 도구를 썼지만, 요구와 판단을 전달하는 방식은 사람마다 달랐다. 2026-07-30 하루를 보면, 판정 기준을 합의하지 않은 채 에이전트가 고른 기준으로 235줄짜리 기능이 올라왔다. 리뷰에서 그 기준이 뒤집히자 재작업에 5시간 31분, 1,402줄이 들었다. 내 작업 시간은 37분이었다.</span>
+</ProblemSolution>
+<p>키트 저장소 자신도 이 키트로 관리한다. 꾸기 프로젝트에 적용하면서 나온 불편을 이슈로 남기고 다시 키트에 반영했다.</p>
+
+<h2 class="post-h2 part" id="guardrail"><span class="kicker">핵심 기능 1.</span> 가드레일 키트<span class="rule" aria-hidden="true"></span></h2>
+<h3 class="post-h3">결과</h3>
+<DataTable
+  scroll
+  headers={['확인', '결과']}
+  rows={[
+    ['설치 리허설(2026-10-13, 빈 저장소)', '첫날 체크리스트 1~9번 64분. 엄격 단계 기능 1개를 플랜부터 MR까지 28분, 병합까지 50분(사람 대기 포함)'],
+    ['리허설에서 막은 변경', '의존성 감사가 첫 MR 파이프라인을 실패시켰다(CVE 8건). 마이그레이션 파일 편집을 hooks가 사람 확인으로 돌렸다'],
+    ['리허설 MR 2건의 분리 리뷰', '채택한 지적 9건(MR별 5건, 4건). 두 리뷰가 독립으로 같은 결함을 찾은 경우가 MR마다 1~2건'],
+    ['리허설 측정값(주간 수집기)', '병합 후 누락 0, 엄격 비율 2/2, 판정 불일치 0, hooks 확인 1회'],
+    ['판정기 eval', '키트 PR 이력 28건에서 규칙 판정과 정답이 28건 모두 일치'],
+    ['스택별 스캐폴드', 'Spring(Java), React(TypeScript), Android(Kotlin, 폰·Wear OS), Android 컨벤션 전용 프로필 4종'],
+  ]}
+/>
+<p>판정기 eval의 28건은 키트 자신의 PR이고 엄격 사례가 없다. 본문 판정과 재판정이 다른 4건은 재판정 쪽을 정답으로 정했다. 그래서 이 값은 규칙이 회귀하지 않았는지 보는 장치로만 쓴다.</p>
+
+<h3 class="post-h3">구조: 세 지점에서 같은 규칙을 검사한다</h3>
+<p><code>init</code>이 저장소에 규칙 문서, 플랜·리뷰·MR 양식, hooks, CI 설정 조각을 생성한다. 그 뒤 변경은 세 지점을 지난다.</p>
+<Pipeline
+  steps={[
+    { icon: 'code', name: 'init', detail: '규칙·양식·hooks·CI 조각' },
+    { icon: 'shield-check', name: '작업 중', detail: 'hooks · 보호 경로, 종료 검증' },
+    { icon: 'clipboard-check', name: 'MR', detail: '본문 lint, 보호 경로 확인' },
+    { icon: 'search', name: 'CI', detail: 'Secret·의존성·SAST·이미지' },
+    { icon: 'route', name: '병합', detail: '세 지점을 통과', accent: true },
+  ]}
+  branch={{ text: '차단·확인이면 되돌아감' }}
+/>
+<ol>
+  <li><strong>작업 중(hooks)</strong>: 계약 문서, DB 마이그레이션, CI 정의, lock 파일 같은 보호 경로를 고치려 하면 거부하거나 사람 확인을 요구한다. 세션이 끝나면 정해 둔 검증 명령을 실행한다.</li>
+  <li><strong>MR</strong>: MR 본문 lint가 검증 절(방법·결과·미검증), 영향 범위를 확인한다. 엄격 판정이면 플랜 요약과 리뷰 결과 절도 요구한다.</li>
+  <li><strong>CI</strong>: Secret 탐지, 의존성 감사, SAST, 컨테이너 이미지 스캔 4종과 변경 영역의 검증 명령을 돌린다.</li>
+</ol>
+<p><code>check</code>는 생성된 파일이 템플릿과 달라졌는지(드리프트) 검사한다. 플랫폼(GitLab·GitHub), 업무 추적 도구(Jira·GitHub Issues), 영역별 검증 명령은 설정 파일로 분리했다. 명령 진입점은 Python 표준 라이브러리만 쓴다.</p>
+
+<h3 class="post-h3">변경 위험을 세 단계로 판정한다</h3>
+<p>작은 수정과 위험한 변경에 같은 절차를 쓰면 작은 수정이 느려진다. <code>judge</code>가 변경 파일 경로를 보고 단계를 제안한다.</p>
+<DataTable
+  scroll
+  headers={['단계', '언제', '절차']}
+  rows={[
+    ['경량', '문서·주석, 또는 동작과 계약을 바꾸지 않는 테스트만 바꾼 변경', '검증만 한다. 플랜·리뷰 파일을 만들지 않는다'],
+    ['표준', '트리거에 걸리지 않는 코드 변경', '플랜, 구현, 리뷰 산출물을 한 세션에서 만든다'],
+    ['엄격', '보호 경로, 보안 검사, hooks 차단 로직 같은 트리거에 하나 이상 걸린 변경', '표준 산출물에 사람의 플랜 승인과 다른 세션의 분리 리뷰를 더한다. MR 본문에 플랜 요약·리뷰 결과 절이 필요하다'],
+  ]}
+/>
+<p>경로만으로 모든 위험을 알 수는 없다. 문장으로 설명해야 하는 위험(예: "차단 로직을 바꾸면 엄격")은 사람이 판단하고, 도구는 실행 가능한 조건만 검사하도록 역할을 나눴다.</p>
+
+<h3 class="post-h3">설치 리허설: 64분, 그리고 실제로 막은 것</h3>
+<p>2026-10-13 SSAFY GitLab의 빈 비공개 저장소에 Spring 백엔드와 React 프론트 영역을 만들고 키트를 붙였다. 기능 구현은 Claude Code 헤드리스 세션이 하고, 플랜 승인과 확인은 사람이 했다.</p>
+<Callouts
+  items={[
+    { value: '64분', key: '첫날 체크리스트 1~9번', note: '빈 저장소, 2026-10-13' },
+    { value: '28분', key: '플랜부터 MR까지', note: '엄격 단계 기능 1개. 병합까지 50분(사람 대기 포함)' },
+    { value: '약 $7.8', key: '헤드리스 세션 3회', note: '엄격 기능 1개의 비용' },
+  ]}
+/>
+<DataTable
+  scroll
+  headers={['사례', '내용']}
+  rows={[
+    ['의존성 감사가 MR을 막음', 'Spring Boot 4.1.1이 관리하는 tomcat-embed-core(CVE 3건, CRITICAL)와 jackson(CVE 5건, HIGH). 버전을 올리고 다시 돌려 통과했다. CI 실패 원인은 security로 자동 분류됐다'],
+    ['hooks가 사람 확인으로 돌림', '헤드리스 세션이 마이그레이션 SQL을 쓰려다 ask 규칙에 걸렸다. 세션은 다른 경로로 우회하지 않고 SQL 내용과 "사람이 할 일"을 보고했다'],
+    ['분리 리뷰가 MR 전에 잡음', 'Windows 새 clone에서 포매터 회귀, 목록 로딩 중 추가한 항목이 늦은 조회 결과에 지워지는 문제 등'],
+  ]}
+/>
+<p>리허설은 혼자 진행한 1회이고 MR은 2건이다. 설치·검사 흐름이 동작하는지 확인한 기록이며 생산성 개선율이 아니다. 엄격 기능 1개의 헤드리스 세션 3회 비용은 약 $7.8였다.</p>
+
+<h3 class="post-h3">한계</h3>
+<Caution
+  title="한계"
+  items={[
+    '도입 전(feelm)과 키트 적용 후의 누락·절차 준수를 비교한 전후 비교표는 아직 없다.',
+    'Secret 탐지와 SAST는 리허설에서 자연 발생 검출이 0건이었다. 합성 사례로만 검증했다.',
+    '리허설에서 커밋한 뒤 끝난 세션은 종료 검증이 돌지 않는 결함을 찾았다. 2026-10-19에 고쳤다.',
+    'hooks는 Claude Code에서만 돈다. 그래서 같은 보호 경로 규칙을 MR 단계에도 넣었다(핵심 기능 2 참고).',
+    '실제 프로젝트 적용은 꾸기 하나다. 그 밖에는 키트 저장소 자신과 리허설용 빈 저장소뿐이다.',
+  ]}
+/>
+
+<h3 class="post-h3">타임라인: 가드레일 키트</h3>
+<Timeline
+  label="타임라인: 가드레일 키트"
+  legend={[
+    { kind: 'key', text: '저장소 초기화 · 꾸기 첫 적용' },
+    { kind: 'final', text: '설치 리허설' },
+  ]}
+  phases={[
+    {
+      label: '2026-07',
+      events: [
+        { date: '2026-07-30', name: '주차바로 재작업', result: '합의 없이 구현된 판정 기준 때문에 재작업 5시간 31분, 1,402줄' },
+      ],
+    },
+    {
+      label: '2026-09',
+      events: [
+        { date: '2026-09-29', name: 'feelm 규칙 이관 기준', result: 'feelm 규칙 문서를 읽기 전용으로 가져와 프로젝트 고유 명사·경로를 걷어냈다' },
+        { date: '2026-09-30', name: '저장소 초기화', result: 'init·check, 자기 적용, 영역 규칙 템플릿, 보호 경로·종료 검증 hooks 1차', key: true },
+      ],
+    },
+    {
+      label: '2026-10',
+      events: [
+        { date: '2026-10-01', name: '보안 검사 CI 4종', result: 'Secret 탐지·의존성 감사·SAST·이미지 스캔 조각, 설치 가이드 초안, 키트 자신에 적용' },
+        { date: '2026-10-02', name: '판정 자동화', result: '3단계 판정 judge, CI 실패 원인 분류기, 첫 소비자 계약(설정 스키마·CLI 인자) 확정' },
+        { date: '2026-10-03', name: 'MR lint, 스캐폴드', result: 'MR 본문 lint. AI MR 리뷰 CI 조각은 feelm에서 효과가 낮아 철회했다. 스택별 프로필 3종' },
+        { date: '2026-10-03', name: '꾸기 첫 적용', result: '꾸기 저장소에 키트(0.2.0)를 붙였다. 첫 실제 프로젝트 적용', key: true },
+        { date: '2026-10-07', name: '측정 수집기', result: '플랫폼 API에서 주별 지표를 모으고 정적 HTML 주간 리포트를 만든다' },
+        { date: '2026-10-12', name: '가이드', result: '주간 요약 발송, 프로젝트 첫날 체크리스트' },
+        { date: '2026-10-13', name: '판정기 eval, 설치 리허설', result: 'eval 28건 28건 일치. 빈 저장소 체크리스트 64분, CVE 8건 차단', final: true },
+        { date: '2026-10-19', name: '리허설 후속 수정', result: '커밋 후 종료 검증, Windows 줄끝, 생성 문서 포매터 충돌, 개인 설정 무시 목록' },
+      ],
+    },
+  ]}
+/>
+
+<h2 class="post-h2 part" id="agentops"><span class="kicker">핵심 기능 2.</span> AgentOps: 사용량과 검증 근거를 작업에 연결하다<span class="rule" aria-hidden="true"></span></h2>
+<h3 class="post-h3">결과</h3>
+<DataTable
+  scroll
+  headers={['확인', '결과']}
+  rows={[
+    ['릴리스', '2026-10-20 ~ 10-26에 0.3.0 ~ 0.4.1, 릴리스 9개'],
+    ['기록 범위', '세션 시작·종료, 모델별 토큰, 단가표 기반 추정 비용, hooks 개입, MR 본문의 에이전트 기록·리뷰 결과 절'],
+    ['두 도구 비교', 'Claude Code와 Codex를 같은 사건 계약·단가표·사건 시각(KST 날짜)으로 집계하는 공통 사용량 v2(0.4.1)'],
+    ['대시보드', '로컬 실시간 대시보드(127.0.0.1)와 선택형 팀 대시보드(OpenTelemetry Collector → Prometheus·Loki → Grafana)'],
+    ['꾸기 적용', '2026-10-03 첫 적용부터 0.4.0까지. 적용할 때마다 드러난 빈틈(hooks 밖 Codex 작업, 돌지 않은 전송기)이 다음 버전이 됐다'],
+  ]}
+/>
+
+<h3 class="post-h3">왜 필요했나: 꾸기에서 기록이 비었다</h3>
+<p>2026-10-19 꾸기 저장소를 측정해 보니 hooks 보고가 MR 54건 모두 비어 있었다. 개입이 0이었는지, hooks가 없는 도구로 작업했는지 데이터로 가를 수 없었다. 꾸기의 worktree 작업은 대부분 Codex였고, hooks는 Claude Code에서만 돈다. Claude Code 팀 플랜에서는 토큰 부족도 반복해서 겪었다. 실행 방식을 바꾸려면 어느 사람·도구·모델·작업에 사용량이 몰리는지부터 알아야 했다.</p>
+<p>그래서 두 가지를 했다.</p>
+<ol>
+  <li>hooks가 없는 도구로 만든 MR도 같은 보호 경로 규칙과 영역 검증을 MR 단계에서 거치게 했다. 규칙 정의는 hooks와 같은 파일을 쓴다.</li>
+  <li>세션 단위 실행 기록과 토큰·추정 비용을 남기고, 이를 MR 본문과 대시보드로 모았다.</li>
+</ol>
+
+<h3 class="post-h3">구조: 사건이 생길 때 보낸다</h3>
+<p>세션이 끝나거나 응답이 끝날 때 hook이 전송을 백그라운드로 띄우고 바로 끝난다. 전송은 아무것도 출력하지 않고, 실패해도 응답과 종료를 막지 않는다. 상시 수집 프로세스는 두지 않았다.</p>
+<DataTable
+  headers={['도구', '전송 계기']}
+  rows={[
+    ['Claude Code', '세션 종료(SessionEnd)'],
+    ['Codex', '응답 종료(Stop, 마지막 전송 뒤 5분이 지났을 때만), 세션 종료(보조)'],
+    ['둘 다', '수동 telemetry push'],
+  ]}
+/>
+<p>Codex의 세션 종료 신호는 실측에서 두 번 중 한 번만 왔다. 그래서 주 계기로 쓰지 않았다. 실시간 사용 여부와 생존 신호는 각 도구의 내장 텔레메트리가 맡고, 키트 기록과 서로 더하지 않는다.</p>
+<Pipeline
+  steps={[
+    { icon: 'shield-check', name: '세션 종료', detail: 'SessionEnd · Codex Stop' },
+    { icon: 'send', name: 'telemetry push', detail: '백그라운드, 실패해도 막지 않음' },
+    { icon: 'layers', name: '전송 대기', detail: '실패하면 다시 시도' },
+    { icon: 'server', name: 'Collector', detail: 'OpenTelemetry' },
+    { icon: 'sparkles', name: 'Grafana', detail: 'Prometheus·Loki', accent: true },
+  ]}
+  branch={{ lead: '별도 레인', text: '도구 내장 텔레메트리: 실시간 사용 여부, 합계에 더하지 않음' }}
+/>
+
+<h3 class="post-h3">같은 사용량을 두 번 더하지 않는다</h3>
+<p>Codex의 내장 관측과 키트가 읽는 세션 기록은 같은 사용량을 다른 경로로 본다. 둘을 합하거나, 세션의 누적 토큰을 매번 더하면 합계가 부풀려진다. 공통 사용량 v2는 사용량마다 고정 ID를 두고 아래처럼 처리한다.</p>
+<DataTable
+  scroll
+  headers={['합계를 왜곡할 수 있는 상황', '처리']}
+  rows={[
+    ['재시도나 다른 작업 폴더에서 같은 기록을 재전송', '같은 ID는 다시 더하지 않는다'],
+    ['기록이 늦게 도착', '전송일이 아니라 사건이 일어난 시각의 KST 날짜에 넣는다'],
+    ['전송 사이 단가표 변경', '처음 전송을 준비할 때의 단가를 저장해 재전송에도 쓴다'],
+    ['단가를 모르는 모델', '토큰에는 넣고 비용은 부분 합계로 표시한다'],
+    ['전송 실패나 부분 거절', '보내기 전에 로컬 전송 대기 목록에 저장하고, 성공한 묶음만 완료로 표시한다'],
+    ['검증 기록이 없거나 도구가 지원하지 않음', '성공이나 0으로 채우지 않고 상태를 따로 표시한다'],
+  ]}
+/>
+<p>7일을 넘겨 보내지 못한 기록과 예전 누적 형식 로그는 복원에 한계가 있다. 합계를 보여 줄 때 어떤 기록이 빠질 수 있는지도 함께 밝힌다.</p>
+
+<h3 class="post-h3">작업별 실행 근거: '테스트 통과'가 어떤 코드의 결과인지</h3>
+<p>사용량만으로는 작업이 검증됐는지 알 수 없다. 별도 확장에서는 세션을 작업·PR·역할에 연결하고 검증 실행, 사람의 개입, 질문 대기, 리뷰 상태를 따로 기록한다.</p>
+<ul class="plain">
+  <li>테스트 실행에는 실행 ID와 전후 코드 상태의 해시를 남긴다. 실행 중 코드가 바뀌면 통과로 기록하지 않는다.</li>
+  <li>세션이 작업을 옮기면 연결 이력을 시간 구간으로 보존해, 늦게 수집한 기록도 당시 작업에 넣는다. 연결 전 기록은 현재 작업에 소급하지 않는다.</li>
+  <li>기본 수집에서는 프롬프트·응답·코드 원문을 중앙으로 보내지 않는다.</li>
+</ul>
+<p>이 확장은 꾸기 저장소에 적용했지만 키트 main에는 아직 병합하지 않았다.</p>
+
+<h3 class="post-h3">대시보드</h3>
+<p>팀 대시보드는 세 화면으로 나눴다.</p>
+<DataTable
+  scroll
+  headers={['화면', '확인할 내용']}
+  rows={[
+    ['팀 사용량', '사람별·일별 토큰, 완료 응답, 추정 비용. 한 사람 안에서 Codex와 Claude Code를 비교한다'],
+    ['수집·차단 진단', '마지막 수신, 24시간 전송 없음, 전송 오류, hooks 차단·확인 요청'],
+    ['작업 검증 기록', '작업별 검증 시도, 인수 조건, 리뷰 처리 근거(실행 근거 확장)'],
+  ]}
+/>
+<p>화면 예시는 모두 가상 사용자와 목데이터로 찍었다. 실제 팀의 사용량이나 비용이 아니다.</p>
+<ShotTabs
+  label="대시보드 화면"
+  caption="가상 사용자 목데이터. 실제 팀의 사용량이나 비용이 아니다."
+  shots={[
+    {
+      id: 'usage',
+      label: '팀 사용량',
+      src: '/images/projects/ai-dev-harness/team-usage.png',
+      width: 1800,
+      height: 1220,
+      alt: '가상 사용자의 사람별·일별 토큰, 완료 응답, 추정 비용을 비교하는 팀 사용량 화면. 목데이터.',
+    },
+    {
+      id: 'diagnostics',
+      label: '수집·차단 진단',
+      src: '/images/projects/ai-dev-harness/collection-diagnostics.png',
+      width: 1800,
+      height: 1220,
+      alt: '마지막 수신, 전송 없음, 전송 오류, hooks 차단과 확인 요청을 보여주는 수집·차단 진단 화면. 목데이터.',
+    },
+    {
+      id: 'evidence',
+      label: '작업 검증 기록',
+      src: '/images/projects/ai-dev-harness/task-evidence.png',
+      width: 1800,
+      height: 1220,
+      alt: '작업별 검증 시도, 인수 조건, 리뷰 처리 근거를 보여주는 작업 검증 기록 화면. 목데이터.',
+    },
+  ]}
+/>
+<p><strong>프로젝트 범위.</strong> ai-dev-harness는 개인 프로젝트로 기획하고 만들었다. 꾸기는 팀 프로젝트이고, 키트는 그 저장소에 적용한 개발 도구다.</p>
+
+<h3 class="post-h3">한계</h3>
+<Caution
+  title="한계"
+  items={[
+    '수집한 기록으로 팀의 리드타임·재작업·병합 후 결함이 줄었는지 비교한 결과는 없다. 질문 대기 중에도 다른 작업이 진행될 수 있어 대기 시간을 그대로 낭비로 보지 않는다.',
+    'Codex 비대화형 실행(codex exec)에서는 프로젝트 hook이 돌지 않는다. 자동 수집이 모든 실행을 덮는다고 가정하지 않고 수동 수집과 상태 진단을 둔다.',
+    '공통 v2의 실제 Loki·Grafana 스모크는 CI 단계로 연결했다. 리뷰 당시 로컬에서는 Docker가 없어 실행하지 못했다.',
+    '작업별 실행 근거 확장은 아직 키트 main에 없다.',
+    '꾸기에서 모인 사용량(토큰·비용)을 집계한 리포트는 없다. 화면 예시는 모두 목데이터다. 꾸기의 리뷰 결과는 아래 「실제 프로젝트 적용: 꾸기」에 따로 정리했다.',
+    '꾸기에 0.4.0을 적용하며 찾은 결함 4개는 아직 고치지 않았다.',
+  ]}
+/>
+
+<h3 class="post-h3">타임라인: AgentOps</h3>
+<Timeline
+  label="타임라인: AgentOps"
+  legend={[
+    { kind: 'key', text: 'AgentOps 범위 추가' },
+    { kind: 'final', text: '0.4.1' },
+  ]}
+  phases={[
+    {
+      label: '2026-10',
+      events: [
+        { date: '2026-10-19', name: '꾸기 측정', result: 'hooks 보고 54건이 모두 빔. Codex 작업이 hooks 밖에 있었다' },
+        { date: '2026-10-20', name: 'AgentOps 범위 추가', result: '세션 기록, 토큰·추정 비용, MR 에이전트 기록, 리뷰 지표, hooks 없는 도구의 MR 단계 보호, 로컬·팀 대시보드', key: true },
+        { date: '2026-10-20', name: '0.3.0 ~ 0.3.4', result: 'Codex 세션 포함, OpenAI(Codex) 단가, 저장소 안 MR 기록 요약, 텔레메트리 전송과 팀 대시보드, Windows 변수 누수 수정' },
+        { date: '2026-10-21', name: '0.3.5 · 0.3.6, 실행 근거 확장 시작', result: '리뷰 파일 수집, 키트 자동 전송과 Codex 비용 패널. 세션 실행 근거 수집 브랜치' },
+        { date: '2026-10-22', name: '꾸기 전송기 미동작 발견, 주기 수집 제거', result: '보내지 못한 기록 1,091건(Codex 1,009건). 실행 근거 확장에서 30초 주기 수집기를 빼고 완료 이벤트 수집으로 바꿨다' },
+        { date: '2026-10-23', name: '0.4.0, 꾸기 적용', result: '도구 내장 텔레메트리 설정·점검 명령, Windows 콘솔 창 제거. 꾸기 적용 중 결함 4개 발견. 공통 v2 리뷰에서 테스트 740개 실행' },
+        { date: '2026-10-26', name: '0.4.1', result: '공통 사용량 v2 전송과 대시보드 화면 개편', final: true },
+      ],
+    },
+    {
+      label: '2026-11',
+      events: [
+        { date: '2026-11-02', name: '종료 검증 단축(검토 중)', result: '종료 검증은 빠른 명령만, 전체 테스트는 CI에 맡기는 변경을 PR로 올렸다' },
+      ],
+    },
+  ]}
+/>
+
+<h2 class="post-h2" id="kkugi">실제 프로젝트 적용: 꾸기<span class="rule" aria-hidden="true"></span></h2>
+<h3 class="post-h3">결과: 리뷰가 찾아 고친 확정 결함 230건</h3>
+<p>꾸기는 키트를 붙인 유일한 실제 프로젝트다. 2026-11-09 꾸기 저장소의 리뷰 기록을 전수 조사했다. 키트 절차 안에서 남긴 리뷰 261개의 처리 표 1,165행과 표 밖 발견 1건, 모두 1,166행이 대상이다. 이 중 실제 꾸기 동작의 결함으로 확정한 것이 230건이다. 확정 230건 중 215건은 이 조사에서 독립 실행 근거를 다시 확보했고, 15건은 과거 실행 기록을 근거로 둔다.</p>
+<Callouts
+  items={[
+    { value: '230건', key: '확정 결함', note: '처리 표 1,166행 중' },
+    { value: '215건', key: '독립 실행 근거', note: '230건 중. 15건은 과거 실행 기록' },
+    { value: '42건', key: '보류', note: '1,166행 중' },
+  ]}
+/>
+<DataTable
+  scroll
+  headers={['확인', '결과']}
+  rows={[
+    ['조사 대상', '리뷰 261개, 처리 표 1,165행 + 표 밖 발견 1건 = 1,166행'],
+    ['확정 결함', '230건(1,166행 중)'],
+    ['이 조사에서 독립 실행 근거를 확보', '215건(230건 중). 나머지 15건은 과거 실행 기록'],
+    ['아직 보류', '42건(1,166행 중). 기기·외부 환경·실데이터 확인이 남은 20건, 일부 반영·후속·의도 수용 16건 등'],
+  ]}
+/>
+<Bars
+  title="영역별 확정 결함"
+  caption="꾸기 팀 리뷰 기록 감사(2026-11-09)"
+  axis={['0', '30', '60', '90', '120']}
+  rows={[
+    { label: 'Android', pct: 94.2, display: '113', tone: 'strong', highlight: true },
+    { label: 'Backend', pct: 59.2, display: '71', tone: 'mid' },
+    { label: 'ML', pct: 19.2, display: '23', tone: 'soft' },
+    { label: 'Web', pct: 8.3, display: '10', tone: 'soft' },
+    { label: '음식 목록 전처리', pct: 5.8, display: '7', tone: 'soft' },
+    { label: 'AI', pct: 5, display: '6', tone: 'soft' },
+  ]}
+/>
+<StackedBar
+  total="230건"
+  totalNote="확정 결함"
+  ariaLabel="리뷰가 붙인 심각도. 높음 15, 중간 114, 낮음 86, 참고 10, 미기록 5"
+  rows={[
+    { label: '높음', desc: '확정 결함', count: 15, color: '#18191a' },
+    { label: '중간', desc: '확정 결함', count: 114, color: '#6c6e70' },
+    { label: '낮음', desc: '확정 결함', count: 86, color: '#3d7ab8' },
+    { label: '참고', desc: '확정 결함', count: 10, color: '#aeb6bd' },
+    { label: '미기록', desc: '확정 결함', count: 5, color: '#c9cfd5' },
+  ]}
+/>
+<p>출처: 꾸기 팀 리뷰 기록 감사(2026-11-09). 두 표는 감사 보고서의 집계표를 그대로 옮겼다. 전체 확정 결함 목록 230행의 영역·독립 실행 열을 다시 세어도 같은 값이다.</p>
+
+<h3 class="post-h3">어떻게 셌나</h3>
+<p>확정은 다섯 가지가 모두 이어질 때만 했다. 실제 꾸기 동작의 오류, 리뷰의 발견과 처리, 수정 구현, 원래 오류 조건을 직접 겨냥한 단언, 수정 뒤의 성공 결과다. 전체 빌드 성공이나 테스트 파일이 있다는 사실만으로는 확정하지 않았다.</p>
+<p>하네스 자체 개발, 규칙·문서·절차 지적, 테스트만 보강한 항목, 연구용 평가 도구, 배포·CI 개선은 뺐다. 같은 원인과 수정은 한 번만 셌다. 1,166행 가운데 범위 제외가 392행, 문서·절차·설명이 183행, 테스트·검증 보강이 163행이다.</p>
+
+<h3 class="post-h3">리뷰가 찾은 결함 세 가지</h3>
+<ul class="lessons cases">
+  <li class="card lesson rv">
+    <span class="tag">Backend · 심각도 중간</span>
+    <h4>사진 끝에 붙은 데이터에 위치 정보가 남았다.</h4>
+    <p>꾸기는 식사 사진을 저장하기 전에 촬영 위치(GPS)를 지운다. 그런데 모션 포토처럼 이미지가 끝난 뒤에도 데이터가 더 붙은 파일이 있다. 기존 코드는 그 뒷부분을 검사하지 않고 그대로 저장해, 그 안의 위치 정보가 남을 수 있었다. 첫 이미지가 끝나는 지점까지만 남기도록 고치고, 끝 뒤에 붙은 데이터를 잘라 내는지 확인하는 검사를 통과시켰다.</p>
+  </li>
+  <li class="card lesson rv">
+    <span class="tag">Backend · 심각도 낮음</span>
+    <h4>탈퇴한 회원이 로그인을 계속 이어 갈 수 있었다.</h4>
+    <p>로그인을 유지하는 리프레시 토큰이 탈퇴 처리 중에 지워지지 않고 남는 경우가 있었다. 삭제가 실패하거나 다른 기기의 재발급과 겹칠 때다. 그러면 탈퇴한 회원도 새 로그인 토큰을 계속 받았다. 재발급할 때 탈퇴 회원이면 거절하고 남은 토큰을 지우도록 고쳤다. "탈퇴 뒤 남은 리프레시 토큰도 거절된다"는 검사가 통과했다.</p>
+  </li>
+  <li class="card lesson rv">
+    <span class="tag">Android · 심각도 중간</span>
+    <h4>불러오기에 실패한 루틴을 저장하면 기존 구성이 지워졌다.</h4>
+    <p>운동 루틴 편집 화면은 기존 루틴을 불러오지 못해도 빈 화면으로 편집하고 저장할 수 있었다. 저장은 루틴 전체를 통째로 바꾸는 방식이라, 빈 초안을 저장하면 기존 구성이 사라졌다. 불러오기에 실패하면 편집·저장·삭제·시작을 막고 "다시 불러오기"만 두도록 고쳤다. 검사에서는 실패 뒤 저장해도 교체 요청이 0번, 다시 불러온 뒤에는 1번 나갔다.</p>
+  </li>
+</ul>
+
+<h3 class="post-h3">한계</h3>
+<Caution
+  title="한계"
+  html
+  items={[
+    '<strong>고정 판본의 결과다.</strong> 조사는 기준 커밋 하나에 고정해 실행했다. 조사를 마칠 때의 main과는 파일 45개, 리뷰 5개가 달랐고, 확정 항목 16건은 근거 파일에도 차이가 있었다. 최신 main을 다시 실행한 결과가 아니다.',
+    '<strong>효과를 말하는 수치가 아니다.</strong> 하네스를 쓰지 않은 비교군, 변경의 위험도·규모, 병합 후 결함과 재작업 비용 자료가 없다. 그래서 결함 감소율, 예방률, 생산성, 비용 효과는 계산하지 않았다. 이 230건은 하네스 절차 안의 리뷰가 실제 결함을 찾았고, 그 수정이 원래 오류를 직접 겨냥한 회귀 검사의 통과로 이어졌다는 근거다.',
+    '모든 수정 전 코드를 다시 재현한 것은 아니다. 215건도 회귀 검사 통과 수와 같은 뜻이 아니다.',
+    '검사 환경의 한계가 있다. Backend는 운영 MySQL이 아닌 격리 H2 DB, Android는 실기기가 아닌 로컬 JVM·Robolectric 검사다.',
+    '보류 42건은 오류가 없다는 뜻이 아니다. 실제로 실패가 재현됐지만 아직 고치지 않은 2건도 그 안에 있다.',
+  ]}
+/>
+
+<h3 class="post-h3">적용하며 키트가 바뀐 것</h3>
+<p>적용할 때마다 키트의 빈틈도 드러났고, 그 결과가 다음 버전이 됐다.</p>
+<DataTable
+  scroll
+  headers={['날짜', '꾸기에서 확인한 것', '키트에 돌아간 것']}
+  rows={[
+    ['2026-10-03', '키트 첫 적용(0.2.0)', '규칙 문서·hooks·CI 조각 설치'],
+    ['2026-10-19', 'hooks 보고가 MR 54건 모두 비어 있었다. worktree 작업 대부분이 Codex였다', '세션 단위 기록, hooks 없는 도구의 MR 단계 보호(10-20)'],
+    ['2026-10-22', '0.3.6을 쓰던 Windows PC에서 키트 전송기가 한 번도 돌지 않았다. 보내지 못한 기록 1,091건(그중 Codex 1,009건)이 쌓여 있었다', '각 도구의 공식 내장 텔레메트리로 전송 구조를 바꾸고 Windows 콘솔 창을 없앴다(0.4.0, 10-23)'],
+    ['2026-10-23', '0.4.0을 적용하다 결함 4개를 찾았다: Codex 설정의 표시 주석이 옮겨지면 재설정이 막힘, 다른 실행기의 Claude 계정 프로필을 못 찾음, 토큰 없이 원격 전송을 시도함, 옛 hooks에서 안내 없이 오류', '이슈로 남겼다. 아직 열려 있다'],
+    ['2026-11-09', '리뷰 기록 전수 조사', '확정 결함 230건, 보류 42건'],
+  ]}
+/>
+<p>전송기가 돌지 않은 원인은 Claude Code가 설정 파일의 수집기 주소 변수를 hooks 같은 하위 프로세스에 넘기지 않는 데 있었다. Claude 사용량은 내장 텔레메트리로 따로 들어가고 있어서, 비어 있던 것은 Codex 기록이었다.</p>
+<p>실행 근거 확장을 꾸기에 반영한 변경 4건도 있다. 날짜 기록은 없고 2026-10-24 이전이다.</p>
+<DataTable
+  headers={['변경', '내용']}
+  rows={[
+    ['1', '실행 근거 수집과 업무 흐름 관측 적용'],
+    ['2', '이벤트마다 창 없이 수집하도록 변경'],
+    ['3', '30초 주기 수집 제거, 이벤트·수동 수집 유지'],
+    ['4', '0.4.0 대시보드와 사람별 시간당 토큰 반영'],
+  ]}
+/>
+<p>Windows에서 생긴 문제도 꾸기에서 드러났다. <code>python3</code>가 Microsoft Store 별칭이면 hooks가 조용히 꺼졌고, 종료 검증 명령의 변수가 하위 프로세스로 새고, 백그라운드 수집이 콘솔 창을 띄웠다. 설치 가이드와 설정값으로 막고 0.3.4·0.4.0에서 고쳤다.</p>
+
+<h2 class="post-h2" id="lessons">배운 점<span class="rule" aria-hidden="true"></span></h2>
+<Lessons
+  items={[
+    {
+      icon: 'shield-check',
+      title: '규칙은 문서가 아니라 실행 지점에 둔다.',
+      body: '위키에 적은 규칙은 사람도 에이전트도 지키지 않았다. 같은 보호 경로 규칙을 hooks, MR lint, CI에 한 정의로 심어 도구가 달라도 같은 기준으로 막히게 했다.',
+    },
+    {
+      icon: 'clipboard-check',
+      title: '기록이 없는 것을 성공으로 채우지 않는다.',
+      body: '꾸기에서 hooks 보고 54건이 비었을 때 원인을 가를 수 없었다. 그 뒤로 미수집, 미지원, 단가 미등록을 0이나 성공과 구분해 표시했다.',
+    },
+    {
+      icon: 'flask-conical',
+      title: '조용한 실패를 먼저 보이게 한다.',
+      body: '꾸기의 Windows PC에서 키트 전송기는 한 번도 돌지 않았고, 보내지 못한 기록 1,091건이 쌓일 때까지 아무 경고가 없었다. 실패해도 작업을 막지 않게 만든 설계가 실패를 숨긴 셈이다. 그 뒤로 각 도구의 공식 내장 텔레메트리로 전송을 옮기고, 설정 점검 명령과 수집·차단 진단 화면을 따로 뒀다.',
+    },
+    {
+      icon: 'code',
+      title: '찾은 결함 수와 효과는 다른 질문이다.',
+      body: '꾸기에서 리뷰가 찾아 고친 결함 230건은 각각 수정 코드와 원래 오류를 겨냥한 검사로 이어져 있다. 그래도 하네스 없이 개발한 비교군이 없으면 결함이 줄었다고 말할 수 없다. 다음에 효과를 재려면 비교할 기준선부터 정해 두어야 한다.',
+    },
+    {
+      icon: 'server',
+      title: '일반화는 두 번째 적용 뒤에 한다.',
+      body: '다음 프로젝트 스택 하나만 겨냥하고, 실제 프로젝트에서 나온 불편을 이슈로 남겨 고쳤다.',
+    },
+  ]}
+/>
+
+<h2 class="post-h2" id="stack">기술 스택<span class="rule" aria-hidden="true"></span></h2>
+<StackChips
+  groups={[
+    { area: 'CLI·수집', items: [{ text: 'Python(표준 라이브러리)' }, { text: 'unittest' }] },
+    { area: '에이전트 연동', items: [{ text: 'Claude Code hooks' }, { text: 'Codex hooks·세션 로그' }] },
+    { area: 'CI', items: [{ text: 'GitLab CI include 조각' }, { text: 'GitHub Actions(키트 자신)' }] },
+    {
+      area: '보안 검사',
+      items: [{ text: 'gitleaks' }, { text: 'npm audit·OWASP dependency-check' }, { text: 'semgrep' }, { text: 'trivy' }],
+    },
+    { area: '관측', items: [{ text: 'OpenTelemetry Collector' }, { text: 'Prometheus' }, { text: 'Loki' }, { text: 'Grafana' }] },
+    {
+      area: '스캐폴드 프로필',
+      items: [
+        { text: 'Spring Boot(Java, ArchUnit)' },
+        { text: 'React(TypeScript, ESLint)' },
+        { text: 'Android(Kotlin, Hilt, Konsist)' },
+        { text: 'Wear OS' },
+      ],
+    },
+  ]}
+/>
+
+<style>
+  :global(.kkugi) .cases {
+    grid-template-columns: 1fr;
+  }
+  :global(.kkugi) .cases .tag {
+    margin: 0 0 10px;
+  }
+</style>
+
+<script id="kkugi-terms" type="application/json" is:inline set:html={JSON.stringify(termDefs)}></script>
+<script>
+  import { enhanceKkugi } from '../kkugi/client';
+  enhanceKkugi();
+</script>

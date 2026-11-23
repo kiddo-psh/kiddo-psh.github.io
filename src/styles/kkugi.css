@@ -29,6 +29,7 @@
   line-height: 1.6;
 }
 .kkugi .ps p.body { margin: 0; font-size: 0.9375rem; line-height: 1.6; }
+.kkugi .ps p.solution-lead { margin: 0 0 8px; }
 .kkugi .chart-grid > .fig { margin: 0; }
 .kkugi .chart-card.stepper-card { padding: 22px 18px 18px; }
 .kkugi .glossary.follow { margin-top: 20px; }
@@ -328,6 +329,8 @@
  grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr; }
 .kkugi .pipe-4 {
  grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr; }
+.kkugi .pipe-7 {
+ grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr; }
 .kkugi .pcard {
  min-width: 0; padding: 16px 14px 14px; display: flex; flex-direction: column; position: relative; }
 .kkugi .pcard .ic {
@@ -370,9 +373,9 @@
  color: var(--secondary); font-weight: 500; margin-right: 6px; font-variant-numeric: tabular-nums; }
 /* —— Training stepper (horizontal timeline, T4 style) —— */
 .kkugi .stepper {
- position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); column-gap: 16px; }
+ position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0,1fr)); column-gap: 16px; }
 .kkugi .stepper .line {
- position: absolute; top: 3.5px; left: 12.5%; right: 12.5%; height: 1px; background: var(--hairline-strong); border-radius: 1px; }
+ position: absolute; top: 3.5px; left: calc(100% / var(--n, 4) / 2); right: calc(100% / var(--n, 4) / 2); height: 1px; background: var(--hairline-strong); border-radius: 1px; }
 .kkugi .stepper .line i {
  position: absolute; inset: 0; background: var(--secondary); border-radius: 1px; transform-origin: left center; }
 .kkugi .stepper li.st {
@@ -598,7 +601,7 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
  flex-direction: column; align-items: stretch; }
 .kkugi .arch .link {
  justify-content: center; transform: rotate(90deg); }
-.kkugi .pipe-5, .kkugi .pipe-4 {
+.kkugi .pipe-5, .kkugi .pipe-4, .kkugi .pipe-7 {
  grid-template-columns: 1fr; row-gap: 4px; }
 .kkugi .pcard {
  flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: 12px; padding: 14px; }
@@ -1031,6 +1034,7 @@ to {
 .kkugi .diagram-scroll { border-radius: 8px; outline: none; }
 .kkugi .diagram-scroll:focus-visible { outline: 2px solid #6c6e70; outline-offset: 2px; }
 .kkugi .diagram img { width: 100%; height: auto; display: block; }
+.kkugi .diagram.fit .diagram-scroll img { width: 100%; max-width: 100%; }
 .kkugi p a:not(.pill-btn):not(.zoom) {
  color: inherit; text-decoration: underline; text-decoration-color: var(--ink-soft); text-decoration-thickness: 1px; text-underline-offset: 3px;
  transition: color .18s ease, text-decoration-color .18s ease;

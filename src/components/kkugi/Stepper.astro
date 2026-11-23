@@ -13,7 +13,7 @@ const { steps } = Astro.props;
 ---
 
 <figure class="fig card chart-card stepper-card" data-component="Stepper">
-  <ol class="stepper">
+  <ol class="stepper" style={`--n:${steps.length}`}>
     <span class="line" aria-hidden="true"><i></i></span>
     {
       steps.map((step, index) => (

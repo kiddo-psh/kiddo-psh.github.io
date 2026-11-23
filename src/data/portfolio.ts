@@ -1,5 +1,5 @@
-// Portfolio claims follow the submitted resume (2026.10). Order, periods, roles and figures
-// must match it; detail pages keep the full measurement conditions.
+// Portfolio claims follow the submitted resume (2026.10), except figures a later
+// check could not source. Detail pages keep the full measurement conditions.
 // Keep personal ownership, team outcomes and evaluation conditions together.
 // Only text a reader needs: a note or caption exists only when it changes how a number reads.
 // In bullet strings, **text** is rendered as emphasis.
@@ -81,13 +81,13 @@ export const portfolioCases: PortfolioCase[] = [
   },
   {
     id:'baro', number:'02', title:'주차바로', period:'2026.07 ~ 2026.08', logo:'/images/projects/baro/logo.png',
-    summary:'AI 엣지 디바이스가 아파트 주차 위반을 감지하고, 개인정보 노출 없이 이동 요청부터 이동 확인까지 중계하는 서비스',
-    team:'7명 · AI 판정 파이프라인 (25%)',
-    award:'SSAFY 2학기 공통 프로젝트 우수상 (6팀 중 2등)',
+    summary:'AI 엣지 디바이스가 아파트 주차 위반을 감지하고, 연락처를 주고받지 않고 이동 요청부터 이동 확인까지 중계하는 서비스',
+    team:'7명 · AI 판정 파이프라인',
+    award:'SSAFY 2학기 공통 프로젝트 우수상',
     roles:['판정 엔진(상태 머신·위반 규칙·사건 축약)','리플레이 하니스·판정 오버레이','단계별 성능 계측 도구','SQLite outbox 사건 전송'],
     metrics:[
-      {value:'6.5 → 15 FPS', label:'처리 속도', note:'팀 최적화 결과'},
-      {value:'154 → 67ms', label:'프레임당 처리'},
+      {value:'150px', label:'화면 밖 오탐을 막은 입력 여백', note:'오탐 7건 · 0~113px'},
+      {value:'1.8배', label:'출구 판정이 항상 참이던 원인', note:'판정을 차량 중심 위치로 교체'},
       {value:'1초 / 5초', label:'진입 확인 · 이탈 확정'},
     ],
     figure:{src:'/images/projects/baro/zone-overlay-045s-ev.jpg', width:1920, height:1080, srcset:'/images/projects/baro/zone-overlay-045s-ev-720.webp 720w, /images/projects/baro/zone-overlay-045s-ev-1440.webp 1440w', alt:'파일럿 주차 모형에서 차량 검출과 주차 구역을 함께 표시한 실제 오버레이'},
@@ -102,40 +102,39 @@ export const portfolioCases: PortfolioCase[] = [
         ],
         results:[
           '진입 확인 **1초**, 이탈 확정 **5초**를 관측값으로 결정',
-          '불안정한 현장 네트워크에서도 사건 유실·중복 방지',
+          '확정 사건을 전송 대기열과 멱등 키로 한 번씩 전송',
         ],
       },
       {
-        title:'모델을 바꾸기 전에 느린 구간부터 측정',
-        situation:'처리 속도가 6.5 FPS에 그쳐 추적이 끊겼지만, 어느 단계가 느린지 알 수 없었습니다.',
+        title:'안 보인다고 나간 것은 아니다: 되돌릴 수 있는 실패를 선택',
+        situation:'카메라에서 5초간 안 보이면 출차로 확정해, 가림·화각 이탈도 되돌릴 수 없는 오출차가 됐습니다.',
         actions:[
-          '영상 처리를 **7단계로 나눠 재는 계측 도구** 구현',
-          '추론과 왜곡 보정이 병목임을 확인 → 팀이 TensorRT FP16·GPU 보정 적용',
+          '출구 통과가 관측될 때만 출차를 발행(미결 세션은 관리자가 닫을 수 있음)',
+          '차량 박스가 판정 구역보다 **1.79~1.84배** 커서 겹침 검사가 항상 참이던 원인을 찾아 차량 중심 위치 판정으로 교체',
+          '화면 밖 신발 오탐 7건(0~113px)과 실제 차량(302px~) 사이 **150px**를 입력에서 제외',
         ],
         results:[
-          '프레임당 154 → 67ms, **6.5 → 약 15 FPS (팀 성과)**',
+          '오출차·오탐의 원인을 측정값으로 설명하는 판정 기준 (적용 후 건수 재측정은 없음)',
         ],
-        compare:{caption:'프레임당 처리 시간', unit:'ms', rows:[{label:'모델 추론', before:54, after:32}, {label:'왜곡 보정', before:33, after:3}, {label:'그 외', before:67, after:32}]},
       },
     ],
-    boundary:'파일럿 모형과 녹화 영상 기준이며, TensorRT·GPU 보정 구현은 팀원 몫입니다.',
+    boundary:'파일럿 모형과 녹화 영상 기준이며, 위반 판정의 종단 정확도는 측정하지 않았습니다.',
     links:[{href:'/projects/baro', label:'상세 기록'}],
   },
   {
-    id:'ai-dev-harness', number:'03', title:'ai-dev-harness', period:'2026.09 ~ 2026.10', logo:'/images/projects/ai-dev-harness/logo.png',
+    id:'ai-dev-harness', number:'03', title:'ai-dev-harness', period:'2026.09 ~ 진행 중', logo:'/images/projects/ai-dev-harness/logo.png',
     summary:'팀의 AI 에이전트 개발 절차를 다른 저장소에 설치하는 가드레일 키트',
     team:'개인 프로젝트 · 설계·구현·측정 (100%)',
-    roles:['규칙 문서·양식·hooks 생성 CLI','보호 경로 승인·CI 검사','팀 MR 판정 기록','AgentOps 사용량 리포트'],
+    roles:['규칙 문서·양식·hooks 생성 CLI','보호 경로 승인·CI 검사','변경 위험 단계 판정','AgentOps 사용량 리포트'],
     metrics:[
       {value:'8건', label:'MR 단계 차단 CVE', note:'CRITICAL 3건 · 적용 리허설'},
       {value:'9건', label:'병합 전 발견 결함', note:'적용 리허설'},
-      {value:'54건', label:'판정 기록한 팀 MR'},
     ],
     figure:{src:'/images/projects/ai-dev-harness/01-gates-overview.svg', alt:'AI 에이전트의 변경이 hooks·MR·CI 게이트를 지나 병합되고, 세션 기록이 AgentOps와 주간 리포트로 집계되는 구조'},
     solutions:[
       {
         title:'팀의 AI 작업 절차를 설치형 가드레일로',
-        situation:'AI가 37분 만에 만든 기능을 완료 기준 불일치로 5시간 30분 동안 재작업했습니다.',
+        situation:'AI가 37분 만에 만든 기능을 완료 기준 불일치로 5시간 31분 동안 재작업했습니다.',
         actions:[
           '규칙 문서·플랜/리뷰 양식·hooks를 생성하는 CLI로 **팀의 작업 절차를 자산화**',
           'DB 마이그레이션 같은 보호 경로 편집 시 사람 승인 요구',
@@ -150,12 +149,12 @@ export const portfolioCases: PortfolioCase[] = [
         title:'AI 변경의 검증과 비용을 작업에 연결',
         situation:'어떤 작업에 토큰이 쓰였는지, 그 변경이 검증됐는지 작업별로 추적할 수 없었습니다.',
         actions:[
-          '팀 프로젝트 MR을 전부 판정하고 기록',
+          '변경 위험을 경량·표준·엄격으로 나누고, 단계마다 검증과 리뷰를 붙임',
           '에이전트 세션·토큰·추정 비용을 MR 본문과 주간 리포트로 제공(AgentOps)',
         ],
         results:[
-          '**MR 54건** 판정 기록',
-          '추론 서버 171초 지연과 정확도 과대 표현을 병합 전에 발견',
+          'Claude Code와 Codex 사용량을 같은 기준으로 모아 MR과 대시보드에 연결',
+          '같은 기록은 다시 더하지 않고, 보내지 못한 기록은 로컬에 남겨 다시 보냄',
         ],
       },
     ],
@@ -215,7 +214,7 @@ export const otherProjects = [
 export const highlights = [
   {value:'0.38 → 0.77', label:'VLM 음식명 F1', from:'yumyum', href:'#yumyum'},
   {value:'−37.5%', label:'Agent 호출', from:'yumyum', href:'#yumyum'},
-  {value:'6.5 → 15 FPS', label:'엣지 영상 처리 (팀)', from:'주차바로', href:'#baro'},
+  {value:'1초 / 5초', label:'실측 판정 기준', from:'주차바로', href:'#baro'},
   {value:'CVE 8건', label:'MR 단계 차단', from:'ai-dev-harness', href:'#ai-dev-harness'},
 ];
 
