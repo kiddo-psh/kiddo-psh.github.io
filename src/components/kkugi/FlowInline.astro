@@ -10,12 +10,16 @@ interface Node {
 interface Props {
   label: string;
   nodes: Node[];
+  /** 960px 이상에서 본문보다 넓게. */
+  wide?: boolean;
+  /** 카드 높이를 맞추고, 960px 미만에서는 세로로 쌓는다. */
+  even?: boolean;
 }
 
-const { label, nodes } = Astro.props;
+const { label, nodes, wide = false, even = false } = Astro.props;
 ---
 
-<div class="arch rv" data-component="ServiceArch" aria-label={label}>
+<div class:list={['arch', 'rv', { wide, even }]} data-component="ServiceArch" aria-label={label}>
   {
     nodes.map((node, index) => (
       <>

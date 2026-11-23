@@ -117,6 +117,8 @@
  color: var(--paragraph); padding: 10px 12px; border-bottom: 0; vertical-align: top; }
 .kkugi td.num, .kkugi th.num {
  text-align: right; font-variant-numeric: tabular-nums; }
+.kkugi td.col-num, .kkugi th.col-num {
+ text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; width: 1%; }
 .kkugi td:first-child {
  color: var(--text); font-weight: 500; }
 .kkugi tr:last-child td {
@@ -331,6 +333,9 @@
  grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr; }
 .kkugi .pipe-7 {
  grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr; }
+.kkugi .pipe-7 .nm, .kkugi .pipe-7 .dt { word-break: keep-all; }
+.kkugi .arch.even { align-items: stretch; }
+.kkugi .arch.even .node span { word-break: keep-all; }
 .kkugi .pcard {
  min-width: 0; padding: 16px 14px 14px; display: flex; flex-direction: column; position: relative; }
 .kkugi .pcard .ic {
@@ -582,6 +587,33 @@
 html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, html.final .kkugi .budget-bar .det, html.final .kkugi .budget-bar .cls, html.final .kkugi .ci, html.final .kkugi .vtl .rail i, html.final .kkugi .vtl .ev, html.final .kkugi .stepper .line i, html.final .kkugi .pipe > li {
 
   opacity: 1 !important; transform: none !important; transition: none !important;
+}
+/* 7칸 파이프와 6칸 흐름은 본문이 880px로 넓어지기 전에 세로로 쌓는다. */
+@media (max-width: 959px) {
+.kkugi .pipe-7 { grid-template-columns: 1fr; row-gap: 4px; }
+.kkugi .pipe-7 .pcard { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: 12px; padding: 14px; }
+.kkugi .pipe-7 .pcard .ic { margin: 0; }
+.kkugi .pipe-7 .pcard .nm { flex: 1 1 auto; }
+.kkugi .pipe-7 .pcard .dt { flex: 1 0 100%; margin: 4px 0 0 34px; }
+.kkugi .pipe-7 .chev { height: 22px; }
+.kkugi .pipe-7 .chev svg { transform: rotate(90deg); }
+.kkugi .arch.even { flex-direction: column; align-items: stretch; }
+.kkugi .arch.even .link { justify-content: center; transform: rotate(90deg); }
+}
+.kkugi .baro-page .hcard .value { white-space: nowrap; }
+.kkugi .baro-page .table-wrap.scroll { overflow-x: scroll; scrollbar-width: thin; }
+@media (min-width: 721px) {
+.kkugi .baro-page .hero-grid { grid-template-rows: repeat(10, auto); }
+.kkugi .baro-page .hcard {
+  display: grid; grid-template-rows: subgrid; height: auto;
+}
+.kkugi .baro-page .hcard:nth-child(1),
+.kkugi .baro-page .hcard:nth-child(2) { grid-column: auto; grid-row: 1 / span 5; }
+.kkugi .baro-page .hcard:nth-child(3),
+.kkugi .baro-page .hcard:nth-child(4) { grid-row: 6 / span 5; }
+.kkugi .baro-page .hcard:nth-child(odd) { grid-column: 1; }
+.kkugi .baro-page .hcard:nth-child(even) { grid-column: 2; }
+.kkugi .baro-page .lesson { height: 100%; display: flex; flex-direction: column; }
 }
 /* —— Mobile —— */
 @media (max-width: 720px) {

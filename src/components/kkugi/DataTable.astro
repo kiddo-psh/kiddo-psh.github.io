@@ -3,23 +3,28 @@ interface Props {
   headers: string[];
   rows: string[][];
   scroll?: boolean;
+  /** 오른쪽 정렬하고 숫자+단위를 한 줄로 둔다. 0부터. */
+  numeric?: number[];
+  /** scroll일 때 칸이 찌그러지지 않게 표의 최소 너비. */
+  minWidth?: string;
 }
 
-const { headers, rows, scroll = false } = Astro.props;
+const { headers, rows, scroll = false, numeric = [], minWidth } = Astro.props;
+const isNum = (index: number) => numeric.includes(index);
 ---
 
 <div class:list={['table-wrap', { scroll }]}>
-  <table>
+  <table style={minWidth ? `min-width:${minWidth}` : undefined}>
     <thead>
       <tr>
-        {headers.map((header) => <th>{header}</th>)}
+        {headers.map((header, index) => <th class:list={{ 'col-num': isNum(index) }}>{header}</th>)}
       </tr>
     </thead>
     <tbody>
       {
         rows.map((row) => (
           <tr>
-            {row.map((cell) => <td>{cell}</td>)}
+            {row.map((cell, index) => <td class:list={{ 'col-num': isNum(index) }}>{cell}</td>)}
           </tr>
         ))
       }
