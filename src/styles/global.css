@@ -71,11 +71,16 @@ main > :first-child { margin-top: 56px; }
 .intro {
   margin: 0;
   color: var(--text-dim);
-  font-size: 1.5rem;
+  /* 데스크톱 1.25rem. 640px 미만은 본문과 같은 1.0625rem이라 쉼표 줄바꿈이 유지된다. */
+  font-size: 1.0625rem;
   font-weight: 650;
   line-height: 1.25;
   letter-spacing: -0.015em;
   text-wrap: balance;
+  white-space: pre-line;
+}
+@media (min-width: 640px) {
+  .intro { font-size: 1.25rem; }
 }
 
 .block { margin-top: var(--section); }
@@ -170,6 +175,7 @@ ul.list > li[hidden] { display: none; }
 .empty[hidden] { display: none; }
 
 @media (max-width: 720px) {
+  .intro,
   .doc-head h1,
   h1.page-title,
   h1.sec-title {
