@@ -40,7 +40,7 @@ const projects = listProjects(await getCollection('projects')).filter((project) 
   )}
 
   <section class="block" aria-labelledby="posts-title">
-    <h2 id="posts-title" class="sec-title">글</h2>
+    <h2 id="posts-title" class="sec-title"><a href="/posts">글</a></h2>
     <ul class="list">
       {writing.map((post) => (
         <li>
@@ -52,7 +52,7 @@ const projects = listProjects(await getCollection('projects')).filter((project) 
 
   {csPosts.length > 0 && (
     <section class="block" aria-labelledby="cs-title">
-      <h2 id="cs-title" class="sec-title">CS</h2>
+      <h2 id="cs-title" class="sec-title"><a href="/cs">CS</a></h2>
       <ul class="list">
         {csPosts.map((post) => (
           <li>
@@ -63,3 +63,18 @@ const projects = listProjects(await getCollection('projects')).filter((project) 
     </section>
   )}
 </BaseLayout>
+
+<style>
+  .sec-title a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--dur) var(--ease);
+  }
+  .sec-title a:hover,
+  .sec-title a:focus-visible {
+    text-decoration-color: var(--text);
+  }
+</style>
