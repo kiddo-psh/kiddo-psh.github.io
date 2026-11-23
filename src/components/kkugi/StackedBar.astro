@@ -10,11 +10,13 @@ interface Props {
   total: string;
   totalNote: string;
   rows: Row[];
+  /** 없으면 꾸기 글의 기존 문구를 쓴다. */
+  ariaLabel?: string;
 }
 
-const { total, totalNote, rows } = Astro.props;
+const { total, totalNote, rows, ariaLabel } = Astro.props;
 const sum = rows.reduce((acc, row) => acc + row.count, 0);
-const aria = `출처별 클래스 수: ${rows.map((row) => row.count).join(', ')}`;
+const aria = ariaLabel ?? `출처별 클래스 수: ${rows.map((row) => row.count).join(', ')}`;
 ---
 
 <figure class="fig card chart-card rv" data-component="StackedBar">
@@ -25,7 +27,7 @@ const aria = `출처별 클래스 수: ${rows.map((row) => row.count).join(', ')
   <div class="stack" role="img" aria-label={aria}>
     {
       rows.map((row, index) => (
-        <span class={`seg s${index + 1}`} style={`--w:${(row.count / sum) * 100}%`} />
+        <span class={`seg s${index + 1}`} style={`--w:${(row.count / sum) * 100}%;background:${row.color}`} />
       ))
     }
   </div>

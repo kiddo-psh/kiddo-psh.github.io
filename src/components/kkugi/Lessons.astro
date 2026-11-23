@@ -2,9 +2,11 @@
 import Icon from './Icon.astro';
 
 interface Item {
-  icon: 'flask-conical' | 'clipboard-check' | 'code' | 'server';
+  icon: 'flask-conical' | 'clipboard-check' | 'code' | 'server' | 'shield-check';
   title: string;
   body: string;
+  /** 본문에 링크가 있을 때만. 호출하는 글이 마크업을 직접 넣는다. */
+  html?: boolean;
 }
 
 interface Props {
@@ -22,7 +24,7 @@ const { items } = Astro.props;
           <Icon name={item.icon} size={22} />
         </span>
         <h4>{item.title}</h4>
-        <p>{item.body}</p>
+        {item.html ? <p set:html={item.body} /> : <p>{item.body}</p>}
       </li>
     ))
   }

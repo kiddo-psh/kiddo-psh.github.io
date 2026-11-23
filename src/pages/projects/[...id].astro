@@ -1,7 +1,20 @@
 ---
 import { getCollection, render } from 'astro:content';
 import KkugiArticle from '../../components/kkugi/KkugiArticle.astro';
+import HarnessArticle from '../../components/harness/HarnessArticle.astro';
+import BaroArticle from '../../components/baro/BaroArticle.astro';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+/*
+ * essay: true인 프로젝트의 본문 컴포넌트. 키는 콘텐츠 id(파일 이름).
+ * 아직 만들지 않은 글은 null로 둔다. null이면 essay를 켜지 말고 마크다운 본문을 쓴다.
+ * 새 글: 컴포넌트를 만들고 여기 한 줄 추가 → 해당 .md에 essay: true.
+ */
+const essayArticles = {
+  kkugi: KkugiArticle,
+  'ai-dev-harness': HarnessArticle,
+  baro: BaroArticle,
+} as const satisfies Record<string, unknown>;
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -12,10 +25,16 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const rendered = project.data.essay ? null : await render(project);
+const Essay = project.data.essay
+  ? (essayArticles as Record<string, any>)[project.id] ?? null
+  : null;
+if (project.data.essay && !Essay) {
+  throw new Error(`essay: true인 '${project.id}'의 글 컴포넌트가 essayArticles에 없다`);
+}
+const rendered = Essay ? null : await render(project);
 const Content = rendered?.Content;
 ---
 
 <ProjectLayout project={project}>
-  {Content ? <Content /> : <KkugiArticle />}
+  {Essay ? <Essay /> : Content && <Content />}
 </ProjectLayout>

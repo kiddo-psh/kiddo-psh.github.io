@@ -1,24 +1,50 @@
 ---
 import CollabMark from './CollabMark.astro';
 
-const src = '/projects/kkugi/collab/review-sequence.webp';
+interface Props {
+  src?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  caption?: string;
+  srcset?: string;
+  /** 가로로 긴 시퀀스가 아니면 칸 너비에 맞춘다. */
+  fit?: boolean;
+  /** 꾸기 협업 표시. 다른 글은 끈다. */
+  mark?: boolean;
+  label?: string;
+}
+
+const {
+  src = '/projects/kkugi/collab/review-sequence.webp',
+  width = 2458,
+  height = 1760,
+  alt = '폰에서 사진을 업로드한 뒤 Spring 서버가 AI 응답을 기다리고, 사진과 결과를 DB 트랜잭션으로 저장한 후 응답하는 시퀀스 다이어그램',
+  caption,
+  srcset,
+  fit = false,
+  mark = true,
+  label = '시퀀스 다이어그램, 가로로 스크롤',
+} = Astro.props;
 ---
 
-<figure class="wide card diagram rv" data-component="ReviewDaySequence">
+<figure class:list={['wide', 'card', 'diagram', 'rv', { fit }]} data-component="ReviewDaySequence">
   <p class="fig-title">
-    <span></span>
+    <span>{caption}</span>
     <a class="zoom" href={src} target="_blank" rel="noopener">
-      원본 크기<CollabMark name="max" />
+      원본 크기{mark && <CollabMark name="max" />}
     </a>
   </p>
-  <div class="diagram-scroll" tabindex="0" role="region" aria-label="시퀀스 다이어그램, 가로로 스크롤">
+  <div class="diagram-scroll" tabindex="0" role="region" aria-label={label}>
     <img
       src={src}
-      width="2458"
-      height="1760"
+      srcset={srcset}
+      sizes={srcset ? '(min-width: 960px) 880px, 100vw' : undefined}
+      width={width}
+      height={height}
       loading="lazy"
       decoding="async"
-      alt="폰에서 사진을 업로드한 뒤 Spring 서버가 AI 응답을 기다리고, 사진과 결과를 DB 트랜잭션으로 저장한 후 응답하는 시퀀스 다이어그램"
+      alt={alt}
     />
   </div>
 </figure>

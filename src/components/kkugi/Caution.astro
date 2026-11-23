@@ -4,14 +4,16 @@ import Icon from './Icon.astro';
 interface Props {
   title: string;
   items: string[];
+  /** 항목 안에 강조가 있을 때만. 호출하는 글이 마크업을 직접 넣는다. */
+  html?: boolean;
 }
 
-const { title, items } = Astro.props;
+const { title, items, html = false } = Astro.props;
 ---
 
 <aside class="caution rv" data-component="Caution">
   <p class="c-head"><Icon name="info" size={16} />{title}</p>
   <ul>
-    {items.map((item) => <li>{item}</li>)}
+    {items.map((item) => (html ? <li set:html={item} /> : <li>{item}</li>))}
   </ul>
 </aside>
