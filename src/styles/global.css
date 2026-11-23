@@ -71,8 +71,8 @@ main > :first-child { margin-top: 56px; }
 .intro {
   margin: 0;
   color: var(--text-dim);
-  /* 좁은 화면에서는 두 줄이 의도한 쉼표에서만 끊기게 한 단계 줄인다. */
-  font-size: 1.125rem;
+  /* 데스크톱 1.25rem. 640px 미만은 본문과 같은 1.0625rem이라 쉼표 줄바꿈이 유지된다. */
+  font-size: 1.0625rem;
   font-weight: 650;
   line-height: 1.25;
   letter-spacing: -0.015em;
@@ -80,7 +80,7 @@ main > :first-child { margin-top: 56px; }
   white-space: pre-line;
 }
 @media (min-width: 640px) {
-  .intro { font-size: 1.5rem; }
+  .intro { font-size: 1.25rem; }
 }
 
 .block { margin-top: var(--section); }
