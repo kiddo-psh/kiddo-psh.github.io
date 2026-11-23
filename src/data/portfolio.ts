@@ -204,8 +204,8 @@ export const portfolioCases: PortfolioCase[] = [
 // 상세 사례로 다루지 않는 프로젝트. 이력서와 맞추기 위해 한 줄로 남긴다
 export const otherProjects = [
   {
-    title:'Feelm', period:'2026.08 ~ 2026.09', href:'/projects/feelm',
-    text:'MovieLens 32M 기반 영화 추천 서비스 · 7명 팀장 · 계정·인증 백엔드, 통합 MR 39건 중 31건 작성',
+    title:'Feelm', period:'2026.08 ~ 2026.10', href:'/projects/feelm',
+    text:'MovieLens 32M 기반 영화 추천 서비스 · 7명 팀장 · 계정·인증 백엔드, 화면 API 연동, 취향 리포트 캐릭터 카드',
     award:'특화 프로젝트 우수상 (1등)',
   },
 ];

@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import KkugiArticle from '../../components/kkugi/KkugiArticle.astro';
 import HarnessArticle from '../../components/harness/HarnessArticle.astro';
 import BaroArticle from '../../components/baro/BaroArticle.astro';
+import FeelmArticle from '../../components/feelm/FeelmArticle.astro';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 /*
@@ -14,6 +15,7 @@ const essayArticles = {
   kkugi: KkugiArticle,
   'ai-dev-harness': HarnessArticle,
   baro: BaroArticle,
+  feelm: FeelmArticle,
 } as const satisfies Record<string, unknown>;
 
 export async function getStaticPaths() {

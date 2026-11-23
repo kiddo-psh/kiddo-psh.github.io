@@ -615,6 +615,32 @@ html.final .kkugi .rv, html.final .kkugi .fill, html.final .kkugi .stack .seg, h
 .kkugi .baro-page .hcard:nth-child(even) { grid-column: 2; }
 .kkugi .baro-page .lesson { height: 100%; display: flex; flex-direction: column; }
 }
+.kkugi .feelm-page .hcard .value { white-space: nowrap; }
+.kkugi .feelm-page .table-wrap.scroll { overflow-x: scroll; scrollbar-width: thin; }
+@media (max-width: 720px) {
+.kkugi .feelm-page .table-wrap:not(.scroll) th:first-child,
+.kkugi .feelm-page .table-wrap:not(.scroll) td:first-child {
+  width: 1%; white-space: nowrap;
+}
+}
+.kkugi .feelm-page .pcard .nm,
+.kkugi .feelm-page .pcard .dt,
+.kkugi .feelm-page .stepper .nm,
+.kkugi .feelm-page .stepper .dt { word-break: keep-all; }
+@media (min-width: 721px) {
+.kkugi .feelm-page .hero-grid { grid-template-rows: repeat(10, auto); }
+.kkugi .feelm-page .hcard {
+  display: grid; grid-template-rows: subgrid; height: auto;
+}
+.kkugi .feelm-page .hcard:nth-child(1),
+.kkugi .feelm-page .hcard:nth-child(2) { grid-column: auto; grid-row: 1 / span 5; }
+.kkugi .feelm-page .hcard:nth-child(3),
+.kkugi .feelm-page .hcard:nth-child(4) { grid-row: 6 / span 5; }
+.kkugi .feelm-page .hcard:nth-child(odd) { grid-column: 1; }
+.kkugi .feelm-page .hcard:nth-child(even) { grid-column: 2; }
+.kkugi .feelm-page .lesson { height: 100%; display: flex; flex-direction: column; }
+.kkugi .feelm-page .stack-list li { grid-template-columns: 9rem minmax(0, 1fr); }
+}
 /* —— Mobile —— */
 @media (max-width: 720px) {
 .kkugi .post-title { line-height: 1.4; }

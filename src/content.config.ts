@@ -50,6 +50,8 @@ const projects = defineCollection({
     stack: z.array(z.string()).min(1),
     repo: z.string().url().optional(),
     demo: z.string().url().optional(),
+    // 수상. 사용자가 확인한 것만 적는다.
+    award: z.string().min(1).optional(),
     metrics: z
       .array(z.object({ label: z.string(), before: z.string(), after: z.string() }))
       .default([]),
