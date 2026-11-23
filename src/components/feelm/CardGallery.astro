@@ -1,0 +1,100 @@
+---
+import type { CharacterCard } from './cards';
+
+interface Props {
+  cards: CharacterCard[];
+  caption: string;
+}
+
+const { cards, caption } = Astro.props;
+---
+
+<figure class="card-gallery">
+  <ul class="cg-grid">
+    {
+      cards.map((card) => (
+        <li class="cg-card">
+          <img
+            src={`/images/projects/feelm/cards/${card.code}.webp`}
+            srcset={`/images/projects/feelm/cards/${card.code}-480.webp 480w, /images/projects/feelm/cards/${card.code}.webp 960w`}
+            sizes="(min-width: 960px) 220px, (min-width: 600px) 30vw, 45vw"
+            width="960"
+            height="665"
+            loading="lazy"
+            decoding="async"
+            alt={`캐릭터 카드 '${card.name}' 그림`}
+          />
+          <p class="cg-name">{card.name}</p>
+          <p class="cg-axes">
+            {card.axes.map((axis) => (
+              <span class="cg-chip">{axis}</span>
+            ))}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+  <figcaption class="fig-cap">{caption}</figcaption>
+</figure>
+
+<style>
+  :global(.kkugi) :global(.feelm-page) .card-gallery {
+    margin: 20px 0 28px;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-card {
+    margin: 0;
+    padding: 0 0 12px;
+    min-width: 0;
+    list-style: none;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: var(--mx-shadow);
+    overflow: hidden;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 960 / 665;
+    object-fit: cover;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-name {
+    margin: 12px 12px 0;
+    min-height: 2.8em;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-axes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 12px 0;
+  }
+  :global(.kkugi) :global(.feelm-page) .cg-chip {
+    color: var(--secondary);
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  @media (min-width: 600px) {
+    :global(.kkugi) :global(.feelm-page) .cg-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 960px) {
+    :global(.kkugi) :global(.feelm-page) .cg-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>
